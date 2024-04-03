@@ -1,5 +1,5 @@
-import Editor from "@/components/editor";
+import BlockEditor from "@/components/editor";
 
 export default function App() {
-  return <Editor />;
+  return <BlockEditor />;
 }

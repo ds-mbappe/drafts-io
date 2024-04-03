@@ -33,29 +33,38 @@ export default function Navbar() {
       
       { user?.imageUrl ?
         <>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Avatar className="border-2 border-black cursor-pointer">
-                <AvatarImage src={user?.imageUrl} />
-                <AvatarFallback>
-                  { `${user?.firstName || "A" + user?.lastName}` }
-                </AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className='w-56'>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="gap-4 cursor-pointer">
-                {/* <PersonIcon/> */}
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="gap-4 hover:!bg-red-100 hover:!text-red-500 cursor-pointer" onClick={onUserLogout}>
-                <ExitIcon/>
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center justify-center">
+            <div className="flex flex-col items-end">
+              <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">{characterCount?.words()} words</span>
+              <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">{characterCount?.characters()} characters</span>
+            </div>
+
+            <div className="h-full border mx-4" />
+
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Avatar className="border-2 border-black cursor-pointer">
+                  <AvatarImage src={user?.imageUrl} />
+                  <AvatarFallback>
+                    { `${user?.firstName || "A" + user?.lastName}` }
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className='w-56'>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="gap-4 cursor-pointer">
+                  {/* <PersonIcon/> */}
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="gap-4 hover:!bg-red-100 hover:!text-red-500 cursor-pointer" onClick={onUserLogout}>
+                  <ExitIcon/>
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </> : <></>
       }
     </nav>
