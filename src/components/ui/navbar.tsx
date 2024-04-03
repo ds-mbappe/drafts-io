@@ -8,8 +8,9 @@ import { DragHandleHorizontalIcon } from "@radix-ui/react-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { EditorInfo } from './EditorInfo';
 
-export default function Navbar() {
+export const Navbar = () => {
   const { user } = useUser();
   const { signOut } = useAuth();
   const { editor, characterCount } = useBlockEditor();
@@ -34,10 +35,7 @@ export default function Navbar() {
       { user?.imageUrl ?
         <>
           <div className="flex items-center justify-center">
-            <div className="flex flex-col items-end">
-              <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">{characterCount?.words()} words</span>
-              <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">{characterCount?.characters()} characters</span>
-            </div>
+            <EditorInfo words={characterCount.words()} characters={characterCount.characters()} />
 
             <div className="h-full border mx-4" />
 
@@ -70,3 +68,5 @@ export default function Navbar() {
     </nav>
   )
 }
+
+export default Navbar
