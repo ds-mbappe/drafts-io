@@ -46,7 +46,7 @@ export default function BlockEditor() {
             className="relative flex w-full min-h-screen cursor-text flex-col items-center p-6"
           >
             <div className="relative w-full max-w-screen-lg">
-              <Button onClick={handleSaveData}>Save</Button>
+              <Button>Save</Button>
               <EditorContent editor={editor} ref={editorRef} className="flex-1 overflow-y-auto" />
             </div>
           </div>
