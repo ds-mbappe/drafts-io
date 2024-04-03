@@ -3,6 +3,7 @@
 import { ExitIcon, PersonIcon } from '@radix-ui/react-icons'
 import { useUser, useAuth } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
+import { useBlockEditor } from '../editor/hooks/useBlockEditor';
 import { DragHandleHorizontalIcon } from "@radix-ui/react-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -11,6 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 export default function Navbar() {
   const { user } = useUser();
   const { signOut } = useAuth();
+  const { editor, characterCount } = useBlockEditor();
 
   const onUserLogout = () => {
     signOut();

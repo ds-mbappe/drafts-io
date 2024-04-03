@@ -1,13 +1,10 @@
 "use client";
 
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+import { EditorContent } from "@tiptap/react";
+import { useBlockEditor } from "./hooks/useBlockEditor";
 
 export default function Editor() {
-  const editor = useEditor({
-    extensions: [StarterKit],
-    content: "<p>Hello World! 🌎️</p>",
-  });
+  const { editor } = useBlockEditor();
 
   return (
     <div
