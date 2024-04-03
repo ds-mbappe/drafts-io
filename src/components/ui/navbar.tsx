@@ -3,17 +3,17 @@
 import { ExitIcon, PersonIcon } from '@radix-ui/react-icons'
 import { useUser, useAuth } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
-import { useBlockEditor } from '../editor/hooks/useBlockEditor';
 import { DragHandleHorizontalIcon } from "@radix-ui/react-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { EditorInfo } from './EditorInfo';
+import { memo } from 'react';
+import { EditorInfoProps } from '@/components/ui/EditorInfo';
 
-export const Navbar = () => {
+export const Navbar = memo(({ characters, words }: EditorInfoProps) => {
   const { user } = useUser();
   const { signOut } = useAuth();
-  const { editor, characterCount } = useBlockEditor();
 
   const onUserLogout = () => {
     signOut();
@@ -35,7 +35,7 @@ export const Navbar = () => {
       { user?.imageUrl ?
         <>
           <div className="flex items-center justify-center">
-            <EditorInfo words={characterCount.words()} characters={characterCount.characters()} />
+            <EditorInfo words={words} characters={characters} />
 
             <div className="h-full border mx-4" />
 
@@ -67,6 +67,6 @@ export const Navbar = () => {
       }
     </nav>
   )
-}
+})
 
 export default Navbar
