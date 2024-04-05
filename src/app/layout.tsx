@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Drafts App",
@@ -18,6 +18,7 @@ export default function RootLayout({
       <html lang="en">
         <body>
           {children}
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

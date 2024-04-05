@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CreateNewDocument } from '../pannels/CreateNewDocument';
 import { Button } from "@/components/ui/button";
 import { DragHandleHorizontalIcon } from "@radix-ui/react-icons";
@@ -11,6 +11,8 @@ import { useUser } from '@clerk/clerk-react';
 export const LeftSidebar = () => {
   const { user } = useUser();
 
+  const [sheetOpen, setSheetOpen] = useState(false)
+
   useEffect(() => {
     if (user?.id) {
       fetchDocuments();
@@ -19,7 +21,7 @@ export const LeftSidebar = () => {
 
   const fetchDocuments = async () => {
     try {
-      const docs = await fetch(`/api/${user?.id}`, {
+      const docs = await fetch(`/api/documents/${user?.id}`, {
         method: 'GET',
         "content-type": "application/json",
       });
@@ -29,7 +31,7 @@ export const LeftSidebar = () => {
   }
 
   return (
-    <Sheet>
+    <Sheet open={sheetOpen} onOpenChange={() => setSheetOpen(!sheetOpen)}>
       <SheetTrigger asChild>
         <Button size={"sm"} variant={"ghost"} >
           <DragHandleHorizontalIcon />

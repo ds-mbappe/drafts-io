@@ -27,7 +27,7 @@ export default function Home() {
             </Link>
           </>
         ) : (
-          <Link className={buttonVariants({ variant: "default" })} href="/app">
+          <Link className={buttonVariants({ variant: "default" })} href={`/href/documents/${userId}`}>
             Go to App
           </Link>
         )}

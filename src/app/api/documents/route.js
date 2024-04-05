@@ -1,4 +1,3 @@
-import User from "../../models/User";
 import Document from "../../models/Document";
 import { NextResponse } from "next/server";
 
@@ -15,7 +14,9 @@ export async function POST(req) {
   }
 }
 
-// export async function GET() {
+// export async function GET(req, { params }) {
+//   const { id } = params
+
 //   try {
 //     const documents = await Document.find()
 

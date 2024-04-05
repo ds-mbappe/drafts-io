@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch"
 import { useRouter } from "next/navigation";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { useUser } from '@clerk/clerk-react';
+import { toast } from "sonner"
 
 export const CreateNewDocument = () => {
   const router = useRouter();
@@ -20,27 +21,35 @@ export const CreateNewDocument = () => {
   const [docPrivate, setDocPrivate] = useState(false)
 
   const handleSaveData = async () => {
-    let formData = {
-      name: docName,
-      creator_id: user?.id,
-      can_edit: undefined,
-      team_id: undefined,
-      private: docPrivate,
-      encrypted_password: docPassword,
-    }
-
-    const res = await fetch("/api/documents", {
-      method: "POST",
-      body: JSON.stringify({ formData }),
-      "content-type": "application/json"
+    toast(`Document created`, {
+      description: `Successfully created document ${docName}.`,
+      duration: 5000,
+      action: {
+        label: "Close",
+        onClick: () => {},
+      },
     })
+    // let formData = {
+    //   name: docName,
+    //   creator_id: user?.id,
+    //   can_edit: undefined,
+    //   team_id: undefined,
+    //   private: docPrivate,
+    //   encrypted_password: docPassword,
+    // }
 
-    if (!res.ok) {
-      throw new Error("Failed to create document.")
-    }
+    // const res = await fetch("/api/documents", {
+    //   method: "POST",
+    //   body: JSON.stringify({ formData }),
+    //   "content-type": "application/json"
+    // })
 
-    router.refresh()
-    // router.push("/")
+    // if (!res.ok) {
+    //   throw new Error("Failed to create document.")
+    // }
+
+    // router.refresh()
+    // // router.push("/")
   };
 
   const submitAndCloseDialog = () => {
