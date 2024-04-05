@@ -11,7 +11,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { useUser } from '@clerk/clerk-react';
 import { toast } from "sonner"
 
-export const CreateNewDocument = () => {
+export const CreateNewDocument = ({ onDocumentSaved }: any) => {
   const router = useRouter();
   const { user } = useUser();
 
@@ -21,6 +21,27 @@ export const CreateNewDocument = () => {
   const [docPrivate, setDocPrivate] = useState(false)
 
   const handleSaveData = async () => {
+    let formData = {
+      name: docName,
+      creator_id: user?.id,
+      can_edit: undefined,
+      team_id: undefined,
+      private: docPrivate,
+      encrypted_password: docPassword,
+    }
+
+    const res = await fetch("/api/documents", {
+      method: "POST",
+      body: JSON.stringify({ formData }),
+      "content-type": "application/json"
+    })
+
+    if (!res.ok) {
+      throw new Error("Failed to create document.")
+    }
+
+    router.refresh()
+
     toast(`Document created`, {
       description: `Successfully created document ${docName}.`,
       duration: 5000,
@@ -29,27 +50,7 @@ export const CreateNewDocument = () => {
         onClick: () => {},
       },
     })
-    // let formData = {
-    //   name: docName,
-    //   creator_id: user?.id,
-    //   can_edit: undefined,
-    //   team_id: undefined,
-    //   private: docPrivate,
-    //   encrypted_password: docPassword,
-    // }
-
-    // const res = await fetch("/api/documents", {
-    //   method: "POST",
-    //   body: JSON.stringify({ formData }),
-    //   "content-type": "application/json"
-    // })
-
-    // if (!res.ok) {
-    //   throw new Error("Failed to create document.")
-    // }
-
-    // router.refresh()
-    // // router.push("/")
+    onDocumentSaved()
   };
 
   const submitAndCloseDialog = () => {

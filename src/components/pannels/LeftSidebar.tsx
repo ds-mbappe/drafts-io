@@ -1,34 +1,14 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { CreateNewDocument } from '../pannels/CreateNewDocument';
 import { Button } from "@/components/ui/button";
 import { DragHandleHorizontalIcon } from "@radix-ui/react-icons";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { useUser } from '@clerk/clerk-react';
 
 export const LeftSidebar = () => {
-  const { user } = useUser();
-
   const [sheetOpen, setSheetOpen] = useState(false)
-
-  useEffect(() => {
-    if (user?.id) {
-      fetchDocuments();
-    }
-  });
-
-  const fetchDocuments = async () => {
-    try {
-      const docs = await fetch(`/api/documents/${user?.id}`, {
-        method: 'GET',
-        "content-type": "application/json",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   return (
     <Sheet open={sheetOpen} onOpenChange={() => setSheetOpen(!sheetOpen)}>
@@ -45,7 +25,7 @@ export const LeftSidebar = () => {
           </SheetDescription>
         </SheetHeader>
 
-        <CreateNewDocument/>
+        <CreateNewDocument onDocumentSaved={() => setSheetOpen(false)} />
 
         <div className="flex flex-col gap-10">
         <Accordion type="single" collapsible>
