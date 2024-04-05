@@ -1,3 +1,4 @@
+import User from "../../models/User";
 import Document from "../../models/Document";
 import { NextResponse } from "next/server";
 
@@ -14,12 +15,12 @@ export async function POST(req) {
   }
 }
 
-export async function GET() {
-  try {
-    const documents = await Document.find()
+// export async function GET() {
+//   try {
+//     const documents = await Document.find()
 
-    return NextResponse.json({ documents }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ message: "Error", error }, { status: 500 });
-  }
-}
+//     return NextResponse.json({ documents }, { status: 200 });
+//   } catch (error) {
+//     return NextResponse.json({ message: "Error", error }, { status: 500 });
+//   }
+// }

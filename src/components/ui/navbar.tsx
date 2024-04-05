@@ -1,15 +1,13 @@
 "use client"
 
-import { ExitIcon, PersonIcon } from '@radix-ui/react-icons'
+import { ExitIcon } from '@radix-ui/react-icons'
 import { useUser, useAuth } from "@clerk/clerk-react";
-import { Button } from "@/components/ui/button";
-import { DragHandleHorizontalIcon } from "@radix-ui/react-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { EditorInfo } from './EditorInfo';
 import { memo } from 'react';
 import { EditorInfoProps } from '@/components/ui/EditorInfo';
+import { LeftSidebar } from '../pannels/LeftSidebar';
 
 export const Navbar = memo(({ characters, words }: EditorInfoProps) => {
   const { user } = useUser();
@@ -21,16 +19,7 @@ export const Navbar = memo(({ characters, words }: EditorInfoProps) => {
 
   return (
     <nav className="w-full h-14 flex items-center justify-between sticky top-0 z-40 bg-white px-4 border-b">
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button size={"sm"} variant={"ghost"} >
-            <DragHandleHorizontalIcon />
-          </Button>
-        </SheetTrigger>
-        <SheetContent className="w-72" side={"left"}>
-          Hehehe
-        </SheetContent>
-      </Sheet>
+      <LeftSidebar/>
       
       { user?.imageUrl ?
         <>
