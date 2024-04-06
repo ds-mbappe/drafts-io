@@ -9,9 +9,9 @@ const documentSchema = new Schema(
     name: String,
     private: Boolean,
     creator_id: String,
-    team_id: { type: String, default: "" },
+    team_id: { type: String, default: null },
     can_edit: { type: Boolean, default: true },
-    encrypted_password: String || null,
+    encrypted_password: { type: String, default: null },
     content: { type: String, default: "" },
   },
   {

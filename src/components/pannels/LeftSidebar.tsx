@@ -9,6 +9,8 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescri
 import { LeftSidebarDocumentItem } from './LeftSidebarDocumentItem';
 import { useUser } from '@clerk/clerk-react';
 import { redirect } from 'next/navigation';
+import { HomeIcon } from 'lucide-react';
+import Link from 'next/link';
 
 export const LeftSidebar = () => {
   const { user } = useUser();
@@ -48,7 +50,8 @@ export const LeftSidebar = () => {
           <DragHandleHorizontalIcon />
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-72 pt-12 flex flex-col gap-4" side={"left"}>
+
+      <SheetContent className="w-72 pt-12 flex flex-col gap-10" side={"left"}>
         <SheetHeader>
           <SheetTitle>Documents</SheetTitle>
           <SheetDescription>
@@ -58,38 +61,46 @@ export const LeftSidebar = () => {
 
         <CreateNewDocument onDocumentSaved={() => setSheetOpen(false)} />
 
-        <div className="flex flex-col gap-10">
-        <Accordion type="single" collapsible>
-          <AccordionItem value="personal_documents">
-            <AccordionTrigger>
-              <p className="text-base font-semibold ">
-                Personal documents
-              </p>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="flex flex-col gap-2">
-                {
-                  documents?.map((doc: any) =>
-                    <LeftSidebarDocumentItem key={doc?._id} document={doc} />
-                  )
-                }
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        <div className="flex flex-col gap-5">
+          <Button asChild variant={"ghost"} className='w-full gap-4 !justify-start cursor-pointer'>
+            <Link href="/app">
+              <HomeIcon />
+              Home
+            </Link>
+          </Button>
 
-        <Accordion type="single" collapsible>
-          <AccordionItem value="shared_documents">
-            <AccordionTrigger>
-              <p className="text-base font-semibold ">
-                Shared documents
-              </p>
-            </AccordionTrigger>
-            <AccordionContent>
-              Yes. It adheres to the WAI-ARIA design pattern.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="personal_documents">
+              <AccordionTrigger>
+                <p className="text-base font-semibold ">
+                  Personal documents
+                </p>
+              </AccordionTrigger>
+
+              <AccordionContent>
+                <div className="flex flex-col gap-2">
+                  {
+                    documents?.map((doc: any) =>
+                      <LeftSidebarDocumentItem key={doc?._id} document={doc} />
+                    )
+                  }
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+
+          <Accordion type="single" collapsible>
+            <AccordionItem value="shared_documents">
+              <AccordionTrigger>
+                <p className="text-base font-semibold ">
+                  Shared documents
+                </p>
+              </AccordionTrigger>
+              <AccordionContent>
+                Yes. It adheres to the WAI-ARIA design pattern.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
 
       </SheetContent>

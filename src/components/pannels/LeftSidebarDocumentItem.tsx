@@ -8,13 +8,14 @@ import { LockClosedIcon } from '@radix-ui/react-icons'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MoreVertical, Trash, Loader2 } from "lucide-react";
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export const LeftSidebarDocumentItem = ({ document }: any) => {
   const router = useRouter()
 
   return (
     <Button asChild variant={"ghost"}>
-      <div className="w-full flex justify-between cursor-pointer" onClick={() => router.push(`/app/${document?._id}`)}>
+      <Link className="w-full flex justify-between cursor-pointer" href={`/app/${document?._id}`}>
         <div className="w-full flex gap-4">
           {document.name}
           {document.private ?
@@ -28,6 +29,7 @@ export const LeftSidebarDocumentItem = ({ document }: any) => {
           >
             <MoreVertical className="h-4 w-4" />
           </DropdownMenuTrigger>
+          
           <DropdownMenuContent side="right" align="start">
             <DropdownMenuItem
               // onSelect={() => setShowEditSheet(true)}
@@ -44,7 +46,7 @@ export const LeftSidebarDocumentItem = ({ document }: any) => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      </Link>
   </Button>
   )
 }

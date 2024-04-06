@@ -18,16 +18,17 @@ export default function App(props: DocumentProps) {
   const [document, setDocument] = useState(null)
 
   const fetchDocument = async (documentId: String) => {
-    try {
-      const data = await fetch(`/api/document/${documentId}`, {
-        method: 'GET',
-        headers: { "content-type": "application/json" },
-      });
-      const realDoc = await data.json();
-      setDocument(realDoc.document)
-    } catch (error) {
-      console.log(error);
+    const data = await fetch(`/api/document/${documentId}`, {
+      method: 'GET',
+      headers: { "content-type": "application/json" },
+    });
+
+    if (!data.ok) {
+      notFound()
     }
+
+    const realDoc = await data.json();
+    setDocument(realDoc.document)
   }
 
   useEffect(() => {
