@@ -2,10 +2,9 @@ import Document from "../../../models/Document";
 import { NextResponse } from "next/server";
 
 export async function GET(req, { params }) {
-  const { id } = params
-
   try {
-    const documents = await Document.find({ creator_id: id })
+    const { userId } = params
+    const documents = await Document.find({ creator_id: userId })
 
     return NextResponse.json({ documents }, { status: 200 });
   } catch (error) {

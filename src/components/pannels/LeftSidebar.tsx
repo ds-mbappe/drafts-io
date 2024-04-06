@@ -1,15 +1,45 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CreateNewDocument } from '../pannels/CreateNewDocument';
 import { Button } from "@/components/ui/button";
 import { DragHandleHorizontalIcon } from "@radix-ui/react-icons";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { LeftSidebarDocumentItem } from './LeftSidebarDocumentItem';
+import { useUser } from '@clerk/clerk-react';
+import { redirect } from 'next/navigation';
 
-export const LeftSidebar = ({ documents }: any) => {
+export const LeftSidebar = () => {
+  const { user } = useUser();
+  
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [documents, setDocuments] = useState(null)
+
+  const fetchDocuments = async () => {
+    try {
+      const data = await fetch(`/api/documents/${user?.id}`, {
+        method: 'GET',
+        headers: { "content-type": "application/json" },
+      });
+      const realDocs = await data.json();
+      setDocuments(realDocs.documents)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    if (user?.id) {
+      if (!documents) {
+        fetchDocuments();
+      }
+    }
+  });
+
+  // if (!user) {
+  //   redirect("/");
+  // }
 
   return (
     <Sheet open={sheetOpen} onOpenChange={() => setSheetOpen(!sheetOpen)}>

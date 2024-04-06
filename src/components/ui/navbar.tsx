@@ -7,18 +7,21 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { EditorInfo } from './EditorInfo';
 import { memo } from 'react';
 import { LeftSidebar } from '../pannels/LeftSidebar';
+import { useRouter } from 'next/navigation';
 
 export const Navbar = memo(({ characters, words, documents }: any) => {
   const { user } = useUser();
   const { signOut } = useAuth();
+  const router = useRouter()
 
   const onUserLogout = () => {
     signOut();
+    router.replace("/")
   };
 
   return (
     <nav className="w-full h-14 flex items-center justify-between sticky top-0 z-40 bg-white px-4 border-b">
-      <LeftSidebar documents={documents} />
+      <LeftSidebar />
       
       { user?.imageUrl ?
         <>

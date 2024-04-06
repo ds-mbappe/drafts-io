@@ -26,9 +26,11 @@
     "@tiptap/extension-document": "^2.2.4",
     "@tiptap/extension-horizontal-rule": "^2.2.4",
     "@tiptap/extension-link": "^2.2.4",
+    "@tiptap/extension-placeholder": "^2.2.5",
     "@tiptap/pm": "^2.2.4",
     "@tiptap/react": "^2.2.4",
     "@tiptap/starter-kit": "^2.2.4",
+    "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -42,7 +44,8 @@
     "react-dom": "^18",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.2.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "use-debounce": "^10.0.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

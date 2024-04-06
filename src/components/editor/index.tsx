@@ -1,54 +1,75 @@
 "use client";
 
-import { EditorContent, PureEditorContent } from "@tiptap/react";
-import { useBlockEditor } from "./hooks/useBlockEditor";
-import React, { useRef, useEffect, useState } from 'react';
-import Navbar from "@/components/ui/navbar";
-import { Button } from "../ui/button";
-import { useUser } from '@clerk/clerk-react';
+import { EditorContent, useEditor } from "@tiptap/react";
+import React, { useState, useEffect, useTransition } from "react";
+import { ExtensionKit } from './extensions/extension-kit';
+import { useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
-export default function BlockEditor() {
-  const { user } = useUser();
-  const { editor, characterCount }: any = useBlockEditor();
-  const menuContainerRef = useRef(null);
-  const editorRef = useRef<PureEditorContent | null>(null);
+export default function BlockEditor({ documentId, documentContent }: any) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [saveStatus, setSaveStatus] = useState("Saved");
+  const [hydrated, setHydrated] = useState(false);
+  const [content, setContent] = useState(null);
 
-  const [documents, setDocuments] = useState(null)
+  const patchRequest = async (documentId: String, document: any) => {
+    const response = await fetch(`/api/document/${documentId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content: document,
+      }),
+    });
 
-  const fetchDocuments = async () => {
-    try {
-      const data = await fetch(`/api/documents/${user?.id}`, {
-        method: 'GET',
-        "content-type": "application/json",
-      });
-      let realDocs = await data.json()
-      setDocuments(realDocs.documents);
-    } catch (error) {
-      console.log(error);
+    if (!response.ok) {
+      setSaveStatus("Waiting to Save.");
+      throw new Error("Failed to update document");
     }
+
+    setSaveStatus("Saved");
+
+    startTransition(() => {
+      // Force a cache invalidation.
+      router.refresh();
+    });
   }
 
-  useEffect(() => {
-    if (user?.id) {
-      if (!documents) {
-        fetchDocuments();
-      }
+  const debouncedUpdates = useDebouncedCallback(async ({ editor }) => {
+    const editorData = editor.getHTML();
+    setContent(editorData);
+    await patchRequest(documentId, editorData);
+    // Simulate a delay in saving.
+    setTimeout(() => {
+      setSaveStatus("Saved");
+    }, 500);
+  }, 1000);
+
+  const editor = useEditor({
+    extensions: [...ExtensionKit()],
+    content: content,
+    onUpdate: (e) => {
+      setSaveStatus("Saving...");
+      debouncedUpdates(e);
     }
-  });
+  })
+
+  // Hydrate the editor with the content from the database.
+  useEffect(() => {
+    if (editor && documentContent && !hydrated) {
+      editor.commands.setContent(documentContent.content);
+      setHydrated(true);
+    }
+  }, [editor, documentContent, hydrated]);
 
   return (
-    <div className="w-full h-full flex flex-col">
-      <Navbar words={characterCount.words()} characters={characterCount.characters()} documents={documents} />
-      
-      <div
-        onClick={() => { editor?.chain().focus().run(); }}
-        className="relative flex w-full min-h-screen cursor-text flex-col items-center p-6"
-      >
-        <div className="relative w-full max-w-screen-lg">
-          <Button>Save</Button>
-          <EditorContent editor={editor} ref={editorRef} className="flex-1 overflow-y-auto" />
-        </div>
+    <div
+      onClick={() => { editor?.chain().focus().run(); }}
+      className="relative w-full flex min-h-screen cursor-text flex-col items-start"
+    >
+      <div className="relative w-full max-w-screen-lg">
+        <EditorContent editor={editor} />
       </div>
     </div>
-  );
+  )
 }

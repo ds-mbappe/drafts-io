@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { startTransition, useState } from 'react'
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,7 +17,7 @@ export const CreateNewDocument = ({ onDocumentSaved }: any) => {
 
   const [dialogOpen, setDialogOpen] = useState(false)
   const [docName, setDocName] = useState("")
-  const [docPassword, setDocPassword] = useState("")
+  const [docPassword, setDocPassword] = useState(null)
   const [docPrivate, setDocPrivate] = useState(false)
 
   const handleSaveData = async () => {
@@ -28,19 +28,26 @@ export const CreateNewDocument = ({ onDocumentSaved }: any) => {
       team_id: undefined,
       private: docPrivate,
       encrypted_password: docPassword,
+      content: "",
     }
 
     const res = await fetch("/api/documents", {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ formData }),
-      "content-type": "application/json"
     })
+    const data = await res.json()
 
     if (!res.ok) {
       throw new Error("Failed to create document.")
     }
 
-    router.refresh()
+    startTransition(() => {
+      // Force a cache invalidation and redirect to the new document.
+      router.refresh();
+      router.push(`/app/${data?.document?._id}`)
+    });
+
 
     toast(`Document created`, {
       description: `Successfully created document ${docName}.`,

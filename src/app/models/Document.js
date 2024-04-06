@@ -12,6 +12,7 @@ const documentSchema = new Schema(
     team_id: { type: String, default: "" },
     can_edit: { type: Boolean, default: true },
     encrypted_password: String || null,
+    content: { type: String, default: "" },
   },
   {
     timestamps: true,
@@ -22,7 +23,6 @@ documentSchema.pre('save', async function(next){
   if(this.isModified('encrypted_password')) {
     this.encrypted_password = await bcrypt.hash(this.encrypted_password, 12)
   }
-  
   next()
 })
 

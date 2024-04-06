@@ -6,9 +6,9 @@ export async function POST(req) {
     const body = await req.json();
     const documentData = body.formData
 
-    await Document.create(documentData)
+    const document = await Document.create(documentData)
 
-    return NextResponse.json({ message: "Document created" }, { status: 201 });
+    return NextResponse.json({ document }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ message: "Error", error }, { status: 500 });
   }
