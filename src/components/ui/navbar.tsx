@@ -6,10 +6,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { EditorInfo } from './EditorInfo';
 import { memo } from 'react';
-import { EditorInfoProps } from '@/components/ui/EditorInfo';
 import { LeftSidebar } from '../pannels/LeftSidebar';
 
-export const Navbar = memo(({ characters, words }: EditorInfoProps) => {
+export const Navbar = memo(({ characters, words, documents }: any) => {
   const { user } = useUser();
   const { signOut } = useAuth();
 
@@ -19,7 +18,7 @@ export const Navbar = memo(({ characters, words }: EditorInfoProps) => {
 
   return (
     <nav className="w-full h-14 flex items-center justify-between sticky top-0 z-40 bg-white px-4 border-b">
-      <LeftSidebar/>
+      <LeftSidebar documents={documents} />
       
       { user?.imageUrl ?
         <>

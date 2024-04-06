@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { DragHandleHorizontalIcon } from "@radix-ui/react-icons";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { LeftSidebarDocumentItem } from './LeftSidebarDocumentItem';
 
-export const LeftSidebar = () => {
+export const LeftSidebar = ({ documents }: any) => {
   const [sheetOpen, setSheetOpen] = useState(false)
 
   return (
@@ -36,7 +37,13 @@ export const LeftSidebar = () => {
               </p>
             </AccordionTrigger>
             <AccordionContent>
-              Yes. It adheres to the WAI-ARIA design pattern.
+              <div className="flex flex-col gap-2">
+                {
+                  documents?.map((doc: any) =>
+                    <LeftSidebarDocumentItem key={doc?._id} document={doc} />
+                  )
+                }
+              </div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

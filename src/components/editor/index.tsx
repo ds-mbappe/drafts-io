@@ -9,30 +9,36 @@ import { useUser } from '@clerk/clerk-react';
 
 export default function BlockEditor() {
   const { user } = useUser();
-  const { editor, characterCount } = useBlockEditor();
+  const { editor, characterCount }: any = useBlockEditor();
   const menuContainerRef = useRef(null);
   const editorRef = useRef<PureEditorContent | null>(null);
 
+  const [documents, setDocuments] = useState(null)
+
   const fetchDocuments = async () => {
     try {
-      const docs = await fetch(`/api/documents/${user?.id}`, {
+      const data = await fetch(`/api/documents/${user?.id}`, {
         method: 'GET',
         "content-type": "application/json",
       });
+      let realDocs = await data.json()
+      setDocuments(realDocs.documents);
     } catch (error) {
       console.log(error);
     }
   }
 
-  // useEffect(() => {
-  //   if (user?.id) {
-  //     fetchDocuments();
-  //   }
-  // });
+  useEffect(() => {
+    if (user?.id) {
+      if (!documents) {
+        fetchDocuments();
+      }
+    }
+  });
 
   return (
     <div className="w-full h-full flex flex-col">
-      <Navbar words={characterCount.words()} characters={characterCount.characters()} />
+      <Navbar words={characterCount.words()} characters={characterCount.characters()} documents={documents} />
       
       <div
         onClick={() => { editor?.chain().focus().run(); }}
