@@ -11,6 +11,7 @@ import { useUser } from '@clerk/clerk-react';
 import { redirect } from 'next/navigation';
 import { HomeIcon } from 'lucide-react';
 import Link from 'next/link';
+import { AddExistingDocument } from './AddExistingDocument';
 
 export const LeftSidebar = () => {
   const { user } = useUser();
@@ -51,7 +52,7 @@ export const LeftSidebar = () => {
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="w-72 pt-12 flex flex-col gap-10" side={"left"}>
+      <SheetContent className="w-72 pt-12 flex flex-col gap-10 overflow-y-auto" side={"left"}>
         <SheetHeader>
           <SheetTitle>Documents</SheetTitle>
           <SheetDescription>
@@ -59,7 +60,11 @@ export const LeftSidebar = () => {
           </SheetDescription>
         </SheetHeader>
 
+        <div className="flex flex-col gap-4">
         <CreateNewDocument onDocumentSaved={() => setSheetOpen(false)} />
+
+        <AddExistingDocument onDocumentAdded={() => setSheetOpen(false)} />
+        </div>
 
         <div className="flex flex-col gap-5">
           <Button asChild variant={"ghost"} className='w-full gap-4 !justify-start cursor-pointer'>
@@ -77,7 +82,11 @@ export const LeftSidebar = () => {
                 </p>
               </AccordionTrigger>
 
-              <AccordionContent>
+              <AccordionContent className="flex flex-col gap-3">
+                <p className="text-sm font-normal text-[#64748B]">
+                  Your personnal documents are documents you have created yourself.
+                </p>
+
                 <div className="flex flex-col gap-2">
                   {
                     documents?.map((doc: any) =>
@@ -96,8 +105,19 @@ export const LeftSidebar = () => {
                   Shared documents
                 </p>
               </AccordionTrigger>
-              <AccordionContent>
-                Yes. It adheres to the WAI-ARIA design pattern.
+
+              <AccordionContent className="flex flex-col gap-3">
+                <p className="text-sm font-normal text-[#64748B]">
+                  Your Shared documents are documents you have added via their document ids.
+                </p>
+
+                {/* <div className="flex flex-col gap-2">
+                  {
+                    documents?.map((doc: any) =>
+                      <LeftSidebarDocumentItem key={doc?._id} document={doc} />
+                    )
+                  }
+                </div> */}
               </AccordionContent>
             </AccordionItem>
           </Accordion>

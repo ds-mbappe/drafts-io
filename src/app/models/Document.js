@@ -13,6 +13,7 @@ const documentSchema = new Schema(
     can_edit: { type: Boolean, default: true },
     encrypted_password: { type: String, default: null },
     content: { type: String, default: "" },
+    holders_id: { type: Array, default: null },
   },
   {
     timestamps: true,

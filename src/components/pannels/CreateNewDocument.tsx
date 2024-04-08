@@ -4,7 +4,7 @@ import React, { startTransition, useState } from 'react'
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PlusIcon } from "@radix-ui/react-icons";
+import { PlusIcon } from 'lucide-react';
 import { Switch } from "@/components/ui/switch"
 import { useRouter } from "next/navigation";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
