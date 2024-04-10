@@ -24,7 +24,7 @@ export default function App() {
       >
         <div className="relative w-full max-w-screen-lg">
           <h1 className="mb-4 text-6xl font-bold">
-            Welcome to our awesome Editor!
+            Welcome to the GOAT awesome Editor!
           </h1>
 
           <p className="mb-2">
