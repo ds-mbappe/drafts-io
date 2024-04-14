@@ -1,19 +1,23 @@
-import React, { useState, useEffect, useCallback, ReactNode, useRef, useLayoutEffect } from "react";
-import { Editor, Range, Extension } from "@tiptap/core";
-import Suggestion from "@tiptap/suggestion";
-import { ReactRenderer } from "@tiptap/react";
-import tippy from "tippy.js";
-import { Bold, Heading1, Heading2, Heading3, Italic, List, ListOrdered, MessageSquarePlus, Text } from "lucide-react";
+import tippy from 'tippy.js';
+import Suggestion from '@tiptap/suggestion';
+import { ReactRenderer } from '@tiptap/react';
+import getSuggestionItems from "./SuggestionItems";
+import { Editor, Extension } from '@tiptap/core';
+import {
+  Bold,
+  Heading1,
+  Heading2,
+  Heading3,
+  Italic,
+  List,
+  ListOrdered
+} from "lucide-react";
+import React, { useState, useEffect, useCallback, ReactNode, useRef } from "react";
 
 interface CommandItemProps {
   title: string;
   description: string;
   icon: ReactNode;
-}
-
-interface Command {
-  editor: Editor;
-  range: Range;
 }
 
 const Command = Extension.create({
@@ -46,87 +50,6 @@ const Command = Extension.create({
   },
 });
 
-const getSuggestionItems = ({ query }: { query: string }) => {
-  return [
-    {
-      title: "Heading 1",
-      description: "H1 section heading.",
-      icon: <Heading1 size={18} />,
-      command: ({ editor, range }: Command) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .setNode("heading", { level: 1 })
-          .run();
-      },
-    },
-    {
-      title: "Heading 2",
-      description: "H2 section heading.",
-      icon: <Heading2 size={18} />,
-      command: ({ editor, range }: Command) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .setNode("heading", { level: 2 })
-          .run();
-      },
-    },
-    {
-      title: "Heading 3",
-      description: "H3 section heading.",
-      icon: <Heading3 size={18} />,
-      command: ({ editor, range }: Command) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .setNode("heading", { level: 3 })
-          .run();
-      },
-    },
-    {
-      title: "Bold",
-      description: "Make text bold.",
-      icon: <Bold size={18} />,
-      command: ({ editor, range }: Command) => {
-        editor.chain().focus().deleteRange(range).setMark("bold").run();
-      },
-    },
-    {
-      title: "Italic",
-      description: "Make text italic.",
-      icon: <Italic size={18} />,
-      command: ({ editor, range }: Command) => {
-        editor.chain().focus().deleteRange(range).setMark("italic").run();
-      },
-    },
-    {
-      title: "Bullet List",
-      description: "Create a simple bullet list.",
-      icon: <List size={18} />,
-      command: ({ editor, range }: Command) => {
-        editor.chain().focus().deleteRange(range).toggleBulletList().run();
-      },
-    },
-    {
-      title: "Numbered List",
-      description: "Create a list with numbering.",
-      icon: <ListOrdered size={18} />,
-      command: ({ editor, range }: Command) => {
-        editor.chain().focus().deleteRange(range).toggleOrderedList().run();
-      },
-    },
-  ].filter((item) => {
-    if (typeof query === "string" && query.length > 0) {
-      return item.title.toLowerCase().includes(query.toLowerCase());
-    }
-    return true;
-  });
-};
-
 export const updateScrollView = (container: HTMLElement, item: HTMLElement) => {
   const containerHeight = container.offsetHeight;
   const itemHeight = item ? item.offsetHeight : 0;
@@ -141,13 +64,7 @@ export const updateScrollView = (container: HTMLElement, item: HTMLElement) => {
   }
 };
 
-const CommandList = ({
-  items,
-  command,
-}: {
-  items: CommandItemProps[];
-  command: any;
-}) => {
+const CommandList = ({ items, command }: { items: CommandItemProps[], command: any }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const commandListContainer = useRef<HTMLDivElement>(null);
   const selectedButtonRef = useRef<HTMLButtonElement>(null);
@@ -219,7 +136,7 @@ const CommandList = ({
         return (
           <button
             ref={isSelected ? selectedButtonRef : null}
-            className={`flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900 hover:bg-gray-100 ${
+            className={`flex w-full items-center space-x-2 rounded-md p-1 text-left text-sm text-gray-900 hover:bg-gray-100 ${
               isSelected ? "bg-gray-100 text-gray-900" : ""
             }`}
             key={index}
@@ -228,7 +145,7 @@ const CommandList = ({
             <div className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 bg-white">
               {item.icon}
             </div>
-            <div>
+            <div className="w-[200px]">
               <p className="font-medium">{item.title}</p>
               <p className="text-xs text-gray-500">{item.description}</p>
             </div>
@@ -293,4 +210,4 @@ const SlashCommand = Command.configure({
   },
 });
 
-export default SlashCommand;
+export default SlashCommand

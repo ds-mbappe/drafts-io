@@ -1,12 +1,15 @@
+import { lowlight } from 'lowlight';
 import StarterKit from "@tiptap/starter-kit";
-import Heading from '@tiptap/extension-heading';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from '@tiptap/extension-character-count';
+import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 
 import Link from "./Link";
-import Document from './document';
-import SlashCommand from "./slashCommand";
+import Document from "./document";
 import HorizontalRule from "./HorizontalRule";
+import SlashCommand from "./SlashCommand/SlashCommand";
 
 export const ExtensionKit = () => [
   Document,
@@ -32,25 +35,16 @@ export const ExtensionKit = () => [
         class: "border-l-4 border-gray-300 pl-4",
       },
     },
-    codeBlock: {
-      HTMLAttributes: {
-        class: "rounded-md bg-gray-200 p-5 font-mono font-medium text-gray-800",
-      },
-    },
-    code: {
-      HTMLAttributes: {
-        class:
-          "rounded-md bg-gray-200 px-1.5 py-1 font-mono font-medium text-black",
-      },
-    },
+    codeBlock: false,
     dropcursor: {
       color: "#DBEAFE",
       width: 4,
     },
     horizontalRule: false,
   }),
-  Heading.configure({
-    levels: [1, 2, 3, 4, 5, 6]
+  TaskList,
+  TaskItem.configure({
+    nested: true,
   }),
   CharacterCount,
   HorizontalRule,
@@ -67,7 +61,11 @@ export const ExtensionKit = () => [
     },
     includeChildren: true,
   }),
-  // SlashCommand,
+  SlashCommand,
+  CodeBlockLowlight.configure({
+    lowlight,
+    defaultLanguage: null,
+  }),
 ]
 
 export default ExtensionKit

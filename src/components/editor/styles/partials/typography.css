@@ -1,11 +1,11 @@
 .ProseMirror {
   p {
-    @apply leading-relaxed my-3 first:mt-0 last:mb-0;
+    @apply leading-relaxed my-1;
   }
 
-  & > p {
+  /* & > p {
     @apply my-6 first:mt-0 last:mb-0;
-  }
+  } */
 
   h1 {
     @apply text-3xl;
@@ -37,19 +37,7 @@
   h4,
   h5,
   h6 {
-    @apply font-bold first:mt-0 last:mb-0;
-  }
-
-  h1,
-  h2,
-  h3 {
-    @apply mt-12;
-  }
-
-  h4,
-  h5,
-  h6 {
-    @apply mt-8;
+    @apply font-bold my-1;
   }
 
   a.link {
@@ -65,7 +53,7 @@
   }
 
   [data-type='horizontalRule'] {
-    @apply my-8 py-4 transition-all duration-100 ease-in-out cursor-pointer;
+    @apply my-1 py-4 transition-all duration-100 ease-in-out cursor-pointer;
 
     &.ProseMirror-selectednode {
       @apply bg-black/5 dark:bg-white/10;
