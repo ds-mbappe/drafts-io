@@ -2,6 +2,7 @@ import { lowlight } from 'lowlight';
 import StarterKit from "@tiptap/starter-kit";
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
+import Typography from '@tiptap/extension-typography';
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from '@tiptap/extension-character-count';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
@@ -42,6 +43,7 @@ export const ExtensionKit = () => [
     },
     horizontalRule: false,
   }),
+  Typography,
   TaskList,
   TaskItem.configure({
     nested: true,
