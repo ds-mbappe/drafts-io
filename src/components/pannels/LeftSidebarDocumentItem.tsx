@@ -16,11 +16,11 @@ export const LeftSidebarDocumentItem = ({ document }: any) => {
   return (
     <Button asChild variant={"ghost"}>
       <Link className="w-full flex justify-between cursor-pointer" href={`/app/${document?._id}`}>
-        <div className="w-full flex gap-4">
+        <div className="w-full max-w-[175px] flex gap-4">
           {document.name}
-          {document.private ?
+          {/* {document.private ?
             <LockClosedIcon /> : <></>
-          }
+          } */}
         </div>
         
         <DropdownMenu>

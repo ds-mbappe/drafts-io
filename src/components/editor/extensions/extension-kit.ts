@@ -1,9 +1,12 @@
 import StarterKit from "@tiptap/starter-kit";
-import CharacterCount from '@tiptap/extension-character-count';
-import Document from './document';
-import HorizontalRule from "./HorizontalRule";
-import Link from "./Link";
+import Heading from '@tiptap/extension-heading';
 import Placeholder from "@tiptap/extension-placeholder";
+import CharacterCount from '@tiptap/extension-character-count';
+
+import Link from "./Link";
+import Document from './document';
+import SlashCommand from "./slashCommand";
+import HorizontalRule from "./HorizontalRule";
 
 export const ExtensionKit = () => [
   Document,
@@ -40,11 +43,14 @@ export const ExtensionKit = () => [
           "rounded-md bg-gray-200 px-1.5 py-1 font-mono font-medium text-black",
       },
     },
-    horizontalRule: false,
     dropcursor: {
       color: "#DBEAFE",
       width: 4,
     },
+    horizontalRule: false,
+  }),
+  Heading.configure({
+    levels: [1, 2, 3, 4, 5, 6]
   }),
   CharacterCount,
   HorizontalRule,
@@ -61,6 +67,7 @@ export const ExtensionKit = () => [
     },
     includeChildren: true,
   }),
+  // SlashCommand,
 ]
 
 export default ExtensionKit

@@ -17,7 +17,8 @@ export const LeftSidebar = () => {
   const { user } = useUser();
   
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [documents, setDocuments] = useState(null)
+  const [documents, setDocuments] = useState([])
+  const [sharedDocuments, setSharedDocuments] = useState([])
 
   const fetchDocuments = async () => {
     try {
@@ -32,10 +33,32 @@ export const LeftSidebar = () => {
     }
   }
 
+  const fetchSharedDocuments = async () => {
+    try {
+      const data = await fetch(`/api/documents/${user?.id}/shared`, {
+        method: 'GET',
+        headers: { "content-type": "application/json" },
+      });
+      const realDocs = await data.json();
+      setSharedDocuments(realDocs.documents)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const updateDocumentsList = (data: any) => {
+    let newDocs: any = [...documents, data?.updatedDocument]
+    setDocuments(newDocs)
+    // setSheetOpen(false)
+  }
+
   useEffect(() => {
     if (user?.id) {
-      if (!documents) {
+      if (!documents?.length) {
         fetchDocuments();
+      }
+      if (!sharedDocuments?.length) {
+        fetchSharedDocuments()
       }
     }
   });
@@ -63,7 +86,7 @@ export const LeftSidebar = () => {
         <div className="flex flex-col gap-4">
         <CreateNewDocument onDocumentSaved={() => setSheetOpen(false)} />
 
-        <AddExistingDocument onDocumentAdded={() => setSheetOpen(false)} />
+        <AddExistingDocument onDocumentAdded={updateDocumentsList} />
         </div>
 
         <div className="flex flex-col gap-5">
@@ -111,13 +134,13 @@ export const LeftSidebar = () => {
                   Your Shared documents are documents you have added via their document ids.
                 </p>
 
-                {/* <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2">
                   {
-                    documents?.map((doc: any) =>
+                    sharedDocuments?.map((doc: any) =>
                       <LeftSidebarDocumentItem key={doc?._id} document={doc} />
                     )
                   }
-                </div> */}
+                </div>
               </AccordionContent>
             </AccordionItem>
           </Accordion>

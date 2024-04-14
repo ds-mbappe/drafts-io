@@ -8,7 +8,7 @@ export async function GET(req, { params }) {
     const document = await Document.findById(documentId)
 
     if (document) {
-      return NextResponse.json({ private: document?.private, password: document?.encrypted_password }, { status: 200 });
+      return NextResponse.json({ private: document?.private, password: document?.encrypted_password, holders_id: document?.holders_id }, { status: 200 });
     } else {
       return NextResponse.json({ message: "Error", error }, { status: 500 });
     }

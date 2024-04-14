@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch"
 import { useRouter } from "next/navigation";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { useUser } from '@clerk/clerk-react';
-import { toast } from "sonner"
+import { toast } from "sonner";
 
 export const AddExistingDocument = ({ onDocumentAdded }: any) => {
   const router = useRouter();
@@ -22,6 +22,7 @@ export const AddExistingDocument = ({ onDocumentAdded }: any) => {
   const [showPasswordField, setShowPasswordField] = useState(false)
   const [encrytedPassword, setEncryptedPassword] = useState("")
   const [docPassword, setDocPassword] = useState("")
+  const [holdersId, setHoldersId] = useState([])
 
   const onAddDocument = async () => {
     const res = await fetch(`/api/document/${docId}/status`, {
@@ -30,26 +31,68 @@ export const AddExistingDocument = ({ onDocumentAdded }: any) => {
     })
     const data = await res.json()
 
-    // 6612c2a28bc74e89b7668011
-
+    // 66199a8c89780e4057b166da
     if (!res.ok) {
       toast(`Error`, {
         description: `Failed to get document status.`,
         duration: 5000,
         important: true,
       })
+    } else {
+      if (data?.holders_id?.includes(user?.id)) {
+        toast(`Error`, {
+          description: `The document is already in you Shared documents !`,
+          duration: 5000,
+          important: true,
+        })
+      } else {
+        if (data?.private) {
+          setShowPasswordField(true)
+        }
+        setEncryptedPassword(data?.password)
+        setHoldersId(data?.holders_id)
+      }
+      // setDialogOpen(false)
     }
-    if (data?.private) {
-      setShowPasswordField(true)
-    }
-    setEncryptedPassword(data?.password)
   }
 
   const onUnlockDocument = async () => {
-    const bcrypt = require("bcrypt")
-    const isPasswordCorrect = await bcrypt.compare(docPassword, encrytedPassword)
-    console.log(isPasswordCorrect)
-    // setDialogOpen(false)
+    const bcryptjs = require("bcryptjs")
+    const isPasswordCorrect = await bcryptjs.compare(docPassword, encrytedPassword)
+
+    if (isPasswordCorrect) {
+      let newHoldersId = [...holdersId, user?.id]
+      const res = await fetch(`/api/document/${docId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          holders_id: newHoldersId
+        }),
+      })
+      const data = await res.json()
+
+      if (!res.ok) {
+        toast(`Error`, {
+          description: `The document is already in you Shared documents !`,
+          duration: 5000,
+          important: true,
+        })
+      } else {
+        toast(`Info`, {
+          description: `The document was successfully added to your Shared documents !`,
+          duration: 5000,
+          important: true,
+        })
+        onDocumentAdded(data)
+        setDialogOpen(false)
+      }
+    } else {
+      toast(`Error`, {
+        description: `The password you entered is incorrect !`,
+        duration: 5000,
+        important: true,
+      })
+    }
   }
 
   const changeDialogOpenState = () => {
