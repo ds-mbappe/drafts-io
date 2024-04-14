@@ -10,7 +10,8 @@ import {
   ListOrdered,
   ListTodo,
   Minus,
-  Quote
+  Quote,
+  Sparkles
 } from "lucide-react";
 
 interface Command {
@@ -20,6 +21,19 @@ interface Command {
 
 const getSuggestionItems = ({ query }: { query: string }) => {
   return [
+    {
+      title: "AI prompt",
+      description: "Ask something to the AI.",
+      icon: <Sparkles size={18} />,
+      command: ({ editor, range }: Command) => {
+        editor
+          .chain()
+          .focus()
+          .deleteRange(range)
+          .setNode("heading", { level: 1 })
+          .run();
+      },
+    },
     {
       title: "Heading 1",
       description: "H1 section heading.",
