@@ -11,6 +11,7 @@
   "dependencies": {
     "@clerk/clerk-react": "^4.30.8",
     "@clerk/nextjs": "^4.29.10",
+    "@hocuspocus/provider": "^2.11.3",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -24,6 +25,8 @@
     "@tiptap/extension-character-count": "^2.2.4",
     "@tiptap/extension-code-block": "^2.2.4",
     "@tiptap/extension-code-block-lowlight": "^2.3.0",
+    "@tiptap/extension-collaboration": "^2.3.0",
+    "@tiptap/extension-collaboration-cursor": "^2.3.0",
     "@tiptap/extension-document": "^2.2.4",
     "@tiptap/extension-heading": "^2.3.0",
     "@tiptap/extension-horizontal-rule": "^2.2.4",
@@ -55,7 +58,11 @@
     "tailwind-merge": "^2.2.2",
     "tailwindcss": "^3.4.3",
     "tailwindcss-animate": "^1.0.7",
-    "use-debounce": "^10.0.0"
+    "use-debounce": "^10.0.0",
+    "y-indexeddb": "^9.0.12",
+    "y-webrtc": "^10.3.0",
+    "y-websocket": "^2.0.2",
+    "yjs": "^13.6.14"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

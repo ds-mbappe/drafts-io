@@ -129,7 +129,7 @@ const CommandList = ({ items, command }: { items: CommandItemProps[], command: a
   return items.length > 0 ? (
     <div
       ref={commandListContainer}
-      className="z-50 h-auto max-h-[330px] w-72 overflow-y-auto scroll-smooth flex flex-col gap-1 rounded-md border border-gray-200 bg-white px-1 py-2 shadow-md transition-all"
+      className="z-50 h-auto max-h-[330px] w-72 overflow-y-auto scroll-smooth flex flex-col gap-1 rounded-md border border-gray-200 bg-white px-1 py-1 shadow-md transition-all"
     >
       {items.map((item: CommandItemProps, index: number) => {
         const isSelected = index === selectedIndex;

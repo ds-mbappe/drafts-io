@@ -17,9 +17,12 @@ import UnderlineMark from './MarkUnderline';
 import HorizontalRule from "./HorizontalRule";
 import SlashCommand from "./SlashCommand/SlashCommand";
 
+
+
 export const ExtensionKit = () => [
   Document,
   StarterKit.configure({
+    history: false,
     document: false,
     bulletList: {
       HTMLAttributes: {
