@@ -62,7 +62,7 @@ export const ExtensionKit = () => [
   ItalicMark,
   BoldMark,
   UnderlineMark,
-  ParagraphMark,
+  // ParagraphMark,
   HeadingMark,
   Placeholder.configure({
     placeholder: ({ node }: any) => {
