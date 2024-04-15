@@ -9,6 +9,11 @@ import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 
 import Link from "./Link";
 import Document from "./document";
+import BoldMark from './MarkBold';
+import ItalicMark from './MarkItalic';
+import HeadingMark from './MarkHeading';
+import ParagraphMark from './MarkParagraph';
+import UnderlineMark from './MarkUnderline';
 import HorizontalRule from "./HorizontalRule";
 import SlashCommand from "./SlashCommand/SlashCommand";
 
@@ -54,6 +59,11 @@ export const ExtensionKit = () => [
     openOnClick: false,
     linkOnPaste: true,
   }),
+  ItalicMark,
+  BoldMark,
+  UnderlineMark,
+  ParagraphMark,
+  HeadingMark,
   Placeholder.configure({
     placeholder: ({ node }: any) => {
       if (node.type.name === "heading") {
