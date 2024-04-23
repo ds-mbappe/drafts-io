@@ -16,6 +16,7 @@ import ParagraphMark from './MarkParagraph';
 import UnderlineMark from './MarkUnderline';
 import HorizontalRule from "./HorizontalRule";
 import SlashCommand from "./SlashCommand/SlashCommand";
+import AiWriter from './AiWriter/AiWriter';
 
 
 
@@ -62,6 +63,7 @@ export const ExtensionKit = () => [
     openOnClick: false,
     linkOnPaste: true,
   }),
+  AiWriter,
   ItalicMark,
   BoldMark,
   UnderlineMark,

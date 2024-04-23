@@ -30,7 +30,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
           .chain()
           .focus()
           .deleteRange(range)
-          .setNode("heading", { level: 1 })
+          .setAiWriter()
+          .focus()
           .run();
       },
     },

@@ -5,7 +5,6 @@ import { auth } from "@clerk/nextjs";
 import Navbar from "@/components/ui/navbar";
 import Editor from "@/components/editor"
 import { notFound, redirect } from "next/navigation";
-import { useBlockEditor } from "../../../components/editor/hooks/useBlockEditor";
 
 type DocumentProps = {
   params: {
@@ -14,7 +13,6 @@ type DocumentProps = {
 };
 
 export default function App(props: DocumentProps) {
-  // const { editor, characterCount }: any = useBlockEditor();
   const [document, setDocument] = useState(null)
 
   const fetchDocument = async (documentId: String) => {
