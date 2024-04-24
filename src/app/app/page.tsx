@@ -13,9 +13,12 @@ import { IndexeddbPersistence } from 'y-indexeddb';
 import { WebsocketProvider } from 'y-websocket'
 import OpenAI from "openai"
 import { Button } from '@/components/ui/button';
+import { useBlockEditor } from '@/components/editor/hooks/useBlockEditor';
+import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
 
 export default function App() {
   const { user } = useUser();
+  const { editor, characterCount } = useBlockEditor();
 
   const [yDoc, setYDoc] = useState<Y.Doc>()
   const [collabProvider, setCollabProvider] = useState<TiptapCollabProvider>()
@@ -64,7 +67,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    defaultEditor?.commands.updateUser({
+    editor?.commands.updateUser({
       name: user?.fullName,
       color: userColor,
       avatar: user?.imageUrl
@@ -78,7 +81,7 @@ export default function App() {
     //   document: doc,
   
     //   onSynced() {
-    //     if (!doc.getMap('config').get('initialContentLoaded') && defaultEditor) {
+    //     if (!doc.getMap('config').get('initialContentLoaded') && editor) {
     //       doc.getMap('config').set('initialContentLoaded', true);
     //     }
     //   }
@@ -115,24 +118,29 @@ export default function App() {
   //   });
   // }, [])
 
-  const defaultEditor = useEditor({
-    extensions: [
-      ...ExtensionKit(),
-      // Collaboration.configure({
-      //   document: doc,
-      // }),
-      // CollaborationCursor.configure({
-      //   provider
-      // }),
-    ],
-  });
+  // const editor = useEditor({
+  //   autofocus: 'end',
+  //   extensions: [
+  //     ...ExtensionKit(),
+  //     // Collaboration.configure({
+  //     //   document: doc,
+  //     // }),
+  //     // CollaborationCursor.configure({
+  //     //   provider
+  //     // }),
+  //   ],
+  // });
+
+  if (!editor) {
+    return null
+  }
 
   return (
     <div className="w-full h-full flex flex-col">
-      <Navbar words={defaultEditor?.storage.characterCount.words()} characters={defaultEditor?.storage.characterCount.characters()} />
+      <Navbar words={characterCount.words()} characters={characterCount.characters()} />
 
       <div
-        // onClick={() => { defaultEditor?.chain().focus().run(); }}
+        // onClick={() => { editor?.chain().focus().run(); }}
         className="relative w-full flex min-h-screen cursor-text flex-col items-start p-6"
       >
         <div className="relative w-full max-w-screen-lg">
@@ -158,7 +166,8 @@ export default function App() {
             Generate
           </Button> */}
 
-          <EditorContent editor={defaultEditor} />
+          <ContentItemMenu editor={editor} />
+          <EditorContent editor={editor} />
         </div>
       </div>
     </div>

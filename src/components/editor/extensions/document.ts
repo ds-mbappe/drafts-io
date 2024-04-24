@@ -1,9 +1,9 @@
-import { Document as TiptapDocument } from '@tiptap/extension-document'
+import { Node } from '@tiptap/core';
 
-export const Document = TiptapDocument.extend({
+export const Document = Node.create({
   name: "doc",
   topNode: true,
-  content: '(block)+',
-})
+  content: "(rootblock)+",
+});
 
 export default Document

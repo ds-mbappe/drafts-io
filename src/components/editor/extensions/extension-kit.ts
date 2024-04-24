@@ -8,7 +8,6 @@ import CharacterCount from '@tiptap/extension-character-count';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 
 import Link from "./Link";
-import Document from "./document";
 import BoldMark from './MarkBold';
 import ItalicMark from './MarkItalic';
 import HeadingMark from './MarkHeading';
@@ -18,13 +17,9 @@ import HorizontalRule from "./HorizontalRule";
 import SlashCommand from "./SlashCommand/SlashCommand";
 import AiWriter from './AiWriter/AiWriter';
 
-
-
 export const ExtensionKit = () => [
-  Document,
   StarterKit.configure({
     history: false,
-    document: false,
     bulletList: {
       HTMLAttributes: {
         class: "list-disc list-outside leading-3",
@@ -76,6 +71,8 @@ export const ExtensionKit = () => [
       }
       return "Press '/' for commands, or enter some text.";
     },
+    showOnlyCurrent: true,
+    considerAnyAsEmpty: true,
     includeChildren: true,
   }),
   SlashCommand,

@@ -3,15 +3,6 @@ import Suggestion from '@tiptap/suggestion';
 import { ReactRenderer } from '@tiptap/react';
 import getSuggestionItems from "./SuggestionItems";
 import { Editor, Extension } from '@tiptap/core';
-import {
-  Bold,
-  Heading1,
-  Heading2,
-  Heading3,
-  Italic,
-  List,
-  ListOrdered
-} from "lucide-react";
 import React, { useState, useEffect, useCallback, ReactNode, useRef } from "react";
 
 interface CommandItemProps {
@@ -116,18 +107,19 @@ const CommandList = ({ items, command }: { items: CommandItemProps[], command: a
     if (item && container) {
       container.scrollTop = item.offsetTop - container.offsetTop;
 
-      // item.focus();
+      item.focus();
     }
 
-    // if (selectedIndex === 0 && items.length > 0) {
-    //   setTimeout(() => {
-    //     selectedButtonRef.current?.focus();
-    //   }, 10);
-    // }
+    if (selectedIndex === 0 && items.length > 0) {
+      setTimeout(() => {
+        selectedButtonRef.current?.focus();
+      }, 10);
+    }
   }, [selectedIndex, items]);
 
   return items.length > 0 ? (
     <div
+      id="slashCommandMenu"
       ref={commandListContainer}
       className="z-50 h-auto max-h-[330px] w-72 overflow-y-auto scroll-smooth flex flex-col gap-1 rounded-md border border-gray-200 bg-white px-1 py-1 shadow-md transition-all"
     >

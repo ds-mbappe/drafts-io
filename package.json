@@ -22,6 +22,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
     "@tailwindcss/typography": "^0.5.12",
+    "@tiptap-pro/extension-drag-handle-react": "^2.8.1",
     "@tiptap/extension-character-count": "^2.2.4",
     "@tiptap/extension-code-block": "^2.2.4",
     "@tiptap/extension-code-block-lowlight": "^2.3.0",

@@ -64,21 +64,20 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
           },
         ],
         model: "gpt-3.5-turbo",
-        stream: true,
+        // stream: true,
       })
-      // setPreviewText(completion.choices[0]?.message?.content)
+      setPreviewText(completion.choices[0]?.message?.content)
       setIsFetching(false)
-      // insert(completion.choices[0]?.message?.content)
-      // console.log(editor)
-      let content = ""
-      const aiWriterNodePos = getPos()
-      const position = getPos() + 1
-      for await (const chunk of completion) {
-        content += chunk.choices[0]?.delta?.content || ""
-        // editor.commands.deleteNode('paragraph')
-        editor.commands.insertContentAt(position, content)
-        console.log(content)
-      }
+
+      console.log(completion.choices[0]?.message?.content)
+      // let content = ""
+      // const position = getPos()
+      // for await (const chunk of completion) {
+      //   content += chunk.choices[0]?.delta?.content || ""
+      //   editor.commands.deleteRange({ from: getPos(), to: getPos() + node.nodeSize })
+      //   editor.commands.insertContentAt(getPos(), content)
+      //   console.log(content)
+      // }
     } catch (error) {
       setIsFetching(false)
       console.log(error)
