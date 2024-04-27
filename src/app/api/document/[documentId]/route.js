@@ -30,3 +30,14 @@ export async function PUT(req, { params }) {
     return NextResponse.json({ message: "Error", error }, { status: 500 });
   }
 }
+
+export async function DELETE(req, { params }) {
+  try {
+    const { documentId } = params;
+    const updatedDocument = await Document.findOneAndDelete(documentId)
+
+    return NextResponse.json({ updatedDocument }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ message: "Error", error }, { status: 500 });
+  }
+}

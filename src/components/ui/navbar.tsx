@@ -9,7 +9,7 @@ import { memo } from 'react';
 import { LeftSidebar } from '../pannels/LeftSidebar';
 import { useRouter } from 'next/navigation';
 
-export const Navbar = memo(({ characters, words, documents }: any) => {
+export const Navbar = memo(({ characters, words, status }: any) => {
   const { user } = useUser();
   const { signOut } = useAuth();
   const router = useRouter()
@@ -25,10 +25,17 @@ export const Navbar = memo(({ characters, words, documents }: any) => {
       
       { user?.imageUrl ?
         <>
-          <div className="flex items-center justify-center">
-            <EditorInfo words={words} characters={characters} />
+          <div className="flex items-center justify-center gap-5">
+            <div className="flex gap-2 items-center justify-center">
+              <div className={`w-2 h-2 rounded-full flex gap-1 items-center justify-center ${status === 'Saved' ? 'bg-green-500' : 'bg-yellow-500'}`} />
+              <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                { status }
+              </span>
+            </div>
 
-            <div className="h-full border mx-4" />
+            <div className="h-8 border-r" />
+
+            <EditorInfo words={words} characters={characters} />
 
             <DropdownMenu>
               <DropdownMenuTrigger>

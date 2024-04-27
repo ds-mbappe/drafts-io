@@ -15,12 +15,14 @@ import OpenAI from "openai"
 import { Button } from '@/components/ui/button';
 import { useBlockEditor } from '@/components/editor/hooks/useBlockEditor';
 import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
+import { useDebouncedCallback } from 'use-debounce';
 
 export default function App() {
   const { user } = useUser();
   const { editor, characterCount } = useBlockEditor();
 
   const [yDoc, setYDoc] = useState<Y.Doc>()
+  const [saveStatus, setSaveStatus] = useState("Saved")
   const [collabProvider, setCollabProvider] = useState<TiptapCollabProvider>()
 
   const randomColor = () => {
@@ -65,6 +67,13 @@ export default function App() {
     })
     // console.log(completion.choices[0]?.message?.content)
   }
+
+  const debouncedUpdates = useDebouncedCallback(() => {
+    // Simulate a delay in saving.
+    setTimeout(() => {
+      setSaveStatus("Saved");
+    }, 500);
+  }, 1000);
 
   useEffect(() => {
     editor?.commands.updateUser({
@@ -135,9 +144,14 @@ export default function App() {
     return null
   }
 
+  editor.on('update', () => {
+    setSaveStatus("Saving...");
+    debouncedUpdates()
+  })
+
   return (
     <div className="w-full h-full flex flex-col">
-      <Navbar words={characterCount.words()} characters={characterCount.characters()} />
+      <Navbar words={characterCount.words()} characters={characterCount.characters()} status={saveStatus} />
 
       <div
         // onClick={() => { editor?.chain().focus().run(); }}

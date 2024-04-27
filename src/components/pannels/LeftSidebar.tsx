@@ -8,14 +8,16 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { LeftSidebarDocumentItem } from './LeftSidebarDocumentItem';
 import { useUser } from '@clerk/clerk-react';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { HomeIcon } from 'lucide-react';
 import Link from 'next/link';
 import { AddExistingDocument } from './AddExistingDocument';
+import { toast } from "sonner";
 
 export const LeftSidebar = () => {
   const { user } = useUser();
-  
+  const router = useRouter();
+
   const [sheetOpen, setSheetOpen] = useState(false)
   const [documents, setDocuments] = useState([])
   const [sharedDocuments, setSharedDocuments] = useState([])
@@ -46,9 +48,57 @@ export const LeftSidebar = () => {
     }
   }
 
+  const onDocumentRemoved = async (document: any) => {
+    let newHoldersId = document?.holders_id?.filter((el: String) => el !== user?.id)
+    const res = await fetch(`/api/document/${document?._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        holders_id: newHoldersId
+      }),
+    })
+
+    if (!res.ok) {
+      showToastError(false)
+    } else {
+      showToastSuccess(false)
+      router.push('/app')
+    }
+  }
+
+  const onDocumentDeleted = async (document: any) => {
+    const res = await fetch(`/api/document/${document?._id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    })
+
+    if (!res.ok) {
+      showToastError(true)
+    } else {
+      showToastSuccess(true)
+      router.push('/app')
+    }
+  }
+
+  const showToastError = (deleted: Boolean) => {
+    toast(`Error`, {
+      description: `There was an error ${deleted ? 'deleted' : 'removing'} the document !`,
+      duration: 5000,
+      important: true,
+    })
+  }
+
+  const showToastSuccess = (deleted: Boolean) => {
+    toast(`Info`, {
+      description: `The document has been successfully ${deleted ? 'deleted' : 'removed from your shared documents'} !`,
+      duration: 5000,
+      important: true,
+    })
+  } 
+
   const updateDocumentsList = (data: any) => {
-    let newDocs: any = [...documents, data?.updatedDocument]
-    setDocuments(newDocs)
+    let newDocs: any = [...sharedDocuments, data?.updatedDocument]
+    setSharedDocuments(newDocs)
     // setSheetOpen(false)
   }
 
@@ -61,7 +111,7 @@ export const LeftSidebar = () => {
         fetchSharedDocuments()
       }
     }
-  });
+  }, [user]);
 
   // if (!user) {
   //   redirect("/");
@@ -113,7 +163,7 @@ export const LeftSidebar = () => {
                 <div className="flex flex-col gap-2">
                   {
                     documents?.map((doc: any) =>
-                      <LeftSidebarDocumentItem key={doc?._id} document={doc} />
+                      <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentDeleted={onDocumentDeleted} />
                     )
                   }
                 </div>
@@ -137,7 +187,7 @@ export const LeftSidebar = () => {
                 <div className="flex flex-col gap-2">
                   {
                     sharedDocuments?.map((doc: any) =>
-                      <LeftSidebarDocumentItem key={doc?._id} document={doc} />
+                      <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentRemoved={onDocumentRemoved} />
                     )
                   }
                 </div>

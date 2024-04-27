@@ -14,6 +14,18 @@ type DocumentProps = {
 
 export default function App(props: DocumentProps) {
   const [document, setDocument] = useState(null)
+  const [words, setWords] = useState(0)
+  const [characters, setCharacters] = useState(0)
+  const [saveStatus, setSaveStatus] = useState<String>("Saved");
+
+  const getCharacterAndWordsCount = (characterCount: Object) => {
+    setWords(characterCount.words())
+    setCharacters(characterCount.characters())
+  }
+
+  const getSaveStatus = (status: String) => {
+    setSaveStatus(status)
+  }
 
   const fetchDocument = async (documentId: String) => {
     const data = await fetch(`/api/document/${documentId}`, {
@@ -30,21 +42,24 @@ export default function App(props: DocumentProps) {
   }
 
   useEffect(() => {
-    if (!document) {
-      fetchDocument(props.params.id)
-    }
-  });
+    fetchDocument(props.params.id)
+  }, []);
 
   return (
     <div className="w-full h-full flex flex-col">
-      <Navbar words={0} characters={0} />
+      <Navbar words={words} characters={characters} status={saveStatus} />
       
       <div
         // onClick={() => { editor?.chain().focus().run(); }}
         className="relative w-full flex min-h-screen cursor-text flex-col items-start p-6"
       >
         <div className="relative w-full max-w-screen-lg">
-          <Editor documentId={props.params.id} documentContent={document} />
+          <Editor
+            documentId={props.params.id}
+            documentContent={document}
+            setCharacterCount={getCharacterAndWordsCount}
+            setSaveStatus={getSaveStatus}
+          />
         </div>
       </div>
     </div>

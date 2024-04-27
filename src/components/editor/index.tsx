@@ -6,10 +6,10 @@ import { ExtensionKit } from './extensions/extension-kit';
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
-export default function BlockEditor({ documentId, documentContent }: any) {
+export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus }: any) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [saveStatus, setSaveStatus] = useState("Saved");
+  // const [saveStatus, setSaveStatus] = useState("Saved");
   const [hydrated, setHydrated] = useState(false);
   const [content, setContent] = useState(null);
 
@@ -35,6 +35,10 @@ export default function BlockEditor({ documentId, documentContent }: any) {
     });
   }
 
+  const updateStatusAndCount = () => {
+    setCharacterCount(editor?.storage.characterCount)
+  }
+
   const debouncedUpdates = useDebouncedCallback(async ({ editor }) => {
     const editorData = editor.getHTML();
     setContent(editorData);
@@ -49,6 +53,7 @@ export default function BlockEditor({ documentId, documentContent }: any) {
     extensions: [...ExtensionKit()],
     content: content,
     onUpdate: (e) => {
+      updateStatusAndCount()
       setSaveStatus("Saving...");
       debouncedUpdates(e);
     }
@@ -58,6 +63,7 @@ export default function BlockEditor({ documentId, documentContent }: any) {
   useEffect(() => {
     if (editor && documentContent && !hydrated) {
       editor.commands.setContent(documentContent.content);
+      updateStatusAndCount();
       setHydrated(true);
     }
   }, [editor, documentContent, hydrated]);
