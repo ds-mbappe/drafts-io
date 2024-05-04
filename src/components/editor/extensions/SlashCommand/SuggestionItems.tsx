@@ -37,7 +37,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
     },
     {
       title: "Heading 1",
-      description: "H1 section heading.",
+      description: "H1 heading.",
       icon: <Heading1 size={18} />,
       command: ({ editor, range }: Command) => {
         editor
@@ -50,7 +50,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
     },
     {
       title: "Heading 2",
-      description: "H2 section heading.",
+      description: "H2 heading.",
       icon: <Heading2 size={18} />,
       command: ({ editor, range }: Command) => {
         editor
@@ -63,7 +63,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
     },
     {
       title: "Heading 3",
-      description: "H3 section heading.",
+      description: "H3 heading.",
       icon: <Heading3 size={18} />,
       command: ({ editor, range }: Command) => {
         editor
@@ -116,7 +116,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
     },
     {
       title: "Blockquote",
-      description: "Create a quote",
+      description: "Create a quote.",
       icon: <Quote size={18} />,
       command: ({ editor, range }: Command) => {
         editor.chain().focus().deleteRange(range).toggleBlockquote().run();
@@ -124,7 +124,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
     },
     {
       title: "CodeBlock",
-      description: "Create a code block with syntax highlighting",
+      description: "Create a code block with syntax highlighting.",
       icon: <Code size={18} />,
       command: ({ editor, range }: Command) => {
         editor.chain().focus().deleteRange(range).toggleCodeBlock().run();
@@ -132,7 +132,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
     },
     {
       title: "Divider",
-      description: "Create a horizontal divider",
+      description: "Create a horizontal divider.",
       icon: <Minus size={18} />,
       command: ({ editor, range }: Command) => {
         editor.chain().focus().deleteRange(range).setHorizontalRule().run();

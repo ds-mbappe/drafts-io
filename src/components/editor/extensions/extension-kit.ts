@@ -16,6 +16,7 @@ import UnderlineMark from './MarkUnderline';
 import HorizontalRule from "./HorizontalRule";
 import SlashCommand from "./SlashCommand/SlashCommand";
 import AiWriter from './AiWriter/AiWriter';
+import { TrailingNode } from './TrailingNode';
 
 export const ExtensionKit = () => [
   StarterKit.configure({
@@ -49,6 +50,7 @@ export const ExtensionKit = () => [
   }),
   Typography,
   TaskList,
+  TrailingNode,
   TaskItem.configure({
     nested: true,
   }),
