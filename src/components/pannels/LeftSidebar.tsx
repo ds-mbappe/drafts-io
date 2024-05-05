@@ -127,9 +127,11 @@ export const LeftSidebar = () => {
 
       <SheetContent className="w-72 pt-12 flex flex-col gap-10 overflow-y-auto" side={"left"}>
         <SheetHeader>
-          <SheetTitle>Documents</SheetTitle>
+          <SheetTitle>
+            {`Hello, ${user?.firstName} ${user?.lastName} !`}
+          </SheetTitle>
           <SheetDescription>
-            Here you can create new documents, and manage existing ones.
+            Create new documents and manage existing ones here.
           </SheetDescription>
         </SheetHeader>
 
