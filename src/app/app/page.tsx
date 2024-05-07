@@ -36,35 +36,49 @@ export default function App() {
   const userColor = `#${randomColor()}`
 
   const generatePrompt = async () => {
-    const completion = await openai.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: "You are a generative content editor."
-        },
-        {
-          role: "system",
-          content: "You can construct entire content about almost anything the user asks you. Your particulary is that you use different html tags to wrap your answers. You can also emphasize some parts of your answers using attricutes like <strong>, <em> and <i> (the list is non exhaustive); you can also integrate tags to color some text in your answers. You can integrate whatever html tag you seem appropriate as long as you think it helps."
-        },
-        {
-          role: "system",
-          content: "You cannot use the p tag"
-        },
-        {
-          role: "system",
-          content: "You can use the following tags to structure your content: h1 to h6 tags (headings), strong (emphasize), em (italic), i (italic), u (underline), br (to go to next line), ul, ol, li (for lists), hr (for separators). This list is non exhaustive, so you can add in any tag you think appropriate (except for the p tag)"
-        },
-        {
-          role: "system",
-          content: "You cannot use the p tag"
-        },
-        {
-          role: "user",
-          content: "Write a content about any topic of you choice, and use the maximum number of tokens you can"
-        },
-      ],
-      model: "gpt-3.5-turbo"
-    })
+    // editor?.view.state.selection.$head.parent
+    // const arr = ['H', 'He', 'Hel', 'Hell', 'Hello']
+    // for (let text of arr) {
+    //   editor?.commands.insertContent({
+    //     type: 'paragraph',
+    //     content: [
+    //       {
+    //         type: 'text',
+    //         text: text,
+    //       }
+    //     ]
+    //   })
+    // }
+
+    // const completion = await openai.chat.completions.create({
+    //   messages: [
+    //     {
+    //       role: "system",
+    //       content: "You are a generative content editor."
+    //     },
+    //     {
+    //       role: "system",
+    //       content: "You can construct entire content about almost anything the user asks you. Your particulary is that you use different html tags to wrap your answers. You can also emphasize some parts of your answers using attricutes like <strong>, <em> and <i> (the list is non exhaustive); you can also integrate tags to color some text in your answers. You can integrate whatever html tag you seem appropriate as long as you think it helps."
+    //     },
+    //     {
+    //       role: "system",
+    //       content: "You cannot use the p tag"
+    //     },
+    //     {
+    //       role: "system",
+    //       content: "You can use the following tags to structure your content: h1 to h6 tags (headings), strong (emphasize), em (italic), i (italic), u (underline), br (to go to next line), ul, ol, li (for lists), hr (for separators). This list is non exhaustive, so you can add in any tag you think appropriate (except for the p tag)"
+    //     },
+    //     {
+    //       role: "system",
+    //       content: "You cannot use the p tag"
+    //     },
+    //     {
+    //       role: "user",
+    //       content: "Write 2 paragraphs about a topic of your choice."
+    //     },
+    //   ],
+    //   model: "gpt-3.5-turbo"
+    // })
     // console.log(completion.choices[0]?.message?.content)
   }
 
@@ -176,9 +190,9 @@ export default function App() {
             lists, `foobar` to highlight code or ~~tildes~~ to strike text.
           </p>
 
-          {/* <Button onClick={generatePrompt}>
+          <Button onClick={generatePrompt}>
             Generate
-          </Button> */}
+          </Button>
 
           <ContentItemMenu editor={editor} />
           <EditorContent editor={editor} />

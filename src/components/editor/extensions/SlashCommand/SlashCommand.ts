@@ -22,7 +22,7 @@ export const SlashCommand = Extension.create({
       trigger: 'manual',
       placement: 'bottom-start',
       theme: 'slash-command',
-      maxWidth: '16rem',
+      maxWidth: '17rem',
       offset: [16, 8],
       popperOptions: {
         strategy: 'fixed',
