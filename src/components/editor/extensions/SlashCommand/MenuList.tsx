@@ -40,6 +40,8 @@ const MenuList = React.forwardRef((props: MenuListProps, ref) => {
     return <IconComponent />
   })
 
+  Icon.displayName = 'Icon'
+
   React.useImperativeHandle(ref, () => ({
     onKeyDown: ({ event }: { event: React.KeyboardEvent }) => {
       if (event.key === 'ArrowDown') {
