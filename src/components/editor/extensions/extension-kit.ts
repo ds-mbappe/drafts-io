@@ -19,6 +19,10 @@ import HorizontalRule from "./HorizontalRule";
 import { TrailingNode } from './TrailingNode';
 import SlashCommand from "./SlashCommand/SlashCommand";
 import emojiSuggestion from './EmojiSuggestion/Suggestion';
+import Table from './Table/Table';
+import TableRow from './Table/Row';
+import TableCell from './Table/Cell';
+import TableHeader from './Table/Header';
 
 export const ExtensionKit = () => [
   StarterKit.configure({
@@ -88,7 +92,11 @@ export const ExtensionKit = () => [
     enableEmoticons: true,
     // forceFallbackImages: true,
     suggestion: emojiSuggestion,
-  })
+  }),
+  Table,
+  TableHeader,
+  TableCell,
+  TableRow,
 ]
 
 export default ExtensionKit
