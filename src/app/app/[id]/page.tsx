@@ -12,13 +12,18 @@ type DocumentProps = {
   };
 };
 
+type CharacterCountType = {
+  words: Function,
+  characters: Function
+}
+
 export default function App(props: DocumentProps) {
   const [document, setDocument] = useState(null)
   const [words, setWords] = useState(0)
   const [characters, setCharacters] = useState(0)
   const [saveStatus, setSaveStatus] = useState<String>("Saved");
 
-  const getCharacterAndWordsCount = (characterCount: Object) => {
+  const getCharacterAndWordsCount = (characterCount: CharacterCountType) => {
     setWords(characterCount.words())
     setCharacters(characterCount.characters())
   }
