@@ -102,14 +102,14 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
       setIsFetching(false)
       console.log(error)
     }
-  }, [data])
+  }, [data, editor, getPos, openai.chat.completions])
 
   const insert = useCallback((message: String | null) => {
     const from = getPos()
     const to = from + node.nodeSize
 
     editor.chain().focus().insertContentAt({ from, to }, message).run()
-  }, [editor, previewText, getPos, node.nodeSize])
+  }, [editor, getPos, node.nodeSize])
 
   const discard = useCallback(() => {
     deleteNode()

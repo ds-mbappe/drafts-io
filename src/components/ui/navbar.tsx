@@ -4,12 +4,12 @@ import { ExitIcon } from '@radix-ui/react-icons'
 import { useUser, useAuth } from "@clerk/clerk-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { EditorInfo } from './EditorInfo';
+import EditorInfo from './EditorInfo';
 import { memo } from 'react';
 import { LeftSidebar } from '../pannels/LeftSidebar';
 import { useRouter } from 'next/navigation';
 
-export const Navbar = memo(({ characters, words, status }: any) => {
+const Navbar = memo(({ characters, words, status }: any) => {
   const { user } = useUser();
   const { signOut } = useAuth();
   const router = useRouter()
@@ -66,5 +66,7 @@ export const Navbar = memo(({ characters, words, status }: any) => {
     </nav>
   )
 })
+
+Navbar.displayName = 'Navbar'
 
 export default Navbar

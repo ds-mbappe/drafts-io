@@ -43,7 +43,7 @@ export default function App(props: DocumentProps) {
 
   useEffect(() => {
     fetchDocument(props.params.id)
-  }, []);
+  }, [props.params.id]);
 
   return (
     <div className="w-full h-full flex flex-col">

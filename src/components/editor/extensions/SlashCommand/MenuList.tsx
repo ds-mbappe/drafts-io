@@ -9,7 +9,7 @@ export type IconProps = {
   strokeWidth?: number
 }
 
-export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
+const MenuList = React.forwardRef((props: MenuListProps, ref) => {
   const scrollContainer = useRef<HTMLDivElement>(null)
   const activeItem = useRef<HTMLButtonElement>(null)
   const [selectedGroupIndex, setSelectedGroupIndex] = useState(0)

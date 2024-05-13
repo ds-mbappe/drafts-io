@@ -5,7 +5,7 @@ export type EditorInfoProps = {
   words: number
 }
 
-export const EditorInfo = memo(({ characters, words }: EditorInfoProps) => {
+const EditorInfo = memo(({ characters, words }: EditorInfoProps) => {
   return (
     <div className="flex flex-col items-end">
       <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">
@@ -17,3 +17,7 @@ export const EditorInfo = memo(({ characters, words }: EditorInfoProps) => {
     </div>
   )
 })
+
+EditorInfo.displayName = 'EditorInfo'
+
+export default EditorInfo

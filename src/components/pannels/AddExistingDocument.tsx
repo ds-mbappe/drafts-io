@@ -135,7 +135,7 @@ export const AddExistingDocument = ({ onDocumentAdded }: any) => {
             {showPasswordField ?
               <div className="flex flex-col gap-2">
                 <p className="text-sm text-muted-foreground font-normal">
-                  The document you are trying to access is private, please enter it's password to unlock and import it.
+                  The document you are trying to access is private, please enter it&apos;s password to unlock and import it.
                 </p>
 
                 <div className="flex items-center gap-4">
