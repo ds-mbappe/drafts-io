@@ -1,5 +1,6 @@
 import { lowlight } from 'lowlight';
 import StarterKit from "@tiptap/starter-kit";
+import Emoji from '@tiptap-pro/extension-emoji';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 import Typography from '@tiptap/extension-typography';
@@ -11,16 +12,17 @@ import Link from "./Link";
 import BoldMark from './MarkBold';
 import ItalicMark from './MarkItalic';
 import HeadingMark from './MarkHeading';
+import AiWriter from './AiWriter/AiWriter';
 import ParagraphMark from './MarkParagraph';
 import UnderlineMark from './MarkUnderline';
 import HorizontalRule from "./HorizontalRule";
-import SlashCommand from "./SlashCommand/SlashCommand";
-import AiWriter from './AiWriter/AiWriter';
 import { TrailingNode } from './TrailingNode';
+import SlashCommand from "./SlashCommand/SlashCommand";
+import emojiSuggestion from './EmojiSuggestion/Suggestion';
 
 export const ExtensionKit = () => [
   StarterKit.configure({
-    history: false,
+    // history: false,
     bulletList: {
       HTMLAttributes: {
         class: "list-disc list-outside leading-3",
@@ -62,10 +64,10 @@ export const ExtensionKit = () => [
   }),
   AiWriter,
   ItalicMark,
-  BoldMark,
+  // BoldMark,
   UnderlineMark,
   // ParagraphMark,
-  HeadingMark,
+  // HeadingMark,
   Placeholder.configure({
     placeholder: ({ node }: any) => {
       if (node.type.name === "heading") {
@@ -82,6 +84,11 @@ export const ExtensionKit = () => [
     lowlight,
     defaultLanguage: null,
   }),
+  Emoji.configure({
+    enableEmoticons: true,
+    // forceFallbackImages: true,
+    suggestion: emojiSuggestion,
+  })
 ]
 
 export default ExtensionKit

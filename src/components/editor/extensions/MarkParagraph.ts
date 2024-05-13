@@ -1,7 +1,10 @@
 import { MarkType } from "@tiptap/pm/model"
-import { ExtendedRegExpMatchArray, Mark, PasteRule, PasteRuleFinder, callOrReturn, mergeAttributes } from "@tiptap/react"
+import { ExtendedRegExpMatchArray, Mark, Node, PasteRule, PasteRuleFinder, markInputRule, callOrReturn, mergeAttributes } from "@tiptap/react"
+import Heading from "./Heading"
 
-const inputRegex = /<p>(.*?)<\/p>/g
+
+const inputRegex = /<p>(.*?)<\/p>/
+// const inputRegex = /(?:^|\s)(<p>(?!\s+~~)((?:[^]+))(?!\s+<\/p>))$/
 
 export interface ParagraphMarkOptions {
   HTMLAttributes: Record<string, any>,
@@ -83,15 +86,24 @@ export const ParagraphMark = Mark.create<ParagraphMarkOptions>({
   renderHTML({ HTMLAttributes }) {
     return ['p', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
   },
-  
-  addPasteRules() {
+
+  addInputRules() {
     return [
-      paragraphPasteInputRule({
+      markInputRule({
         find: inputRegex,
         type: this.type,
       })
     ]
-  }
+  },
+  
+  // addPasteRules() {
+  //   return [
+  //     paragraphPasteInputRule({
+  //       find: inputRegex,
+  //       type: this.type,
+  //     })
+  //   ]
+  // }
 })
 
 export default ParagraphMark

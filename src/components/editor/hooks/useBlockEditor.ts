@@ -10,7 +10,7 @@ import { ExtensionKit } from '../extensions/extension-kit';
 export const useBlockEditor = () => {
 
   const editor = useEditor({
-    content: "<p>Hello World! 🌎️</p>",
+    content: "<p>Drafts is a notes taking app with really cool features ! Try and hit the '/' key or try the markdown shortcuts, which make it easy to format the text while typing.</p><p>Consider this page as your 'playground'; here you can test all features and when you're done, you can go ahead and tap the burger menu to your left to create new documents, or import existing ones.</p><p>To test that, start a new line and type # followed by a space to get aheading. Try #, ##, ###, ####, #####, ###### for different levels. Those conventions are called input rules in tiptap. Some of them are enabled by default. Try '>' for blockquotes, *, - or + for bullet lists, or ~~tildes~~ to strike text. These are some of the multiple 'cheat codes' you can have, but we'll let you explore to find out all of them.</p><p>Happy texting !</p>",
     autofocus: true,
     extensions: [
       ...ExtensionKit(),

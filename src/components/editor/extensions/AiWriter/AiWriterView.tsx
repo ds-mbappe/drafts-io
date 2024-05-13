@@ -52,7 +52,7 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
           // },
           {
             role: "system",
-            content: "You can use the following HTML tags to structure your content: h1 to h6 tags (headings), strong (emphasize), em (italic), i (italic), u (underline), br (to go to next line), hr (for separators), p (for paragraphs). This list is non exhaustive."
+            content: "You can use the following HTML tags to structure your content: h1 to h6 tags (headings), br (to go to next line), hr (for separators), p (for paragraphs). This list is non exhaustive."
           },
           // {
           //   role: "system",
@@ -71,14 +71,30 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
       let content = " "
 
       for await (const chunk of completion) {
+        let position = getPos()
         content += chunk.choices[0]?.delta?.content || ""
         let chunkContent = chunk.choices[0]?.delta?.content || ""
 
         if (content?.length) {
           let newContent = chunkContent.replace(content, "")
-          const transaction = editor.state.tr.insertText(newContent)
-          editor.view.dispatch(transaction)
-          console.log(content)
+          if (newContent === '<h') {
+            editor.commands.enter()
+            editor.chain().focus().setHeading({ level: 1 }).run()
+            const transaction = editor.state.tr.insertText(newContent)
+            editor.view.dispatch(transaction)
+          } else if (newContent === '<p') {
+            editor.commands.enter()
+            const transaction = editor.state.tr.insertText(newContent)
+            editor.view.dispatch(transaction)
+          } else if (newContent === '<br') {
+            editor.commands.enter()
+          } else {
+            const transaction = editor.state.tr.insertText(newContent)
+            editor.view.dispatch(transaction)
+          }
+          editor.commands.scrollIntoView()
+          // console.log(content)
+          // console.log(newContent)
         }
       }
       setPreviewText(content)
@@ -113,6 +129,7 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
         <div className=" flex gap-2 border border-gray-400 shadow-lg rounded-[8px] px-2.5 py-2.5">
           <div className="w-full flex items-center min-h-full">
             <input
+              id="ai-input"
               ref={inputRef} 
               required
               value={data.text}

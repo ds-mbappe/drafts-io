@@ -11,7 +11,13 @@ export const GROUPS: Group[] = [
         iconName: 'Sparkles',
         description: 'Ask something to the AI.',
         shouldBeHidden: editor => editor.isActive('columns'),
-        action: editor => editor.chain().focus().setAiWriter().run(),
+        action: editor => {
+          editor.chain().focus().setAiWriter().run()
+          // const el = document.getElementById("ai-input")
+          // if (el) {
+          //   el.click()
+          // }
+        }
       },
       // {
       //   name: 'aiImage',

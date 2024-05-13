@@ -37,18 +37,6 @@ export default function App() {
 
   const generatePrompt = async () => {
     // editor?.view.state.selection.$head.parent
-    // const arr = ['H', 'He', 'Hel', 'Hell', 'Hello']
-    // for (let text of arr) {
-    //   editor?.commands.insertContent({
-    //     type: 'paragraph',
-    //     content: [
-    //       {
-    //         type: 'text',
-    //         text: text,
-    //       }
-    //     ]
-    //   })
-    // }
 
     // const completion = await openai.chat.completions.create({
     //   messages: [
@@ -99,8 +87,8 @@ export default function App() {
     // const doc = new Y.Doc()
     // const provider = new TiptapCollabProvider({
     //   name: "new-doc",
-    //   appId: 'j9yvq891',
-    //   token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MTMyMTQyNTIsIm5iZiI6MTcxMzIxNDI1MiwiZXhwIjoxNzEzMzAwNjUyLCJpc3MiOiJodHRwczovL2Nsb3VkLnRpcHRhcC5kZXYiLCJhdWQiOiJqOXl2cTg5MSJ9.g4rCB3X_EzQZ8nBNpfmP22PAK6VBy8HgSGfEUR6yCFs',
+    //   appId: process.env.NEXT_TIPTAP_CLOUD_APP_ID,
+    //   token: process.env.NEXT_TIPTAP_CLOUD_TOKEN,
     //   document: doc,
   
     //   onSynced() {
@@ -171,28 +159,10 @@ export default function App() {
         // onClick={() => { editor?.chain().focus().run(); }}
         className="relative w-full flex min-h-screen cursor-text flex-col items-start p-6"
       >
-        <div className="relative w-full max-w-screen-lg">
-          <h1 className="mb-4 text-6xl font-bold">
-            Welcome to the GOAT awesome Editor!
+        <div className="relative w-full max-w-screen-lg flex flex-col justify-center items-center gap-2">
+          <h1 className="text-6xl font-bold">
+            Welcome to Drafts!
           </h1>
-
-          <p className="mb-2">
-            Check out the features below or create a new document to get started.
-            You can either use the {"/"} command or try the markdown shortcuts,
-            which make it easy to format the text while typing.
-          </p>
-
-          <p className="mb-2">
-            To test that, start a new line and type # followed by a space to get a
-            heading. Try #, ##, ###, ####, #####, ###### for different levels.
-            Those conventions are called input rules in tiptap. Some of them are
-            enabled by default. Try {">"} for blockquotes, *, - or + for bullet
-            lists, `foobar` to highlight code or ~~tildes~~ to strike text.
-          </p>
-
-          <Button onClick={generatePrompt}>
-            Generate
-          </Button>
 
           <ContentItemMenu editor={editor} />
           <EditorContent editor={editor} />
