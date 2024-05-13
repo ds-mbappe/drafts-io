@@ -157,7 +157,7 @@ export default function App() {
 
       <div
         // onClick={() => { editor?.chain().focus().run(); }}
-        className="relative w-full flex min-h-screen cursor-text flex-col items-start p-6"
+        className="relative w-full flex min-h-screen cursor-text flex-col items-center p-6"
       >
         <div className="relative w-full max-w-screen-lg flex flex-col justify-center items-center gap-2">
           <h1 className="text-6xl font-bold">
