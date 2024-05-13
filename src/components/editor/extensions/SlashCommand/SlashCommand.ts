@@ -5,7 +5,7 @@ import { PluginKey } from '@tiptap/pm/state'
 import tippy from 'tippy.js'
 
 import { GROUPS } from './group'
-import { MenuList } from './MenuList'
+import MenuList from './MenuList'
 
 const extensionName = 'slashCommand'
 
