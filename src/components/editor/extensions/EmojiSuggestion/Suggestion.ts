@@ -28,6 +28,7 @@ export const emojiSuggestion = {
           editor: props.editor,
         })
 
+        // @ts-ignore
         popup = tippy('body', {
           getReferenceClientRect: props.clientRect,
           appendTo: () => document.body,
@@ -42,6 +43,7 @@ export const emojiSuggestion = {
       onUpdate(props: SuggestionProps<any>) {
         component.updateProps(props)
 
+        // @ts-ignore
         popup[0].setProps({
           getReferenceClientRect: props.clientRect,
         })
@@ -49,16 +51,19 @@ export const emojiSuggestion = {
 
       onKeyDown(props: SuggestionKeyDownProps) {
         if (props.event.key === 'Escape') {
+          // @ts-ignore
           popup[0].hide()
           component.destroy()
 
           return true
         }
 
+        // @ts-ignore
         return component.ref?.onKeyDown(props)
       },
 
       onExit() {
+        // @ts-ignore
         popup[0].destroy()
         component.destroy()
       },
