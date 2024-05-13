@@ -50,7 +50,9 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
   }, 1000);
 
   const editor = useEditor({
-    extensions: [...ExtensionKit()],
+    extensions: [
+      ...ExtensionKit()
+    ],
     content: content,
     onUpdate: (e) => {
       updateStatusAndCount()

@@ -22,7 +22,7 @@ import emojiSuggestion from './EmojiSuggestion/Suggestion';
 
 export const ExtensionKit = () => [
   StarterKit.configure({
-    // history: false,
+    history: false,
     bulletList: {
       HTMLAttributes: {
         class: "list-disc list-outside leading-3",
