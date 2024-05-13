@@ -74,7 +74,7 @@ export const CreateNewDocument = ({ onDocumentSaved }: any) => {
 
   const resetStates = () => {
     setDocName("")
-    setDocPassword(undefined)
+    setDocPassword("")
     setDocPrivate(false)
   }
 
