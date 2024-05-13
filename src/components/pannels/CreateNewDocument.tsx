@@ -17,7 +17,7 @@ export const CreateNewDocument = ({ onDocumentSaved }: any) => {
 
   const [dialogOpen, setDialogOpen] = useState(false)
   const [docName, setDocName] = useState("")
-  const [docPassword, setDocPassword] = useState(undefined)
+  const [docPassword, setDocPassword] = useState("")
   const [docPrivate, setDocPrivate] = useState(false)
 
   const handleSaveData = async () => {
