@@ -5,6 +5,7 @@ import React, { useState, useEffect, useTransition } from "react";
 import { ExtensionKit } from './extensions/extension-kit';
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
+import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
 
 export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus }: any) {
   const router = useRouter();
@@ -76,6 +77,12 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
       className="relative w-full flex min-h-screen cursor-text flex-col items-start"
     >
       <div className="relative w-full max-w-screen-lg">
+        {
+          editor ?
+            <ContentItemMenu editor={editor} />
+            :
+            <></>
+        }
         <EditorContent editor={editor} />
       </div>
     </div>

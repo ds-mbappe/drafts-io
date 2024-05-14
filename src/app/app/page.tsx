@@ -11,10 +11,12 @@ import { TiptapCollabProvider } from '@hocuspocus/provider';
 import * as Y from 'yjs';
 import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
 import { useDebouncedCallback } from 'use-debounce';
+import Sidebar from '@/components/pannels/Sidebar';
+import { useBlockEditor } from '@/components/editor/hooks/useBlockEditor';
 
 export default function App() {
   const { user } = useUser();
-  // const { editor, characterCount } = useBlockEditor();
+  const { leftSidebar } = useBlockEditor();
 
   const [yDoc, setYDoc] = useState<Y.Doc>()
   const [saveStatus, setSaveStatus] = useState("Saved")
@@ -76,19 +78,29 @@ export default function App() {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <Navbar words={editor?.storage?.characterCount.words()} characters={editor?.storage?.characterCount.characters()} status={saveStatus} />
+      <Navbar
+        status={saveStatus}
+        isSidebarOpen={leftSidebar.isOpen}
+        toggleSidebar={leftSidebar.toggle}
+        words={editor?.storage?.characterCount.words()}
+        characters={editor?.storage?.characterCount.characters()}
+      />
 
-      <div
-        // onClick={() => { editor?.chain().focus().run(); }}
-        className="relative w-full flex min-h-screen cursor-text flex-col items-center p-6"
-      >
-        <div className="relative w-full max-w-screen-lg flex flex-col gap-2">
-          <h1 className="text-6xl font-bold">
-            Welcome to Drafts!
-          </h1>
+      <div className="flex h-full">
+        <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
-          <ContentItemMenu editor={editor} />
-          <EditorContent editor={editor} />
+        <div
+          // onClick={() => { editor?.chain().focus().run(); }}
+          className="relative flex-1 flex min-h-screen cursor-text flex-col items-center p-6"
+        >
+          <div className="relative w-full max-w-screen-lg flex flex-col gap-2">
+            <h1 className="text-6xl font-bold">
+              Welcome to Drafts!
+            </h1>
+
+            <ContentItemMenu editor={editor} />
+            <EditorContent editor={editor} />
+          </div>
         </div>
       </div>
     </div>
