@@ -10,7 +10,7 @@ import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
 import { useBlockEditor } from "./hooks/useBlockEditor";
 
-export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus, yDoc, provider }: any) {
+export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus, yDoc, provider, userFullName }: any) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { initialContent } = useBlockEditor();
@@ -70,15 +70,22 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
       Collaboration.configure({
         document: yDoc,
       }),
+      CollaborationCursor.configure({
+        provider,
+        user: {
+          name: userFullName,
+          color: userColor,
+        },
+      }),
     ],
     onUpdate: (e) => {
       updateStatusAndCount()
       setSaveStatus("Syncing...");
       debouncedUpdates(e);
     }
-  }, [yDoc, provider])
+  }, [yDoc, provider, userFullName])
 
-  if (!editor) return false
+  if (!editor) return
 
   return (
     <div
