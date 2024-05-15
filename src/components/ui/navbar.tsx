@@ -29,16 +29,16 @@ const Navbar = memo(({ characters, words, status, isSidebarOpen, toggleSidebar }
 
   return (
     <nav className="w-full h-14 flex items-center justify-between sticky top-0 z-40 bg-white px-4 border-b">
-      <LeftSidebar />
-      {/* <Button size={"sm"} variant={"ghost"} onClick={toggleSidebar}>
+      {/* <LeftSidebar /> */}
+      <Button size={"sm"} variant={"ghost"} onClick={toggleSidebar}>
         { isSidebarOpen ? <PanelTopClose className="-rotate-90" /> : <PanelLeft /> }
-      </Button> */}
+      </Button>
       
       { user?.imageUrl ?
         <>
           <div className="flex items-center justify-center gap-5">
             <div className="flex gap-2 items-center justify-center">
-              <div className={`w-2 h-2 rounded-full flex gap-1 items-center justify-center ${status === 'Saved' ? 'bg-green-500' : 'bg-yellow-500'}`} />
+              <div className={`w-2 h-2 rounded-full flex gap-1 items-center justify-center ${status === 'Synced' ? 'bg-green-500' : 'bg-yellow-500'}`} />
               <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
                 { status }
               </span>

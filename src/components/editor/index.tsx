@@ -5,14 +5,15 @@ import React, { useState, useEffect, useTransition } from "react";
 import { ExtensionKit } from './extensions/extension-kit';
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
+import Collaboration from '@tiptap/extension-collaboration';
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
+import { useBlockEditor } from "./hooks/useBlockEditor";
 
-export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus }: any) {
+export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus, yDoc, provider }: any) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  // const [saveStatus, setSaveStatus] = useState("Saved");
-  const [hydrated, setHydrated] = useState(false);
-  const [content, setContent] = useState(null);
+  const { initialContent } = useBlockEditor();
 
   const patchRequest = async (documentId: String, document: any) => {
     const response = await fetch(`/api/document/${documentId}`, {
@@ -28,10 +29,10 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
       throw new Error("Failed to update document");
     }
 
-    setSaveStatus("Saved");
+    setSaveStatus("Synced");
 
+    // Force a cache invalidation.
     startTransition(() => {
-      // Force a cache invalidation.
       router.refresh();
     });
   }
@@ -40,36 +41,44 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
     setCharacterCount(editor?.storage.characterCount)
   }
 
+  const randomColor = () => {
+    return Math.floor(Math.random() * 16777215).toString(16)
+  }
+
+  const userColor = `#${randomColor()}`
+
+  // Simulate a delay in saving.
   const debouncedUpdates = useDebouncedCallback(async ({ editor }) => {
     const editorData = editor.getHTML();
-    setContent(editorData);
     await patchRequest(documentId, editorData);
-    // Simulate a delay in saving.
     setTimeout(() => {
-      setSaveStatus("Saved");
+      setSaveStatus("Synced");
     }, 500);
   }, 1000);
 
   const editor = useEditor({
+    autofocus: true,
+    onCreate: ({ editor }) => {
+      provider?.on('synced', () => {
+        if (editor.isEmpty) {
+          editor.commands.setContent(initialContent)
+        }
+      })
+    },
     extensions: [
-      ...ExtensionKit()
+      ...ExtensionKit(),
+      Collaboration.configure({
+        document: yDoc,
+      }),
     ],
-    content: content,
     onUpdate: (e) => {
       updateStatusAndCount()
-      setSaveStatus("Saving...");
+      setSaveStatus("Syncing...");
       debouncedUpdates(e);
     }
-  })
+  }, [yDoc, provider])
 
-  // Hydrate the editor with the content from the database.
-  useEffect(() => {
-    if (editor && documentContent && !hydrated) {
-      editor.commands.setContent(documentContent.content);
-      updateStatusAndCount();
-      setHydrated(true);
-    }
-  }, [editor, documentContent, hydrated]);
+  if (!editor) return false
 
   return (
     <div
@@ -77,12 +86,7 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
       className="relative w-full flex min-h-screen cursor-text flex-col items-start"
     >
       <div className="relative w-full max-w-screen-lg">
-        {
-          editor ?
-            <ContentItemMenu editor={editor} />
-            :
-            <></>
-        }
+        <ContentItemMenu editor={editor} />
         <EditorContent editor={editor} />
       </div>
     </div>

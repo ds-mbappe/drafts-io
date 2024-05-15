@@ -1,11 +1,13 @@
 "use client"
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { auth } from "@clerk/nextjs";
 import Navbar from "@/components/ui/navbar";
 import Editor from "@/components/editor"
+import { Doc as YDoc } from 'yjs'
 import { notFound, redirect } from "next/navigation";
 import Sidebar from '@/components/pannels/Sidebar';
+import { TiptapCollabProvider } from '@hocuspocus/provider';
 import { useBlockEditor } from '@/components/editor/hooks/useBlockEditor';
 
 type DocumentProps = {
@@ -20,11 +22,13 @@ type CharacterCountType = {
 }
 
 export default function App(props: DocumentProps) {
+  const docId = props.params.id
   const { leftSidebar } = useBlockEditor();
   const [document, setDocument] = useState(null)
   const [words, setWords] = useState(0)
   const [characters, setCharacters] = useState(0)
-  const [saveStatus, setSaveStatus] = useState<String>("Saved");
+  const [saveStatus, setSaveStatus] = useState<String>("Synced");
+  const [provider, setProvider] = useState<TiptapCollabProvider | null>(null)
 
   const getCharacterAndWordsCount = (characterCount: CharacterCountType) => {
     setWords(characterCount.words())
@@ -53,6 +57,19 @@ export default function App(props: DocumentProps) {
     fetchDocument(props.params.id)
   }, [props.params.id]);
 
+  const yDoc = useMemo(() => new YDoc(), [])
+
+  useLayoutEffect(() => {
+    setProvider(
+      new TiptapCollabProvider({
+        name: `doc-${docId}`,
+        appId: `${process.env.NEXT_PUBLIC_TIPTAP_CLOUD_APP_ID}`,
+        token: String(process.env.NEXT_PUBLIC_TIPTAP_CLOUD_TOKEN),
+        document: yDoc,
+      }),
+    )
+  }, [setProvider, yDoc, docId])
+
   return (
     <div className="w-full h-full flex flex-col">
       <Navbar
@@ -76,6 +93,8 @@ export default function App(props: DocumentProps) {
               documentContent={document}
               setCharacterCount={getCharacterAndWordsCount}
               setSaveStatus={getSaveStatus}
+              yDoc={yDoc}
+              provider={provider}
             />
           </div>
         </div>
