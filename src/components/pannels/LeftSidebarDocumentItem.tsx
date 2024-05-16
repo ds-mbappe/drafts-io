@@ -34,7 +34,7 @@ export const LeftSidebarDocumentItem = ({ document, onDocumentRemoved, onDocumen
       <HoverCard openDelay={100} closeDelay={100}>
         <HoverCardTrigger className="w-full cursor-pointer hover:bg-muted-foreground/10 rounded px-5">
           <div
-            className="w-full h-8 max-w-[175px] flex gap-4 items-center justify-start"
+            className="w-full h-10 max-w-[175px] flex gap-4 items-center justify-start"
             onClick={navigateToDocument}
           >
             {document.name}

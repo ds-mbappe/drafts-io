@@ -22,10 +22,10 @@ const Sidebar = memo(
     const [sharedDocuments, setSharedDocuments] = useState([])
 
     const windowClassName = cn(
-      'absolute left-0 bg-white lg:bg-white/30 lg:backdrop-blur-xl h-full lg:h-auto lg:relative z-[2] w-0 duration-300 transition-all',
+      'absolute top-0 left-0 mt-14 bg-white lg:bg-white/30 lg:backdrop-blur-xl h-full lg:h-auto lg:relative z-[2] w-0 duration-500 transition-all',
       'dark:bg-black lg:dark:bg-black/30',
       !isOpen && 'border-r-transparent',
-      isOpen && 'w-80 border-r border-r-neutral-200 dark:border-r-neutral-800 py-8',
+      isOpen && 'w-80 border-r border-r-neutral-200 dark:border-r-neutral-800',
     )
 
     const showToastSuccess = (deleted: Boolean) => {
@@ -124,7 +124,7 @@ const Sidebar = memo(
 
     return (
       <div className={windowClassName}>
-        <div className="w-full h-full flex flex-col overflow-y-auto gap-16">
+        <div className="w-full h-full flex flex-col overflow-y-auto gap-16 py-8">
           <div className="flex flex-col gap-2 text-left px-5">
             <p className="text-lg font-semibold text-foreground">
               {`Hello, ${user?.firstName} ${user?.lastName} !`}
@@ -143,7 +143,7 @@ const Sidebar = memo(
 
           <div className="flex flex-col gap-5">
             {/* Personnal Documents */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               <p className="text-base font-semibold border-b px-5">
                 {`Personnal documents`}
               </p>
@@ -164,7 +164,7 @@ const Sidebar = memo(
             </div>
 
             {/* Shared Documents */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               <p className="text-base font-semibold border-b px-5">
                 {`Shared documents`}
               </p>
