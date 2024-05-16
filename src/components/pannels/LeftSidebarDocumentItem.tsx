@@ -32,7 +32,7 @@ export const LeftSidebarDocumentItem = ({ document, onDocumentRemoved, onDocumen
   return (
     <Button asChild variant={"ghost"}>
       <HoverCard openDelay={100} closeDelay={100}>
-        <HoverCardTrigger className="w-full cursor-pointer hover:bg-muted-foreground/10 rounded">
+        <HoverCardTrigger className="w-full cursor-pointer hover:bg-muted-foreground/10 rounded px-5">
           <div
             className="w-full h-8 max-w-[175px] flex gap-4 items-center justify-start"
             onClick={navigateToDocument}

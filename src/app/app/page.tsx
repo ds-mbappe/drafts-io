@@ -51,7 +51,7 @@ export default function App() {
 
         <div
           // onClick={() => { editor?.chain().focus().run(); }}
-          className="relative flex-1 flex min-h-screen cursor-text flex-col items-center p-6"
+          className="relative flex-1 flex min-h-screen cursor-text flex-col items-center p-6 z-[1]"
         >
           <div className="relative w-full max-w-screen-lg flex flex-col gap-2">
             <h1 className="text-6xl font-bold">
