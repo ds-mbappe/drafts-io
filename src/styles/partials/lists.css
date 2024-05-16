@@ -34,7 +34,7 @@
       @apply m-0;
     }
 
-    /* li {
+    li {
       @apply flex;
 
       > label {
@@ -48,22 +48,6 @@
       &[data-checked='true'] {
         @apply line-through;
       }
-    } */
-  }
-}
-
-.ProseMirror ul[data-type='taskList'] li {
-  @apply flex;
-
-  > label {
-    @apply grow-0 shrink-0 flex-auto mt-1 mr-2 select-none;
-  }
-
-  > div {
-    @apply flex-auto;
-  }
-
-  &[data-checked='true'] {
-    @apply line-through;
+    }
   }
 }
