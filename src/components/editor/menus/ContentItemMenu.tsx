@@ -11,9 +11,8 @@ export type ContentItemMenuProps = {
 }
 
 const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
-  const [menuOpen, setMenuOpen] = useState(false)
-
   const data = useData()
+  const [menuOpen, setMenuOpen] = useState(false)
   const actions = useContentItemActions(editor, data.currentNode, data.currentNodePos)
 
   useEffect(() => {

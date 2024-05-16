@@ -83,7 +83,7 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
       setSaveStatus("Syncing...");
       debouncedUpdates(e);
     }
-  }, [yDoc, provider, userFullName])
+  }, [])
 
   if (!editor) return
 

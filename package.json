@@ -64,7 +64,6 @@
     "react-dom": "^18",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.2.2",
-    "tailwindcss": "^3.4.3",
     "tailwindcss-animate": "^1.0.7",
     "tippy.js": "^6.3.7",
     "use-debounce": "^10.0.0",
@@ -82,6 +81,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.1.4",
     "postcss": "^8",
+    "tailwindcss": "^3.4.3",
     "typescript": "^5"
   }
 }
