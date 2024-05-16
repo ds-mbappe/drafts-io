@@ -1,4 +1,4 @@
-import "./globals.css";
+import "./styles/globals.css";
 import "./../components/editor/styles/index.css"
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
