@@ -1,5 +1,5 @@
 import "./globals.css";
-import "./../components/editor/styles/index.css"
+import '../styles/index.css'
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner";
