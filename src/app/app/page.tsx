@@ -11,7 +11,7 @@ import { useBlockEditor } from '@/components/editor/hooks/useBlockEditor';
 
 export default function App() {
   const { leftSidebar } = useBlockEditor();
-  const [saveStatus, setSaveStatus] = useState("Saved")
+  const [saveStatus, setSaveStatus] = useState("Synced")
 
   // Simulate a delay in saving.
   const debouncedUpdates = useDebouncedCallback(() => {
@@ -32,7 +32,7 @@ export default function App() {
   }
 
   editor.on('update', () => {
-    setSaveStatus("Saving...");
+    setSaveStatus("Syncing...");
     debouncedUpdates()
   })
 
@@ -51,9 +51,9 @@ export default function App() {
 
         <div
           // onClick={() => { editor?.chain().focus().run(); }}
-          className="relative flex-1 flex min-h-screen cursor-text flex-col items-center z-[1]"
+          className="relative flex min-h-screen cursor-text flex-col items-center z-[1] flex-1 p-6"
         >
-          <div className="relative w-full max-w-screen-lg flex flex-col gap-2">
+          <div className="relative w-full max-w-screen-xl flex flex-col gap-2">
             <h1 className="text-6xl font-bold">
               Welcome to Drafts!
             </h1>

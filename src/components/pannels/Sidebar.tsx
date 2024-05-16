@@ -8,6 +8,9 @@ import React, { useEffect, useState, memo } from 'react';
 import { CreateNewDocument } from "./CreateNewDocument";
 import { AddExistingDocument } from "./AddExistingDocument";
 import { LeftSidebarDocumentItem } from "./LeftSidebarDocumentItem";
+import { Button } from "../ui/button";
+import Link from "next/link";
+import { HomeIcon } from "lucide-react";
 
 const Sidebar = memo(
   ({ isOpen, onClose }: { isOpen?: boolean; onClose: () => void }) => {
@@ -22,7 +25,7 @@ const Sidebar = memo(
     const [sharedDocuments, setSharedDocuments] = useState([])
 
     const windowClassName = cn(
-      'absolute top-0 left-0 mt-14 bg-white lg:bg-white/30 lg:backdrop-blur-xl h-full lg:h-auto lg:relative z-[2] w-0 duration-500 transition-all',
+      'absolute top-0 left-0 mt-14 lg:mt-0 bg-white lg:bg-white/30 lg:backdrop-blur-xl h-full lg:h-auto lg:relative z-[2] w-0 duration-300 transition-all',
       'dark:bg-black lg:dark:bg-black/30',
       !isOpen && 'border-r-transparent',
       isOpen && 'w-80 border-r border-r-neutral-200 dark:border-r-neutral-800',
@@ -124,7 +127,7 @@ const Sidebar = memo(
 
     return (
       <div className={windowClassName}>
-        <div className="w-full h-full flex flex-col overflow-y-auto gap-16 py-8">
+        <div className="w-full h-full flex flex-col overflow-y-auto gap-14 py-8">
           <div className="flex flex-col gap-2 text-left px-5">
             <p className="text-lg font-semibold text-foreground">
               {`Hello, ${user?.firstName} ${user?.lastName} !`}
@@ -142,44 +145,59 @@ const Sidebar = memo(
           </div>
 
           <div className="flex flex-col gap-5">
-            {/* Personnal Documents */}
-            <div className="flex flex-col gap-3">
-              <p className="text-base font-semibold border-b px-5">
-                {`Personnal documents`}
-              </p>
+            {/* Home button */}
+            <Button asChild variant={"ghost"} className='w-full h-10 gap-4 !justify-start cursor-pointer rounded-none'>
+              <Link href="/app" className="px-5">
+                <p className="text-base font-semibold">
+                  {`Home`}
+                </p>
+              </Link>
+            </Button>
 
-              <div className="flex flex-col gap-3">
-                <p className="text-sm font-normal text-[#64748B] px-5">
-                  {`Your personnal documents are documents you have created yourself.`}
+            <div className="flex flex-col gap-8">
+              {/* Personnal Documents */}
+              <div className="flex flex-col gap-2">
+                <p className="text-base font-semibold px-5">
+                  {`Personnal documents`}
                 </p>
 
-                <div className="flex flex-col gap-2">
-                  {
-                    documents?.map((doc: any) =>
-                      <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentDeleted={onDocumentDeleted} />
-                    )
-                  }
+                <div className="w-full h-[1px] bg-muted" />
+
+                <div className="flex flex-col gap-3">
+                  <p className="text-sm font-normal text-[#64748B] px-5">
+                    {`Your personnal documents are documents you have created yourself.`}
+                  </p>
+
+                  <div className="flex flex-col gap-2">
+                    {
+                      documents?.map((doc: any) =>
+                        <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentDeleted={onDocumentDeleted} />
+                      )
+                    }
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Shared Documents */}
-            <div className="flex flex-col gap-3">
-              <p className="text-base font-semibold border-b px-5">
-                {`Shared documents`}
-              </p>
-
-              <div className="flex flex-col gap-3">
-                <p className="text-sm font-normal text-[#64748B] px-5">
-                  {`Your Shared documents are documents you have added via their document ids.`}
+              {/* Shared Documents */}
+              <div className="flex flex-col gap-2">
+                <p className="text-base font-semibold px-5">
+                  {`Shared documents`}
                 </p>
 
-                <div className="flex flex-col gap-2">
-                  {
-                    sharedDocuments?.map((doc: any) =>
-                      <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentRemoved={onDocumentRemoved} />
-                    )
-                  }
+                <div className="w-full h-[1px] bg-muted" />
+
+                <div className="flex flex-col gap-3">
+                  <p className="text-sm font-normal text-[#64748B] px-5">
+                    {`Your Shared documents are documents you have added via their document ids.`}
+                  </p>
+
+                  <div className="flex flex-col gap-2">
+                    {
+                      sharedDocuments?.map((doc: any) =>
+                        <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentRemoved={onDocumentRemoved} />
+                      )
+                    }
+                  </div>
                 </div>
               </div>
             </div>

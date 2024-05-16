@@ -95,9 +95,9 @@ export default function App(props: DocumentProps) {
 
         <div
           // onClick={() => { editor?.chain().focus().run(); }}
-          className="relative w-full flex min-h-screen cursor-text flex-col items-start z-[1]"
+          className="relative flex min-h-screen cursor-text flex-col items-start z-[1] flex-1 p-6"
         >
-          <div className="relative w-full max-w-screen-lg">
+          <div className="relative w-full max-w-screen-xl">
             <Editor
               documentId={props.params.id}
               documentContent={doc}

@@ -92,7 +92,7 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
       onClick={() => { editor?.chain().focus().run(); }}
       className="relative w-full flex min-h-screen cursor-text flex-col items-start"
     >
-      <div className="relative w-full max-w-screen-lg">
+      <div className="relative w-full max-w-screen-xl">
         <ContentItemMenu editor={editor} />
         <EditorContent editor={editor} />
       </div>
