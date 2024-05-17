@@ -29,6 +29,7 @@ export default function App(props: DocumentProps) {
   const [doc, setDocument] = useState(null)
   const [words, setWords] = useState(0)
   const [characters, setCharacters] = useState(0)
+  const [historyData, setHistoryData] = useState({})
   const [userFullName, setUserFullName] = useState<String>("");
   const [saveStatus, setSaveStatus] = useState<String>("Synced");
   const [collabToken, setCollabToken] = useState<string | null>(null)
@@ -60,6 +61,10 @@ export default function App(props: DocumentProps) {
     setCollabToken(String(process.env.NEXT_PUBLIC_TIPTAP_CLOUD_TOKEN))
   }
 
+  const updateHistoryData = (data: any) => {
+    setHistoryData(data)
+  }
+
   useEffect(() => {
     fetchDocument(props.params.id)
   }, [props.params.id]);
@@ -88,6 +93,7 @@ export default function App(props: DocumentProps) {
         characters={characters}
         isSidebarOpen={leftSidebar.isOpen}
         toggleSidebar={leftSidebar.toggle}
+        historyData={historyData}
       />
       
       <div className="flex h-full">
@@ -106,6 +112,7 @@ export default function App(props: DocumentProps) {
               yDoc={yDoc}
               provider={provider}
               userFullName={userFullName}
+              updateHistoryData={updateHistoryData}
             />
           </div>
         </div>

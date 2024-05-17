@@ -8,12 +8,18 @@ import { useDebouncedCallback } from "use-debounce";
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
+import CollaborationHistory, { CollabOnUpdateProps } from '@tiptap-pro/extension-collaboration-history';
 import { useBlockEditor } from "./hooks/useBlockEditor";
 
-export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus, yDoc, provider, userFullName }: any) {
+export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus, yDoc, provider, userFullName, updateHistoryData }: any) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { initialContent } = useBlockEditor();
+  // const [versions, setVersions] = useState([]);
+  // const [isAutoVersioning, setIsAutoVersioning] = useState(false);
+  // const [latestVersion, setLatestVersion] = useState(null);
+  // const [currentVersion, setCurrentVersion] = useState(null);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const patchRequest = async (documentId: String, document: any) => {
     const response = await fetch(`/api/document/${documentId}`, {
@@ -56,14 +62,30 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
     }, 500);
   }, 1000);
 
+  const UpdateHistoryVersions = useDebouncedCallback(() => {
+    editor?.commands.saveVersion()
+  }, 1500)
+
+  const onUpdate = () => {
+    setHasChanges(true)
+  }
+
+  const onSynced = () => {
+    yDoc.on('update', onUpdate)
+  }
+
   const editor = useEditor({
     autofocus: true,
     onCreate: ({ editor }) => {
       provider?.on('synced', () => {
-        if (editor.isEmpty) {
-          editor.commands.setContent(initialContent)
-        }
+        onSynced();
+        // if (editor.isEmpty) {
+        //   editor.commands.setContent(initialContent)
+        // }
       })
+      // provider?.on('authenticationFailed', async() => {
+      //   console.log("The authentication has failed !")
+      // })
     },
     extensions: [
       ...ExtensionKit(),
@@ -77,11 +99,23 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
           color: userColor,
         },
       }),
+      CollaborationHistory.configure({
+        provider,
+        onUpdate: (data: any) => {
+          updateHistoryData(data)
+          // console.log(data)
+          // setVersions(data.versions)
+          // setIsAutoVersioning(data.versioningEnabled)
+          // setLatestVersion(data.version)
+          // setCurrentVersion(data.currentVersion)
+        },
+      }),
     ],
     onUpdate: (e) => {
       updateStatusAndCount()
       setSaveStatus("Syncing...");
       debouncedUpdates(e);
+      UpdateHistoryVersions()
     }
   }, [])
 
