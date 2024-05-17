@@ -15,7 +15,7 @@ import EditorInfo from './EditorInfo';
 import { memo } from 'react';
 import { LeftSidebar } from '../pannels/LeftSidebar';
 import { useRouter } from 'next/navigation';
-import { PanelTopClose, PanelLeft } from 'lucide-react';
+import { PanelTopClose, PanelLeft, FileClock } from 'lucide-react';
 
 const Navbar = memo(({ characters, words, status, isSidebarOpen, toggleSidebar }: any) => {
   const { user } = useUser();
@@ -38,7 +38,12 @@ const Navbar = memo(({ characters, words, status, isSidebarOpen, toggleSidebar }
         <>
           <div className="flex items-center justify-center gap-5">
             <div className="flex gap-2 items-center justify-center">
+              <Button size={"sm"} variant={"ghost"} title="Document history">
+                <FileClock />
+              </Button>
+
               <div className={`w-2 h-2 rounded-full flex gap-1 items-center justify-center ${status === 'Synced' ? 'bg-green-500' : 'bg-yellow-500'}`} />
+
               <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
                 { status }
               </span>
