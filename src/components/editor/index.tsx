@@ -69,8 +69,7 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
 
   const UpdateHistoryVersions = useDebouncedCallback(() => {
     if (editor?.can().saveVersion()) {
-      console.log("Can save new version")
-      console.log(editor?.chain().focus().saveVersion().run())
+      // console.log("Can save new version")
     }
   }, 30000)
 
