@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation';
 import { PanelTopClose, PanelLeft } from 'lucide-react';
 import HistoryDropdown from '../pannels/HistoryDropdown/HistoryDropdown';
 
-const Navbar = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, historyData }: any) => {
+const Navbar = memo(({ editor, characters, words, status, isSidebarOpen, toggleSidebar, historyData, provider }: any) => {
   const { user } = useUser();
   const { signOut } = useAuth();
   const router = useRouter()
@@ -37,9 +37,13 @@ const Navbar = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, 
         <>
           <div className="flex items-center justify-center gap-5">
             <div className="flex gap-2 items-center justify-center">
-              <HistoryDropdown historyData={historyData} />
+              <HistoryDropdown
+                editor={editor}
+                provider={provider}
+                historyData={historyData}
+              />
 
-              <div className={`w-2 h-2 rounded-full flex gap-1 items-center justify-center ${status === 'Synced' ? 'bg-green-500' : 'bg-yellow-500'}`} />
+              <div className={`w-2 h-2 rounded-full flex gap-1 items-center justify-center ${status === 'Synced' ? 'bg-green-500' : status === 'Not Synced' ? 'bg-red-500' : 'bg-yellow-500'}`} />
 
               <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
                 { status }

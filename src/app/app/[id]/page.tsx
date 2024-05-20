@@ -9,6 +9,7 @@ import { notFound, redirect, useSearchParams } from "next/navigation";
 import Sidebar from '@/components/pannels/Sidebar';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
 import { useBlockEditor } from '@/components/editor/hooks/useBlockEditor';
+import { JWT } from "node-jsonwebtoken";
 
 type DocumentProps = {
   params: {
@@ -21,6 +22,14 @@ type CharacterCountType = {
   characters: Function
 }
 
+interface Payload {
+  iat: number,
+  // nbf: number,
+  exp: number,
+  iss: string,
+  aud: string,
+}
+
 export default function App(props: DocumentProps) {
   const docId = props.params.id
   const { user } = useUser();
@@ -31,7 +40,7 @@ export default function App(props: DocumentProps) {
   const [characters, setCharacters] = useState(0)
   const [historyData, setHistoryData] = useState({})
   const [userFullName, setUserFullName] = useState<String>("");
-  const [saveStatus, setSaveStatus] = useState<String>("Synced");
+  const [saveStatus, setSaveStatus] = useState<String>("");
   const [collabToken, setCollabToken] = useState<string | null>(null)
   const [provider, setProvider] = useState<TiptapCollabProvider | null>(null)
 
@@ -58,12 +67,27 @@ export default function App(props: DocumentProps) {
 
     const realDoc = await data.json();
     setDocument(realDoc.document)
-    setCollabToken(String(process.env.NEXT_PUBLIC_TIPTAP_CLOUD_TOKEN))
   }
 
   const updateHistoryData = (data: any) => {
     setHistoryData(data)
   }
+
+  useEffect(() => {
+    const dataFetch = async () => {
+      const jwt = new JWT<Payload>(String(process.env.NEXT_PUBLIC_TIPTAP_CLOUD_SECRET));
+      const token = await jwt.sign({
+        "iat": Math.floor(Date.now() / 1000),
+        // "nbf": Date.now() / 1000,
+        "exp": Math.floor(Date.now() / 1000) + 86400,
+        "iss": "https://cloud.tiptap.dev",
+        "aud": `${process.env.NEXT_PUBLIC_TIPTAP_CLOUD_APP_ID}`
+      });
+      // console.log(token)
+      setCollabToken(token)
+    }
+    dataFetch()
+  }, [])
 
   useEffect(() => {
     fetchDocument(props.params.id)
@@ -94,6 +118,7 @@ export default function App(props: DocumentProps) {
         isSidebarOpen={leftSidebar.isOpen}
         toggleSidebar={leftSidebar.toggle}
         historyData={historyData}
+        provider={provider}
       />
       
       <div className="flex h-full">

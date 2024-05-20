@@ -10,15 +10,12 @@ import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
 import CollaborationHistory, { CollabOnUpdateProps } from '@tiptap-pro/extension-collaboration-history';
 import { useBlockEditor } from "./hooks/useBlockEditor";
+import { Button } from "../ui/button";
 
 export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus, yDoc, provider, userFullName, updateHistoryData }: any) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { initialContent } = useBlockEditor();
-  // const [versions, setVersions] = useState([]);
-  // const [isAutoVersioning, setIsAutoVersioning] = useState(false);
-  // const [latestVersion, setLatestVersion] = useState(null);
-  // const [currentVersion, setCurrentVersion] = useState(null);
   const [hasChanges, setHasChanges] = useState(false);
 
   const patchRequest = async (documentId: String, document: any) => {
@@ -35,7 +32,11 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
       throw new Error("Failed to update document");
     }
 
-    setSaveStatus("Synced");
+    if (provider?.isAuthenticated) {
+      setSaveStatus("Synced");
+    } else {
+      setSaveStatus("Not Synced");
+    }
 
     // Force a cache invalidation.
     startTransition(() => {
@@ -58,13 +59,20 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
     const editorData = editor.getHTML();
     await patchRequest(documentId, editorData);
     setTimeout(() => {
-      setSaveStatus("Synced");
+      if (provider?.isAuthenticated) {
+        setSaveStatus("Synced");
+      } else {
+        setSaveStatus("Not Synced");
+      }
     }, 500);
   }, 1000);
 
   const UpdateHistoryVersions = useDebouncedCallback(() => {
-    editor?.commands.saveVersion()
-  }, 1500)
+    if (editor?.can().saveVersion()) {
+      console.log("Can save new version")
+      console.log(editor?.chain().focus().saveVersion().run())
+    }
+  }, 30000)
 
   const onUpdate = () => {
     setHasChanges(true)
@@ -75,7 +83,7 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
   }
 
   const editor = useEditor({
-    autofocus: true,
+    // autofocus: true,
     onCreate: ({ editor }) => {
       provider?.on('synced', () => {
         onSynced();
@@ -83,9 +91,10 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
         //   editor.commands.setContent(initialContent)
         // }
       })
-      // provider?.on('authenticationFailed', async() => {
-      //   console.log("The authentication has failed !")
-      // })
+      provider?.on('authenticationFailed', async() => {
+        setSaveStatus("Not Synced");
+        console.log("The authentication has failed !")
+      })
     },
     extensions: [
       ...ExtensionKit(),
@@ -101,31 +110,25 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
       }),
       CollaborationHistory.configure({
         provider,
-        onUpdate: (data: any) => {
-          updateHistoryData(data)
-          // console.log(data)
-          // setVersions(data.versions)
-          // setIsAutoVersioning(data.versioningEnabled)
-          // setLatestVersion(data.version)
-          // setCurrentVersion(data.currentVersion)
+        onUpdate(payload) {
+          // console.log(payload)
+          updateHistoryData(payload)
         },
       }),
     ],
-    onUpdate: (e) => {
-      updateStatusAndCount()
-      setSaveStatus("Syncing...");
-      debouncedUpdates(e);
-      UpdateHistoryVersions()
-    }
-  }, [])
+  }, [provider, yDoc])
+
+  editor?.on('update', (e) => {
+    updateStatusAndCount()
+    setSaveStatus("Syncing...");
+    debouncedUpdates(e);
+    UpdateHistoryVersions()
+  })
 
   if (!editor) return
 
   return (
-    <div
-      onClick={() => { editor?.chain().focus().run(); }}
-      className="relative w-full flex min-h-screen cursor-text flex-col items-start"
-    >
+    <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
       <div className="relative w-full max-w-screen-xl">
         <ContentItemMenu editor={editor} />
         <EditorContent editor={editor} />

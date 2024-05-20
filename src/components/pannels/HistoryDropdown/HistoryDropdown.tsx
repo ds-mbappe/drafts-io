@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -16,21 +16,66 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button";
 import { FileClock } from 'lucide-react';
-import HistoryDropdownItem from './HistoryDropdownItem';
+import { EditorContent, useEditor } from '@tiptap/react';
+import ExtensionKit from '@/components/editor/extensions/extension-kit';
+import { watchPreviewContent } from '@tiptap-pro/extension-collaboration-history';
 
-const HistoryDropdown = memo((data: any) => {
+const HistoryDropdown = memo(({ historyData, provider, editor }: any) => {
+  const [activeContent, setActiveContent] = useState<any>();
+  const [currentVersionId, setCurrentVersionId] = useState(null);
+
+  const handleVersionChange = useCallback((newVersion: any) => {
+    setCurrentVersionId(newVersion)
+
+    provider.sendStateless(JSON.stringify({
+      action: 'version.preview',
+      version: newVersion,
+    }))
+  }, [provider])
+
+  // const editor = useEditor({
+  //   editable: false,
+  //   content: '',
+  //   extensions: [
+  //     ...ExtensionKit(),
+  //   ],
+  //   editorProps: {
+  //     attributes: {
+  //       autocomplete: 'off',
+  //       autocorrect: 'off',
+  //       autocapitalize: 'off',
+  //       class: 'min-h-full',
+  //     },
+  //   },
+  // });
 
   const renderDate = (date: string | number | Date) => {
     const d = new Date(date)
     const month = String(d.getMonth() + 1).padStart(2, '0')
     const day = String(d.getDate()).padStart(2, '0')
     const year = d.getFullYear()
-  
     const hours = String(d.getHours()).padStart(2, '0')
     const minutes = String(d.getMinutes()).padStart(2, '0')
   
     return `${day}-${month}-${year}, at ${hours}:${minutes}`
   }
+
+  const setContent = (version: any) => {
+    setActiveContent(version)
+    handleVersionChange(version)
+  }
+
+  useEffect(() => {
+    // const unbindContentWatcher = watchPreviewContent(provider, content => {
+    //   if (editor) {
+    //     editor.commands.setContent(content)
+    //   }
+    // })
+
+    // return () => {
+    //   unbindContentWatcher()
+    // }
+  }, [provider, editor])
 
   return (
     <Dialog>
@@ -52,16 +97,16 @@ const HistoryDropdown = memo((data: any) => {
 
           <div className="flex flex-col max-h-[300px] overflow-y-auto">
             {
-              data?.historyData?.versions?.length ?
+              historyData?.versions?.length ?
               <>
                 {
-                  data?.historyData?.versions?.sort(function(a: any, b: any) {
+                  historyData?.versions?.sort(function(a: any, b: any) {
                     return b?.version - a?.version
                   })?.map((version: any) =>
-                    <DialogTrigger asChild key={version.date}>
+                    <DialogTrigger asChild key={version.date} onClick={() => setContent(version)}>
                       <div className="flex flex-col gap-1.5 cursor-pointer hover:bg-muted rounded-sm px-2 py-1.5 items-start">
                         <p className="text-base font-semibold">
-                          {`Version - ${version?.version}`}
+                          {`Version ${version?.version}`}
                         </p>
 
                         <p className="text-sm text-muted-foreground">
@@ -84,10 +129,16 @@ const HistoryDropdown = memo((data: any) => {
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. Are you sure you want to permanently
-            delete this file from our servers?
+          <DialogTitle>
+            {`Preview of Version ${activeContent?.version}`}
+          </DialogTitle>
+
+          <DialogDescription asChild>
+            <div className="w-full h-full flex-1">
+              <div className="p-3">
+                <EditorContent editor={editor} />
+              </div>
+            </div>
           </DialogDescription>
         </DialogHeader>
       </DialogContent>

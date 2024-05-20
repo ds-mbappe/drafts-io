@@ -16,7 +16,7 @@ export default function App() {
   // Simulate a delay in saving.
   const debouncedUpdates = useDebouncedCallback(() => {
     setTimeout(() => {
-      setSaveStatus("Saved");
+      setSaveStatus("Synced");
     }, 500);
   }, 1000);
 
@@ -27,9 +27,7 @@ export default function App() {
     ],
   });
 
-  if (!editor) {
-    return null
-  }
+  if (!editor) return
 
   editor.on('update', () => {
     setSaveStatus("Syncing...");
@@ -39,6 +37,7 @@ export default function App() {
   return (
     <div className="w-full h-full flex flex-col">
       <Navbar
+        editor={editor}
         status={saveStatus}
         isSidebarOpen={leftSidebar.isOpen}
         toggleSidebar={leftSidebar.toggle}
