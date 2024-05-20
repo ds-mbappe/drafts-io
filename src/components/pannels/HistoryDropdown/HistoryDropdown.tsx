@@ -19,17 +19,18 @@ import { FileClock } from 'lucide-react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import ExtensionKit from '@/components/editor/extensions/extension-kit';
 import { watchPreviewContent } from '@tiptap-pro/extension-collaboration-history';
+import { TiptapCollabProvider } from '@hocuspocus/provider';
 
-const HistoryDropdown = memo(({ historyData, provider }: any) => {
+const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, provider: TiptapCollabProvider }) => {
   const [activeContent, setActiveContent] = useState<any>();
   const [currentVersionId, setCurrentVersionId] = useState(null);
 
   const handleVersionChange = useCallback((newVersion: any) => {
-    setCurrentVersionId(newVersion)
+    setCurrentVersionId(newVersion?.version)
 
     provider.sendStateless(JSON.stringify({
       action: 'version.preview',
-      version: newVersion,
+      version: newVersion?.version,
     }))
   }, [provider])
 
@@ -44,7 +45,7 @@ const HistoryDropdown = memo(({ historyData, provider }: any) => {
         autocomplete: 'off',
         autocorrect: 'off',
         autocapitalize: 'off',
-        class: 'min-h-full',
+        class: 'min-h-full !pt-2 !pr-0 !pb-0 !pl-0',
       },
     },
   });
@@ -66,15 +67,15 @@ const HistoryDropdown = memo(({ historyData, provider }: any) => {
   }
 
   useEffect(() => {
-    // const unbindContentWatcher = watchPreviewContent(provider, content => {
-    //   if (editor) {
-    //     editor.commands.setContent(content)
-    //   }
-    // })
+    const unbindContentWatcher = watchPreviewContent(provider, content => {
+      if (editor) {
+        editor.commands.setContent(content)
+      }
+    })
 
-    // return () => {
-    //   unbindContentWatcher()
-    // }
+    return () => {
+      unbindContentWatcher()
+    }
   }, [provider, editor])
 
   return (
@@ -135,7 +136,7 @@ const HistoryDropdown = memo(({ historyData, provider }: any) => {
 
           <DialogDescription asChild>
             <div className="w-full h-full flex-1">
-              <div className="p-3">
+              <div>
                 <EditorContent editor={editor} />
               </div>
             </div>
