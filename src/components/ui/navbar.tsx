@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation';
 import { PanelTopClose, PanelLeft } from 'lucide-react';
 import HistoryDropdown from '../pannels/HistoryDropdown/HistoryDropdown';
 
-const Navbar = memo(({ editor, characters, words, status, isSidebarOpen, toggleSidebar, historyData, provider }: any) => {
+const Navbar = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, historyData, provider }: any) => {
   const { user } = useUser();
   const { signOut } = useAuth();
   const router = useRouter()
@@ -38,7 +38,6 @@ const Navbar = memo(({ editor, characters, words, status, isSidebarOpen, toggleS
           <div className="flex items-center justify-center gap-5">
             <div className="flex gap-2 items-center justify-center">
               <HistoryDropdown
-                editor={editor}
                 provider={provider}
                 historyData={historyData}
               />

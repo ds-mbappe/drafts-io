@@ -20,7 +20,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import ExtensionKit from '@/components/editor/extensions/extension-kit';
 import { watchPreviewContent } from '@tiptap-pro/extension-collaboration-history';
 
-const HistoryDropdown = memo(({ historyData, provider, editor }: any) => {
+const HistoryDropdown = memo(({ historyData, provider }: any) => {
   const [activeContent, setActiveContent] = useState<any>();
   const [currentVersionId, setCurrentVersionId] = useState(null);
 
@@ -33,21 +33,21 @@ const HistoryDropdown = memo(({ historyData, provider, editor }: any) => {
     }))
   }, [provider])
 
-  // const editor = useEditor({
-  //   editable: false,
-  //   content: '',
-  //   extensions: [
-  //     ...ExtensionKit(),
-  //   ],
-  //   editorProps: {
-  //     attributes: {
-  //       autocomplete: 'off',
-  //       autocorrect: 'off',
-  //       autocapitalize: 'off',
-  //       class: 'min-h-full',
-  //     },
-  //   },
-  // });
+  const editor = useEditor({
+    editable: false,
+    content: '',
+    extensions: [
+      ...ExtensionKit(),
+    ],
+    editorProps: {
+      attributes: {
+        autocomplete: 'off',
+        autocorrect: 'off',
+        autocapitalize: 'off',
+        class: 'min-h-full',
+      },
+    },
+  });
 
   const renderDate = (date: string | number | Date) => {
     const d = new Date(date)

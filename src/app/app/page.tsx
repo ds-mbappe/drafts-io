@@ -37,7 +37,6 @@ export default function App() {
   return (
     <div className="w-full h-full flex flex-col">
       <Navbar
-        editor={editor}
         status={saveStatus}
         isSidebarOpen={leftSidebar.isOpen}
         toggleSidebar={leftSidebar.toggle}
