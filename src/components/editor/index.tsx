@@ -82,7 +82,6 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
   }
 
   const editor = useEditor({
-    // autofocus: true,
     onCreate: ({ editor }) => {
       provider?.on('synced', () => {
         onSynced();
