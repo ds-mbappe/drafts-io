@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -9,7 +8,7 @@ import { DropdownMenu,
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -128,20 +127,26 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <DialogContent className="z-[101] w-full overflow-hidden">
+      <DialogContent className="z-[101] w-full h-[600px] overflow-hidden">
         <DialogHeader>
           <DialogTitle>
             {`Preview of Version ${activeContent?.version}`}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex overflow-hidden w-full h-[600px]">
+        <div className="flex overflow-hidden w-full">
           <div className="overflow-auto max-h-full flex-1 h-full">
             <div className="flex flex-col h-full">
               <EditorContent editor={editor} />
             </div>
           </div>
         </div>
+
+        <DialogFooter className="!justify-center">
+          <Button>
+            {`Revert to this version`}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
