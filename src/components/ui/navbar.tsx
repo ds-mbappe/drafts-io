@@ -37,10 +37,13 @@ const Navbar = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, 
         <>
           <div className="flex items-center justify-center gap-5">
             <div className="flex gap-2 items-center justify-center">
-              <HistoryDropdown
-                provider={provider}
-                historyData={historyData}
-              />
+              {
+                provider ?
+                  <HistoryDropdown
+                    provider={provider}
+                    historyData={historyData}
+                  /> :  <></>
+              }
 
               <div className={`w-2 h-2 rounded-full flex gap-1 items-center justify-center ${status === 'Synced' ? 'bg-green-500' : status === 'Not Synced' ? 'bg-red-500' : 'bg-yellow-500'}`} />
 

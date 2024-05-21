@@ -8,6 +8,7 @@ import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
 import { useDebouncedCallback } from 'use-debounce';
 import Sidebar from '@/components/pannels/Sidebar';
 import { useBlockEditor } from '@/components/editor/hooks/useBlockEditor';
+import History from '@tiptap/extension-history';
 
 export default function App() {
   const { leftSidebar } = useBlockEditor();
@@ -24,6 +25,7 @@ export default function App() {
     autofocus: 'end',
     extensions: [
       ...ExtensionKit(),
+      History,
     ],
   });
 
