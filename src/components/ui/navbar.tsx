@@ -42,7 +42,7 @@ const Navbar = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, 
                   <HistoryDropdown
                     provider={provider}
                     historyData={historyData}
-                  /> :  <></>
+                  /> : <></>
               }
 
               <div className={`w-2 h-2 rounded-full flex gap-1 items-center justify-center ${status === 'Synced' ? 'bg-green-500' : status === 'Not Synced' ? 'bg-red-500' : 'bg-yellow-500'}`} />
@@ -58,7 +58,7 @@ const Navbar = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, 
 
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <Avatar className="border-2 border-black cursor-pointer">
+                <Avatar className="border-[0.5px] border-black cursor-pointer">
                   <AvatarImage src={user?.imageUrl} />
                   <AvatarFallback>
                     { `${user?.firstName || "A" + user?.lastName}` }

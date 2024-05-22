@@ -8,8 +8,8 @@ import { useUser } from '@clerk/nextjs';
 import { notFound, redirect, useSearchParams } from "next/navigation";
 import Sidebar from '@/components/pannels/Sidebar';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
-import { useBlockEditor } from '@/components/editor/hooks/useBlockEditor';
 import { JWT } from "node-jsonwebtoken";
+import { useSidebar } from '@/components/editor/hooks/useSidebar';
 
 type DocumentProps = {
   params: {
@@ -33,8 +33,8 @@ interface Payload {
 export default function App(props: DocumentProps) {
   const docId = props.params.id
   const { user } = useUser();
+  const leftSidebar = useSidebar()
   const searchParams = useSearchParams()
-  const { leftSidebar } = useBlockEditor();
   const [doc, setDocument] = useState(null)
   const [words, setWords] = useState(0)
   const [characters, setCharacters] = useState(0)
@@ -47,8 +47,8 @@ export default function App(props: DocumentProps) {
   const hasCollab = parseInt(searchParams.get('noCollab') as string) !== 1
 
   const getCharacterAndWordsCount = (characterCount: CharacterCountType) => {
-    setWords(characterCount.words())
-    setCharacters(characterCount.characters())
+    setWords(characterCount?.words())
+    setCharacters(characterCount?.characters())
   }
 
   const getSaveStatus = (status: String) => {
@@ -124,10 +124,7 @@ export default function App(props: DocumentProps) {
       <div className="flex h-full">
         <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
-        <div
-          // onClick={() => { editor?.chain().focus().run(); }}
-          className="relative flex min-h-screen cursor-text flex-col items-start z-[1] flex-1 p-6"
-        >
+        <div className="relative flex min-h-screen cursor-text flex-col items-start z-[1] flex-1 p-6">
           <div className="relative w-full max-w-screen-xl">
             <Editor
               documentId={props.params.id}

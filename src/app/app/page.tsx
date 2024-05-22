@@ -7,11 +7,11 @@ import { ExtensionKit } from '../../components/editor/extensions/extension-kit';
 import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
 import { useDebouncedCallback } from 'use-debounce';
 import Sidebar from '@/components/pannels/Sidebar';
-import { useBlockEditor } from '@/components/editor/hooks/useBlockEditor';
 import History from '@tiptap/extension-history';
+import { useSidebar } from '@/components/editor/hooks/useSidebar';
 
 export default function App() {
-  const { leftSidebar } = useBlockEditor();
+  const leftSidebar = useSidebar();
   const [saveStatus, setSaveStatus] = useState("Synced")
 
   // Simulate a delay in saving.
@@ -49,14 +49,11 @@ export default function App() {
       <div className="flex h-full">
         <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
-        <div
-          // onClick={() => { editor?.chain().focus().run(); }}
-          className="relative flex min-h-screen cursor-text flex-col items-center z-[1] flex-1 p-6"
-        >
+        <div className="relative flex min-h-screen cursor-text flex-col items-center z-[1] flex-1 p-6">
           <div className="relative w-full max-w-screen-xl flex flex-col gap-2">
-            <h1 className="text-6xl font-bold">
+            {/* <h1 className="text-6xl font-bold">
               Welcome to Drafts!
-            </h1>
+            </h1> */}
 
             <ContentItemMenu editor={editor} />
             <EditorContent editor={editor} />
