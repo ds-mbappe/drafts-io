@@ -11,6 +11,7 @@ import History from '@tiptap/extension-history';
 import { useSidebar } from '@/components/editor/hooks/useSidebar';
 import 'katex/dist/katex.min.css';
 import { LinkMenu } from '../../components/editor/menus/LinkMenu'
+import TextMenu from '@/components/editor/menus/TextMenu/TextMenu';
 
 export default function App() {
   const leftSidebar = useSidebar();
@@ -53,13 +54,14 @@ export default function App() {
         <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
         <div className="relative flex min-h-screen cursor-text flex-col items-center z-[1] flex-1 p-6">
-          <div className="relative w-full max-w-screen-xl flex flex-col gap-2">
+          <div className="relative w-full max-w-screen-xl flex flex-col gap-2" ref={menuContainerRef}>
             {/* <h1 className="text-6xl font-bold">
               Welcome to Drafts!
             </h1> */}
 
             <ContentItemMenu editor={editor} />
             <LinkMenu editor={editor} appendTo={menuContainerRef} />
+            <TextMenu editor={editor} />
             <EditorContent editor={editor} />
           </div>
         </div>

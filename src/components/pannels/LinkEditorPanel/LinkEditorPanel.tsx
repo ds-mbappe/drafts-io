@@ -49,6 +49,7 @@ export const LinkEditorPanel = ({ onSetLink, initialOpenInNewTab, initialUrl }: 
       <form onSubmit={state.handleSubmit} className="flex items-center gap-2">
         <label className="flex items-center gap-2 p-2 rounded-lg bg-neutral-100 dark:bg-neutral-900 cursor-text">
           <Icon name="Link" className="flex-none text-black dark:text-white" />
+          
           <input
             type="url"
             className="flex-1 bg-transparent outline-none min-w-[12rem] text-black text-sm dark:text-white"
@@ -61,6 +62,7 @@ export const LinkEditorPanel = ({ onSetLink, initialOpenInNewTab, initialUrl }: 
           Set Link
         </Button>
       </form>
+
       <div className="mt-3">
         <label className="flex items-center justify-start gap-2 text-sm font-semibold cursor-pointer select-none text-neutral-500 dark:text-neutral-400">
           Open in new tab

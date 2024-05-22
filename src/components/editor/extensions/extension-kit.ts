@@ -1,29 +1,38 @@
 import { lowlight } from 'lowlight';
 import StarterKit from "@tiptap/starter-kit";
 import Emoji from '@tiptap-pro/extension-emoji';
+import { Color } from '@tiptap/extension-color';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
+import Underline from '@tiptap/extension-underline';
+import Subscript from '@tiptap/extension-subscript';
+import Highlight from '@tiptap/extension-highlight';
+import TextAlign from '@tiptap/extension-text-align';
+import TextStyle from '@tiptap/extension-text-style';
 import Typography from '@tiptap/extension-typography';
+import FontFamily from '@tiptap/extension-font-family';
 import Placeholder from "@tiptap/extension-placeholder";
+import Superscript from '@tiptap/extension-superscript';
 import Mathematics from '@tiptap-pro/extension-mathematics';
 import CharacterCount from '@tiptap/extension-character-count';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 
 import Link from "./Link";
+import Table from './Table/Table';
+import FontSize from './FontSize';
+import TableRow from './Table/Row';
+import TableCell from './Table/Cell';
+import TableHeader from './Table/Header';
+import UnderlineMark from './MarkUnderline';
 import BoldMark from './MarkBold';
 import ItalicMark from './MarkItalic';
 import HeadingMark from './MarkHeading';
 import AiWriter from './AiWriter/AiWriter';
 import ParagraphMark from './MarkParagraph';
-import UnderlineMark from './MarkUnderline';
 import HorizontalRule from "./HorizontalRule";
 import { TrailingNode } from './TrailingNode';
 import SlashCommand from "./SlashCommand/SlashCommand";
 import emojiSuggestion from './EmojiSuggestion/Suggestion';
-import Table from './Table/Table';
-import TableRow from './Table/Row';
-import TableCell from './Table/Cell';
-import TableHeader from './Table/Header';
 
 export const ExtensionKit = () => [
   StarterKit.configure({
@@ -98,7 +107,24 @@ export const ExtensionKit = () => [
   TableHeader,
   TableCell,
   TableRow,
-  Mathematics
+  TextStyle,
+  Mathematics,
+  Underline,
+  Subscript,
+  Superscript,
+  TextAlign.configure({
+    types: ['heading', 'paragraph'],
+  }),
+  Color.configure({
+    types: ['textStyle'],
+  }),
+  Highlight.configure({
+    multicolor: true,
+  }),
+  FontFamily.configure({
+    types: ['textStyle'],
+  }),
+  FontSize,
 ]
 
 export default ExtensionKit

@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import type { Doc as YDoc } from 'yjs'
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import { LinkMenu } from './menus/LinkMenu'
+import { TextMenu } from './menus/TextMenu/TextMenu'
 
 export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus, yDoc, provider, userFullName, updateHistoryData }: {
   documentId: String,
@@ -95,9 +96,10 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
 
   return (
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
-      <div className="relative w-full max-w-screen-xl">
+      <div className="relative w-full max-w-screen-xl" ref={menuContainerRef}>
         <ContentItemMenu editor={editor} />
         <LinkMenu editor={editor} appendTo={menuContainerRef} />
+        <TextMenu editor={editor} />
         <EditorContent editor={editor} className="tiptap" />
       </div>
     </div>
