@@ -91,7 +91,7 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
       })
       provider?.on('authenticationFailed', async() => {
         setSaveStatus("Not Synced");
-        console.log("The authentication has failed !")
+        console.log("The authentication has failed !");
       })
     },
     extensions: [
