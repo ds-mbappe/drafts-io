@@ -10,6 +10,7 @@ import Sidebar from '@/components/pannels/Sidebar';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
 import { JWT } from "node-jsonwebtoken";
 import { useSidebar } from '@/components/editor/hooks/useSidebar';
+import 'katex/dist/katex.min.css';
 
 type DocumentProps = {
   params: {

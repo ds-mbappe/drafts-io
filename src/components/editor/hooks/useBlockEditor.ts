@@ -112,8 +112,6 @@ export const useBlockEditor = ({
     UpdateHistoryVersions()
   })
 
-
-
   const characterCount = editor?.storage.characterCount || { characters: () => 0, words: () => 0 }
 
   // window.editor = editor

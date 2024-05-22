@@ -1,7 +1,7 @@
 "use client";
 
 import { EditorContent, useEditor } from "@tiptap/react";
-import React, { useState, useEffect, useTransition, useMemo } from "react";
+import React, { useState, useEffect, useTransition, useMemo, useRef } from "react";
 import { ExtensionKit } from './extensions/extension-kit';
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
@@ -13,6 +13,7 @@ import { useBlockEditor } from "./hooks/useBlockEditor";
 import { Button } from "../ui/button";
 import type { Doc as YDoc } from 'yjs'
 import { TiptapCollabProvider } from "@hocuspocus/provider";
+import { LinkMenu } from './menus/LinkMenu'
 
 export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus, yDoc, provider, userFullName, updateHistoryData }: {
   documentId: String,
@@ -25,6 +26,8 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
   updateHistoryData: Function,
 }) {
   const router = useRouter();
+
+  const menuContainerRef = useRef(null);
 
   const [isPending, startTransition] = useTransition();
 
@@ -94,6 +97,7 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
       <div className="relative w-full max-w-screen-xl">
         <ContentItemMenu editor={editor} />
+        <LinkMenu editor={editor} appendTo={menuContainerRef} />
         <EditorContent editor={editor} className="tiptap" />
       </div>
     </div>

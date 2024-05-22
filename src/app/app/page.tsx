@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Navbar from "@/components/ui/navbar";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { ExtensionKit } from '../../components/editor/extensions/extension-kit';
@@ -9,9 +9,12 @@ import { useDebouncedCallback } from 'use-debounce';
 import Sidebar from '@/components/pannels/Sidebar';
 import History from '@tiptap/extension-history';
 import { useSidebar } from '@/components/editor/hooks/useSidebar';
+import 'katex/dist/katex.min.css';
+import { LinkMenu } from '../../components/editor/menus/LinkMenu'
 
 export default function App() {
   const leftSidebar = useSidebar();
+  const menuContainerRef = useRef(null);
   const [saveStatus, setSaveStatus] = useState("Synced")
 
   // Simulate a delay in saving.
@@ -56,6 +59,7 @@ export default function App() {
             </h1> */}
 
             <ContentItemMenu editor={editor} />
+            <LinkMenu editor={editor} appendTo={menuContainerRef} />
             <EditorContent editor={editor} />
           </div>
         </div>

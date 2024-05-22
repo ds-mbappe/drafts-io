@@ -1,3 +1,27 @@
+.ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+.ProseMirror .Tiptap-mathematics-editor {
+  background: #202020;
+  color: #fff;
+  font-family: monospace;
+  padding: 0.2rem 0.5rem;
+}
+.ProseMirror .Tiptap-mathematics-render {
+  padding: 0 0.25rem;
+}
+.ProseMirror .Tiptap-mathematics-render--editable {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.ProseMirror .Tiptap-mathematics-render--editable:hover {
+  background: #eee;
+}
+.ProseMirror .Tiptap-mathematics-editor, .ProseMirror .Tiptap-mathematics-render {
+  border-radius: 0.25rem;
+  display: inline-block;
+}
+
 .ProseMirror pre {  
   white-space: pre-wrap;
 }
