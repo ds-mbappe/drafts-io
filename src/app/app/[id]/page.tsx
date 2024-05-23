@@ -87,6 +87,7 @@ export default function App(props: DocumentProps) {
       // console.log(token)
       setCollabToken(token)
     }
+
     dataFetch()
   }, [])
 
@@ -97,15 +98,16 @@ export default function App(props: DocumentProps) {
   const yDoc = useMemo(() => new YDoc(), [])
 
   useLayoutEffect(() => {
-    setProvider(
-      new TiptapCollabProvider({
+    if (hasCollab && collabToken) {
+      setProvider(new TiptapCollabProvider({
         name: `doc-${docId}`,
         appId: `${process.env.NEXT_PUBLIC_TIPTAP_CLOUD_APP_ID}`,
         token: collabToken,
         document: yDoc,
-      }),
-    )
-    setUserFullName(`${user?.fullName}`)
+      }))
+
+      setUserFullName(`${user?.fullName}`)
+    }
   }, [setProvider, collabToken, yDoc, docId, hasCollab])
 
   if ((hasCollab && (!collabToken || !provider))) return
@@ -125,7 +127,7 @@ export default function App(props: DocumentProps) {
       <div className="flex h-full">
         <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
-        <div className="relative flex min-h-screen cursor-text flex-col items-start z-[1] flex-1 p-6">
+        <div className="relative flex min-h-screen cursor-text flex-col items-start z-[1] flex-1 p-0 lg:p-6">
           <div className="relative w-full max-w-screen-xl">
             <Editor
               documentId={props.params.id}

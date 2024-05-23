@@ -53,7 +53,7 @@ export default function App() {
       <div className="flex h-full">
         <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
-        <div className="relative flex min-h-screen cursor-text flex-col items-center z-[1] flex-1 p-6">
+        <div className="relative flex min-h-screen cursor-text flex-col items-center z-[1] flex-1 p-0 lg:p-6">
           <div className="relative w-full max-w-screen-xl flex flex-col gap-2" ref={menuContainerRef}>
             {/* <h1 className="text-6xl font-bold">
               Welcome to Drafts!

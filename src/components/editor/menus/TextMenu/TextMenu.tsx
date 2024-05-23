@@ -57,7 +57,7 @@ export const TextMenu = ({ editor }: TextMenuProps) => {
 
         <MemoFontSizePicker onChange={commands.onSetFontSize} value={states.currentSize || ''} />
 
-        <Toolbar.Divider />
+        {/* <Toolbar.Divider /> */}
 
         <MemoButton tooltip="Bold" tooltipShortcut={['Mod', 'B']} onClick={commands.onBold} active={states.isBold}>
           <Icon name="Bold" />

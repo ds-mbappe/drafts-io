@@ -55,17 +55,13 @@ export const useBlockEditor = ({
     return `#${randomColor()}`
   }, [])
 
-  const awareness = useMemo(() => {
-    return provider?.awareness
-  }, [provider])
-
   const editor = useEditor({
     onCreate: ({ editor }) => {
       provider?.on('synced', () => {
         onSynced();
         const tiptap = document.querySelector(".tiptap")
         if (tiptap) {
-          tiptap.setAttribute('style', `cursor: url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 96 104" xmlns="http://www.w3.org/2000/svg"><path style="fill: ${userColor}" d="M0.86065 0.697766L95.7812 51.5907L50.3553 59.6832L34.4976 103.014L0.86065 0.697766Z" /></svg>'), default; !important`)
+          tiptap.setAttribute('style', `cursor: url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 96 104" xmlns="http://www.w3.org/2000/svg"><path style="fill: black" d="M0.86065 0.697766L95.7812 51.5907L50.3553 59.6832L34.4976 103.014L0.86065 0.697766Z" /></svg>'), default; !important`)
         }
       })
       provider?.on('authenticationFailed', ({ reason }: any) => {
