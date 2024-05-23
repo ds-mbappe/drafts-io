@@ -168,7 +168,7 @@ const Sidebar = memo(
                     {`Your personnal documents are documents you have created yourself.`}
                   </p>
 
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-0.5">
                     {
                       documents?.map((doc: any) =>
                         <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentDeleted={onDocumentDeleted} />
@@ -191,7 +191,7 @@ const Sidebar = memo(
                     {`Your Shared documents are documents you have added via their document ids.`}
                   </p>
 
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-0.5">
                     {
                       sharedDocuments?.map((doc: any) =>
                         <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentRemoved={onDocumentRemoved} />

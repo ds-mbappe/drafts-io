@@ -81,7 +81,7 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
     <Dialog>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <Button asChild size={"sm"} variant={"ghost"} title="Document history">
+          <Button asChild size={"sm"} variant={"ghost"}>
             <FileClock />
           </Button>
         </DropdownMenuTrigger>
