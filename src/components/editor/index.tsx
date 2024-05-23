@@ -100,7 +100,7 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
         <ContentItemMenu editor={editor} />
         <LinkMenu editor={editor} appendTo={menuContainerRef} />
         <TextMenu editor={editor} />
-        <EditorContent editor={editor} className="tiptap" />
+        <EditorContent editor={editor} className="tiptap" spellCheck={"false"} />
       </div>
     </div>
   )

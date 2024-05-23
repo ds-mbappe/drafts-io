@@ -102,7 +102,7 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
                 {
                   historyData?.versions?.sort(function(a: any, b: any) {
                     return b?.version - a?.version
-                  })?.map((version: any) =>
+                  })?.slice(0, 20)?.map((version: any) =>
                     <DialogTrigger asChild key={version.date} onClick={() => setContent(version)}>
                       <div className="flex flex-col gap-1.5 cursor-pointer hover:bg-muted rounded-sm px-2 py-1.5 items-start">
                         <p className="text-base font-semibold">

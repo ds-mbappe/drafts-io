@@ -62,7 +62,7 @@ export default function App() {
             <ContentItemMenu editor={editor} />
             <LinkMenu editor={editor} appendTo={menuContainerRef} />
             <TextMenu editor={editor} />
-            <EditorContent editor={editor} />
+            <EditorContent editor={editor} spellCheck={"false"} />
           </div>
         </div>
       </div>
