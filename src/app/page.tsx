@@ -10,6 +10,7 @@ export default function Home() {
       <h1 className="max-w-7xl border-b-4 border-r-4 border-t-4 border-primary py-8 pr-4 text-4xl font-medium sm:text-6xl md:text-7xl lg:text-8xl">
         Log into your Drafts App account.
       </h1>
+
       <div className="mt-8 flex gap-4">
         {!userId ? (
           <>
@@ -19,6 +20,7 @@ export default function Home() {
             >
               Sign-up
             </Link>
+            
             <Link
               className={buttonVariants({ variant: "default" })}
               href="/sign-in"

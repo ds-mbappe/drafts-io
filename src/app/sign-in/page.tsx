@@ -5,7 +5,7 @@ export default function SignInPage() {
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-gray-200">
       <SignIn
         appearance={{ variables: { colorPrimary: "#000" } }}
-        afterSignInUrl="/app"
+        afterSignInUrl="/"
       />
     </main>
   );

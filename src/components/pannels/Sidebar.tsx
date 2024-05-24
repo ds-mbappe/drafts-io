@@ -3,22 +3,21 @@
 import { toast } from "sonner";
 import { cn } from '@/lib/utils';
 import { useUser } from '@clerk/clerk-react';
-import { redirect, useRouter } from 'next/navigation';
-import React, { useEffect, useState, memo } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState, memo, useCallback } from 'react';
 import { CreateNewDocument } from "./CreateNewDocument";
 import { AddExistingDocument } from "./AddExistingDocument";
 import { LeftSidebarDocumentItem } from "./LeftSidebarDocumentItem";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { HomeIcon } from "lucide-react";
 
 const Sidebar = memo(
   ({ isOpen, onClose }: { isOpen?: boolean; onClose: () => void }) => {
-    // const handlePotentialClose = useCallback(() => {
-    //   if (window.innerWidth < 1024) {
-    //     onClose()
-    //   }
-    // }, [onClose])
+    const handlePotentialClose = useCallback(() => {
+      if (window.innerWidth < 1024) {
+        onClose()
+      }
+    }, [onClose])
     const { user } = useUser();
     const router = useRouter();
     const [documents, setDocuments] = useState([])
@@ -57,6 +56,11 @@ const Sidebar = memo(
         setDocuments(realDocs.documents)
       } catch (error) {
         console.log(error);
+        toast(`Error`, {
+          description: `Error fetching personal documents, please try again !`,
+          duration: 5000,
+          important: true,
+        })
       }
     }
 
@@ -70,6 +74,11 @@ const Sidebar = memo(
         setSharedDocuments(realDocs.documents)
       } catch (error) {
         console.log(error);
+        toast(`Error`, {
+          description: `Error fetching shared documents, please try again !`,
+          duration: 5000,
+          important: true,
+        })
       }
     }
 

@@ -5,7 +5,7 @@ import Navbar from "@/components/ui/navbar";
 import Editor from "@/components/editor"
 import { Doc as YDoc } from 'yjs'
 import { useUser } from '@clerk/nextjs';
-import { notFound, redirect, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Sidebar from '@/components/pannels/Sidebar';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
 import { JWT } from "node-jsonwebtoken";
@@ -34,6 +34,7 @@ interface Payload {
 export default function App(props: DocumentProps) {
   const docId = props.params.id
   const { user } = useUser();
+  const router = useRouter();
   const leftSidebar = useSidebar()
   const searchParams = useSearchParams()
   const [doc, setDocument] = useState(null)
@@ -63,7 +64,7 @@ export default function App(props: DocumentProps) {
     });
 
     if (!data.ok) {
-      notFound()
+      router.push("/not-found")
     }
 
     const realDoc = await data.json();
@@ -98,7 +99,7 @@ export default function App(props: DocumentProps) {
   const yDoc = useMemo(() => new YDoc(), [])
 
   useLayoutEffect(() => {
-    if (hasCollab && collabToken) {
+    if (hasCollab && collabToken && doc) {
       setProvider(new TiptapCollabProvider({
         name: `doc-${docId}`,
         appId: `${process.env.NEXT_PUBLIC_TIPTAP_CLOUD_APP_ID}`,
@@ -108,7 +109,7 @@ export default function App(props: DocumentProps) {
 
       setUserFullName(`${user?.fullName}`)
     }
-  }, [setProvider, collabToken, yDoc, docId, hasCollab])
+  }, [setProvider, collabToken, yDoc, docId, hasCollab, doc])
 
   if ((hasCollab && (!collabToken || !provider))) return
 
