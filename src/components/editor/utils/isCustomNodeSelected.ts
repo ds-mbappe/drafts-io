@@ -2,6 +2,7 @@ import { Editor } from '@tiptap/react';
 import { HorizontalRule } from '../extensions/HorizontalRule';
 import { Link } from '../extensions/Link';
 import { CodeBlock } from '@tiptap/extension-code-block';
+import AiWriter from '../extensions/AiWriter/AiWriter';
 
 export const isTableGripSelected = (node: HTMLElement) => {
   let container = node
@@ -25,6 +26,7 @@ export const isCustomNodeSelected = (editor: Editor, node: HTMLElement) => {
     HorizontalRule.name,
     CodeBlock.name,
     Link.name,
+    AiWriter.name,
   ]
 
   return customNodes.some(type => editor.isActive(type)) || isTableGripSelected(node)

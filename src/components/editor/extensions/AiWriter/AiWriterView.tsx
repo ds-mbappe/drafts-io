@@ -38,32 +38,32 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
     try {
       const completion = await openai.chat.completions.create({
         messages: [
-          {
-            role: "system",
-            content: "You are a generative content editor."
-          },
-          {
-            role: "system",
-            content: "You can construct entire content about almost anything the user asks you. Your particulary is that you use different html tags to wrap your answers. You can also emphasize some parts of your answers using attricutes like <strong>, <em> and <i> (the list is non exhaustive); you can also integrate tags to color some text in your answers. You can integrate whatever html tag you seem appropriate as long as you think it helps."
-          },
           // {
           //   role: "system",
-          //   content: "You cannot use the p tag"
+          //   content: "You are a generative content editor."
           // },
-          {
-            role: "system",
-            content: "You can use the following HTML tags to structure your content: h1 to h6 tags (headings), br (to go to next line), hr (for separators), p (for paragraphs). This list is non exhaustive."
-          },
           // {
           //   role: "system",
-          //   content: "Don't use the p tag"
+          //   content: "You can construct entire content about almost anything the user asks you. Your particulary is that you use different html tags to wrap your answers. You can also emphasize some parts of your answers using attricutes like <strong>, <em> and <i> (the list is non exhaustive); you can also integrate tags to color some text in your answers. You can integrate whatever html tag you seem appropriate as long as you think it helps."
           // },
+          // // {
+          // //   role: "system",
+          // //   content: "You cannot use the p tag"
+          // // },
+          // {
+          //   role: "system",
+          //   content: "You can use the following HTML tags to structure your content: h1 to h6 tags (headings), br (to go to next line), hr (for separators), p (for paragraphs)."
+          // },
+          // // {
+          // //   role: "system",
+          // //   content: "Don't use the p tag"
+          // // },
           {
             role: "user",
             content: payload.text
           },
         ],
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o",
         stream: true,
       })
       setIsFetching(false)
@@ -94,7 +94,7 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
           }
           editor.commands.scrollIntoView()
           // console.log(content)
-          // console.log(newContent)
+          console.log(newContent)
         }
       }
       setPreviewText(content)

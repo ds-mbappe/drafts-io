@@ -10,18 +10,23 @@ import { AddExistingDocument } from "./AddExistingDocument";
 import { LeftSidebarDocumentItem } from "./LeftSidebarDocumentItem";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { Input } from "@/components/ui/input"
+import Document from "@/app/models/Document";
+import { useDebouncedCallback } from "use-debounce";
 
 const Sidebar = memo(
   ({ isOpen, onClose }: { isOpen?: boolean; onClose: () => void }) => {
+    const { user } = useUser();
+    const router = useRouter();
+    const [search, setSearch] = useState("");
+    const [documents, setDocuments] = useState([])
+    const [sharedDocuments, setSharedDocuments] = useState([])
+    
     const handlePotentialClose = useCallback(() => {
       if (window.innerWidth < 1024) {
         onClose()
       }
     }, [onClose])
-    const { user } = useUser();
-    const router = useRouter();
-    const [documents, setDocuments] = useState([])
-    const [sharedDocuments, setSharedDocuments] = useState([])
 
     const windowClassName = cn(
       'absolute top-0 left-0 mt-14 lg:mt-0 bg-white lg:bg-white/30 lg:backdrop-blur-xl h-full lg:h-auto lg:relative z-[2] w-0 duration-300 transition-all',
@@ -119,6 +124,20 @@ const Sidebar = memo(
       setSharedDocuments(newDocs)
     }
 
+    const filterDocuments = useDebouncedCallback(async(e: any) => {
+      // let dataPersonal = documents
+      // let dataShared = sharedDocuments
+
+      // dataPersonal = dataPersonal.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
+      // dataShared = dataShared.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
+
+      // const res = await fetch(`/api/documents/${user?.id}?search=${e?.target?.value}`, {
+      //   method: "GET",
+      //   headers: { "Content-Type": "application/json" },
+      // })
+      // const data = await res.json()
+    }, 300)
+
     useEffect(() => {
       if (user?.id) {
         if (!documents?.length) {
@@ -148,6 +167,12 @@ const Sidebar = memo(
           </div>
 
           <div className="flex flex-col gap-4 px-5">
+            <Input
+              type="text"
+              placeholder="Search something"
+              onChange={filterDocuments}
+            />
+
             <CreateNewDocument onDocumentSaved={() => null} />
 
             <AddExistingDocument onDocumentAdded={updateDocumentsList} />

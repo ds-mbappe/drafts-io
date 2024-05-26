@@ -4,7 +4,22 @@ import { NextResponse } from "next/server";
 export async function GET(req, { params }) {
   try {
     const { userId } = params
-    const documents = await Document.find({ creator_id: userId })
+    const search = req?.nextUrl?.searchParams.get("search")
+    
+    let documents = null
+
+    if (search) {
+      documents = await Document.find({
+        creator_id: userId,
+        // $where: function() {
+        //   return this.name.toLowerCase().startsWith(search)
+        // }
+      })
+    } else {
+      documents = await Document.find({
+        creator_id: userId
+      })
+    }
 
     return NextResponse.json({ documents }, { status: 200 });
   } catch (error) {

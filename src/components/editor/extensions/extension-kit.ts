@@ -100,7 +100,6 @@ export const ExtensionKit = () => [
   }),
   Emoji.configure({
     enableEmoticons: true,
-    // forceFallbackImages: true,
     suggestion: emojiSuggestion,
   }),
   Table,

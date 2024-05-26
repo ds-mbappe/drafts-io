@@ -20,6 +20,8 @@ const documentSchema = new Schema(
   }
 );
 
+documentSchema.index({ name: 'text' });
+
 documentSchema.pre('save', async function(next){
   if(this.isModified('encrypted_password')) {
     this.encrypted_password = await bcrypt.hash(this.encrypted_password, 12)
