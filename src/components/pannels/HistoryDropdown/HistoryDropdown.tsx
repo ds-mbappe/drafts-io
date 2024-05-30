@@ -86,7 +86,7 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
           </Button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent className="w-[300px]">
+        <DropdownMenuContent className="w-[300px] bg-white">
           <DropdownMenuLabel>Version history</DropdownMenuLabel>
 
           <p className="text-sm text-muted-foreground px-2 py-1.5">

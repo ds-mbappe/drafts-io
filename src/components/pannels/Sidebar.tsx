@@ -8,14 +8,11 @@ import React, { useEffect, useState, memo, useCallback } from 'react';
 import { CreateNewDocument } from "./CreateNewDocument";
 import { AddExistingDocument } from "./AddExistingDocument";
 import { LeftSidebarDocumentItem } from "./LeftSidebarDocumentItem";
-import { Button } from "../ui/button";
-import Link from "next/link";
-import { Input } from "@/components/ui/input"
-import Document from "@/app/models/Document";
 import { useDebouncedCallback } from "use-debounce";
+import { Input, Button, Link } from "@nextui-org/react";
+import { SearchIcon } from "lucide-react";
 
-const Sidebar = memo(
-  ({ isOpen, onClose }: { isOpen?: boolean; onClose: () => void }) => {
+const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => void }) => {
     const { user } = useUser();
     const router = useRouter();
     const [search, setSearch] = useState("");
@@ -29,10 +26,9 @@ const Sidebar = memo(
     }, [onClose])
 
     const windowClassName = cn(
-      'absolute top-0 left-0 mt-14 lg:mt-0 bg-white lg:bg-white/30 lg:backdrop-blur-xl h-full lg:h-auto lg:relative z-[2] w-0 duration-300 transition-all',
-      'dark:bg-black lg:dark:bg-black/30',
+      'absolute left-0 top-0 lg:relative z-[2] mt-14 lg:mt-0 bg-white w-0 duration-300 transition-all',
       !isOpen && 'border-r-transparent',
-      isOpen && 'w-80 border-r border-r-neutral-200 dark:border-r-neutral-800',
+      isOpen && 'w-80 border-r border-r-neutral-200',
     )
 
     const showToastSuccess = (deleted: Boolean) => {
@@ -154,84 +150,91 @@ const Sidebar = memo(
     // }
 
     return (
-      <div className={windowClassName}>
-        <div className="w-full h-full flex flex-col overflow-y-auto gap-14 py-8">
-          <div className="flex flex-col gap-2 text-left px-5">
-            <p className="text-lg font-semibold text-foreground">
-              {`Hello, ${user?.firstName} ${user?.lastName} !`}
-            </p>
+      <div className={`${windowClassName} h-full flex flex-col overflow-y-auto gap-8 py-8 ${isOpen ? 'px-2' : ''}`}>
+        <Input
+          key="input-search"
+          type="text"
+          radius="sm"
+          isClearable
+          placeholder={"Search"}
+          startContent={<SearchIcon/>}
+        />
 
-            <p className="text-sm text-muted-foreground">
-              {`Create new documents and manage existing ones here.`}
-            </p>
-          </div>
+        {/* <div className="flex flex-col gap-4 px-5">
+          <CreateNewDocument onDocumentSaved={() => null} />
 
-          <div className="flex flex-col gap-4 px-5">
-            <Input
-              type="text"
-              placeholder="Search something"
-              onChange={filterDocuments}
-            />
+          <AddExistingDocument onDocumentAdded={updateDocumentsList} />
+        </div> */}
+        <div>
+          <Button
+            as={Link}
+            radius="sm"
+            color="primary"
+            variant="light"
+            href="/app"
+            className="w-full text-start py-2 h-auto"
+            // onClick={() => router.push('/app')}
+          >
+            <div className="w-full flex flex-col">
+              <p className="font-semibold">{'My Draft'}</p>
+              <p className="font-normal">{'Updated at: 21:51'}</p>
+            </div>
+          </Button>
+        </div>
 
-            <CreateNewDocument onDocumentSaved={() => null} />
+        <div className="flex flex-col gap-5">
+          {/* Home button */}
+          {/* <Button asChild variant={"ghost"} className='w-full h-10 gap-4 !justify-start cursor-pointer rounded-none'>
+            <Link href="/app" className="px-5">
+              <p className="text-base font-semibold">
+                {`Home`}
+              </p>
+            </Link>
+          </Button> */}
 
-            <AddExistingDocument onDocumentAdded={updateDocumentsList} />
-          </div>
+          <div className="flex flex-col gap-8">
+            {/* Personnal Documents */}
+            <div className="flex flex-col gap-2">
+              <p className="text-base font-semibold px-5">
+                {`Personnal documents`}
+              </p>
 
-          <div className="flex flex-col gap-5">
-            {/* Home button */}
-            <Button asChild variant={"ghost"} className='w-full h-10 gap-4 !justify-start cursor-pointer rounded-none'>
-              <Link href="/app" className="px-5">
-                <p className="text-base font-semibold">
-                  {`Home`}
+              <div className="w-full h-[1px] bg-muted" />
+
+              <div className="flex flex-col gap-3">
+                <p className="text-sm font-normal text-[#64748B] px-5">
+                  {`Your personnal documents are documents you have created yourself.`}
                 </p>
-              </Link>
-            </Button>
 
-            <div className="flex flex-col gap-8">
-              {/* Personnal Documents */}
-              <div className="flex flex-col gap-2">
-                <p className="text-base font-semibold px-5">
-                  {`Personnal documents`}
-                </p>
-
-                <div className="w-full h-[1px] bg-muted" />
-
-                <div className="flex flex-col gap-3">
-                  <p className="text-sm font-normal text-[#64748B] px-5">
-                    {`Your personnal documents are documents you have created yourself.`}
-                  </p>
-
-                  <div className="flex flex-col gap-0.5">
-                    {
-                      documents?.map((doc: any) =>
-                        <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentDeleted={onDocumentDeleted} />
-                      )
-                    }
-                  </div>
+                <div className="flex flex-col gap-0.5">
+                  {
+                    documents?.map((doc: any) =>
+                      <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentDeleted={onDocumentDeleted} />
+                    )
+                  }
                 </div>
               </div>
+            </div>
 
-              {/* Shared Documents */}
-              <div className="flex flex-col gap-2">
-                <p className="text-base font-semibold px-5">
-                  {`Shared documents`}
+            {/* Shared Documents */}
+            <div className="flex flex-col gap-2">
+              <p className="text-base font-semibold px-5">
+                {`Shared documents`}
+              </p>
+
+              <div className="w-full h-[1px] bg-muted" />
+
+              <div className="flex flex-col gap-3">
+                <p className="text-sm font-normal text-[#64748B] px-5">
+                  {`Your Shared documents are documents you have added via their document ids.`}
                 </p>
 
-                <div className="w-full h-[1px] bg-muted" />
-
-                <div className="flex flex-col gap-3">
-                  <p className="text-sm font-normal text-[#64748B] px-5">
-                    {`Your Shared documents are documents you have added via their document ids.`}
-                  </p>
-
-                  <div className="flex flex-col gap-0.5">
-                    {
-                      sharedDocuments?.map((doc: any) =>
-                        <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentRemoved={onDocumentRemoved} />
-                      )
-                    }
-                  </div>
+                <div className="flex flex-col gap-0.5">
+                  {
+                    sharedDocuments?.map((doc: any) =>
+                      <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentRemoved={onDocumentRemoved} />
+                    )
+                  }
                 </div>
               </div>
             </div>

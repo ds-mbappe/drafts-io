@@ -114,7 +114,7 @@ export default function App(props: DocumentProps) {
   if ((hasCollab && (!collabToken || !provider))) return
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-screen flex flex-col">
       <Navbar
         words={words}
         status={saveStatus}
@@ -125,10 +125,10 @@ export default function App(props: DocumentProps) {
         provider={provider}
       />
       
-      <div className="flex h-full">
+      <div className="flex flex-1 pt-14 h-full">
         <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
-        <div className="relative flex min-h-screen cursor-text flex-col items-start z-[1] flex-1 p-0 lg:p-6">
+        <div className="w-full relative flex overflow-y-auto cursor-text flex-col items-start z-[1] flex-1 p-0 lg:p-6">
           <div className="relative w-full max-w-screen-xl">
             <Editor
               documentId={props.params.id}

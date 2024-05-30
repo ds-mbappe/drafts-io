@@ -41,7 +41,7 @@ export default function App() {
   })
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-screen flex flex-col">
       <Navbar
         status={saveStatus}
         isSidebarOpen={leftSidebar.isOpen}
@@ -50,15 +50,11 @@ export default function App() {
         characters={editor?.storage?.characterCount.characters()}
       />
 
-      <div className="flex h-full">
+      <div className="flex flex-1 pt-14 h-full">
         <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
-        <div className="relative flex min-h-screen cursor-text flex-col items-center z-[1] flex-1 p-0 lg:p-6">
+        <div className="w-full relative flex overflow-y-auto cursor-text flex-col items-center z-[1] flex-1 p-0 lg:p-6">
           <div className="relative w-full max-w-screen-xl flex flex-col gap-2" ref={menuContainerRef}>
-            {/* <h1 className="text-6xl font-bold">
-              Welcome to Drafts!
-            </h1> */}
-
             <ContentItemMenu editor={editor} />
             <LinkMenu editor={editor} appendTo={menuContainerRef} />
             <TextMenu editor={editor} />

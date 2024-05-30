@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import notFoundImage from '../../public/404.png'
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { Button, Link } from '@nextui-org/react';
 
 export default function NotFound() {
   return (
@@ -24,10 +23,14 @@ export default function NotFound() {
           </p>
         </div>
 
-        <Button className="w-fit">
-          <Link href="/">
-            {"Back to Home"}
-          </Link>
+        <Button
+          as={Link}
+          className="w-fit"
+          variant="light"
+          color="primary"
+          href="/app"
+        >
+          {"Back to Home"}
         </Button>
       </div>
     </main>

@@ -1,7 +1,7 @@
-import { NodeViewWrapperProps, NodeViewWrapper, NodePos } from "@tiptap/react"
+import { NodeViewWrapperProps, NodeViewWrapper, NodePos, Editor } from "@tiptap/react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import OpenAI from "openai"
-import { Button } from "@/components/ui/button"
+import { Button } from "@nextui-org/react"
 
 export interface DataProps {
   text: string
@@ -38,26 +38,10 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
     try {
       const completion = await openai.chat.completions.create({
         messages: [
-          // {
-          //   role: "system",
-          //   content: "You are a generative content editor."
-          // },
-          // {
-          //   role: "system",
-          //   content: "You can construct entire content about almost anything the user asks you. Your particulary is that you use different html tags to wrap your answers. You can also emphasize some parts of your answers using attricutes like <strong>, <em> and <i> (the list is non exhaustive); you can also integrate tags to color some text in your answers. You can integrate whatever html tag you seem appropriate as long as you think it helps."
-          // },
-          // // {
-          // //   role: "system",
-          // //   content: "You cannot use the p tag"
-          // // },
-          // {
-          //   role: "system",
-          //   content: "You can use the following HTML tags to structure your content: h1 to h6 tags (headings), br (to go to next line), hr (for separators), p (for paragraphs)."
-          // },
-          // // {
-          // //   role: "system",
-          // //   content: "Don't use the p tag"
-          // // },
+          {
+            role: "system",
+            content: "When you give an answer, you don't use any form of courtesy or politeness."
+          },
           {
             role: "user",
             content: payload.text
@@ -66,37 +50,57 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
         model: "gpt-4o",
         stream: true,
       })
-      setIsFetching(false)
 
       let content = " "
 
       for await (const chunk of completion) {
-        let position = getPos()
         content += chunk.choices[0]?.delta?.content || ""
-        let chunkContent = chunk.choices[0]?.delta?.content || ""
+        // let position = getPos()
+        // let chunkContent = chunk.choices[0]?.delta?.content || ""
 
-        if (content?.length) {
-          let newContent = chunkContent.replace(content, "")
-          if (newContent === '<h') {
-            editor.commands.enter()
-            editor.chain().focus().setHeading({ level: 1 }).run()
-            const transaction = editor.state.tr.insertText(newContent)
-            editor.view.dispatch(transaction)
-          } else if (newContent === '<p') {
-            editor.commands.enter()
-            const transaction = editor.state.tr.insertText(newContent)
-            editor.view.dispatch(transaction)
-          } else if (newContent === '<br') {
-            editor.commands.enter()
-          } else {
-            const transaction = editor.state.tr.insertText(newContent)
-            editor.view.dispatch(transaction)
-          }
-          editor.commands.scrollIntoView()
-          // console.log(content)
-          console.log(newContent)
-        }
+        // if (content?.length && content !== "\n") {
+        //   let newContent = chunkContent.replace(content, "")
+        //   if (newContent === '<h') {
+        //     editor.commands.enter()
+        //     editor.chain().focus().setHeading({ level: 1 }).run()
+        //     const transaction = editor.state.tr.insertText(newContent)
+        //     editor.view.dispatch(transaction)
+        //   } else if (newContent === '<p') {
+        //     editor.commands.enter()
+        //     const transaction = editor.state.tr.insertText(newContent)
+        //     editor.view.dispatch(transaction)
+        //   } else if (newContent === '<br') {
+        //     editor.commands.enter()
+        //   } else if (newContent?.endsWith("\n")) {
+        //     const transaction = editor.state.tr.insertText(newContent)
+        //     editor.view.dispatch(transaction)
+        //     editor.commands.enter()
+        //   } else {
+        //     const transaction = editor.state.tr.insertText(newContent)
+        //     editor.view.dispatch(transaction)
+        //   }
+        //   editor.commands.scrollIntoView()
+        //   console.log(newContent)
+        //   console.log(newContent?.endsWith("\n"))
+        // }
       }
+
+      const lines = content.split('\n')
+      lines.forEach(line => {
+        let newLine = line.trimStart()
+        // console.log(newLine)
+        if (newLine.startsWith('- ')) {
+          editor.commands.enter()
+          editor.chain().focus().insertContent(newLine.substring(2)).toggleBulletList().run()
+        } else if (newLine.match(/^\d+\. /)) {
+          editor.commands.enter()
+          editor.chain().focus().insertContent(newLine.replace(/^\d+\. /, '')).toggleOrderedList().run()
+        } else {
+          editor.commands.enter()
+          editor.chain().focus().insertContent(newLine).run()
+        }
+      })
+      setIsFetching(false)
       setPreviewText(content)
     } catch (error) {
       setIsFetching(false)
@@ -140,7 +144,13 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
             />
           </div>
 
-          <Button disabled={!data.text} onClick={generateAnswer}>
+          <Button
+            disabled={!data.text}
+            color="primary"
+            variant="solid"
+            onClick={generateAnswer}
+            isLoading={isFetching}
+          >
             Search
           </Button>
         </div>
