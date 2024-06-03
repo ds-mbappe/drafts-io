@@ -2,7 +2,6 @@
 
 import { toast } from "sonner";
 import { cn } from '@/lib/utils';
-import { useUser } from '@clerk/clerk-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState, memo, useCallback } from 'react';
 import { CreateNewDocument } from "./CreateNewDocument";
@@ -13,7 +12,6 @@ import { Input, Button, Link } from "@nextui-org/react";
 import { SearchIcon } from "lucide-react";
 
 const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => void }) => {
-    const { user } = useUser();
     const router = useRouter();
     const [search, setSearch] = useState("");
     const [documents, setDocuments] = useState([])
@@ -84,21 +82,21 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }
 
     const onDocumentRemoved = async (document: any) => {
-      let newHoldersId = document?.holders_id?.filter((el: String) => el !== user?.id)
-      const res = await fetch(`/api/document/${document?._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          holders_id: newHoldersId
-        }),
-      })
+      // let newHoldersId = document?.holders_id?.filter((el: String) => el !== user?.id)
+      // const res = await fetch(`/api/document/${document?._id}`, {
+      //   method: "PUT",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ 
+      //     holders_id: newHoldersId
+      //   }),
+      // })
   
-      if (!res.ok) {
-        showToastError(false)
-      } else {
-        showToastSuccess(false)
-        router.push('/app')
-      }
+      // if (!res.ok) {
+      //   showToastError(false)
+      // } else {
+      //   showToastSuccess(false)
+      //   router.push('/app')
+      // }
     }
 
     const onDocumentDeleted = async (document: any) => {
@@ -134,16 +132,16 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
       // const data = await res.json()
     }, 300)
 
-    useEffect(() => {
-      if (user?.id) {
-        if (!documents?.length) {
-          fetchDocuments();
-        }
-        if (!sharedDocuments?.length) {
-          fetchSharedDocuments()
-        }
-      }
-    }, [user]);
+    // useEffect(() => {
+    //   if (user?.id) {
+    //     if (!documents?.length) {
+    //       fetchDocuments();
+    //     }
+    //     if (!sharedDocuments?.length) {
+    //       fetchSharedDocuments()
+    //     }
+    //   }
+    // }, [user]);
 
     // if (!user) {
     //   redirect("/");

@@ -5,10 +5,35 @@ mongoose.Promise = global.Promise
 
 const userSchema = new Schema(
   {
-    id: String,
-    firstname: String,
-    lastname: String,
-    email: String,
+    username: {
+      type: String,
+      required: [true, "Please provide a username"],
+      unique: true,
+    },
+    firstname: {
+      type: String,
+      required: false,
+    },
+    lastname: {
+      type: String,
+      required: false,
+    },
+    email: {
+      type: String,
+      required: [true, "Please provide email"],
+    },
+    password: {
+      type: String,
+      required: [true, "Please provide a password"],
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    forgotPasswordToken: String,
+    forgotPasswordTokenExpiry: Date,
+    verifyToken: String,
+    verifyTokenExpiry: Date,
   },
   {
     timestamps: true,

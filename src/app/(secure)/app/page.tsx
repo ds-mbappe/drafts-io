@@ -3,14 +3,14 @@
 import React, { useRef, useState } from 'react';
 import Navbar from "@/components/ui/navbar";
 import { EditorContent, useEditor } from "@tiptap/react";
-import { ExtensionKit } from '../../components/editor/extensions/extension-kit';
+import { ExtensionKit } from '../../../components/editor/extensions/extension-kit';
 import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
 import { useDebouncedCallback } from 'use-debounce';
 import Sidebar from '@/components/pannels/Sidebar';
 import History from '@tiptap/extension-history';
 import { useSidebar } from '@/components/editor/hooks/useSidebar';
 import 'katex/dist/katex.min.css';
-import { LinkMenu } from '../../components/editor/menus/LinkMenu'
+import { LinkMenu } from '../../../components/editor/menus/LinkMenu'
 import TextMenu from '@/components/editor/menus/TextMenu/TextMenu';
 
 export default function App() {

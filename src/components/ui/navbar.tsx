@@ -1,7 +1,6 @@
 "use client"
 
 import { ExitIcon } from '@radix-ui/react-icons'
-import { useUser, useAuth } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu,
@@ -16,14 +15,29 @@ import { memo } from 'react';
 import { useRouter } from 'next/navigation';
 import { PanelTopClose, PanelLeft } from 'lucide-react';
 import HistoryDropdown from '../pannels/HistoryDropdown/HistoryDropdown';
+import { Button as NewButton } from '@nextui-org/react';
 
 const Navbar = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, historyData, provider }: any) => {
-  const { user } = useUser();
-  const { signOut } = useAuth();
+  const user: any = null
   const router = useRouter()
 
+  const onSignOut = async () => {
+    try {
+      const response = await fetch("/api/account/signout", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      // const data = await response.json();
+      // console.log(data)
+      if (response.ok) {
+        router.push("/account/sign-in");
+      }
+    } catch (error: any) {
+      console.log(error)
+    }
+  }
+
   const onUserLogout = () => {
-    signOut();
     router.replace("/")
   };
 
@@ -32,6 +46,13 @@ const Navbar = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, 
       <Button size={"sm"} variant={"ghost"} onClick={toggleSidebar}>
         { isSidebarOpen ? <PanelTopClose className="-rotate-90" /> : <PanelLeft /> }
       </Button>
+      
+      <NewButton
+        color="primary"
+        onClick={onSignOut}
+      >
+        Sign out
+      </NewButton>
       
       { user?.imageUrl ?
         <>
