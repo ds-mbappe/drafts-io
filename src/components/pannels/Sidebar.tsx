@@ -8,11 +8,14 @@ import { CreateNewDocument } from "./CreateNewDocument";
 import { AddExistingDocument } from "./AddExistingDocument";
 import { LeftSidebarDocumentItem } from "./LeftSidebarDocumentItem";
 import { useDebouncedCallback } from "use-debounce";
-import { Input, Button, Link } from "@nextui-org/react";
+import { Input, Button } from "@nextui-org/react";
 import { SearchIcon } from "lucide-react";
+import Link from "next/link";
+import { getSession } from "next-auth/react";
 
 const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => void }) => {
     const router = useRouter();
+    const [user, setUser] = useState<any>()
     const [search, setSearch] = useState("");
     const [documents, setDocuments] = useState([])
     const [sharedDocuments, setSharedDocuments] = useState([])
@@ -82,21 +85,21 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }
 
     const onDocumentRemoved = async (document: any) => {
-      // let newHoldersId = document?.holders_id?.filter((el: String) => el !== user?.id)
-      // const res = await fetch(`/api/document/${document?._id}`, {
-      //   method: "PUT",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ 
-      //     holders_id: newHoldersId
-      //   }),
-      // })
+      let newHoldersId = document?.holders_id?.filter((el: String) => el !== user?.id)
+      const res = await fetch(`/api/document/${document?._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          holders_id: newHoldersId
+        }),
+      })
   
-      // if (!res.ok) {
-      //   showToastError(false)
-      // } else {
-      //   showToastSuccess(false)
-      //   router.push('/app')
-      // }
+      if (!res.ok) {
+        showToastError(false)
+      } else {
+        showToastSuccess(false)
+        router.push('/app')
+      }
     }
 
     const onDocumentDeleted = async (document: any) => {
@@ -133,19 +136,26 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }, 300)
 
     // useEffect(() => {
-    //   if (user?.id) {
-    //     if (!documents?.length) {
-    //       fetchDocuments();
-    //     }
-    //     if (!sharedDocuments?.length) {
-    //       fetchSharedDocuments()
-    //     }
+    //   const fetchSession = async () => {
+    //     const response = await getSession()
+    //     setUser(response?.user)
     //   }
-    // }, [user]);
+  
+    //   fetchSession().catch((error) => {
+    //     console.log(error)
+    //   })
+    // }, [])
 
-    // if (!user) {
-    //   redirect("/");
-    // }
+    useEffect(() => {
+      if (!documents?.length) {
+        fetchDocuments();
+      }
+      if (!sharedDocuments?.length) {
+        fetchSharedDocuments()
+      }
+      // if (user?.id) {
+      // }
+    }, [user]);
 
     return (
       <div className={`${windowClassName} h-full flex flex-col overflow-y-auto gap-8 py-8 ${isOpen ? 'px-2' : ''}`}>
@@ -158,38 +168,30 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
           startContent={<SearchIcon/>}
         />
 
-        {/* <div className="flex flex-col gap-4 px-5">
-          <CreateNewDocument onDocumentSaved={() => null} />
+        <div className="flex flex-col gap-4 px-5">
+          {/* <CreateNewDocument onDocumentSaved={() => null} />
 
-          <AddExistingDocument onDocumentAdded={updateDocumentsList} />
-        </div> */}
+          <AddExistingDocument onDocumentAdded={updateDocumentsList} /> */}
+        </div>
         <div>
-          <Button
-            as={Link}
-            radius="sm"
-            color="primary"
-            variant="light"
-            href="/app"
-            className="w-full text-start py-2 h-auto"
-            // onClick={() => router.push('/app')}
-          >
-            <div className="w-full flex flex-col">
-              <p className="font-semibold">{'My Draft'}</p>
-              <p className="font-normal">{'Updated at: 21:51'}</p>
-            </div>
-          </Button>
+          {/* Home button */}
+          <Link href="/app">
+            <Button
+              as="div"
+              radius="sm"
+              color="primary"
+              variant="light"
+              className="w-full text-start py-2 h-auto"
+            >
+              <div className="w-full flex flex-col">
+                <p className="font-semibold">{'My Draft'}</p>
+                <p className="font-normal">{'Updated at: 21:51'}</p>
+              </div>
+            </Button>
+          </Link>
         </div>
 
         <div className="flex flex-col gap-5">
-          {/* Home button */}
-          {/* <Button asChild variant={"ghost"} className='w-full h-10 gap-4 !justify-start cursor-pointer rounded-none'>
-            <Link href="/app" className="px-5">
-              <p className="text-base font-semibold">
-                {`Home`}
-              </p>
-            </Link>
-          </Button> */}
-
           <div className="flex flex-col gap-8">
             {/* Personnal Documents */}
             <div className="flex flex-col gap-2">

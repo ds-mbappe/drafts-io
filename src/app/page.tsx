@@ -2,7 +2,6 @@ import { Link, NextUIProvider } from "@nextui-org/react";
 import Navbar from "@/components/navigation/Navbar";
 
 export default function Home() {
-  
   return (
     <NextUIProvider>
       <main className="flex min-h-screen flex-col bg-gradient-to-b from-gray-200">

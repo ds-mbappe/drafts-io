@@ -2,8 +2,8 @@
 const nextConfig = {
   reactStrictMode: false,
   webpack: (config) => {
-  config.externals = [...config.externals, 'bcrypt'];
-  return config;
+    config.externals = [...config.externals, 'bcrypt'];
+    return config;
   },
 };
 

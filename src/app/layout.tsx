@@ -3,23 +3,25 @@ import '../styles/index.css'
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { Alert } from "@/components/ui/Alert";
+import { getServerSession } from "next-auth";
+import SessionProvider from "./SessionProvider"
 
 export const metadata: Metadata = {
   title: "Drafts App",
   description: "",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const session = getServerSession();
+
   return (
     <html lang="en">
       <body>
-        <Alert />
-        {children}
-        <Toaster />
+        <SessionProvider session={session}>
+          <Alert />
+          {children}
+          <Toaster />
+        </SessionProvider>
       </body>
     </html>
   );

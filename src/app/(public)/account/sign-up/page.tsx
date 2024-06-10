@@ -1,9 +1,12 @@
 "use client"
 
 import { useAlertService } from "@/app/_services";
-import { Input, Button, Link } from "@nextui-org/react";
+import { Input, Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
+import { Icon } from '@iconify/react';
+import { signIn } from "next-auth/react";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -18,23 +21,29 @@ export default function SignInPage() {
   const socials = [
     {
       id: "facebook",
-      icon: "F",
+      icon: <Icon icon="logos:facebook" width={24} height={24} />,
       action: () => {
-        console.log("Facebook")
+        signIn("facebook", {
+          callbackUrl: "/app"
+        })
       }
     },
     {
       id: "Github",
-      icon: "G",
+      icon: <Icon icon="logos:github-icon" width={24} height={24} />,
       action: () => {
-        console.log("Github")
+        signIn("github", {
+          callbackUrl: "/app"
+        })
       }
     },
     {
       id: "Google",
-      icon: "G",
+      icon: <Icon icon="logos:google-icon" width={24} height={24} />,
       action: () => {
-        console.log("Google")
+        signIn("google", {
+          callbackUrl: "/app"
+        })
       }
     },
   ]
@@ -48,15 +57,15 @@ export default function SignInPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user)
       });
-      if (response.ok) {
+
+      if (response?.ok) {
         router.push("/account/sign-in");
       }
-      setLoading(false)
-      // const data = await response.json();
-      // console.log(data)
     } catch (error: any) {
+      console.log(error)
       alertService.error(error);
     }
+    setLoading(false)
   }
 
   return (
@@ -70,7 +79,7 @@ export default function SignInPage() {
             </p>
 
             <p className="text-black font-normal">
-              {"Fill the form to create a new account."}
+              {"Continue with social accounts."}
             </p>
           </div>
 
@@ -152,7 +161,7 @@ export default function SignInPage() {
           </p>
 
           <Link href="/account/sign-in">
-            <p className="text-black font-medium">
+            <p className="text-black font-medium hover:text-default-600">
               {"Sign in"}
             </p>
           </Link>

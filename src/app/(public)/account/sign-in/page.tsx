@@ -1,9 +1,12 @@
 "use client"
 
 import { useAlertService } from "@/app/_services";
-import { Input, Button, Link } from "@nextui-org/react";
+import { Input, Button } from "@nextui-org/react";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Icon } from '@iconify/react';
 
 export default function SignInPage() {
   const router = useRouter();
@@ -17,41 +20,51 @@ export default function SignInPage() {
   const socials = [
     {
       id: "facebook",
-      icon: "F",
+      icon: <Icon icon="logos:facebook" width={24} height={24} />,
       action: () => {
-        console.log("Facebook")
+        signIn("facebook", {
+          callbackUrl: "/app"
+        })
       }
     },
     {
       id: "Github",
-      icon: "G",
+      icon: <Icon icon="logos:github-icon" width={24} height={24} />,
       action: () => {
-        console.log("Github")
+        signIn("github", {
+          callbackUrl: "/app"
+        })
       }
     },
     {
       id: "Google",
-      icon: "G",
+      icon: <Icon icon="logos:google-icon" width={24} height={24} />,
       action: () => {
-        console.log("Google")
+        signIn("google", {
+          callbackUrl: "/app"
+        })
       }
     },
   ]
 
   const onSignIn = async () => {
+    setLoading(true);
     alertService.clear();
     try {
-      const response = await fetch("/api/account/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user)
-      });
-      // const data = await response.json();
-      // console.log(data)
-      if (response.ok) {
+      const response = await signIn('credentials', {
+        email: user.email,
+        password: user.password,
+        callbackUrl: "/app",
+        redirect: false,
+      })
+
+      if (response?.ok) {
         router.push("/app");
+      } else {
+        setLoading(false);
       }
     } catch (error: any) {
+      console.log(error)
       alertService.error(error);
     }
   }
@@ -67,7 +80,7 @@ export default function SignInPage() {
             </p>
 
             <p className="text-black font-normal">
-              {"Fill the form to log into your account."}
+              {"Continue with social accounts."}
             </p>
           </div>
 
@@ -101,6 +114,8 @@ export default function SignInPage() {
         {/* Inputs */}
         <div className="w-full h-full flex flex-col gap-5">
           <Input
+            id="email"
+            name="email"
             isRequired
             type="email"
             label={"Email"}
@@ -109,6 +124,8 @@ export default function SignInPage() {
           />
 
           <Input
+            id="password"
+            name="password"
             isRequired
             type="password"
             label={"Password"}
@@ -136,7 +153,7 @@ export default function SignInPage() {
           </p>
 
           <Link href="/account/sign-up">
-            <p className="text-black font-medium">
+            <p className="text-black font-medium hover:text-default-600">
               {"Sign up"}
             </p>
           </Link>

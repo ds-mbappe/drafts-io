@@ -27,20 +27,20 @@ export const sendEmail = async({ email, emailType, userId }:any) =>{
 
     // Create a nodemailer transport
     var transport = nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",
-      port: 2525,
+      host: "smtp.resend.com",
+      port: 465,
       auth: {
-        user: process.env.MAILTRAP_AUTH_USERNAME,
-        pass: process.env.MAILTRAP_AUTH_PASSWORD
+        user: process.env.RESEND_USERNAME,
+        pass: process.env.RESEND_API_KEY
       }
     });
 
     // Compose email options
     const mailOptions = {
-      from: 'no-reply@draftsio.com',
+      from: 'no-reply@drafts-io.com',
       to: email,
       subject: emailType === "VERIFY" ? "Verify your email" : "Reset your password",
-      html: `<p>Click <a href="${process.env.DEV_DOMAIN || process.env.PROD_DOMAIN}/account/verify-email?token=${hashedToken}">here</a> to 
+      html: `<p>Click <a href="${process.env.NEXTAUTH_URL}/account/verify-email?token=${hashedToken}">here</a> to 
       ${emailType === "VERIFY" ? "Verify your email" : "Reset your password"}</p>`
     }
 

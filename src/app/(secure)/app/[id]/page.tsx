@@ -4,7 +4,6 @@ import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import Navbar from "@/components/ui/navbar";
 import Editor from "@/components/editor"
 import { Doc as YDoc } from 'yjs'
-import { useUser } from '@clerk/nextjs';
 import { useRouter, useSearchParams } from "next/navigation";
 import Sidebar from '@/components/pannels/Sidebar';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
@@ -33,7 +32,6 @@ interface Payload {
 
 export default function App(props: DocumentProps) {
   const docId = props.params.id
-  const { user } = useUser();
   const router = useRouter();
   const leftSidebar = useSidebar()
   const searchParams = useSearchParams()
@@ -106,8 +104,6 @@ export default function App(props: DocumentProps) {
         token: collabToken,
         document: yDoc,
       }))
-
-      setUserFullName(`${user?.fullName}`)
     }
   }, [setProvider, collabToken, yDoc, docId, hasCollab, doc])
 
