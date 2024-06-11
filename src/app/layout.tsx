@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   description: "",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const session = getServerSession();
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const session = await getServerSession();
 
   return (
     <html lang="en">
