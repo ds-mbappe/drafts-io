@@ -147,14 +147,14 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     // }, [])
 
     useEffect(() => {
-      if (!documents?.length) {
-        fetchDocuments();
+      if (user?.id) {
+        if (!documents?.length) {
+          fetchDocuments();
+        }
+        if (!sharedDocuments?.length) {
+          fetchSharedDocuments()
+        }
       }
-      if (!sharedDocuments?.length) {
-        fetchSharedDocuments()
-      }
-      // if (user?.id) {
-      // }
     }, [user]);
 
     return (

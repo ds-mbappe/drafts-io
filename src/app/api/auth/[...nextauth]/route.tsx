@@ -52,7 +52,7 @@ const authOptions: NextAuthOptions = {
       return token;
     },
     session: async ({ session, token }) => {
-      session.user = token.user;
+      // session.user = token.user;
       return session;
     },
   },
