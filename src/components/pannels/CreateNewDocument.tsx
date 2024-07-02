@@ -8,12 +8,10 @@ import { PlusIcon } from 'lucide-react';
 import { Switch } from "@/components/ui/switch"
 import { useRouter } from "next/navigation";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { useUser } from '@clerk/clerk-react';
 import { toast } from "sonner"
 
-export const CreateNewDocument = ({ onDocumentSaved }: any) => {
+export const CreateNewDocument = ({ userId, onDocumentSaved }: any) => {
   const router = useRouter();
-  const { user } = useUser();
 
   const [dialogOpen, setDialogOpen] = useState(false)
   const [docName, setDocName] = useState("")
@@ -23,7 +21,7 @@ export const CreateNewDocument = ({ onDocumentSaved }: any) => {
   const handleSaveData = async () => {
     let formData = {
       name: docName,
-      creator_id: user?.id,
+      creator_id: userId,
       can_edit: undefined,
       team_id: undefined,
       private: docPrivate,

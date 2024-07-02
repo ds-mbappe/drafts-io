@@ -1,76 +1,82 @@
 "use client"
 
-import React, { useState } from 'react'
-import { Button } from '../ui/button'
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import { LockClosedIcon } from '@radix-ui/react-icons'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Trash, Loader2, SquarePen, Trash2 } from "lucide-react";
+import React from 'react'
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
+import { EllipsisVerticalIcon } from "lucide-react";
 import { useRouter } from 'next/navigation';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
 import Link from 'next/link';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
-import { DialogValidation } from '../ui/DialogValidation';
-import { useUser } from '@clerk/clerk-react';
-import Icon from '../ui/Icon';
 
-export const LeftSidebarDocumentItem = ({ document, onDocumentRemoved, onDocumentDeleted }: any) => {
+export const LeftSidebarDocumentItem = ({ userId, document, onDocumentRemoved, onDocumentDeleted }: any) => {
   const router = useRouter()
-  const { user } = useUser();
+  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
-  const navigateToDocument = () => {
-    router.push(`/app/${document?._id}`)
-  }
-
-  const onTrashClicked = () => {
-    if (document?.creator_id === user?.id) {
+  const confirmAction = () => {
+    if (document?.creator_id === userId) {
       onDocumentDeleted(document)
     } else {
       onDocumentRemoved(document)
     }
+    onClose()
+    router.push("/app")
   }
 
   return (
-    <div className="w-full cursor-pointer hover:bg-muted-foreground/10 px-5">
-      <div
-        className="w-full h-10 flex gap-4 items-center justify-between"
-        onClick={navigateToDocument}
-      >
+    <Button className="flex gap-1 justify-between" radius="sm" variant="light">
+      <Link href={`/app/${document?._id}`} className="w-full flex items-start">
         <p className="line-clamp-1">
           {document.name}
         </p>
+      </Link>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button asChild size={"sm"} variant={"ghost"} onClick={(e) => e.stopPropagation()}>
-              <div>
-                <Icon name="EllipsisVertical" />
-              </div>
-            </Button>
-          </DropdownMenuTrigger>
+      <Dropdown>
+        <DropdownTrigger>
+          <EllipsisVerticalIcon />
+        </DropdownTrigger>
 
-          <DropdownMenuContent>
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="cursor-pointer flex items-center gap-2 p-1.5 text-sm font-medium text-black hover:bg-neutral-100 hover:text-neutral-800 text-left bg-transparent w-full rounded"
-            >
-              <Icon name="SquarePen" />
-              Edit document settings
-            </div>
+        <DropdownMenu aria-label="Dropdown DocumentItem">
+          <DropdownItem key="edit">
+            {'Edit document settings'}
+          </DropdownItem>
 
-            <DropdownMenuSeparator />
+          <DropdownItem key="delete" className="text-danger" color="danger" onPress={onOpen}>
+            {'Delete document'}
+          </DropdownItem>
 
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="cursor-pointer flex items-center gap-2 p-1.5 text-sm font-medium text-left bg-transparent w-full rounded text-red-500 hover:bg-red-500 bg-opacity-10 hover:bg-opacity-20 hover:text-red-500"
-            >
-              <Icon name="Trash2" />
-              Delete document
-            </div>
-          </DropdownMenuContent>
         </DropdownMenu>
-      </div>
-    </div>
+      </Dropdown>
+
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                { document?.creator_id === userId ? "Delete document" : "Remove Document" }
+              </ModalHeader>
+
+              <ModalBody>
+                <p> 
+                  { document?.creator_id === userId ?
+                    "If you delete this document, other users who have added it will no longer be able to access it" :
+                    "If you remove this document, you will need to import it again in the future."
+                  }
+                </p>
+              </ModalBody>
+
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  {'Cancel'}
+                </Button>
+
+                <Button color="primary" onPress={confirmAction}>
+                  { document?.creator_id === userId ? "Delete" : "Remove" }
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </Button>
     // <Button asChild variant={"ghost"}>
     //   <HoverCard openDelay={100} closeDelay={100}>
 
@@ -86,14 +92,14 @@ export const LeftSidebarDocumentItem = ({ document, onDocumentRemoved, onDocumen
     //               <Trash2 />
     //             </div>
     //           }
-    //           title={document?.creator_id === user?.id ? "Delete document" : "Remove Document"}
+    //           title={document?.creator_id === userId ? "Delete document" : "Remove Document"}
     //           description={
-    //             document?.creator_id === user?.id ?
+    //             document?.creator_id === userId ?
     //               "If you delete this document, other users who have added it will no longer be able to access it" :
     //               "If you remove this document, you will need to import it again in the future."
     //           }
     //           secondaryText="Cancel"
-    //           primaryText={document?.creator_id === user?.id ? "Delete" : "Remove"}
+    //           primaryText={document?.creator_id === userId ? "Delete" : "Remove"}
     //           onPrimaryClick={onTrashClicked}
     //         />
     //       </div>

@@ -70,19 +70,25 @@ const Navbar = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, 
           <DropdownMenuTrigger>
             <Avatar className="border-[0.5px] border-black cursor-pointer">
               <AvatarImage src={user?.image} />
+
               <AvatarFallback>
                 { `${user?.name?.split("")?.[0] || 'U'}` }
               </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent className='w-56'>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
+
             <DropdownMenuSeparator />
+
             <DropdownMenuItem className="gap-4 cursor-pointer">
               {/* <PersonIcon/> */}
               Profile
             </DropdownMenuItem>
+
             <DropdownMenuSeparator />
+
             <DropdownMenuItem className="gap-4 hover:!bg-red-100 hover:!text-red-500 cursor-pointer" onClick={onLogout}>
               <ExitIcon/>
               Logout

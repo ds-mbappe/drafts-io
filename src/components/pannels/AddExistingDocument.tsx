@@ -10,12 +10,10 @@ import { SearchIcon } from 'lucide-react';
 import { Switch } from "@/components/ui/switch"
 import { useRouter } from "next/navigation";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { useUser } from '@clerk/clerk-react';
 import { toast } from "sonner";
 
-export const AddExistingDocument = ({ onDocumentAdded }: any) => {
+export const AddExistingDocument = ({ userId, onDocumentAdded }: any) => {
   const router = useRouter();
-  const { user } = useUser();
   const [dialogOpen, setDialogOpen] = useState(false)
   const [docId, setDocId] = useState("")
   const [showPasswordField, setShowPasswordField] = useState(false)
@@ -37,7 +35,7 @@ export const AddExistingDocument = ({ onDocumentAdded }: any) => {
         important: true,
       })
     } else {
-      if (data?.holders_id?.includes(user?.id)) {
+      if (data?.holders_id?.includes(userId)) {
         toast(`Error`, {
           description: `The document is already in you Shared documents !`,
           duration: 5000,
@@ -59,7 +57,7 @@ export const AddExistingDocument = ({ onDocumentAdded }: any) => {
     const isPasswordCorrect = await bcryptjs.compare(docPassword, encrytedPassword)
 
     if (isPasswordCorrect) {
-      let newHoldersId = [...holdersId, user?.id]
+      let newHoldersId = [...holdersId, userId]
       const res = await fetch(`/api/document/${docId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

@@ -50,7 +50,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
 
     const fetchDocuments = async () => {
       try {
-        const data = await fetch(`/api/documents/${user?.id}`, {
+        const data = await fetch(`/api/documents/${user?._id}`, {
           method: 'GET',
           headers: { "content-type": "application/json" },
         });
@@ -68,7 +68,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
 
     const fetchSharedDocuments = async () => {
       try {
-        const data = await fetch(`/api/documents/${user?.id}/shared`, {
+        const data = await fetch(`/api/documents/${user?._id}/shared`, {
           method: 'GET',
           headers: { "content-type": "application/json" },
         });
@@ -85,7 +85,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }
 
     const onDocumentRemoved = async (document: any) => {
-      let newHoldersId = document?.holders_id?.filter((el: String) => el !== user?.id)
+      let newHoldersId = document?.holders_id?.filter((el: String) => el !== user?._id)
       const res = await fetch(`/api/document/${document?._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -128,26 +128,26 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
       // dataPersonal = dataPersonal.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
       // dataShared = dataShared.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
 
-      // const res = await fetch(`/api/documents/${user?.id}?search=${e?.target?.value}`, {
+      // const res = await fetch(`/api/documents/${user?._id}?search=${e?.target?.value}`, {
       //   method: "GET",
       //   headers: { "Content-Type": "application/json" },
       // })
       // const data = await res.json()
     }, 300)
 
-    // useEffect(() => {
-    //   const fetchSession = async () => {
-    //     const response = await getSession()
-    //     setUser(response?.user)
-    //   }
+    useEffect(() => {
+      const fetchSession = async () => {
+        const response = await getSession()
+        setUser(response?.user)
+      }
   
-    //   fetchSession().catch((error) => {
-    //     console.log(error)
-    //   })
-    // }, [])
+      fetchSession().catch((error) => {
+        console.log(error)
+      })
+    }, [])
 
     useEffect(() => {
-      if (user?.id) {
+      if (user?._id) {
         if (!documents?.length) {
           fetchDocuments();
         }
@@ -169,25 +169,18 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         />
 
         <div className="flex flex-col gap-4 px-5">
-          {/* <CreateNewDocument onDocumentSaved={() => null} />
+          <CreateNewDocument userId={user?._id} onDocumentSaved={() => null} />
 
-          <AddExistingDocument onDocumentAdded={updateDocumentsList} /> */}
+          <AddExistingDocument userId={user?._id} onDocumentAdded={updateDocumentsList} />
         </div>
+        
         <div>
           {/* Home button */}
           <Link href="/app">
-            <Button
-              as="div"
-              radius="sm"
-              color="primary"
-              variant="light"
-              className="w-full text-start py-2 h-auto"
-            >
-              <div className="w-full flex flex-col">
-                <p className="font-semibold">{'My Draft'}</p>
-                <p className="font-normal">{'Updated at: 21:51'}</p>
-              </div>
-            </Button>
+            <div className="w-full flex px-5 py-2 flex-col">
+              <p className="font-semibold">{'My Draft'}</p>
+              <p className="font-normal">{'Updated at: 21:51'}</p>
+            </div>
           </Link>
         </div>
 
@@ -209,7 +202,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
                 <div className="flex flex-col gap-0.5">
                   {
                     documents?.map((doc: any) =>
-                      <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentDeleted={onDocumentDeleted} />
+                      <LeftSidebarDocumentItem key={doc?._id} userId={user?._id} document={doc} onDocumentDeleted={onDocumentDeleted} />
                     )
                   }
                 </div>
@@ -232,7 +225,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
                 <div className="flex flex-col gap-0.5">
                   {
                     sharedDocuments?.map((doc: any) =>
-                      <LeftSidebarDocumentItem key={doc?._id} document={doc} onDocumentRemoved={onDocumentRemoved} />
+                      <LeftSidebarDocumentItem key={doc?._id} userId={user?._id} document={doc} onDocumentRemoved={onDocumentRemoved} />
                     )
                   }
                 </div>

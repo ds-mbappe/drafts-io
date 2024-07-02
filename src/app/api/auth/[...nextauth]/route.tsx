@@ -1,5 +1,5 @@
 import NextAuth from "next-auth";
-import type { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions, Session } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
@@ -20,11 +20,11 @@ const authOptions: NextAuthOptions = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(credentials)
           });
-          const user = await response.json();
+          const data = await response.json();
           
           // If no error and we have user data, return it
-          if (response.ok && user) {
-            return user
+          if (response.ok && data) {
+            return data?.user
           }
         } catch (error: any) {
           return error
@@ -51,8 +51,8 @@ const authOptions: NextAuthOptions = {
       user && (token.user = user);
       return token;
     },
-    session: async ({ session, token }) => {
-      // session.user = token.user;
+    session: async ({ session, token }: { session: Session, token: any  }) => {
+      session.user = token.user;
       return session;
     },
   },
