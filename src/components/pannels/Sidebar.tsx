@@ -50,7 +50,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
 
     const fetchDocuments = async () => {
       try {
-        const data = await fetch(`/api/documents/${user?._id}`, {
+        const data = await fetch(`/api/documents/${user?.id}`, {
           method: 'GET',
           headers: { "content-type": "application/json" },
         });
@@ -68,7 +68,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
 
     const fetchSharedDocuments = async () => {
       try {
-        const data = await fetch(`/api/documents/${user?._id}/shared`, {
+        const data = await fetch(`/api/documents/${user?.id}/shared`, {
           method: 'GET',
           headers: { "content-type": "application/json" },
         });
@@ -85,7 +85,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }
 
     const onDocumentRemoved = async (document: any) => {
-      let newHoldersId = document?.holders_id?.filter((el: String) => el !== user?._id)
+      let newHoldersId = document?.holders_id?.filter((el: String) => el !== user?.id)
       const res = await fetch(`/api/document/${document?._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -128,7 +128,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
       // dataPersonal = dataPersonal.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
       // dataShared = dataShared.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
 
-      // const res = await fetch(`/api/documents/${user?._id}?search=${e?.target?.value}`, {
+      // const res = await fetch(`/api/documents/${user?.id}?search=${e?.target?.value}`, {
       //   method: "GET",
       //   headers: { "Content-Type": "application/json" },
       // })
@@ -147,7 +147,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }, [])
 
     useEffect(() => {
-      if (user?._id) {
+      if (user?.id) {
         if (!documents?.length) {
           fetchDocuments();
         }
@@ -161,48 +161,48 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
       <div className={`${windowClassName} h-full flex flex-col overflow-y-auto gap-8 py-8 ${isOpen ? 'px-2' : ''}`}>
         <Input
           key="input-search"
+          variant="bordered"
           type="text"
           radius="sm"
+          className="px-4"
           isClearable
           placeholder={"Search"}
           startContent={<SearchIcon/>}
         />
 
-        <div className="flex flex-col gap-4 px-5">
-          <CreateNewDocument userId={user?._id} onDocumentSaved={() => null} />
+        <div className="flex flex-col gap-4 px-4">
+          <CreateNewDocument userId={user?.id} onDocumentSaved={() => null} />
 
-          <AddExistingDocument userId={user?._id} onDocumentAdded={updateDocumentsList} />
+          <AddExistingDocument userId={user?.id} onDocumentAdded={updateDocumentsList} />
         </div>
         
-        <div>
-          {/* Home button */}
-          <Link href="/app">
-            <div className="w-full flex px-5 py-2 flex-col">
-              <p className="font-semibold">{'My Draft'}</p>
-              <p className="font-normal">{'Updated at: 21:51'}</p>
-            </div>
-          </Link>
-        </div>
+        {/* Home button */}
+        <Link href="/app">
+          <div className="w-full flex px-4 py-2 flex-col rounded-md hover:bg-foreground-100">
+            <p className="font-semibold">{'My Draft'}</p>
+            <p className="font-normal">{'Updated at: 21:51'}</p>
+          </div>
+        </Link>
 
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-8">
             {/* Personnal Documents */}
             <div className="flex flex-col gap-2">
-              <p className="text-base font-semibold px-5">
+              <p className="text-base font-semibold px-4">
                 {`Personnal documents`}
               </p>
 
               <div className="w-full h-[1px] bg-muted" />
 
               <div className="flex flex-col gap-3">
-                <p className="text-sm font-normal text-[#64748B] px-5">
+                <p className="text-sm font-normal text-[#64748B] px-4">
                   {`Your personnal documents are documents you have created yourself.`}
                 </p>
 
                 <div className="flex flex-col gap-0.5">
                   {
                     documents?.map((doc: any) =>
-                      <LeftSidebarDocumentItem key={doc?._id} userId={user?._id} document={doc} onDocumentDeleted={onDocumentDeleted} />
+                      <LeftSidebarDocumentItem key={doc?._id} userId={user?.id} document={doc} onDocumentDeleted={onDocumentDeleted} />
                     )
                   }
                 </div>
@@ -211,21 +211,21 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
 
             {/* Shared Documents */}
             <div className="flex flex-col gap-2">
-              <p className="text-base font-semibold px-5">
+              <p className="text-base font-semibold px-4">
                 {`Shared documents`}
               </p>
 
               <div className="w-full h-[1px] bg-muted" />
 
               <div className="flex flex-col gap-3">
-                <p className="text-sm font-normal text-[#64748B] px-5">
+                <p className="text-sm font-normal text-[#64748B] px-4">
                   {`Your Shared documents are documents you have added via their document ids.`}
                 </p>
 
                 <div className="flex flex-col gap-0.5">
                   {
                     sharedDocuments?.map((doc: any) =>
-                      <LeftSidebarDocumentItem key={doc?._id} userId={user?._id} document={doc} onDocumentRemoved={onDocumentRemoved} />
+                      <LeftSidebarDocumentItem key={doc?._id} userId={user?.id} document={doc} onDocumentRemoved={onDocumentRemoved} />
                     )
                   }
                 </div>

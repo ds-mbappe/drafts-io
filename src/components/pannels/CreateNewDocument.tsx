@@ -1,20 +1,18 @@
 "use client"
 
-import React, { startTransition, useState } from 'react'
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import React, { startTransition, useEffect, useState } from 'react'
 import { Label } from "@/components/ui/label";
-import { PlusIcon } from 'lucide-react';
-import { Switch } from "@/components/ui/switch"
+import { Button, Input, Switch } from '@nextui-org/react';
 import { useRouter } from "next/navigation";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { toast } from "sonner"
+import { Modal,  ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
+import { toast } from "sonner";
 
 export const CreateNewDocument = ({ userId, onDocumentSaved }: any) => {
   const router = useRouter();
 
-  const [dialogOpen, setDialogOpen] = useState(false)
   const [docName, setDocName] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
   const [docPassword, setDocPassword] = useState("")
   const [docPrivate, setDocPrivate] = useState(false)
 
@@ -56,11 +54,12 @@ export const CreateNewDocument = ({ userId, onDocumentSaved }: any) => {
       },
     })
     onDocumentSaved()
+    setIsLoading(false);
   };
 
   const submitAndCloseDialog = () => {
+    setIsLoading(true);
     handleSaveData()
-    setDialogOpen(false)
   }
 
   const changeDialogOpenState = () => {
@@ -77,53 +76,51 @@ export const CreateNewDocument = ({ userId, onDocumentSaved }: any) => {
   }
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={changeDialogOpenState}>
-      <DialogTrigger>
-        <Button asChild variant={"outline"} className='w-full gap-4'>
-          <span>
-            {'Create a new document'}
-          </span>
-        </Button>
-      </DialogTrigger>
+    <>
+      <Button variant='shadow' className='w-full' onPress={changeDialogOpenState}>
+        {'Create a new document'}
+      </Button>
 
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>New document</DialogTitle>
+      <Modal isOpen={dialogOpen} onOpenChange={changeDialogOpenState}>
+        <ModalContent >
+          <>
+            <ModalHeader className="flex flex-col gap-1">Create new document</ModalHeader>
 
-          <DialogDescription>
-            Set your new document properties here.
-          </DialogDescription>
-        </DialogHeader>
+            <ModalBody>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="doc-title" className="text-right">Title</Label>
 
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="doc-title" className="text-right">Title</Label>
+                  <Input variant='bordered' id="doc-title" autoComplete="new-password" placeholder="Document title" className="col-span-3" value={docName} onChange={(e) => setDocName(e.target.value)} />
+                </div>
 
-            <Input id="doc-title" autoComplete="new-password" placeholder="Document title" className="col-span-3" value={docName} onChange={(e) => setDocName(e.target.value)} />
-          </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="doc-private" className="text-right">Private</Label>
 
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="doc-private" className="text-right">Private</Label>
+                  <Switch id="doc-private" isSelected={docPrivate} onValueChange={() => setDocPrivate(!docPrivate)} className="col-span-3" />
+                </div>
+                { docPrivate ?
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="doc-password" className="text-right">Password</Label>
+                    
+                    <Input variant='bordered' id="doc-password" autoComplete="new-password" type="password" placeholder="Document password" className="col-span-3" value={docPassword} onChange={(e) => setDocPassword(e.target.value)} />
+                  </div> : <></>
+                }
+              </div>
+            </ModalBody>
 
-            <Switch id="doc-private" checked={docPrivate} onCheckedChange={() => setDocPrivate(!docPrivate)} className="col-span-3" />
-          </div>
-          { docPrivate ?
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="doc-password" className="text-right">Password</Label>
-              
-              <Input id="doc-password" autoComplete="new-password" type="password" placeholder="Document password" className="col-span-3" value={docPassword} onChange={(e) => setDocPassword(e.target.value)} />
-            </div> : <></>
-          }
-        </div>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={changeDialogOpenState}>
+                Cancel
+              </Button>
 
-        <DialogFooter>
-          <Button asChild variant={"default"} className='cursor-pointer' onClick={submitAndCloseDialog}>
-            <div>
-              Create
-            </div>
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+              <Button isLoading={isLoading} isDisabled={!docName} color="primary" onPress={submitAndCloseDialog}>
+                Create
+              </Button>
+            </ModalFooter>
+          </>
+        </ModalContent>
+      </Modal>
+    </>
   )
 }

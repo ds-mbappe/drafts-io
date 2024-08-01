@@ -2,24 +2,21 @@
 
 // import bcrypt from 'bcrypt';
 import React, { startTransition, useState } from 'react'
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PlusIcon } from "@radix-ui/react-icons";
-import { SearchIcon } from 'lucide-react';
-import { Switch } from "@/components/ui/switch"
+import { Button, Input, Switch } from '@nextui-org/react';
 import { useRouter } from "next/navigation";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Modal,  ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import { toast } from "sonner";
 
 export const AddExistingDocument = ({ userId, onDocumentAdded }: any) => {
   const router = useRouter();
-  const [dialogOpen, setDialogOpen] = useState(false)
   const [docId, setDocId] = useState("")
-  const [showPasswordField, setShowPasswordField] = useState(false)
-  const [encrytedPassword, setEncryptedPassword] = useState("")
-  const [docPassword, setDocPassword] = useState("")
   const [holdersId, setHoldersId] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [docPassword, setDocPassword] = useState("")
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [encrytedPassword, setEncryptedPassword] = useState("")
+  const [showPasswordField, setShowPasswordField] = useState(false)
 
   const onAddDocument = async () => {
     const res = await fetch(`/api/document/${docId}/status`, {
@@ -106,62 +103,54 @@ export const AddExistingDocument = ({ userId, onDocumentAdded }: any) => {
   }
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={changeDialogOpenState}>
-      <DialogTrigger>
-        <Button asChild variant={"outline"} className='w-full gap-4'>
-          <div>
-            {'Add existing document'}
-          </div>
-        </Button>
-      </DialogTrigger>
+    <>
+      <Button variant='shadow' className='w-full' onPress={changeDialogOpenState}>
+        {'Add existing document'}
+      </Button>
 
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Import document</DialogTitle>
+      <Modal isOpen={dialogOpen} onOpenChange={changeDialogOpenState}>
+        <ModalContent>
+          <>
+            <ModalHeader className="flex flex-col gap-1">Import existing document</ModalHeader>
 
-          <DialogDescription>
-            Enter the document ID to import it
-          </DialogDescription>
-        </DialogHeader>
+            <ModalBody>
+              <div className="flex flex-col gap-4 py-4">
+                <div className="flex items-center gap-4">
+                  <Label htmlFor="doc-id" className="text-right">DocumentID</Label>
 
-        <div className="flex flex-col gap-4 py-4">
-          <div className="flex items-center gap-4">
-            <Label htmlFor="doc-id" className="text-right">DocumentID</Label>
+                  <Input variant='bordered' id="doc-id" autoComplete="new-password" placeholder="The id of the document you want to import" value={docId} onChange={(e) => setDocId(e.target.value)} />
+                </div>
 
-            <Input id="doc-id" autoComplete="new-password" placeholder="The id of the document you want to import" value={docId} onChange={(e) => setDocId(e.target.value)} />
-          </div>
+                {showPasswordField ?
+                  <div className="flex flex-col gap-2">
+                    <p className="text-sm text-muted-foreground font-normal">
+                      The document you are trying to access is private, please enter it&apos;s password to unlock and import it.
+                    </p>
 
-          {showPasswordField ?
-            <div className="flex flex-col gap-2">
-              <p className="text-sm text-muted-foreground font-normal">
-                The document you are trying to access is private, please enter it&apos;s password to unlock and import it.
-              </p>
+                    <div className="flex items-center gap-4">
+                      <Label htmlFor="doc-password" className="text-left">Password</Label>
 
-              <div className="flex items-center gap-4">
-                <Label htmlFor="doc-password" className="text-left">Password</Label>
-
-                <Input id="doc-password" type="password" autoComplete="new-password" placeholder="Document password" value={docPassword} onChange={(e) => setDocPassword(e.target.value)} />
+                      <Input id="doc-password" type="password" autoComplete="new-password" placeholder="Document password" value={docPassword} onChange={(e) => setDocPassword(e.target.value)} />
+                    </div>
+                  </div> : <></>
+                }
               </div>
-            </div> : <></>
-          }
-        </div>
+            </ModalBody>
 
-        <DialogFooter>
-          {showPasswordField ?
-            <Button asChild variant={"default"} className='cursor-pointer' onClick={onUnlockDocument}>
-              <div>
-                Unlock document
-              </div>
-            </Button> :
+            <ModalFooter>
+              {showPasswordField ?
+                <Button color='primary' className='cursor-pointer' onClick={onUnlockDocument}>
+                  Unlock document
+                </Button> :
 
-            <Button asChild variant={"default"} className='cursor-pointer' onClick={onAddDocument}>
-              <div>
-                Add document
-              </div>
-            </Button>
-          }
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+                <Button color='primary' isDisabled={!docId} className='cursor-pointer' onClick={onAddDocument}>
+                  Add document
+                </Button>
+              }
+            </ModalFooter>
+          </>
+        </ModalContent>
+      </Modal>
+    </>
   )
 }

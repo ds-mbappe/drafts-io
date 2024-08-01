@@ -81,9 +81,8 @@ export default function App(props: DocumentProps) {
         // "nbf": Date.now() / 1000,
         "exp": Math.floor(Date.now() / 1000) + 86400,
         "iss": "https://cloud.tiptap.dev",
-        "aud": `${process.env.NEXT_PUBLIC_TIPTAP_CLOUD_APP_ID}`
+        "aud": `${String(process.env.NEXT_PUBLIC_TIPTAP_CLOUD_APP_ID)}`
       });
-      // console.log(token)
       setCollabToken(token)
     }
 

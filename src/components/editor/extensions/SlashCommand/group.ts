@@ -142,7 +142,7 @@ export const GROUPS: Group[] = [
         name: 'horizontalRule',
         label: 'Horizontal Rule',
         iconName: 'Minus',
-        description: 'Crate a horizontal divider.',
+        description: 'Create a horizontal divider.',
         aliases: ['hr'],
         action: editor => {
           editor.chain().focus().setHorizontalRule().run()

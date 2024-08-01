@@ -49,24 +49,19 @@ export default function SignInPage() {
 
   const onSignIn = async () => {
     setLoading(true);
-    alertService.clear();
-    try {
-      const response = await signIn('credentials', {
-        email: user.email,
-        password: user.password,
-        callbackUrl: "/app",
-        redirect: false,
-      })
+    const response = await signIn('credentials', {
+      email: user.email,
+      password: user.password,
+      callbackUrl: "/app",
+      redirect: false,
+    })
 
-      if (response?.ok) {
-        router.push("/app");
-      } else {
-        setLoading(false);
-      }
-    } catch (error: any) {
-      console.log(error)
-      alertService.error(error);
+    if (response?.ok) {
+      router.push("/app");
+    } else {
+      alert('Incorrect credentials')
     }
+    setLoading(false);
   }
 
   return (
@@ -130,7 +125,6 @@ export default function SignInPage() {
             type="password"
             label={"Password"}
             variant="bordered"
-            placeholder="Enter your password"
             onChange={(e) => setUser({...user, password: e.target.value})}
           />
         </div>
@@ -139,6 +133,7 @@ export default function SignInPage() {
         <Button
           radius="sm"
           color="primary"
+          isDisabled={!user?.email || !user.password}
           isLoading={loading}
           variant="shadow"
           onClick={onSignIn}

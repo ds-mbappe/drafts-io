@@ -147,6 +147,7 @@ export default function SignInPage() {
         <Button
           radius="sm"
           color="primary"
+          isDisabled={!user?.email || !user.password || !user?.username}
           isLoading={loading}
           variant="shadow"
           onClick={onSignUp}

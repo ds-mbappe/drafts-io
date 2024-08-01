@@ -13,3 +13,16 @@ export async function POST(req) {
     return NextResponse.json({ message: "Error", error }, { status: 500 });
   }
 }
+
+export async function PUT(req) {
+  try {
+    const body = await req.json();
+    const documentData = body.formData
+
+    const document = await Document.updateOne(documentData)
+
+    return NextResponse.json({ document }, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ message: "Error", error }, { status: 500 });
+  }
+}
