@@ -45,7 +45,6 @@ export const AddExistingDocument = ({ userId, onDocumentAdded }: any) => {
         setEncryptedPassword(data?.password)
         setHoldersId(data?.holders_id)
       }
-      // setDialogOpen(false)
     }
   }
 
@@ -104,7 +103,7 @@ export const AddExistingDocument = ({ userId, onDocumentAdded }: any) => {
 
   return (
     <>
-      <Button variant='shadow' className='w-full' onPress={changeDialogOpenState}>
+      <Button variant='bordered' className='w-full' onPress={changeDialogOpenState}>
         {'Add existing document'}
       </Button>
 

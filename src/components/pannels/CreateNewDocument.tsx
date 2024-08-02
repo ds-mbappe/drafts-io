@@ -77,7 +77,7 @@ export const CreateNewDocument = ({ userId, onDocumentSaved }: any) => {
 
   return (
     <>
-      <Button variant='shadow' className='w-full' onPress={changeDialogOpenState}>
+      <Button variant='bordered' className='w-full' onPress={changeDialogOpenState}>
         {'Create a new document'}
       </Button>
 

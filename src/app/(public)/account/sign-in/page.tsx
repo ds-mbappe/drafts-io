@@ -1,12 +1,12 @@
 "use client"
 
-import { useAlertService } from "@/app/_services";
 import { Input, Button } from "@nextui-org/react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Icon } from '@iconify/react';
+import { toast } from "sonner";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -15,7 +15,6 @@ export default function SignInPage() {
     email: "",
     password: "",
   })
-  const alertService = useAlertService();
 
   const socials = [
     {
@@ -59,7 +58,14 @@ export default function SignInPage() {
     if (response?.ok) {
       router.push("/app");
     } else {
-      alert('Incorrect credentials')
+      toast(`Error`, {
+        description: `Incorrect credentials, please try again !`,
+        duration: 3000,
+        action: {
+          label: "Close",
+          onClick: () => {},
+        },
+      })
     }
     setLoading(false);
   }

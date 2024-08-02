@@ -19,7 +19,11 @@ export async function PUT(req) {
     const body = await req.json();
     const documentData = body.formData
 
-    const document = await Document.updateOne(documentData)
+    const document = await Document.findOneAndUpdate({
+      _id: documentData?.id,
+    }, {
+      $set: { name: documentData?.name, private: documentData?.private },
+    }, { new: true })
 
     return NextResponse.json({ document }, { status: 201 });
   } catch (error) {

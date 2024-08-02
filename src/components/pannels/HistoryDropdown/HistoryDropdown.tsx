@@ -1,28 +1,16 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
-import { DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
- } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, DropdownSection, Button } from "@nextui-org/react";
 import { FileClock } from 'lucide-react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import ExtensionKit from '@/components/editor/extensions/extension-kit';
 import { watchPreviewContent } from '@tiptap-pro/extension-collaboration-history';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
 
 const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, provider: TiptapCollabProvider }) => {
   const [activeContent, setActiveContent] = useState<any>();
   const [currentVersionId, setCurrentVersionId] = useState(null);
+  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
   const handleVersionChange = useCallback((newVersion: any) => {
     setCurrentVersionId(newVersion?.version)
@@ -65,6 +53,11 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
     handleVersionChange(version)
   }
 
+  const selectVersionAndOpenModal = (version: any) => {
+    setContent(version)
+    onOpen()
+  }
+
   useEffect(() => {
     const unbindContentWatcher = watchPreviewContent(provider, content => {
       if (editor) {
@@ -78,77 +71,60 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
   }, [provider, editor])
 
   return (
-    <Dialog>
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button asChild size={"sm"} variant={"ghost"}>
+    <>
+      <Dropdown>
+        <DropdownTrigger>
+          <Button isIconOnly size={"sm"} variant={"light"}>
             <FileClock />
           </Button>
-        </DropdownMenuTrigger>
+        </DropdownTrigger>
 
-        <DropdownMenuContent className="w-[300px] bg-white">
-          <DropdownMenuLabel>Version history</DropdownMenuLabel>
+        <DropdownMenu className="w-[300px] bg-white">
+          {
+            historyData?.versions?.length ?
+            <DropdownSection title={"Version history"}>  
+              {
+                historyData?.versions?.sort(function(a: any, b: any) {
+                  return b?.version - a?.version
+                })?.slice(0, 20)?.map((version: any) =>
+                  <DropdownItem key={version.date} description={renderDate(version?.date)} onClick={() => selectVersionAndOpenModal(version)}>
+                    {`Version ${version?.version}`}
+                  </DropdownItem>
+                )
+              }
+            </DropdownSection> :
+            <>
+              <p className="text-sm text-muted-foreground px-2 py-1.5">
+                {`There are no previous versions of your document. Start editing to automatically create a version.`}
+              </p>
+            </>
+          }
+        </DropdownMenu>
+      </Dropdown>
 
-          <p className="text-sm text-muted-foreground px-2 py-1.5">
-            {`These are the latest versions of your document. Click on a specific version to preview it, and eventually rollback to the said version.`}
-          </p>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size='xl' hideCloseButton>
+        <ModalContent>
+          <>
+            <ModalHeader className="flex flex-col gap-1">
+              {`Preview of Version ${activeContent?.version}`}
+            </ModalHeader>
 
-          <DropdownMenuSeparator />
-
-          <div className="flex flex-col max-h-[300px] overflow-y-auto">
-            {
-              historyData?.versions?.length ?
-              <>
-                {
-                  historyData?.versions?.sort(function(a: any, b: any) {
-                    return b?.version - a?.version
-                  })?.slice(0, 20)?.map((version: any) =>
-                    <DialogTrigger asChild key={version.date} onClick={() => setContent(version)}>
-                      <div className="flex flex-col gap-1.5 cursor-pointer hover:bg-muted rounded-sm px-2 py-1.5 items-start">
-                        <p className="text-base font-semibold">
-                          {`Version ${version?.version}`}
-                        </p>
-
-                        <p className="text-sm text-muted-foreground">
-                          {renderDate(version?.date)}
-                        </p>
-                      </div>
-                    </DialogTrigger>
-                  )
-                }
-              </> :
-              <>
-                <p className="text-sm text-muted-foreground px-2 py-1.5">
-                  {`There are no previous versions of your document. Start editing to automatically create a version.`}
-                </p>
-              </>
-            }
-          </div>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <DialogContent className="z-[101] w-full h-[600px] overflow-hidden">
-        <DialogHeader>
-          <DialogTitle>
-            {`Preview of Version ${activeContent?.version}`}
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="flex overflow-hidden w-full">
-          <div className="overflow-auto max-h-full flex-1 h-full">
-            <div className="flex flex-col h-full">
+            <ModalBody>
               <EditorContent editor={editor} />
-            </div>
-          </div>
-        </div>
+            </ModalBody>
 
-        <DialogFooter className="!justify-center">
-          <Button>
-            {`Revert to this version`}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={onClose}>
+                {`Close`}
+              </Button>
+              <Button color="primary" onPress={onClose}>
+                {`Revert to this version`}
+              </Button>
+            </ModalFooter>
+          </>
+        </ModalContent>
+      </Modal>
+    </>
   )
 });
 

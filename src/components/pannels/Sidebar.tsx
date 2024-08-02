@@ -116,6 +116,13 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
       }
     }
 
+    const onDocumentEdited = async (document: any) => {
+      let editedDocument: any = documents?.find((doc: any) => doc?._id === document?._id)
+      if (editedDocument) {
+        editedDocument.name = document?.name
+      }
+    }
+
     const updateDocumentsList = (data: any) => {
       let newDocs: any = [...sharedDocuments, data?.updatedDocument]
       setSharedDocuments(newDocs)
@@ -163,7 +170,6 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
           key="input-search"
           variant="bordered"
           type="text"
-          radius="sm"
           className="px-4"
           isClearable
           placeholder={"Search"}
@@ -202,7 +208,13 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
                 <div className="flex flex-col gap-0.5">
                   {
                     documents?.map((doc: any) =>
-                      <LeftSidebarDocumentItem key={doc?._id} userId={user?.id} document={doc} onDocumentDeleted={onDocumentDeleted} />
+                      <LeftSidebarDocumentItem
+                        key={doc?._id}
+                        userId={user?.id}
+                        document={doc}
+                        onDocumentEdited={onDocumentEdited}
+                        onDocumentDeleted={onDocumentDeleted}
+                      />
                     )
                   }
                 </div>
@@ -225,7 +237,13 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
                 <div className="flex flex-col gap-0.5">
                   {
                     sharedDocuments?.map((doc: any) =>
-                      <LeftSidebarDocumentItem key={doc?._id} userId={user?.id} document={doc} onDocumentRemoved={onDocumentRemoved} />
+                      <LeftSidebarDocumentItem
+                        key={doc?._id}
+                        userId={user?.id}
+                        document={doc}
+                        onDocumentEdited={onDocumentEdited}
+                        onDocumentRemoved={onDocumentRemoved}
+                      />
                     )
                   }
                 </div>

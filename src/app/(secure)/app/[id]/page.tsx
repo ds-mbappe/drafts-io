@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import Navbar from "@/components/ui/navbar";
+import NavbarApp from "@/components/ui/navbar";
 import Editor from "@/components/editor"
 import { Doc as YDoc } from 'yjs'
 import { useRouter, useSearchParams } from "next/navigation";
@@ -110,7 +110,7 @@ export default function App(props: DocumentProps) {
 
   return (
     <div className="w-full h-screen flex flex-col">
-      <Navbar
+      <NavbarApp
         words={words}
         status={saveStatus}
         characters={characters}
@@ -120,7 +120,7 @@ export default function App(props: DocumentProps) {
         provider={provider}
       />
       
-      <div className="flex flex-1 pt-14 h-full">
+      <div className="flex flex-1 h-full">
         <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
         <div className="w-full relative flex overflow-y-auto cursor-text flex-col items-start z-[1] flex-1 p-0 lg:p-6">

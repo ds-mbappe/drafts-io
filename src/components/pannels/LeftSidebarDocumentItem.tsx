@@ -1,14 +1,15 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, startTransition } from 'react'
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Input, Switch } from "@nextui-org/react";
 import { EllipsisVerticalIcon } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { Label } from "@/components/ui/label";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
 import Link from 'next/link';
+import { toast } from "sonner";
 
-export const LeftSidebarDocumentItem = ({ userId, document, onDocumentRemoved, onDocumentDeleted }: any) => {
+export const LeftSidebarDocumentItem = ({ userId, document, onDocumentRemoved, onDocumentDeleted, onDocumentEdited }: any) => {
   const router = useRouter()
   const [docName, setDocName] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -37,17 +38,54 @@ export const LeftSidebarDocumentItem = ({ userId, document, onDocumentRemoved, o
     router.push("/app")
   }
 
+  const handleSaveData = async () => {
+    setIsLoading(true);
+
+    let formData = {
+      id: document?._id,
+      name: docName,
+      private: docPrivate,
+      encrypted_password: docPassword,
+    }
+
+    const res = await fetch("/api/documents", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ formData }),
+    })
+    const data = await res.json()
+
+    if (!res.ok) {
+      throw new Error("Failed to update document.")
+    }
+
+    toast(`Document updated`, {
+      description: `Successfully updated document ${docName}.`,
+      duration: 5000,
+      action: {
+        label: "Close",
+        onClick: () => {},
+      },
+    })
+    onOpenChangeEdit();
+    onDocumentEdited(data?.document);
+    setDocPassword("");
+    setIsLoading(false);
+  };
+
   return (
     <Button className="flex gap-1 justify-between" radius="sm" variant="light">
       <Link href={`/app/${document?._id}`} className="w-full flex items-start">
-        <p className="line-clamp-1">
+        <p className="line-clamp-1 max-w-[229px] text-ellipsis">
           {document.name}
         </p>
       </Link>
 
       <Dropdown>
         <DropdownTrigger>
-          <EllipsisVerticalIcon />
+          <div>
+            <EllipsisVerticalIcon />
+          </div>
         </DropdownTrigger>
 
         <DropdownMenu aria-label="Dropdown DocumentItem">
@@ -95,7 +133,7 @@ export const LeftSidebarDocumentItem = ({ userId, document, onDocumentRemoved, o
                 Cancel
               </Button>
 
-              <Button isLoading={false} isDisabled={!docName} color="primary" onPress={() => null}>
+              <Button isLoading={isLoading} isDisabled={!docName} color="primary" onPress={handleSaveData}>
                 Update
               </Button>
             </ModalFooter>
