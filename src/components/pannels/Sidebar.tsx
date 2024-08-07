@@ -59,7 +59,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         setDocuments(realDocs.documents)
       } else {
         toast.error(`Error`, {
-          description: `Error fetching personal documents, please try again !`,
+          description: `Error fetching personal documents, please try again!`,
           duration: 5000,
           important: true,
         })
@@ -77,7 +77,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         setSharedDocuments(realDocs.documents)
       } else {
         toast.error(`Error`, {
-          description: `Error fetching shared documents, please try again !`,
+          description: `Error fetching shared documents, please try again!`,
           duration: 5000,
           important: true,
         })
