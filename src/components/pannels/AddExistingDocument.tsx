@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { Modal,  ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import { toast } from "sonner";
 
-export const AddExistingDocument = ({ userId, onDocumentAdded }: any) => {
+export const AddExistingDocument = ({ email, onDocumentAdded }: any) => {
   const router = useRouter();
   const [docId, setDocId] = useState("")
   const [holdersId, setHoldersId] = useState([])
@@ -32,7 +32,7 @@ export const AddExistingDocument = ({ userId, onDocumentAdded }: any) => {
         important: true,
       })
     } else {
-      if (data?.holders_id?.includes(userId)) {
+      if (data?.holders_id?.includes(email)) {
         toast(`Error`, {
           description: `The document is already in you Shared documents !`,
           duration: 5000,
@@ -53,7 +53,7 @@ export const AddExistingDocument = ({ userId, onDocumentAdded }: any) => {
     const isPasswordCorrect = await bcryptjs.compare(docPassword, encrytedPassword)
 
     if (isPasswordCorrect) {
-      let newHoldersId = [...holdersId, userId]
+      let newHoldersId = [...holdersId, email]
       const res = await fetch(`/api/document/${docId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -110,14 +110,14 @@ export const AddExistingDocument = ({ userId, onDocumentAdded }: any) => {
       <Modal isOpen={dialogOpen} onOpenChange={changeDialogOpenState}>
         <ModalContent>
           <>
-            <ModalHeader className="flex flex-col gap-1">Import existing document</ModalHeader>
+            <ModalHeader className="flex flex-col gap-1">{'Import existing document'}</ModalHeader>
 
             <ModalBody>
               <div className="flex flex-col gap-4 py-4">
                 <div className="flex items-center gap-4">
                   <Label htmlFor="doc-id" className="text-right">DocumentID</Label>
 
-                  <Input variant='bordered' id="doc-id" autoComplete="new-password" placeholder="The id of the document you want to import" value={docId} onChange={(e) => setDocId(e.target.value)} />
+                  <Input variant='bordered' id="doc-id" autoComplete="new-password" placeholder={"The id of the document you want to import"} value={docId} onChange={(e) => setDocId(e.target.value)} />
                 </div>
 
                 {showPasswordField ?
@@ -127,7 +127,7 @@ export const AddExistingDocument = ({ userId, onDocumentAdded }: any) => {
                     </p>
 
                     <div className="flex items-center gap-4">
-                      <Label htmlFor="doc-password" className="text-left">Password</Label>
+                      <Label htmlFor="doc-password" className="text-left">{'Password'}</Label>
 
                       <Input id="doc-password" type="password" autoComplete="new-password" placeholder="Document password" value={docPassword} onChange={(e) => setDocPassword(e.target.value)} />
                     </div>

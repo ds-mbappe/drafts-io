@@ -34,8 +34,32 @@
   }
 }
 
+.tippy-box {
+  background-color: transparent !important;
+}
+
 [data-theme='slash-command'] {
   width: 1000vw;
+}
+
+*::-webkit-scrollbar {
+  background-color: transparent;
+  width: 5px;
+}
+
+/* background of the scrollbar except button or resizer */
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* scrollbar itself */
+*::-webkit-scrollbar-thumb {
+  background-color: gray;
+}
+
+/* set button(top and bottom of the scrollbar) */
+*::-webkit-scrollbar-button {
+  display:none;
 }
 
 @import './partials/animations.css';

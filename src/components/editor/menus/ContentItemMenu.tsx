@@ -1,14 +1,11 @@
 import { GripVertical, PlusIcon } from 'lucide-react';
 import { Editor } from '@tiptap/react'
 import DragHandle from '@tiptap-pro/extension-drag-handle-react'
-
 import { useData } from '@/components/editor/hooks/useData';
 import useContentItemActions from '@/components/editor/hooks/useContentItemActions';
 import { useEffect, useState } from 'react';
-import * as Popover from '@radix-ui/react-popover'
-import { Toolbar } from '@/components/ui/Toolbar';
-import { Surface } from '@/components/ui/Surface';
 import Icon from '@/components/ui/Icon';
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, cn } from "@nextui-org/react";
 
 export type ContentItemMenuProps = {
   editor: Editor
@@ -18,6 +15,7 @@ const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
   const data = useData()
   const [menuOpen, setMenuOpen] = useState(false)
   const actions = useContentItemActions(editor, data.currentNode, data.currentNodePos)
+  const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
   useEffect(() => {
     if (menuOpen) {
@@ -38,66 +36,58 @@ const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
       }}
     >
       <div className="flex items-center gap-0.5">
-        <div
-          className="hover:bg-muted p-1 rounded cursor-pointer"
-          onClick={actions.handleAdd}
-        >
-          <PlusIcon height={20} width={20} />
-        </div>
+        <Button isIconOnly size={"sm"} variant={"light"} onClick={actions.handleAdd}>
+          <PlusIcon height={16} width={16} />
+        </Button>
 
-        <Popover.Root open={menuOpen} onOpenChange={setMenuOpen}>
-          <Popover.Trigger asChild>
-            <div className="hover:bg-muted p-1 rounded cursor-pointer">
-              <GripVertical height={20} width={20} />
-            </div>
-          </Popover.Trigger>
-          
-          <Popover.Content side="bottom" align="start" sideOffset={8}>
-            <Surface className="p-2 flex flex-col min-w-[16rem]">
-              <Popover.Close>
-                <div
-                  onClick={actions.resetTextFormatting}
-                  className="flex items-center gap-2 p-1.5 text-sm font-medium text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800 text-left bg-transparent w-full rounded"
-                >
-                  <Icon name="RemoveFormatting" />
-                  Clear formatting
-                </div>
-              </Popover.Close>
+        <Dropdown isOpen={menuOpen} onOpenChange={setMenuOpen}>
+          <DropdownTrigger>
+            <Button isIconOnly size={"sm"} variant={"light"}>
+              <GripVertical height={16} width={16} />
+            </Button>
+          </DropdownTrigger>
 
-              <Popover.Close>
-                <div
-                  onClick={actions.copyNodeToClipboard}
-                  className="flex items-center gap-2 p-1.5 text-sm font-medium text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800 text-left bg-transparent w-full rounded"
-                >
-                  <Icon name="Clipboard" />
-                  Copy to clipboard
-                </div>
-              </Popover.Close>
+          <DropdownMenu variant="faded" aria-label="Dropdown menu with icons">
+            <DropdownItem
+              key="remove_formatting"
+              description="Remove current block formatting"
+              startContent={<Icon name="RemoveFormatting" />}
+              onClick={actions.resetTextFormatting}
+            >
+              {'Clear formatting'}
+            </DropdownItem>
 
-              <Popover.Close>
-                <div
-                  onClick={actions.duplicateNode}
-                  className="flex items-center gap-2 p-1.5 text-sm font-medium text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800 text-left bg-transparent w-full rounded"
-                >
-                  <Icon name="Copy" />
-                  Duplicate
-                </div>
-              </Popover.Close>
+            <DropdownItem
+              key="copy_to_clipboard"
+              description="Copy the content of the current block"
+              startContent={<Icon name="Clipboard" />}
+              onClick={actions.copyNodeToClipboard}
+            >
+              {'Copy to clipboard'}
+            </DropdownItem>
 
-              <Toolbar.Divider horizontal />
+            <DropdownItem
+              key="duplicate"
+              showDivider
+              description="Duplicate the current block"
+              startContent={<Icon name="Copy" />}
+              onClick={actions.duplicateNode}
+            >
+              {'Duplicate'}
+            </DropdownItem>
 
-              <Popover.Close>
-                <div
-                  onClick={actions.deleteNode}
-                  className="flex items-center gap-2 p-1.5 text-sm font-medium text-left bg-transparent w-full rounded text-red-500 hover:bg-red-500 bg-opacity-10 hover:bg-opacity-20 hover:text-red-500"
-                >
-                  <Icon name="Trash2" />
-                  Delete
-                </div>
-              </Popover.Close>
-            </Surface>
-          </Popover.Content>
-        </Popover.Root>
+            <DropdownItem
+              key="delete"
+              color="danger"
+              className="text-danger"
+              description="Delete the current block"
+              startContent={<Icon name="Trash2" className={cn(iconClasses, "text-danger")}/>}
+              onClick={actions.deleteNode}
+            >
+              {'Delete'}
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
       </div>
     </DragHandle>
   )

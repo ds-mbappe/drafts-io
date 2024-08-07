@@ -22,7 +22,6 @@ const authOptions: NextAuthOptions = {
           });
           const data = await response.json();
           
-          console.log(data)
           // If no error and we have user data, return it
           if (response.ok && data) {
             return data?.user

@@ -4,13 +4,17 @@ import { Input, Button } from "@nextui-org/react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from '@iconify/react';
 import { toast } from "sonner";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useSearchParams } from 'next/navigation'
 
 export default function SignInPage() {
   const router = useRouter();
+  const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -46,6 +50,8 @@ export default function SignInPage() {
     },
   ]
 
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
   const onSignIn = async () => {
     setLoading(true);
     const response = await signIn('credentials', {
@@ -58,7 +64,7 @@ export default function SignInPage() {
     if (response?.ok) {
       router.push("/app");
     } else {
-      toast(`Error`, {
+      toast.error(`Error`, {
         description: `Incorrect credentials, please try again !`,
         duration: 3000,
         action: {
@@ -69,6 +75,23 @@ export default function SignInPage() {
     }
     setLoading(false);
   }
+
+  useEffect(() => {
+    const getEmail = () => {
+      const email = searchParams.get('email');
+
+      if (email) {
+        setUser({...user, email: email})
+
+        toast.success(`User created successfully !`, {
+          description: `You may now sign in with the email <b>${email}</b> and your password.<br/>Don't forget to verify yout account later !`,
+          duration: 3000,
+        })
+      }
+    }
+
+    getEmail();
+  }, [])
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-gray-200 gap-5">
@@ -117,6 +140,7 @@ export default function SignInPage() {
           <Input
             id="email"
             name="email"
+            value={user.email}
             isRequired
             type="email"
             label={"Email"}
@@ -128,16 +152,24 @@ export default function SignInPage() {
             id="password"
             name="password"
             isRequired
-            type="password"
+            type={isVisible ? "text" : "password"}
             label={"Password"}
             variant="bordered"
+            endContent={ user?.password ?
+              <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                {isVisible ? (
+                  <EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
+                ) : (
+                  <EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+                )}
+              </button> : <></>
+            }
             onChange={(e) => setUser({...user, password: e.target.value})}
           />
         </div>
 
         {/* Sign in Button */}
         <Button
-          radius="sm"
           color="primary"
           isDisabled={!user?.email || !user.password}
           isLoading={loading}

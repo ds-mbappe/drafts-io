@@ -9,7 +9,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure
 import Link from 'next/link';
 import { toast } from "sonner";
 
-export const LeftSidebarDocumentItem = ({ userId, document, onDocumentRemoved, onDocumentDeleted, onDocumentEdited }: any) => {
+export const LeftSidebarDocumentItem = ({ email, document, onDocumentRemoved, onDocumentDeleted, onDocumentEdited }: any) => {
   const router = useRouter()
   const [docName, setDocName] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -29,7 +29,7 @@ export const LeftSidebarDocumentItem = ({ userId, document, onDocumentRemoved, o
   }, [])
 
   const confirmAction = () => {
-    if (document?.creator_id === userId) {
+    if (document?.creator_email === email) {
       onDocumentDeleted(document)
     } else {
       onDocumentRemoved(document)
@@ -146,12 +146,12 @@ export const LeftSidebarDocumentItem = ({ userId, document, onDocumentRemoved, o
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                { document?.creator_id === userId ? "Delete document" : "Remove Document" }
+                { document?.creator_email === email ? "Delete document" : "Remove Document" }
               </ModalHeader>
 
               <ModalBody>
                 <p> 
-                  { document?.creator_id === userId ?
+                  { document?.creator_email === email ?
                     "If you delete this document, other users who have added it will no longer be able to access it" :
                     "If you remove this document, you will need to import it again in the future."
                   }
@@ -164,7 +164,7 @@ export const LeftSidebarDocumentItem = ({ userId, document, onDocumentRemoved, o
                 </Button>
 
                 <Button color="primary" onPress={confirmAction}>
-                  { document?.creator_id === userId ? "Delete" : "Remove" }
+                  { document?.creator_email === email ? "Delete" : "Remove" }
                 </Button>
               </ModalFooter>
             </>

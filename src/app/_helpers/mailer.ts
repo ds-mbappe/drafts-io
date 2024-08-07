@@ -2,8 +2,15 @@ import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import User from "../models/User";
 
-
 export const sendEmail = async({ email, emailType, userId }:any) =>{
+  const verifyEmail = (token: String) => {
+    return `<p>Click <a href="${process.env.NEXTAUTH_URL}/account/verify-email?token=${token}">here</a> to Verify your email.`
+  }
+
+  const resetEmail = (token: String) => {
+    return `<p>Click <a href="${process.env.NEXTAUTH_URL}/account/verify-email?token=${token}">here</a> to Reset your password.`
+  }
+
   try {
     // Create a hash token based on the user's ID
     const hashedToken = await bcrypt.hash(userId.toString(), 10)
@@ -37,11 +44,10 @@ export const sendEmail = async({ email, emailType, userId }:any) =>{
 
     // Compose email options
     const mailOptions = {
-      from: 'no-reply@drafts-io.com',
+      from: 'Drafts App no-reply@drafts-io.com',
       to: email,
       subject: emailType === "VERIFY" ? "Verify your email" : "Reset your password",
-      html: `<p>Click <a href="${process.env.NEXTAUTH_URL}/account/verify-email?token=${hashedToken}">here</a> to 
-      ${emailType === "VERIFY" ? "Verify your email" : "Reset your password"}</p>`
+      html: emailType === "VERIFY" ? verifyEmail(hashedToken) : resetEmail(hashedToken)
     }
 
     // Send the email

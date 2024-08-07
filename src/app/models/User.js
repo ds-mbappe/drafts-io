@@ -30,6 +30,10 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    lang: {
+      type: String,
+      default: "en",
+    },
     forgotPasswordToken: String,
     forgotPasswordTokenExpiry: Date,
     verifyToken: String,

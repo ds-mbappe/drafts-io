@@ -27,13 +27,13 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }, [onClose])
 
     const windowClassName = cn(
-      'absolute left-0 top-0 lg:relative z-[2] mt-14 lg:mt-0 bg-white w-0 duration-300 transition-all',
+      'absolute left-0 top-0 lg:relative z-[2] mt-14 lg:mt-0 w-0 duration-300 transition-all',
       !isOpen && 'border-r-transparent',
-      isOpen && 'w-80 border-r border-r-neutral-200',
+      isOpen && 'w-80 border-r',
     )
 
     const showToastSuccess = (deleted: Boolean) => {
-      toast(`Info`, {
+      toast.success(`Info`, {
         description: `The document has been successfully ${deleted ? 'deleted' : 'removed from your shared documents'} !`,
         duration: 5000,
         important: true,
@@ -41,7 +41,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     } 
 
     const showToastError = (deleted: Boolean) => {
-      toast(`Error`, {
+      toast.error(`Error`, {
         description: `There was an error ${deleted ? 'deleted' : 'removing'} the document !`,
         duration: 5000,
         important: true,
@@ -49,15 +49,15 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }
 
     const fetchDocuments = async () => {
-      try {
-        const data = await fetch(`/api/documents/${user?.id}`, {
-          method: 'GET',
-          headers: { "content-type": "application/json" },
-        });
+      const data = await fetch(`/api/documents/${user?.email}`, {
+        method: 'GET',
+        headers: { "content-type": "application/json" },
+      });
+      
+      if (data?.ok) {
         const realDocs = await data.json();
         setDocuments(realDocs.documents)
-      } catch (error) {
-        console.log(error);
+      } else {
         toast(`Error`, {
           description: `Error fetching personal documents, please try again !`,
           duration: 5000,
@@ -67,15 +67,15 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }
 
     const fetchSharedDocuments = async () => {
-      try {
-        const data = await fetch(`/api/documents/${user?.id}/shared`, {
-          method: 'GET',
-          headers: { "content-type": "application/json" },
-        });
+      const data = await fetch(`/api/documents/${user?.email}/shared`, {
+        method: 'GET',
+        headers: { "content-type": "application/json" },
+      });
+
+      if (data?.ok) {
         const realDocs = await data.json();
         setSharedDocuments(realDocs.documents)
-      } catch (error) {
-        console.log(error);
+      } else {
         toast(`Error`, {
           description: `Error fetching shared documents, please try again !`,
           duration: 5000,
@@ -85,7 +85,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }
 
     const onDocumentRemoved = async (document: any) => {
-      let newHoldersId = document?.holders_id?.filter((el: String) => el !== user?.id)
+      let newHoldersId = document?.holders_id?.filter((el: String) => el !== user?.email)
       const res = await fetch(`/api/document/${document?._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -98,6 +98,9 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         showToastError(false)
       } else {
         showToastSuccess(false)
+
+        const newDocsShared = sharedDocuments?.filter(doc => doc?._id !== document?._id)
+        setSharedDocuments(newDocsShared)
         router.push('/app')
       }
     }
@@ -112,6 +115,9 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         showToastError(true)
       } else {
         showToastSuccess(true)
+
+        const newDocs = documents?.filter(doc => doc?._id !== document?._id)
+        setDocuments(newDocs)
         router.push('/app')
       }
     }
@@ -135,7 +141,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
       // dataPersonal = dataPersonal.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
       // dataShared = dataShared.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
 
-      // const res = await fetch(`/api/documents/${user?.id}?search=${e?.target?.value}`, {
+      // const res = await fetch(`/api/documents/${user?.email}?search=${e?.target?.value}`, {
       //   method: "GET",
       //   headers: { "Content-Type": "application/json" },
       // })
@@ -154,7 +160,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }, [])
 
     useEffect(() => {
-      if (user?.id) {
+      if (user?.email) {
         if (!documents?.length) {
           fetchDocuments();
         }
@@ -165,7 +171,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }, [user]);
 
     return (
-      <div className={`${windowClassName} h-full flex flex-col overflow-y-auto gap-8 py-8 ${isOpen ? 'px-2' : ''}`}>
+      <div className={`${windowClassName} h-full bg-content1 flex flex-col overflow-y-auto gap-8 py-8 ${isOpen ? 'px-2' : ''}`}>
         <Input
           key="input-search"
           variant="bordered"
@@ -177,9 +183,9 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         />
 
         <div className="flex flex-col gap-4 px-4">
-          <CreateNewDocument userId={user?.id} onDocumentSaved={() => null} />
+          <CreateNewDocument email={user?.email} onDocumentSaved={() => null} />
 
-          <AddExistingDocument userId={user?.id} onDocumentAdded={updateDocumentsList} />
+          <AddExistingDocument email={user?.email} onDocumentAdded={updateDocumentsList} />
         </div>
         
         {/* Home button */}
@@ -210,7 +216,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
                     documents?.map((doc: any) =>
                       <LeftSidebarDocumentItem
                         key={doc?._id}
-                        userId={user?.id}
+                        email={user?.email}
                         document={doc}
                         onDocumentEdited={onDocumentEdited}
                         onDocumentDeleted={onDocumentDeleted}
@@ -239,7 +245,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
                     sharedDocuments?.map((doc: any) =>
                       <LeftSidebarDocumentItem
                         key={doc?._id}
-                        userId={user?.id}
+                        email={user?.email}
                         document={doc}
                         onDocumentEdited={onDocumentEdited}
                         onDocumentRemoved={onDocumentRemoved}

@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { icons } from 'lucide-react'
 import { Command, MenuListProps } from './types'
-import { Surface } from '@/components/ui/Surface'
+import { Listbox, ListboxItem, ListboxSection, } from "@nextui-org/react";
 
 export type IconProps = {
   name: keyof typeof icons
@@ -130,42 +130,48 @@ const MenuList = React.forwardRef((props: MenuListProps, ref) => {
   }
 
   return (
-    <Surface ref={scrollContainer} className="text-black max-h-[min(80vh,24rem)] overflow-auto flex-wrap p-2">
-      <div className="grid grid-cols-1 gap-0.5">
+    <div className="w-full max-w-[260px] max-h-[min(80vh,24rem)] p-1 overflow-auto bg-content1 rounded-[12px] border border-default-200 dark:border-default-100">
+      <Listbox variant="flat" aria-label="Listbox menu with sections">
         {props.items.map((group, groupIndex: number) => (
-          <React.Fragment key={`${group.title}-wrapper`}>
-            <div
-              className="text-neutral-500 text-[0.65rem] col-[1/-1] mx-2 mt-4 font-semibold tracking-wider select-none uppercase first:mt-0.5"
-              key={`${group.title}`}
-            >
-              {group.title}
-            </div>
+          <ListboxSection
+            key={`${group?.title}-wrapper`}
+            title={group?.title}
+          >
             {group.commands.map((command: Command, commandIndex: number) => {
               const isSelected = (commandIndex === selectedCommandIndex && groupIndex === selectedGroupIndex);
               
               return (
-                <button
-                  ref={isSelected ? activeItem : null}
-                  className={`flex w-full items-center space-x-2 rounded-md p-1 text-left text-sm text-gray-900 hover:bg-gray-100 ${
-                    isSelected ? "bg-gray-100 text-gray-900" : ""
-                  }`}
+                <ListboxItem
                   key={commandIndex}
+                  // ref={isSelected ? activeItem : null}
+                  description={command?.description}
+                  startContent={<Icon name={command?.iconName} className="w-10 h-10" />}
                   onClick={createCommandClickHandler(groupIndex, commandIndex)}
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 bg-white">
-                    <Icon name={command.iconName} className="w-10 h-10" />
-                  </div>
-                  <div className="max-w-[175px]">
-                    <p className="font-medium">{command.label}</p>
-                    <p className="text-xs text-gray-500">{command.description}</p>
-                  </div>
-                </button>
+                  {command?.label}
+                </ListboxItem>
+                // <button
+                //   ref={isSelected ? activeItem : null}
+                //   className={`flex w-full items-center space-x-2 rounded-md p-1 text-left text-sm text-gray-900 hover:bg-gray-100 ${
+                //     isSelected ? "bg-gray-100 text-gray-900" : ""
+                //   }`}
+                //   key={commandIndex}
+                //   onClick={createCommandClickHandler(groupIndex, commandIndex)}
+                // >
+                //   <div className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 bg-white">
+                //     <Icon name={command.iconName} className="w-10 h-10" />
+                //   </div>
+                //   <div className="max-w-[175px]">
+                //     <p className="font-medium">{command.label}</p>
+                //     <p className="text-xs text-gray-500">{command.description}</p>
+                //   </div>
+                // </button>
                 )
             })}
-          </React.Fragment>
+          </ListboxSection>
         ))}
-      </div>
-    </Surface>
+      </Listbox>
+    </div>
   )
 })
 

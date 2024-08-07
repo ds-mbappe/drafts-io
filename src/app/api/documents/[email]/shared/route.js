@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 
 export async function GET(req, { params }) {
   try {
-    const { userId } = params
+    const { email } = params
     const documents = await Document.find({
       holders_id: {
         $elemMatch: {
-          $eq: userId
+          $eq: email
         }
       }
     })

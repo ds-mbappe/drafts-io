@@ -1,19 +1,29 @@
 "use client"
 
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, User } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Switch } from "@nextui-org/react";
 import EditorInfo from './EditorInfo';
 import { memo, useEffect, useState } from 'react';
-import { PanelTopClose, PanelLeft } from 'lucide-react';
+import { PanelTopClose, PanelLeft, MoonIcon, SunIcon } from 'lucide-react';
 import HistoryDropdown from '../pannels/HistoryDropdown/HistoryDropdown';
 import { signOut, getSession } from "next-auth/react";
+import { useTheme } from "next-themes";
 
 const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, historyData, provider }: any) => {
-  const [user, setUser] = useState<any>()
+  const { theme, setTheme } = useTheme();
+  const [user, setUser] = useState<any>();
 
   const onLogout = () => {
     signOut({
       callbackUrl: "/account/sign-in"
     });
+  }
+
+  const changeTheme = () => {
+    if (theme === 'dark') {
+      setTheme('light')
+    } else if (theme === 'light') {
+      setTheme('dark')
+    }
   }
 
   useEffect(() => {
@@ -31,7 +41,7 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
 
   return (
     <>
-      <Navbar isBordered>
+      <Navbar isBordered maxWidth={"full"} className="bg-content1">
         <NavbarBrand>
           <Button isIconOnly size={"sm"} variant={"light"} onClick={toggleSidebar}>
             { isSidebarOpen ? <PanelTopClose className="-rotate-90" /> : <PanelLeft /> }
@@ -51,6 +61,12 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
           }
 
           <NavbarItem>
+            <Button isIconOnly size={"sm"} variant={"light"} onClick={changeTheme}>
+              {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+            </Button>
+          </NavbarItem>
+
+          <NavbarItem>
             <div className="flex items-center justify-center gap-5">
               <div className="flex gap-2 items-center justify-center">
                 <div className={`w-2 h-2 rounded-full flex gap-1 items-center justify-center ${status === 'Synced' ? 'bg-green-500' : status === 'Not Synced' ? 'bg-red-500' : 'bg-yellow-500'}`} />
@@ -60,9 +76,9 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
                 </span>
               </div>
 
-              <div className="h-8 border-r" />
+              {/* <div className="h-8 border-r" /> */}
 
-              <EditorInfo words={words} characters={characters} />
+              {/* <EditorInfo words={words} characters={characters} /> */}
             </div>
           </NavbarItem>
 
@@ -73,7 +89,7 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
                   isBordered
                   as="button"
                   color="primary"
-                  name={user?.name?.split("")?.[0] || 'U'}
+                  name={user?.name?.split("")?.[0] || user?.email?.split("")?.[0]?.toUpperCase()}
                   size="sm"
                   src={user?.image}
                 />
@@ -90,7 +106,7 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
 
                 <DropdownItem key="help_and_feedback">{'Help & Feedback'}</DropdownItem>
 
-                <DropdownItem key="logout" color="danger" onClick={onLogout}>{'Log Out'}</DropdownItem>
+                <DropdownItem key="logout" className="text-danger" color="danger" onClick={onLogout}>{'Log Out'}</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </NavbarItem>

@@ -50,7 +50,7 @@ export default function App() {
         characters={editor?.storage?.characterCount.characters()}
       />
 
-      <div className="flex flex-1 pt-14 h-full">
+      <div className="flex flex-1 h-full bg-content1">
         <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
         <div className="w-full relative flex overflow-y-auto cursor-text flex-col items-center z-[1] flex-1 p-0 lg:p-6">

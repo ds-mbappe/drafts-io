@@ -79,7 +79,7 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
           </Button>
         </DropdownTrigger>
 
-        <DropdownMenu className="w-[300px] bg-white">
+        <DropdownMenu className="w-[300px]">
           {
             historyData?.versions?.length ?
             <DropdownSection title={"Version history"}>  

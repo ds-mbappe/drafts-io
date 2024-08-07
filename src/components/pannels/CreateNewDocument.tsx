@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Modal,  ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import { toast } from "sonner";
 
-export const CreateNewDocument = ({ userId, onDocumentSaved }: any) => {
+export const CreateNewDocument = ({ email, onDocumentSaved }: any) => {
   const router = useRouter();
 
   const [docName, setDocName] = useState("")
@@ -19,7 +19,7 @@ export const CreateNewDocument = ({ userId, onDocumentSaved }: any) => {
   const handleSaveData = async () => {
     let formData = {
       name: docName,
-      creator_id: userId,
+      creator_email: email,
       can_edit: undefined,
       team_id: undefined,
       private: docPrivate,
@@ -45,7 +45,7 @@ export const CreateNewDocument = ({ userId, onDocumentSaved }: any) => {
     });
 
 
-    toast(`Document created`, {
+    toast.success(`Document created`, {
       description: `Successfully created document ${docName}.`,
       duration: 5000,
       action: {

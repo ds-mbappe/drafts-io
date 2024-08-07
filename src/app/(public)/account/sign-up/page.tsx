@@ -7,10 +7,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { Icon } from '@iconify/react';
 import { signIn } from "next-auth/react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { toast } from "sonner";
 
 export default function SignInPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [user, setUser] = useState({
     username: "",
     email: "",
@@ -48,22 +51,27 @@ export default function SignInPage() {
     },
   ]
 
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
   const onSignUp = async () => {
     setLoading(true);
-    alertService.clear();
-    try {
-      const response = await fetch("/api/account/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user)
-      });
+    const response = await fetch("/api/account/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user)
+    });
 
-      if (response?.ok) {
-        router.push("/account/sign-in");
-      }
-    } catch (error: any) {
-      console.log(error)
-      alertService.error(error);
+    if (response?.ok) {
+      router.push(`/account/sign-in?email=${user?.email}`);
+    } else {
+      toast.error(`Error`, {
+        description: `An error occured, please try again !`,
+        duration: 3000,
+        action: {
+          label: "Close",
+          onClick: () => {},
+        },
+      })
     }
     setLoading(false)
   }
@@ -114,7 +122,6 @@ export default function SignInPage() {
         <div className="w-full h-full flex flex-col gap-5">
           <Input
             isRequired
-            size="sm"
             type="text"
             label={"Username"}
             variant="bordered"
@@ -124,7 +131,6 @@ export default function SignInPage() {
 
           <Input
             isRequired
-            size="sm"
             type="email"
             label={"Email"}
             variant="bordered"
@@ -134,18 +140,25 @@ export default function SignInPage() {
 
           <Input
             isRequired
-            size="sm"
-            type="password"
+            type={isVisible ? "text" : "password"}
             label="Password"
             variant="bordered"
             autoComplete="new-password"
+            endContent={ user?.password ?
+              <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                {isVisible ? (
+                  <EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
+                ) : (
+                  <EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+                )}
+              </button> : <></>
+            }
             onChange={(e) => setUser({...user, password: e.target.value})}
           />
         </div>
 
         {/* Sign up Button */}
         <Button
-          radius="sm"
           color="primary"
           isDisabled={!user?.email || !user.password || !user?.username}
           isLoading={loading}

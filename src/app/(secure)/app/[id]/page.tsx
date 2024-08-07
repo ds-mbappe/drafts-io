@@ -10,6 +10,7 @@ import { TiptapCollabProvider } from '@hocuspocus/provider';
 import { JWT } from "node-jsonwebtoken";
 import { useSidebar } from '@/components/editor/hooks/useSidebar';
 import 'katex/dist/katex.min.css';
+import { toast } from 'sonner';
 
 type DocumentProps = {
   params: {
@@ -61,12 +62,20 @@ export default function App(props: DocumentProps) {
       headers: { "content-type": "application/json" },
     });
 
-    if (!data.ok) {
-      router.push("/not-found")
+    if (data?.ok) {
+      const realDoc = await data.json();
+      setDocument(realDoc?.document)
+    } else {
+      toast.error(`Error`, {
+        description: `An error occured, please try again !`,
+        duration: 3000,
+        action: {
+          label: "Close",
+          onClick: () => {},
+        },
+      })
+      // router.push("/not-found")
     }
-
-    const realDoc = await data.json();
-    setDocument(realDoc.document)
   }
 
   const updateHistoryData = (data: any) => {
@@ -123,7 +132,7 @@ export default function App(props: DocumentProps) {
       <div className="flex flex-1 h-full">
         <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
-        <div className="w-full relative flex overflow-y-auto cursor-text flex-col items-start z-[1] flex-1 p-0 lg:p-6">
+        <div className="w-full bg-content1 relative flex overflow-y-auto cursor-text flex-col items-start z-[1] flex-1 p-0 lg:p-6">
           <div className="relative w-full max-w-screen-xl">
             <Editor
               documentId={props.params.id}
