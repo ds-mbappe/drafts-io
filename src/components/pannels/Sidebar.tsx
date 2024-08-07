@@ -29,7 +29,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     const windowClassName = cn(
       'absolute left-0 top-0 lg:relative z-[2] mt-14 lg:mt-0 w-0 duration-300 transition-all',
       !isOpen && 'border-r-transparent',
-      isOpen && 'w-80 border-r',
+      isOpen && 'w-80 border-r border-r-divider',
     )
 
     const showToastSuccess = (deleted: Boolean) => {
@@ -99,7 +99,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
       } else {
         showToastSuccess(false)
 
-        const newDocsShared = sharedDocuments?.filter(doc => doc?._id !== document?._id)
+        const newDocsShared = sharedDocuments?.filter((doc: any) => doc?._id !== document?._id)
         setSharedDocuments(newDocsShared)
         router.push('/app')
       }
@@ -116,7 +116,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
       } else {
         showToastSuccess(true)
 
-        const newDocs = documents?.filter(doc => doc?._id !== document?._id)
+        const newDocs = documents?.filter((doc: any) => doc?._id !== document?._id)
         setDocuments(newDocs)
         router.push('/app')
       }

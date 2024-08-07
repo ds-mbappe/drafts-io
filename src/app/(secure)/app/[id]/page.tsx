@@ -115,7 +115,9 @@ export default function App(props: DocumentProps) {
     }
   }, [setProvider, collabToken, yDoc, docId, hasCollab, doc])
 
-  if ((hasCollab && (!collabToken || !provider))) return
+  if ((hasCollab && (!collabToken || !provider))) {
+    return null
+  }
 
   return (
     <div className="w-full h-screen flex flex-col">
