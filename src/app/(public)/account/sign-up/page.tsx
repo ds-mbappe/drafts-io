@@ -19,7 +19,6 @@ export default function SignInPage() {
     email: "",
     password: "",
   })
-  const alertService = useAlertService();
 
   const socials = [
     {
@@ -77,16 +76,16 @@ export default function SignInPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-gray-200 gap-5">
-      <div className="w-[350px] sm:w-full max-w-[400px] h-full flex flex-col p-6 gap-6 bg-white rounded-2xl">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-5">
+      <div className="w-[350px] sm:w-full max-w-[400px] h-full flex flex-col p-6 gap-6 bg-content1 border border-divider rounded-2xl">
         <div className="flex flex-col gap-6">
           {/* Sign up intro */}
           <div className="flex flex-col gap-1">
-            <p className="text-black font-semibold text-2xl">
+            <p className="font-semibold text-2xl">
               {"Create a new account"}
             </p>
 
-            <p className="text-black font-normal">
+            <p className="font-normal">
               {"Continue with social accounts."}
             </p>
           </div>
@@ -110,11 +109,11 @@ export default function SignInPage() {
 
           {/* Separator */}
           <div className="flex items-center justify-center gap-3">
-            <div className="w-full border border-default" />
+            <div className="w-full border border-divider" />
 
             <p className="text-black font-normal">{"or"}</p>
 
-            <div className="w-full border border-default" />
+            <div className="w-full border border-divider" />
           </div>
         </div>
 
@@ -147,9 +146,9 @@ export default function SignInPage() {
             endContent={ user?.password ?
               <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
                 {isVisible ? (
-                  <EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
+                  <EyeOffIcon className="text-2xl pointer-events-none" />
                 ) : (
-                  <EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+                  <EyeIcon className="text-2xl pointer-events-none" />
                 )}
               </button> : <></>
             }
@@ -162,7 +161,6 @@ export default function SignInPage() {
           color="primary"
           isDisabled={!user?.email || !user.password || !user?.username}
           isLoading={loading}
-          variant="shadow"
           onClick={onSignUp}
         >
           {"Sign up"}
@@ -170,12 +168,12 @@ export default function SignInPage() {
 
         {/* Sign in text */}
         <div className="flex gap-1">
-          <p className="text-black font-normal">
+          <p className="font-normal">
             {"Already have an account ?"}
           </p>
 
           <Link href="/account/sign-in">
-            <p className="text-black font-medium hover:text-default-600">
+            <p className="font-medium hover:text-content1-foreground">
               {"Sign in"}
             </p>
           </Link>

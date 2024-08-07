@@ -99,7 +99,7 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
                 <DropdownItem key="profile" className="h-14 gap-2" textValue={`Signed in as ${user?.email}`}>
                   <p className="font-semibold">{'Signed in as'}</p>
                   
-                  <p className="font-semibold">{ user?.email }</p>
+                  <p className="font-semibold">{user?.email}</p>
                 </DropdownItem>
 
                 <DropdownItem key="settings">{'My Settings'}</DropdownItem>
