@@ -1,6 +1,6 @@
 "use client";
 
-import { EditorContent, useEditor } from "@tiptap/react";
+import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import React, { useState, useEffect, useTransition, useMemo, useRef } from "react";
 import { ExtensionKit } from './extensions/extension-kit';
 import { useRouter } from "next/navigation";
@@ -23,7 +23,7 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
   setSaveStatus: Function,
   setCharacterCount: Function,
   yDoc: YDoc,
-  provider: TiptapCollabProvider | null,
+  provider: TiptapCollabProvider | undefined,
   userFullName: String,
   updateHistoryData: Function,
 }) {
@@ -38,7 +38,7 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
   }
 
   // Simulate a delay in saving.
-  const debouncedUpdates = useDebouncedCallback(async ({ editor }) => {
+  const debouncedUpdates = useDebouncedCallback(async ({ editor }: { editor: Editor }) => {
     const editorData = editor.getHTML();
     await patchRequest(documentId, editorData);
     setTimeout(() => {
