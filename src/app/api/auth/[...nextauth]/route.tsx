@@ -15,7 +15,7 @@ const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         try {
-          const response = await fetch(`${process.env.NEXTAUTH_URL as String}/api/account/signin`, {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ? (process.env.NEXTAUTH_URL as String) : `https://www.${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL as String}`}/api/account/signin`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(credentials)
