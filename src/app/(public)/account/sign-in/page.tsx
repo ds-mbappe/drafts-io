@@ -107,8 +107,6 @@ export default function SignInPage() {
               {"Continue with social accounts."}
             </p>
 
-            {process.env.NEXT_PUBLIC_VERCEL_ENV}
-            {process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}
           </div>
 
           {/* Social SSO */}

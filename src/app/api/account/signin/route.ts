@@ -45,9 +45,7 @@ export async function POST(request: NextRequest){
     })
 
     // Set the token as an HTTP-only cookie
-    response.cookies.set("token", token, {
-      httpOnly: true,
-    })
+    response.cookies.set("token", token, {})
 
     return response;
   } catch (error: any) {
