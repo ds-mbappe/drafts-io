@@ -7,8 +7,8 @@ export const sendEmail = async({ email, emailType, userId }:any) =>{
     return `<p>Click <a href="${process.env.NEXTAUTH_URL}/account/verify-email?token=${token}">here</a> to Verify your email.`
   }
 
-  const resetEmail = (token: String) => {
-    return `<p>Click <a href="${process.env.NEXTAUTH_URL}/account/verify-email?token=${token}">here</a> to Reset your password.`
+  const resetEmail = (token: String, email: String) => {
+    return `<p>Click <a href="${process.env.NEXTAUTH_URL}/account/reset-pass?email=${email}&token=${token}">here</a> to Reset your password.`
   }
 
   try {
@@ -47,7 +47,7 @@ export const sendEmail = async({ email, emailType, userId }:any) =>{
       from: 'Drafts App no-reply@drafts-io.com',
       to: email,
       subject: emailType === "VERIFY" ? "Verify your email" : "Reset your password",
-      html: emailType === "VERIFY" ? verifyEmail(hashedToken) : resetEmail(hashedToken)
+      html: emailType === "VERIFY" ? verifyEmail(hashedToken) : resetEmail(hashedToken, email)
     }
 
     // Send the email

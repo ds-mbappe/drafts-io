@@ -11,15 +11,15 @@ export async function POST(request: NextRequest){
     // Parses the request body to extract username, email, and password.
     const { username, email, password } = reqBody
 
-    //Checks if a user with the provided email already exists. 
+    // Checks if a user with the provided email already exists. 
     const user = await User.findOne({ email })
 
-    //If yes, returns a 400 response.
+    // If yes, returns a 400 response.
     if(user){
       return NextResponse.json({ error: "A user with this email already exists !" }, { status: 400 })
     }
 
-    //hash password using bcryptjs.
+    // Hash password using bcryptjs.
     const salt = await bcryptjs.genSalt(10)
     const hashedPassword = await bcryptjs.hash(password, salt)
 

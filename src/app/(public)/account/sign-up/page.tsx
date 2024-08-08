@@ -173,7 +173,7 @@ export default function SignInPage() {
           </p>
 
           <Link href="/account/sign-in">
-            <p className="font-medium hover:text-content1-foreground">
+            <p className="font-medium hover:text-primary transition-all">
               {"Sign in"}
             </p>
           </Link>

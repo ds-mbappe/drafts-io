@@ -11,14 +11,14 @@ export async function POST(request: NextRequest){
     // Parses the request body to extract username, email, and password.
     const { email, password } = reqBody
 
-    //check if user exists
+    // Check if user exists
     const user = await User.findOne({ email })
 
     if(!user){
       return NextResponse.json({ error: "User does not exist" }, { status: 400 })
     }
 
-    //check if password is correct
+    // Check if password is correct
     const validPassword = await bcryptjs.compare(password, user.password)
     if(!validPassword){
       return NextResponse.json({ error: "Invalid password" }, { status: 400 })
@@ -38,11 +38,7 @@ export async function POST(request: NextRequest){
     const token = jwt.sign(tokenData, process.env.JWT_SECRET!, { expiresIn: process.env.JWT_EXPIRES_IN })
 
     // Create a JSON response indicating successful login
-    const response = NextResponse.json({
-      message: "Login successful",
-      success: true,
-      user: user,
-    })
+    const response = NextResponse.json({ user })
 
     // Set the token as an HTTP-only cookie
     response.cookies.set("token", token, {})

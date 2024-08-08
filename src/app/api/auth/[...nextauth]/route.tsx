@@ -4,35 +4,36 @@ import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import FacebookProvider from "next-auth/providers/facebook";
+import User from "@/app/models/User";
 
 const authOptions: NextAuthOptions = {
   providers: [
-    CredentialsProvider({
-      name: 'credentials',
-      credentials: {
-        email: {},
-        password: {},
-      },
-      async authorize(credentials, req) {
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ? (process.env.NEXTAUTH_URL as String) : `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL as String}`}/api/account/signin`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(credentials)
-          });
-          const data = await response.json();
+    // CredentialsProvider({
+    //   name: 'credentials',
+    //   credentials: {
+    //     email: {},
+    //     password: {},
+    //   },
+    //   async authorize(credentials, req) {
+    //     try {
+    //       const response = await fetch(`${process.env.NEXTAUTH_URL as String}/api/account/signin`, {
+    //         method: "POST",
+    //         headers: { "Content-Type": "application/json" },
+    //         body: JSON.stringify(credentials)
+    //       });
+    //       const user = await response.json();
           
-          // If no error and we have user data, return it
-          if (response.ok && data) {
-            return data?.user
-          }
-        } catch (error: any) {
-          return error
-        }
+    //       // If no error and we have user data, return it
+    //       if (response?.ok) {
+    //         return user
+    //       }
+    //     } catch (error: any) {
+    //       return error
+    //     }
         
-        return null
-      },
-    }),
+    //     return null
+    //   },
+    // }),
     GitHubProvider({
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
@@ -48,21 +49,45 @@ const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     jwt: async ({ token, user }) => {
-      user && (token.user = user);
+      if (user) {
+        token.user = user
+      }
       return token;
     },
     session: async ({ session, token }: { session: Session, token: any  }) => {
-      session.user = {
-        email: token?.user?.email,
-        name: token?.user?.name,
-        image: token?.user?.image,
-      };
+      if (token) {
+        session.user = token.user;
+      }
       return session;
     },
+    signIn: async ({ user }: { user: any }) => {
+      // Check if user exists
+      const userExists = await User.findOne({ email: user?.email })
+
+      if (!userExists) {
+        const userToCreate = {
+          email: user?.email,
+          password: user?.email,
+        }
+        const response = await fetch(`${process.env.NEXTAUTH_URL as String}/api/account/signup`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userToCreate)
+        });
+
+        if (response?.ok) {
+          return true
+        } else {
+          return false
+        }
+      }
+      return true;
+    }
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/account/sign-in",
+    error: "/account/sign-in",
   },
   session: {
     strategy: "jwt"

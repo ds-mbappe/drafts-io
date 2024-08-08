@@ -54,12 +54,21 @@ export default function SignInPage() {
 
   const onSignIn = async () => {
     setLoading(true);
-    const response = await signIn('credentials', {
-      email: user.email,
-      password: user.password,
-      callbackUrl: "/app",
-      redirect: false,
-    })
+    const credentials = {
+      email: user?.email,
+      password: user?.password,
+    }
+    // const response = await signIn('credentials', {
+    //   email: user.email,
+    //   password: user.password,
+    //   callbackUrl: "/app",
+    //   redirect: false,
+    // })
+    const response = await fetch(`/api/account/signin`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(credentials)
+    });
 
     if (response?.ok) {
       router.push("/app");
@@ -77,20 +86,20 @@ export default function SignInPage() {
   }
 
   useEffect(() => {
-    const getEmail = () => {
+    const getUrlParams = () => {
       const email = searchParams.get('email');
 
       if (email) {
         setUser({...user, email: email})
 
         toast.success(`User created successfully !`, {
-          description: `You may now sign in with the email <b>${email}</b> and your password.<br/>Don't forget to verify yout account later !`,
+          description: `You may now sign in with the email <b>${email}</b> and your password.<br/>Don't forget to verify your account later !`,
           duration: 3000,
         })
       }
     }
 
-    getEmail();
+    getUrlParams();
   }, [])
 
   return (
@@ -137,36 +146,50 @@ export default function SignInPage() {
         </div>
 
         {/* Inputs */}
-        <div className="w-full h-full flex flex-col gap-5">
-          <Input
-            id="email"
-            name="email"
-            value={user.email}
-            isRequired
-            type="email"
-            label={"Email"}
-            variant="bordered"
-            onChange={(e) => setUser({...user, email: e.target.value})}
-          />
+        <div className="w-full flex flex-col gap-2">
+          <div className="w-full h-full flex flex-col gap-5">
+            <Input
+              id="email"
+              name="email"
+              value={user?.email}
+              isRequired
+              type="email"
+              label={"Email"}
+              variant="bordered"
+              onChange={(e) => setUser({...user, email: e?.target?.value})}
+            />
 
-          <Input
-            id="password"
-            name="password"
-            isRequired
-            type={isVisible ? "text" : "password"}
-            label={"Password"}
-            variant="bordered"
-            endContent={ user?.password ?
-              <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-                {isVisible ? (
-                  <EyeOffIcon className="text-2xl pointer-events-none" />
-                ) : (
-                  <EyeIcon className="text-2xl pointer-events-none" />
-                )}
-              </button> : <></>
-            }
-            onChange={(e) => setUser({...user, password: e.target.value})}
-          />
+            <Input
+              id="password"
+              name="password"
+              isRequired
+              type={isVisible ? "text" : "password"}
+              label={"Password"}
+              variant="bordered"
+              endContent={ user?.password ?
+                <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                  {isVisible ? (
+                    <EyeOffIcon className="text-2xl pointer-events-none" />
+                  ) : (
+                    <EyeIcon className="text-2xl pointer-events-none" />
+                  )}
+                </button> : <></>
+              }
+              onChange={(e) => setUser({...user, password: e?.target?.value})}
+            />
+          </div>
+
+          <div className="flex gap-1">
+            <p className="font-normal text-sm">
+              {"Forgot your password ?"}
+            </p>
+
+            <Link href="/account/reset-pass">
+              <p className="font-medium hover:text-primary transition-all text-sm">
+                {"Click here"}
+              </p>
+            </Link>
+          </div>
         </div>
 
         {/* Sign in Button */}
@@ -186,7 +209,7 @@ export default function SignInPage() {
           </p>
 
           <Link href="/account/sign-up">
-            <p className="font-medium hover:text-content1-foreground">
+            <p className="font-medium hover:text-primary transition-all">
               {"Sign up"}
             </p>
           </Link>
