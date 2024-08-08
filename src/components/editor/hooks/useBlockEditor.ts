@@ -25,7 +25,7 @@ export const useBlockEditor = ({
   UpdateHistoryVersions,
 }: {
   yDoc: YDoc | null | undefined,
-  provider?: TiptapCollabProvider | null | undefined,
+  provider?: TiptapCollabProvider | undefined,
   updateHistoryData: Function,
   setSaveStatus: Function,
   userFullName: String,
