@@ -60,29 +60,29 @@ const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    signIn: async ({ user }: { user: any }) => {
-      // Check if user exists
-      const userExists = await User.findOne({ email: user?.email })
+    // signIn: async ({ user }: { user: any }) => {
+    //   // Check if user exists
+    //   const userExists = await User.findOne({ email: user?.email })
 
-      if (!userExists) {
-        const userToCreate = {
-          email: user?.email,
-          password: user?.email,
-        }
-        const response = await fetch(`${process.env.NEXTAUTH_URL as String}/api/account/signup`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(userToCreate)
-        });
+    //   if (!userExists) {
+    //     const userToCreate = {
+    //       email: user?.email,
+    //       password: user?.email,
+    //     }
+    //     const response = await fetch(`${process.env.NEXTAUTH_URL as String}/api/account/signup`, {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify(userToCreate)
+    //     });
 
-        if (response?.ok) {
-          return true
-        } else {
-          return false
-        }
-      }
-      return true;
-    }
+    //     if (response?.ok) {
+    //       return true
+    //     } else {
+    //       return false
+    //     }
+    //   }
+    //   return true;
+    // }
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
