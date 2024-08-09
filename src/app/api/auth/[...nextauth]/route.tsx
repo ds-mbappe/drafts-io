@@ -52,7 +52,7 @@ const authOptions: NextAuthOptions = {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: process.env.NEXT_PUBLIC_VERCEL_ENV !== "development",
+        secure: process.env.NEXT_PUBLIC_VERCEL_ENV === "production" || process.env.NEXT_PUBLIC_VERCEL_ENV === "preview",
       },
     },
   },
