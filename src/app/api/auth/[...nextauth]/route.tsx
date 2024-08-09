@@ -24,8 +24,15 @@ const authOptions: NextAuthOptions = {
           const data = await response.json();
           
           // If no error and we have user data, return it
-          if (response?.ok) {
-            return data?.user
+          if (response?.ok && data) {
+            const user = {
+              _id: data?.user?._id,
+              email: data?.user?.email,
+              name: `${data?.user?.firstname} ${data?.user?.lastname}`
+            }
+            return user
+          } else {
+            return null
           }
         } catch (error: any) {
           return error
@@ -45,17 +52,6 @@ const authOptions: NextAuthOptions = {
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string
     })
   ],
-  cookies: {
-    sessionToken: {
-      name: "next-auth.session-token",
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NEXT_PUBLIC_VERCEL_ENV === "production" || process.env.NEXT_PUBLIC_VERCEL_ENV === "preview",
-      },
-    },
-  },
   callbacks: {
     jwt: async ({ token, user }) => {
       user && (token.user = user)
