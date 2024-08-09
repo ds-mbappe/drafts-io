@@ -32,7 +32,7 @@ export default function SignInPage() {
     },
     {
       id: "Github",
-      icon: <Icon icon="logos:github-icon" width={24} height={24} />,
+      icon: <Icon icon="icon-park:github" width={24} height={24} />,
       action: () => {
         signIn("github", {
           callbackUrl: "/app"

@@ -8,39 +8,37 @@ import User from "@/app/models/User";
 
 const authOptions: NextAuthOptions = {
   providers: [
-    // CredentialsProvider({
-    //   name: 'credentials',
-    //   credentials: {
-    //     email: {},
-    //     password: {},
-    //   },
-    //   async authorize(credentials, req) {
-    //     try {
-    //       const response = await fetch(`${process.env.NEXTAUTH_URL as String}/api/account/signin`, {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify(credentials)
-    //       });
-    //       const user = await response.json();
+    CredentialsProvider({
+      name: 'credentials',
+      credentials: {
+        email: {},
+        password: {},
+      },
+      async authorize(credentials, req) {
+        try {
+          const response = await fetch(`${process.env.NEXTAUTH_URL as String}/api/account/signin`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(credentials)
+          });
+          const data = await response.json();
           
-    //       // If no error and we have user data, return it
-    //       if (response?.ok) {
-    //         return user
-    //       }
-    //     } catch (error: any) {
-    //       return error
-    //     }
-        
-    //     return null
-    //   },
-    // }),
+          // If no error and we have user data, return it
+          if (response?.ok) {
+            return data?.user
+          }
+        } catch (error: any) {
+          return error
+        }
+      },
+    }),
     GitHubProvider({
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
     FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID as string,
@@ -49,20 +47,13 @@ const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     jwt: async ({ token, user }) => {
-      if (user) {
-        token.user = user
-      }
-      return token;
+      user && (token.user = user)
+      return token
     },
     session: async ({ session, token }: { session: Session, token: any  }) => {
-      if (token) {
-        session.user = token.user;
-      }
+      session.user = token.user;
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      return baseUrl
-    }
     // signIn: async ({ user }: { user: any }) => {
     //   // Check if user exists
     //   const userExists = await User.findOne({ email: user?.email })

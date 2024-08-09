@@ -58,17 +58,17 @@ export default function SignInPage() {
       email: user?.email,
       password: user?.password,
     }
-    // const response = await signIn('credentials', {
-    //   email: user.email,
-    //   password: user.password,
-    //   callbackUrl: "/app",
-    //   redirect: false,
-    // })
-    const response = await fetch(`/api/account/signin`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(credentials)
-    });
+    const response = await signIn('credentials', {
+      email: user?.email,
+      password: user?.password,
+      callbackUrl: "/app",
+      redirect: false,
+    })
+    // const response = await fetch(`/api/account/signin`, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(credentials)
+    // });
 
     if (response?.ok) {
       router.push("/app");
