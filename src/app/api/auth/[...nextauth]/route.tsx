@@ -45,6 +45,17 @@ const authOptions: NextAuthOptions = {
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string
     })
   ],
+  cookies: {
+    sessionToken: {
+      name: "next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NEXT_PUBLIC_VERCEL_ENV !== "development",
+      },
+    },
+  },
   callbacks: {
     jwt: async ({ token, user }) => {
       user && (token.user = user)
