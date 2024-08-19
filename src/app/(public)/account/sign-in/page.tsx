@@ -54,10 +54,10 @@ export default function SignInPage() {
 
   const onSignIn = async () => {
     setLoading(true);
-    const credentials = {
-      email: user?.email,
-      password: user?.password,
-    }
+    // const credentials = {
+    //   email: user?.email,
+    //   password: user?.password,
+    // }
     const response = await signIn('credentials', {
       email: user?.email,
       password: user?.password,
