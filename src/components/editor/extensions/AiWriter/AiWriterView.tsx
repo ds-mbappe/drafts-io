@@ -1,7 +1,7 @@
 import { NodeViewWrapperProps, NodeViewWrapper, NodePos, Editor } from "@tiptap/react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import OpenAI from "openai"
-import { Button } from "@nextui-org/react"
+import { Button, Input, Textarea } from "@nextui-org/react"
 
 export interface DataProps {
   text: string
@@ -129,32 +129,28 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
 
   return (
     <NodeViewWrapper data-drag-handle>
-      <div className="flex flex-col py-3">
-        <div className=" flex gap-2 border border-gray-400 shadow-lg rounded-[8px] px-2.5 py-2.5">
-          <div className="w-full flex items-center min-h-full">
-            <input
-              id="ai-input"
-              ref={inputRef} 
-              required
-              value={data.text}
-              autoFocus={true}
-              onChange={onInputChange}
-              className="w-full h-9 text-muted-foreground block resize-none p-0 overflow-hidden"
-              placeholder="Ask something to the AI"
-            />
-          </div>
-
+      <Textarea
+        id="ai-input"
+        ref={inputRef}
+        minRows={1}
+        maxRows={10}
+        value={data.text}
+        variant="bordered"
+        className="lg:!w-3/4"
+        label={"Ask something to the AI"}
+        onChange={onInputChange}
+        endContent={
           <Button
-            disabled={!data.text}
             color="primary"
-            variant="solid"
-            onClick={generateAnswer}
+            className="h-9"
+            isDisabled={!data.text}
             isLoading={isFetching}
+            onClick={generateAnswer}
           >
-            Search
+            {"Search"}
           </Button>
-        </div>
-      </div>
+        }
+      />
     </NodeViewWrapper>
   )
 }
