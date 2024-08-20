@@ -21,7 +21,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body>
       <NextUIProvider>
         <NextThemesProvider attribute="class" defaultTheme="light">
-          <SessionProvider session={session} basePath="/app">
+          <SessionProvider session={session}>
             <Alert />
             {children}
             <Toaster richColors/>
