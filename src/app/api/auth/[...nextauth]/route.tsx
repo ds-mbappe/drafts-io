@@ -61,28 +61,44 @@ const authOptions: NextAuthOptions = {
       session.user = token.user;
       return session;
     },
-    // signIn: async ({ user }: { user: any }) => {
-    //   // Check if user exists
-    //   const userExists = await User.findOne({ email: user?.email })
-
-    //   if (!userExists) {
-    //     const userToCreate = {
-    //       email: user?.email,
-    //       password: user?.email,
+    // signIn: async ({ user, account }: { user: any, account: any }) => {
+    //   if (account?.provider !== 'credentials') {
+    //     // Check if user exists
+    //     try {
+    //       const response = await fetch(`${process.env.NEXTAUTH_URL as String}/api/user/${user?.email}`, {
+    //         method: "GET",
+    //         headers: { "Content-Type": "application/json" },
+    //       });
+    //       const data = await response.json();
+          
+    //       if (response?.ok) {
+    //         if (data?.user) {
+    //           return true // User found, continue the login process
+    //         } else {
+    //           const userToCreate = {
+    //             email: user?.email,
+    //             password: user?.email,
+    //           }
+    //           const response = await fetch(`${process.env.NEXTAUTH_URL as String}/api/account/signup`, {
+    //             method: "POST",
+    //             headers: { "Content-Type": "application/json" },
+    //             body: JSON.stringify(userToCreate)
+    //           });
+    //           if (response?.ok) {
+    //             return true
+    //           } else {
+    //             return false
+    //           }
+    //         }
+    //       } else {
+    //         return false
+    //       }
+    //     } catch (error: any) {
+    //       return error
     //     }
-    //     const response = await fetch(`${process.env.NEXTAUTH_URL as String}/api/account/signup`, {
-    //       method: "POST",
-    //       headers: { "Content-Type": "application/json" },
-    //       body: JSON.stringify(userToCreate)
-    //     });
-
-    //     if (response?.ok) {
-    //       return true
-    //     } else {
-    //       return false
-    //     }
+    //   } else {
+    //     return true
     //   }
-    //   return true;
     // }
   },
   secret: process.env.NEXTAUTH_SECRET,

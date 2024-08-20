@@ -56,6 +56,8 @@ export const useBlockEditor = ({
   }, [])
 
   const editor = useEditor({
+    immediatelyRender: false,
+    shouldRerenderOnTransaction: false,
     onCreate: ({ editor }) => {
       provider?.on('synced', () => {
         onSynced();

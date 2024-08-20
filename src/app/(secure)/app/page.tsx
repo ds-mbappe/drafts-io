@@ -26,6 +26,8 @@ export default function App() {
   }, 1000);
 
   const editor = useEditor({
+    immediatelyRender: false,
+    shouldRerenderOnTransaction: false,
     autofocus: 'end',
     extensions: [
       ...ExtensionKit(),

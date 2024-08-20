@@ -182,33 +182,32 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
           startContent={<SearchIcon/>}
         />
 
-        <div className="flex flex-col gap-4 px-4">
+        {/* <div className="flex flex-col gap-4 px-4">
           <CreateNewDocument email={user?.email} onDocumentSaved={() => null} />
 
           <AddExistingDocument email={user?.email} onDocumentAdded={updateDocumentsList} />
-        </div>
+        </div> */}
         
         {/* Home button */}
         <Link href="/app">
           <div className="w-full flex px-4 py-2 flex-col rounded-md hover:bg-foreground-100">
-            <p className="font-semibold">{'My Draft'}</p>
-            <p className="font-normal">{'Updated at: 21:51'}</p>
+            <p className="font-semibold">{'Home'}</p>
           </div>
         </Link>
 
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-8">
-            {/* Personnal Documents */}
+            {/* Documents */}
             <div className="flex flex-col gap-2">
               <p className="text-base font-semibold px-4">
-                {`Personnal documents`}
+                {`Documents`} {'(12)'}
               </p>
 
-              <div className="w-full h-[1px] bg-muted" />
+              {/* <div className="w-full h-[1px] bg-muted" /> */}
 
               <div className="flex flex-col gap-3">
-                <p className="text-sm font-normal text-[#64748B] px-4">
-                  {`Your personnal documents are documents you have created yourself.`}
+                <p className="text-sm font-normal text-foreground-500 px-4">
+                  {`Here, a list of all your personal and shared documents.`}
                 </p>
 
                 <div className="flex flex-col gap-0.5">
@@ -228,7 +227,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
             </div>
 
             {/* Shared Documents */}
-            <div className="flex flex-col gap-2">
+            {/* <div className="flex flex-col gap-2">
               <p className="text-base font-semibold px-4">
                 {`Shared documents`}
               </p>
@@ -254,7 +253,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
                   }
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

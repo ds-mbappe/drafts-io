@@ -36,7 +36,7 @@ export default function App(props: DocumentProps) {
   const router = useRouter();
   const leftSidebar = useSidebar()
   const searchParams = useSearchParams()
-  const [doc, setDocument] = useState(null)
+  const [doc, setDocument] = useState<any>(null)
   const [words, setWords] = useState(0)
   const [characters, setCharacters] = useState(0)
   const [historyData, setHistoryData] = useState({})
@@ -129,6 +129,7 @@ export default function App(props: DocumentProps) {
         toggleSidebar={leftSidebar.toggle}
         historyData={historyData}
         provider={provider}
+        document={doc}
       />
       
       <div className="flex flex-1 h-full">
