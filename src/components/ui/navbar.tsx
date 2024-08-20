@@ -89,7 +89,7 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
                   isBordered
                   as="button"
                   color="primary"
-                  name={user?.name?.split("")?.[0] || user?.email?.split("")?.[0]?.toUpperCase()}
+                  name={user?.email?.split("")?.[0]?.toUpperCase()}
                   size="sm"
                   src={user?.image}
                 />

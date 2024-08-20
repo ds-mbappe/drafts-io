@@ -27,7 +27,6 @@ export default function App() {
 
   const editor = useEditor({
     autofocus: 'end',
-    immediatelyRender: false,
     extensions: [
       ...ExtensionKit(),
       History,
