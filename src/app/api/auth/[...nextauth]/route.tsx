@@ -16,7 +16,7 @@ const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         try {
-          const response = await fetch(`${process.env.NEXTAUTH_URL as String}/api/account/signin`, {
+          const response = await fetch(`https://www.drafts-io.com/api/account/signin`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(credentials)
