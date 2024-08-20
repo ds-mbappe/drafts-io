@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, DropdownSection, Button } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, DropdownSection, Button, Tooltip } from "@nextui-org/react";
 import { FileClock } from 'lucide-react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import ExtensionKit from '@/components/editor/extensions/extension-kit';
@@ -8,6 +8,24 @@ import { TiptapCollabProvider } from '@hocuspocus/provider';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
 
 const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, provider: TiptapCollabProvider }) => {
+  const motionProps = {
+    variants: {
+      exit: {
+        opacity: 0,
+        transition: {
+          duration: 0.15,
+          ease: "easeIn",
+        }
+      },
+      enter: {
+        opacity: 1,
+        transition: {
+          duration: 0.15,
+          ease: "easeOut",
+        }
+      },
+    },
+  }
   const [activeContent, setActiveContent] = useState<any>();
   const [currentVersionId, setCurrentVersionId] = useState(null);
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
@@ -23,6 +41,8 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
 
   const editor = useEditor({
     editable: false,
+    immediatelyRender: false,
+    shouldRerenderOnTransaction: false,
     content: '',
     extensions: [
       ...ExtensionKit(),
@@ -75,7 +95,14 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
       <Dropdown>
         <DropdownTrigger>
           <Button isIconOnly size={"sm"} variant={"light"}>
-            <FileClock />
+            <Tooltip
+              content={"History"}
+              delay={0}
+              closeDelay={0}
+              motionProps={motionProps}
+            >
+              <FileClock />
+            </Tooltip>
           </Button>
         </DropdownTrigger>
 
@@ -102,7 +129,7 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
         </DropdownMenu>
       </Dropdown>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size='xl' hideCloseButton>
+      <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange} size='xl' hideCloseButton>
         <ModalContent>
           <>
             <ModalHeader className="flex flex-col gap-1">

@@ -2,6 +2,7 @@ import { NodeViewWrapperProps, NodeViewWrapper, NodePos, Editor } from "@tiptap/
 import { useCallback, useEffect, useRef, useState } from "react"
 import OpenAI from "openai"
 import { Button, Input, Textarea } from "@nextui-org/react"
+import { CircleArrowUpIcon, SparklesIcon } from "lucide-react"
 
 export interface DataProps {
   text: string
@@ -139,15 +140,17 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
         className="lg:!w-3/4"
         label={"Ask something to the AI"}
         onChange={onInputChange}
+        startContent={<SparklesIcon />}
         endContent={
           <Button
+            isIconOnly={true}
             color="primary"
-            className="h-9"
+            variant="light"
             isDisabled={!data.text}
             isLoading={isFetching}
             onClick={generateAnswer}
           >
-            {"Search"}
+            <CircleArrowUpIcon />
           </Button>
         }
       />

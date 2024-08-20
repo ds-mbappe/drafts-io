@@ -1,16 +1,46 @@
 "use client"
 
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Switch } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Switch, DropdownSection, useDisclosure, Input, Tooltip } from "@nextui-org/react";
 import EditorInfo from './EditorInfo';
 import { memo, useEffect, useState } from 'react';
-import { PanelTopClose, PanelLeft, MoonIcon, SunIcon } from 'lucide-react';
+import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, CircleEllipsisIcon, Trash2Icon, ShareIcon, Share2Icon, PencilIcon } from 'lucide-react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import HistoryDropdown from '../pannels/HistoryDropdown/HistoryDropdown';
 import { signOut, getSession } from "next-auth/react";
 import { useTheme } from "next-themes";
+import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { CreateNewDocument } from "../pannels/CreateNewDocument";
 
-const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, historyData, provider }: any) => {
+const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, historyData, provider, document }: any) => {
+  const router = useRouter();
+  const motionProps = {
+    variants: {
+      exit: {
+        opacity: 0,
+        transition: {
+          duration: 0.15,
+          ease: "easeIn",
+        }
+      },
+      enter: {
+        opacity: 1,
+        transition: {
+          duration: 0.15,
+          ease: "easeOut",
+        }
+      },
+    },
+  }
   const { theme, setTheme } = useTheme();
   const [user, setUser] = useState<any>();
+  const [docName, setDocName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [docPassword, setDocPassword] = useState("");
+  const [docPrivate, setDocPrivate] = useState(false);
+  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
+  const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit, onOpenChange: onOpenChangeEdit } = useDisclosure();
 
   const onLogout = () => {
     signOut({
@@ -25,6 +55,61 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
       setTheme('dark')
     }
   }
+
+  const confirmAction = () => {
+    // if (document?.creator_email === user?.email) {
+    //   onDocumentDeleted(document)
+    // } else {
+    //   onDocumentRemoved(document)
+    // }
+    // onClose()
+    // router.push("/app")
+  }
+
+  const handleSaveData = async () => {
+    setIsLoading(true);
+
+    let formData = {
+      id: document?._id,
+      name: docName,
+      private: docPrivate,
+      encrypted_password: docPassword,
+    }
+
+    const res = await fetch("/api/documents", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ formData }),
+    })
+    const data = await res.json()
+
+    if (!res.ok) {
+      throw new Error("Failed to update document.")
+    }
+
+    toast.success(`Document updated`, {
+      description: `Successfully updated document ${docName}.`,
+      duration: 5000,
+      action: {
+        label: "Close",
+        onClick: () => {},
+      },
+    })
+    onOpenChangeEdit();
+    // onDocumentEdited(data?.document);
+    setDocPassword("");
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    const setDocument = () => {
+      setDocName(document?.name);
+      setDocPrivate(document?.private);
+      setDocPassword(document?.password);
+    }
+
+    setDocument();
+  }, [])
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -42,30 +127,85 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
   return (
     <>
       <Navbar isBordered maxWidth={"full"} className="bg-content1">
-        <NavbarBrand>
-          <Button isIconOnly size={"sm"} variant={"light"} onClick={toggleSidebar}>
-            { isSidebarOpen ? <PanelTopClose className="-rotate-90" /> : <PanelLeft /> }
-          </Button>
+        <NavbarBrand className="flex gap-2">
+          {/* Sidebar button */}
+          <Tooltip
+            content={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+            delay={0}
+            closeDelay={0}
+            motionProps={motionProps}
+          >
+            <Button isIconOnly size={"sm"} variant={"light"} onClick={toggleSidebar}>
+              { isSidebarOpen ? <PanelTopClose className="-rotate-90" /> : <PanelLeft /> }
+            </Button>
+          </Tooltip>
+
+          {/* Document options */}
+          { document?._id ?
+            <Dropdown placement="bottom-start">
+              <DropdownTrigger>
+                <Button isIconOnly size={"sm"} variant={"light"}>
+                  <Tooltip
+                    content={"Options"}
+                    delay={0}
+                    closeDelay={0}
+                    motionProps={motionProps}
+                  >
+                    <CircleEllipsisIcon />
+                  </Tooltip>
+                </Button>
+              </DropdownTrigger>
+
+              <DropdownMenu aria-label="Document Actions" variant="flat">
+                <DropdownItem
+                  key="share"
+                  startContent={<Share2Icon />}
+                >
+                  {'Share document'}
+                </DropdownItem>
+
+                <DropdownItem
+                  key="export_document"
+                  startContent={<ShareIcon />}
+                >
+                  {'Export document'}
+                </DropdownItem>
+
+                <DropdownItem
+                  key="edit_document"
+                  showDivider
+                  onPress={onOpenEdit}
+                  startContent={<PencilIcon />}
+                >
+                  {'Edit document settings'}
+                </DropdownItem>
+
+                <DropdownItem
+                  key="delete_document"
+                  color="danger"
+                  onPress={onOpen}
+                  startContent={<Trash2Icon className="text-danger" />}
+                >
+                  {'Delete document'}
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown> :
+            <CreateNewDocument email={user?.email} onDocumentSaved={() => null} />
+          }
         </NavbarBrand>
 
         <NavbarContent justify="end">
-          {
-            provider ?
-              <NavbarItem>
-                <HistoryDropdown
-                  provider={provider}
-                  historyData={historyData}
-                />
-              </NavbarItem>
-            : <></>
+          {/* History dropdown */}
+          { provider &&
+            <NavbarItem>
+              <HistoryDropdown
+                provider={provider}
+                historyData={historyData}
+              />
+            </NavbarItem>
           }
 
-          <NavbarItem>
-            <Button isIconOnly size={"sm"} variant={"light"} onClick={changeTheme}>
-              {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-            </Button>
-          </NavbarItem>
-
+          {/* Status */}
           <NavbarItem>
             <div className="flex items-center justify-center gap-5">
               <div className="flex gap-2 items-center justify-center">
@@ -81,7 +221,8 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
               {/* <EditorInfo words={words} characters={characters} /> */}
             </div>
           </NavbarItem>
-
+          
+          {/* Avatar */}
           <NavbarItem>
             <Dropdown placement="bottom-end">
               <DropdownTrigger>
@@ -102,6 +243,18 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
                   <p className="font-semibold">{user?.email}</p>
                 </DropdownItem>
 
+                <DropdownItem key="dark_mode" textValue={'Dark mode'} onClick={changeTheme}>  
+                  <div className="flex gap-1 items-center">
+                    <Button isIconOnly size={"sm"} variant={"light"}>
+                      {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+                    </Button>
+                    
+                    <p className="font-semibold">
+                      {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                    </p>
+                  </div>
+                </DropdownItem>
+
                 <DropdownItem key="settings">{'My Settings'}</DropdownItem>
 
                 <DropdownItem key="help_and_feedback">{'Help & Feedback'}</DropdownItem>
@@ -113,43 +266,77 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
         </NavbarContent>
       </Navbar>
 
-      {/* <nav className="w-full h-14 flex items-center justify-between fixed top-0 z-40 bg-white px-4 border-b"> 
-        <div className="flex items-center justify-center gap-5">
+      {/* Edit document settings */}
+      <Modal isOpen={isOpenEdit} placement="center" onOpenChange={onOpenChangeEdit}>
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">{'Update document details'}</ModalHeader>
 
-          <div className="h-8 border-r" />
+          <ModalBody>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="doc-title" className="text-right">{'Title'}</Label>
 
-          <EditorInfo words={words} characters={characters} />
+                <Input variant='bordered' id="doc-title" autoComplete="new-password" className="col-span-3" value={docName} onChange={(e) => setDocName(e?.target?.value)} />
+              </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Avatar className="border-[0.5px] border-black cursor-pointer">
-                <AvatarImage src={user?.image} />
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="doc-private" className="text-right">{'Private'}</Label>
 
-                <AvatarFallback>
-                  { `${user?.name?.split("")?.[0] || 'U'}` }
-                </AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
+                <Switch id="doc-private" isSelected={docPrivate} onValueChange={() => setDocPrivate(!docPrivate)} className="col-span-3" />
+              </div>
+              { docPrivate ?
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="doc-password" className="text-right">{'Password'}</Label>
+                  
+                  <Input variant='bordered' id="doc-password" autoComplete="new-password" type="password" placeholder="Document password" className="col-span-3" value={docPassword} onChange={(e) => setDocPassword(e?.target?.value)} />
+                </div> : <></>
+              }
+            </div>
+          </ModalBody>
 
-            <DropdownMenuContent className='w-56'>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <ModalFooter>
+            <Button color="danger" variant="light" onPress={onOpenChangeEdit}>
+              {'Cancel'}
+            </Button>
 
-              <DropdownMenuSeparator />
+            <Button isLoading={isLoading} isDisabled={!docName} color="primary" onPress={handleSaveData}>
+              {'Update'}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
-              <DropdownMenuItem className="gap-4 cursor-pointer">
-                Profile
-              </DropdownMenuItem>
+      {/* Delete document */}
+      <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                { document?.creator_email === user?.email ? "Delete document" : "Remove Document" }
+              </ModalHeader>
 
-              <DropdownMenuSeparator />
+              <ModalBody>
+                <p> 
+                  { document?.creator_email === user?.email ?
+                    "If you delete this document, other users who have added it will no longer be able to access it" :
+                    "If you remove this document, you will need to import it again in the future."
+                  }
+                </p>
+              </ModalBody>
 
-              <DropdownMenuItem className="gap-4 hover:!bg-red-100 hover:!text-red-500 cursor-pointer" onClick={onLogout}>
-                <ExitIcon/>
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </nav> */}
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  {'Cancel'}
+                </Button>
+
+                <Button color="primary" onPress={confirmAction}>
+                  { document?.creator_email === user?.email ? "Delete" : "Remove" }
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   )
 })

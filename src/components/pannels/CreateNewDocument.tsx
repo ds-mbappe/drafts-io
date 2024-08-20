@@ -2,14 +2,32 @@
 
 import React, { startTransition, useEffect, useState } from 'react'
 import { Label } from "@/components/ui/label";
-import { Button, Input, Switch } from '@nextui-org/react';
+import { Button, Input, Switch, Tooltip } from '@nextui-org/react';
 import { useRouter } from "next/navigation";
 import { Modal,  ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import { toast } from "sonner";
+import { CirclePlusIcon } from 'lucide-react';
 
 export const CreateNewDocument = ({ email, onDocumentSaved }: any) => {
   const router = useRouter();
-
+  const motionProps = {
+    variants: {
+      exit: {
+        opacity: 0,
+        transition: {
+          duration: 0.15,
+          ease: "easeIn",
+        }
+      },
+      enter: {
+        opacity: 1,
+        transition: {
+          duration: 0.15,
+          ease: "easeOut",
+        }
+      },
+    },
+  }
   const [docName, setDocName] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -77,48 +95,53 @@ export const CreateNewDocument = ({ email, onDocumentSaved }: any) => {
 
   return (
     <>
-      <Button variant='bordered' className='w-full' onPress={changeDialogOpenState}>
-        {'Create a new document'}
-      </Button>
+      <Tooltip
+        content={"Create new document"}
+        delay={0}
+        closeDelay={0}
+        motionProps={motionProps}
+      >
+        <Button isIconOnly size={"sm"} variant={"light"} onPress={changeDialogOpenState}>
+          <CirclePlusIcon />
+        </Button>
+      </Tooltip>
 
       <Modal isOpen={dialogOpen} onOpenChange={changeDialogOpenState}>
-        <ModalContent >
-          <>
-            <ModalHeader className="flex flex-col gap-1">Create new document</ModalHeader>
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">Create new document</ModalHeader>
 
-            <ModalBody>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="doc-title" className="text-right">Title</Label>
+          <ModalBody>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="doc-title" className="text-right">Title</Label>
 
-                  <Input variant='bordered' id="doc-title" autoComplete="new-password" placeholder="Document title" className="col-span-3" value={docName} onChange={(e) => setDocName(e.target.value)} />
-                </div>
-
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="doc-private" className="text-right">Private</Label>
-
-                  <Switch id="doc-private" isSelected={docPrivate} onValueChange={() => setDocPrivate(!docPrivate)} className="col-span-3" />
-                </div>
-                { docPrivate ?
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="doc-password" className="text-right">Password</Label>
-                    
-                    <Input variant='bordered' id="doc-password" autoComplete="new-password" type="password" placeholder="Document password" className="col-span-3" value={docPassword} onChange={(e) => setDocPassword(e.target.value)} />
-                  </div> : <></>
-                }
+                <Input variant='bordered' id="doc-title" autoComplete="new-password" placeholder="Document title" className="col-span-3" value={docName} onChange={(e) => setDocName(e.target.value)} />
               </div>
-            </ModalBody>
 
-            <ModalFooter>
-              <Button color="danger" variant="light" onPress={changeDialogOpenState}>
-                Cancel
-              </Button>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="doc-private" className="text-right">Private</Label>
 
-              <Button isLoading={isLoading} isDisabled={!docName} color="primary" onPress={submitAndCloseDialog}>
-                Create
-              </Button>
-            </ModalFooter>
-          </>
+                <Switch id="doc-private" isSelected={docPrivate} onValueChange={() => setDocPrivate(!docPrivate)} className="col-span-3" />
+              </div>
+              { docPrivate ?
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="doc-password" className="text-right">Password</Label>
+                  
+                  <Input variant='bordered' id="doc-password" autoComplete="new-password" type="password" placeholder="Document password" className="col-span-3" value={docPassword} onChange={(e) => setDocPassword(e.target.value)} />
+                </div> : <></>
+              }
+            </div>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button color="danger" variant="light" onPress={changeDialogOpenState}>
+              Cancel
+            </Button>
+
+            <Button isLoading={isLoading} isDisabled={!docName} color="primary" onPress={submitAndCloseDialog}>
+              Create
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
