@@ -86,10 +86,10 @@ const authOptions: NextAuthOptions = {
     // }
   },
   secret: process.env.NEXTAUTH_SECRET,
-  pages: {
-    signIn: "/account/sign-in",
-    error: "/account/sign-in",
-  },
+  // pages: {
+  //   signIn: "/account/sign-in",
+  //   error: "/account/sign-in",
+  // },
   session: {
     strategy: "jwt"
   }
