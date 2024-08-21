@@ -10,8 +10,7 @@
     td,
     th {
       position: relative;
-      border-color: rgba(0, 0, 0, .1);
-      @apply border min-w-[100px] p-2 relative text-left align-top;
+      @apply border min-w-[100px] p-2 relative text-left align-top border-foreground-500;
 
       &:first-of-type:not(a) {
         @apply mt-0;
@@ -29,7 +28,7 @@
     th {
       font-weight: bold;
       text-align: left;
-      background-color: #f1f3f5;
+      @apply bg-default-200;
     }
 
     .column-resize-handle {
@@ -53,8 +52,7 @@
 
     .grip-column,
     .grip-row {
-      background-color: rgba(0, 0, 0, .05);
-      @apply items-center cursor-pointer flex justify-center absolute z-10;
+      @apply items-center cursor-pointer flex justify-center absolute z-10 bg-default-200;
     }
 
     .grip-column {
@@ -70,7 +68,8 @@
       }
 
       &:hover {
-        background-color: rgba(0, 0, 0, .1);
+        @apply bg-default-200;
+        /* background-color: rgba(0, 0, 0, .1); */
 
         &::before {
           @apply border-b-2 border-dotted border-black/60;
@@ -87,8 +86,8 @@
 
       &.selected {
         border-color: rgba(0, 0, 0, .3);
-        background-color: rgba(0, 0, 0, .3);
-        @apply shadow-sm;
+        /* background-color: rgba(0, 0, 0, .3); */
+        @apply shadow-sm bg-default-200;
 
         &::before {
           @apply border-b-2 border-dotted;
@@ -108,7 +107,8 @@
         }
       }
       &:hover {
-        background-color: rgba(0, 0, 0, .1);
+        @apply bg-default-200;
+        /* background-color: rgba(0, 0, 0, .1); */
 
         &::before {
           @apply border-l-2 border-dotted border-black/60;
@@ -125,8 +125,8 @@
 
       &.selected {
         border-color: rgba(0, 0, 0, .3);
-        background-color: rgba(0, 0, 0, .3);
-        @apply shadow-sm;
+        /* background-color: rgba(0, 0, 0, .3); */
+        @apply shadow-sm bg-default-200;
 
         &::before {
           @apply border-l-2 border-dotted;
