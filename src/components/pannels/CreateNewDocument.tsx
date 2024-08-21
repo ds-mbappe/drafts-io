@@ -106,7 +106,7 @@ export const CreateNewDocument = ({ email, onDocumentSaved }: any) => {
         </Button>
       </Tooltip>
 
-      <Modal isOpen={dialogOpen} onOpenChange={changeDialogOpenState}>
+      <Modal placement="center" isOpen={dialogOpen} onOpenChange={changeDialogOpenState}>
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">Create new document</ModalHeader>
 
