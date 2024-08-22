@@ -21,8 +21,10 @@ export default withAuth(
         } = req;
 
         const tokenEmail = req.cookies.get('token')?.value || ''
+        const noToken = !(token || tokenEmail)
+        const isPublicPath = pathname.startsWith("/account") || pathname === "/"
 
-        return (!(token || tokenEmail) && pathname.startsWith("/account")) || !!(token || tokenEmail);
+        return (noToken && isPublicPath) || !!(token || tokenEmail);
       },
     },
   }
