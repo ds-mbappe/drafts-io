@@ -16,6 +16,8 @@ import { TiptapCollabProvider } from "@hocuspocus/provider";
 import { LinkMenu } from './menus/LinkMenu'
 import { TextMenu } from './menus/TextMenu/TextMenu'
 import { toast } from "sonner";
+import TableRowMenu from "./extensions/Table/menus/TableRow/TableRow";
+import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
 
 export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus, yDoc, provider, userFullName, updateHistoryData }: {
   documentId: String,
@@ -108,6 +110,8 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
         <ContentItemMenu editor={editor} />
         <LinkMenu editor={editor} appendTo={menuContainerRef} />
         <TextMenu editor={editor} />
+        <TableRowMenu editor={editor} appendTo={menuContainerRef} />
+        <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
         <EditorContent editor={editor} className="tiptap" spellCheck={"false"} />
       </div>
     </div>

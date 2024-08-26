@@ -2,9 +2,12 @@ import { BubbleMenu as BaseBubbleMenu } from '@tiptap/react'
 import React, { useCallback } from 'react'
 import { isRowGripSelected } from './utils'
 import { MenuProps, ShouldShowProps } from '@/components/editor/menus/types'
-import { ArrowDownToLineIcon, ArrowUpToLineIcon, TrashIcon } from 'lucide-react'
+import { cn, Listbox, ListboxItem } from '@nextui-org/react'
+import Icon from '@/components/ui/Icon'
 
 export const TableRowMenu = React.memo(({ editor, appendTo }: MenuProps): JSX.Element => {
+  const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
+
   const shouldShow = useCallback(
     ({ view, state, from }: ShouldShowProps) => {
       if (!state || !from) {
@@ -37,7 +40,7 @@ export const TableRowMenu = React.memo(({ editor, appendTo }: MenuProps): JSX.El
         appendTo: () => {
           return appendTo?.current
         },
-        placement: 'left',
+        placement: 'auto',
         offset: [0, 15],
         popperOptions: {
           modifiers: [{ name: 'flip', enabled: false }],
@@ -45,30 +48,37 @@ export const TableRowMenu = React.memo(({ editor, appendTo }: MenuProps): JSX.El
       }}
       shouldShow={shouldShow}
     >
-      <div className="min-w-[16rem] rounded-[8px] flex flex-col border border-light-grey shadow bg-white p-2 cursor-none">
-        <div
-          className="flex items-center p-1.5 gap-2 hover:bg-very-light-grey rounded cursor-pointer !text-dark-grey hover:!text-fake-black"
-          onClick={onAddRowBefore}
-        >
-          <div><ArrowUpToLineIcon width={20} height={20} /></div>
-          <span className="text-sm font-medium">Add row before</span>
-        </div>
+      <div className="w-full max-w-[260px] border-small p-1 rounded-xl border-default-200 bg-content1 dark:border-default-100">
+        <Listbox variant="bordered" aria-label="Actions-table-row-menu" className="bg-content1">
+          <ListboxItem
+            key="add_before"
+            description="Add a block before the current block"
+            startContent={<Icon name="ArrowUpToLine" />}
+            onClick={onAddRowBefore}
+          >
+            {'Add row before'}
+          </ListboxItem>
 
-        <div
-          className="flex items-center p-1.5 gap-2 hover:bg-very-light-grey rounded cursor-pointer !text-dark-grey hover:!text-fake-black"
-          onClick={onAddRowAfter}
-        >
-          <div><ArrowDownToLineIcon width={20} height={20} /></div>
-          <span className="text-sm font-medium">Add row after</span>
-        </div>
+          <ListboxItem
+            key="add_after"
+            description="Add a block after the current block"
+            startContent={<Icon name="ArrowDownToLine" />}
+            onClick={onAddRowAfter}
+          >
+            {'Add row after'}
+          </ListboxItem>
 
-        <div
-          className="flex items-center p-1.5 gap-2 hover:bg-very-light-grey rounded cursor-pointer !text-dark-grey hover:!text-fake-black"
-          onClick={onDeleteRow}
-        >
-          <div><TrashIcon width={20} height={20} /></div>
-          <span className="text-sm font-medium">Delete row</span>
-        </div>
+          <ListboxItem
+            key="delete_row"
+            color="danger"
+            className="text-danger"
+            description="Delete the current row"
+            startContent={<Icon name="Trash2" className={cn(iconClasses, "text-danger")}/>}
+            onClick={onDeleteRow}
+          >
+            {"Delete row"}
+          </ListboxItem>
+        </Listbox>
       </div>
     </BaseBubbleMenu>
   )
