@@ -137,10 +137,14 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
         maxRows={10}
         value={data.text}
         variant="bordered"
-        className="lg:!w-3/4"
+        className="lg:!w-3/4 my-4"
         label={"Ask something to the AI"}
         onChange={onInputChange}
-        startContent={<SparklesIcon />}
+        startContent={
+          <div className="flex items-center justify-center w-10 h-10">
+            <SparklesIcon />
+          </div>
+        }
         endContent={
           <Button
             isIconOnly={true}

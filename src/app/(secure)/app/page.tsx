@@ -12,6 +12,8 @@ import { useSidebar } from '@/components/editor/hooks/useSidebar';
 import 'katex/dist/katex.min.css';
 import { LinkMenu } from '../../../components/editor/menus/LinkMenu'
 import TextMenu from '@/components/editor/menus/TextMenu/TextMenu';
+import TableRowMenu from '@/components/editor/extensions/Table/menus/TableRow/TableRow';
+import TableColumnMenu from '@/components/editor/extensions/Table/menus/TableColumn/TableColumn';
 
 export default function App() {
   const leftSidebar = useSidebar();
@@ -59,6 +61,8 @@ export default function App() {
           <div className="relative w-full max-w-screen-xl flex flex-col gap-2" ref={menuContainerRef}>
             <ContentItemMenu editor={editor} />
             <LinkMenu editor={editor} appendTo={menuContainerRef} />
+            <TableRowMenu editor={editor} appendTo={menuContainerRef} />
+            <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
             <TextMenu editor={editor} />
             <EditorContent editor={editor} spellCheck={"false"} />
           </div>
