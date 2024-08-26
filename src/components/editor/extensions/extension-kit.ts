@@ -21,6 +21,7 @@ import Link from "./Link";
 import Table from './Table/Table';
 import FontSize from './FontSize';
 import TableRow from './Table/Row';
+import Selection from './Selection';
 import TableCell from './Table/Cell';
 import TableHeader from './Table/Header';
 import UnderlineMark from './MarkUnderline';
@@ -93,6 +94,7 @@ export const ExtensionKit = () => [
     considerAnyAsEmpty: true,
     includeChildren: true,
   }),
+  Selection,
   SlashCommand,
   CodeBlockLowlight.configure({
     lowlight,

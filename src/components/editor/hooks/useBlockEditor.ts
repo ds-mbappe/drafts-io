@@ -1,12 +1,13 @@
+import type { Doc as YDoc } from 'yjs';
 import { useSidebar } from './useSidebar';
 import { useEditor } from '@tiptap/react';
+import { useMemo, useState } from 'react';
+import type { AnyExtension } from '@tiptap/core';
 import { ExtensionKit } from '../extensions/extension-kit';
-import type { Doc as YDoc } from 'yjs'
 import { TiptapCollabProvider } from '@hocuspocus/provider';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
-import CollaborationHistory, { CollabOnUpdateProps } from '@tiptap-pro/extension-collaboration-history';
-import { useMemo, useState } from 'react';
+import CollaborationHistory from '@tiptap-pro/extension-collaboration-history';
 
 // declare global {
 //   interface Window {
@@ -58,6 +59,7 @@ export const useBlockEditor = ({
   const editor = useEditor({
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
+    autofocus: true,
     onCreate: ({ editor }) => {
       provider?.on('synced', () => {
         onSynced();
@@ -76,23 +78,29 @@ export const useBlockEditor = ({
     },
     extensions: [
       ...ExtensionKit(),
-      Collaboration.configure({
-        document: yDoc,
-      }),
-      CollaborationCursor.configure({
-        provider,
-        user: {
-          name: null,
-          color: userColor,
-        },
-      }),
-      CollaborationHistory.configure({
-        provider,
-        onUpdate(payload) {
-          updateHistoryData(payload)
-        },
-      }),
-    ],
+      provider
+        ? Collaboration.configure({
+          document: yDoc,
+        })
+        : undefined,
+      provider
+        ? CollaborationCursor.configure({
+          provider,
+          user: {
+            name: null,
+            color: userColor,
+          },
+        })
+        : undefined,
+      provider
+        ? CollaborationHistory.configure({
+          provider,
+          onUpdate(payload) {
+            updateHistoryData(payload)
+          },
+        })
+        : undefined
+    ].filter((e): e is AnyExtension => e !== undefined),
     editorProps: {
       attributes: {
         autocomplete: 'off',
@@ -101,7 +109,7 @@ export const useBlockEditor = ({
         class: 'min-h-full',
       },
     },
-  }, [provider, yDoc])
+  }, [yDoc, provider])
 
   editor?.on('update', (e: any) => {
     updateStatusAndCount(editor?.storage.characterCount)

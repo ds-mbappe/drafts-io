@@ -31,6 +31,10 @@ export default function App() {
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
     autofocus: 'end',
+    onCreate: ({ editor }) => {
+      // editor.commands.setContent(initialContent)
+      // editor.commands.focus('start', { scrollIntoView: true })
+    },
     extensions: [
       ...ExtensionKit(),
       History,

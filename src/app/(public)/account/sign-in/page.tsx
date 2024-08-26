@@ -136,62 +136,66 @@ export default function SignInPage() {
           </div>
         </div>
 
-        {/* Inputs */}
-        <div className="w-full flex flex-col gap-2">
-          <div className="w-full h-full flex flex-col gap-5">
-            <Input
-              id="email"
-              name="email"
-              value={user?.email}
-              isRequired
-              type="email"
-              label={"Email"}
-              variant="bordered"
-              onChange={(e) => setUser({...user, email: e?.target?.value})}
-            />
+        <form onSubmit={onSignIn} className="w-full flex flex-col gap-6">
+          {/* Inputs */}
+          <div className="w-full flex flex-col gap-2">
+            <div className="w-full h-full flex flex-col gap-5">
+              <Input
+                id="email"
+                name="email"
+                value={user?.email}
+                isRequired
+                type="email"
+                label={"Email"}
+                variant="bordered"
+                onChange={(e) => setUser({...user, email: e?.target?.value})}
+              />
 
-            <Input
-              id="password"
-              name="password"
-              isRequired
-              type={isVisible ? "text" : "password"}
-              label={"Password"}
-              variant="bordered"
-              endContent={ user?.password ?
-                <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-                  {isVisible ? (
-                    <EyeOffIcon className="text-2xl pointer-events-none" />
-                  ) : (
-                    <EyeIcon className="text-2xl pointer-events-none" />
-                  )}
-                </button> : <></>
-              }
-              onChange={(e) => setUser({...user, password: e?.target?.value})}
-            />
-          </div>
+              <Input
+                id="password"
+                name="password"
+                isRequired
+                type={isVisible ? "text" : "password"}
+                label={"Password"}
+                variant="bordered"
+                endContent={ user?.password ?
+                  <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                    {isVisible ? (
+                      <EyeOffIcon className="text-2xl pointer-events-none" />
+                    ) : (
+                      <EyeIcon className="text-2xl pointer-events-none" />
+                    )}
+                  </button> : <></>
+                }
+                onChange={(e) => setUser({...user, password: e?.target?.value})}
+              />
+            </div>
 
-          <div className="flex gap-1">
-            <p className="font-normal text-sm">
-              {"Forgot your password ?"}
-            </p>
-
-            <Link href="/account/reset-pass">
-              <p className="font-medium hover:text-primary transition-all text-sm">
-                {"Click here"}
+            <div className="flex gap-1">
+              <p className="font-normal text-sm">
+                {"Forgot your password ?"}
               </p>
-            </Link>
-          </div>
-        </div>
 
-        {/* Sign in Button */}
-        <Button
-          color="primary"
-          isDisabled={!user?.email || !user.password}
-          isLoading={loading}
-          onClick={onSignIn}
-        >
-          {"Sign in"}
-        </Button>
+              <Link href="/account/reset-pass">
+                <p className="font-medium hover:text-primary transition-all text-sm">
+                  {"Click here"}
+                </p>
+              </Link>
+            </div>
+          </div>
+
+          {/* Sign in Button */}
+          <Button
+            type="submit"
+            color="primary"
+            isDisabled={!user?.email || !user.password}
+            isLoading={loading}
+            onClick={onSignIn}
+          >
+            {"Sign in"}
+          </Button>
+        </form>
+
 
         {/* Sign up text */}
         <div className="flex gap-1">

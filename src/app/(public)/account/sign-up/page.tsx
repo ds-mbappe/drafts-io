@@ -1,6 +1,5 @@
 "use client"
 
-import { useAlertService } from "@/app/_services";
 import { Input, Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -117,54 +116,56 @@ export default function SignInPage() {
           </div>
         </div>
 
-        {/* Inputs */}
-        <div className="w-full h-full flex flex-col gap-5">
-          <Input
-            isRequired
-            type="text"
-            label={"Username"}
-            variant="bordered"
-            autoComplete="new-password"
-            onChange={(e) => setUser({...user, username: e.target.value})}
-          />
+        <form onSubmit={onSignUp} className="w-full flex flex-col gap-6">
+          {/* Inputs */}
+          <div className="w-full h-full flex flex-col gap-5">
+            <Input
+              isRequired
+              type="text"
+              label={"Username"}
+              variant="bordered"
+              autoComplete="new-password"
+              onChange={(e) => setUser({...user, username: e.target.value})}
+            />
 
-          <Input
-            isRequired
-            type="email"
-            label={"Email"}
-            variant="bordered"
-            autoComplete="new-password"
-            onChange={(e) => setUser({...user, email: e.target.value})}
-          />
+            <Input
+              isRequired
+              type="email"
+              label={"Email"}
+              variant="bordered"
+              autoComplete="new-password"
+              onChange={(e) => setUser({...user, email: e.target.value})}
+            />
 
-          <Input
-            isRequired
-            type={isVisible ? "text" : "password"}
-            label="Password"
-            variant="bordered"
-            autoComplete="new-password"
-            endContent={ user?.password ?
-              <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-                {isVisible ? (
-                  <EyeOffIcon className="text-2xl pointer-events-none" />
-                ) : (
-                  <EyeIcon className="text-2xl pointer-events-none" />
-                )}
-              </button> : <></>
-            }
-            onChange={(e) => setUser({...user, password: e.target.value})}
-          />
-        </div>
+            <Input
+              isRequired
+              type={isVisible ? "text" : "password"}
+              label="Password"
+              variant="bordered"
+              autoComplete="new-password"
+              endContent={ user?.password ?
+                <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                  {isVisible ? (
+                    <EyeOffIcon className="text-2xl pointer-events-none" />
+                  ) : (
+                    <EyeIcon className="text-2xl pointer-events-none" />
+                  )}
+                </button> : <></>
+              }
+              onChange={(e) => setUser({...user, password: e.target.value})}
+            />
+          </div>
 
-        {/* Sign up Button */}
-        <Button
-          color="primary"
-          isDisabled={!user?.email || !user.password || !user?.username}
-          isLoading={loading}
-          onClick={onSignUp}
-        >
-          {"Sign up"}
-        </Button>
+          {/* Sign up Button */}
+          <Button
+            color="primary"
+            isDisabled={!user?.email || !user.password || !user?.username}
+            isLoading={loading}
+            onClick={onSignUp}
+          >
+            {"Sign up"}
+          </Button>
+        </form>
 
         {/* Sign in text */}
         <div className="flex gap-1">

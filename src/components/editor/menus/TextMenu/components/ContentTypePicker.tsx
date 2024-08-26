@@ -50,7 +50,7 @@ export const ContentTypePicker = ({ options }: ContentTypePickerProps) => {
       <DropdownTrigger>
         <Button isIconOnly size={"sm"} variant={"light"}>
           <Tooltip
-            content={"Convert to"}
+            content={"Convert text into"}
             delay={0}
             closeDelay={0}
             motionProps={motionProps}
