@@ -31,12 +31,16 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
   const handleVersionChange = useCallback((newVersion: any) => {
-    setCurrentVersionId(newVersion?.version)
+    const updateVersions = () => {
+      setCurrentVersionId(newVersion?.version)
+  
+      provider.sendStateless(JSON.stringify({
+        action: 'version.preview',
+        version: newVersion?.version,
+      }))
+    }
 
-    provider.sendStateless(JSON.stringify({
-      action: 'version.preview',
-      version: newVersion?.version,
-    }))
+    updateVersions();
   }, [provider])
 
   const editor = useEditor({
@@ -90,6 +94,8 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
     }
   }, [provider, editor])
 
+  if (!editor) return null
+
   return (
     <>
       <Dropdown>
@@ -106,30 +112,30 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
           </Button>
         </DropdownTrigger>
 
-        <DropdownMenu className="w-[300px]">
-          {
-            historyData?.versions?.length ?
-            <DropdownSection title={"Version history"}>  
-              {
-                historyData?.versions?.sort(function(a: any, b: any) {
-                  return b?.version - a?.version
-                })?.slice(0, 20)?.map((version: any) =>
-                  <DropdownItem key={version.date} description={renderDate(version?.date)} onClick={() => selectVersionAndOpenModal(version)}>
-                    {`Version ${version?.version}`}
-                  </DropdownItem>
-                )
-              }
-            </DropdownSection> :
-            <>
-              <p className="text-sm text-muted-foreground px-2 py-1.5">
-                {`There are no previous versions of your document. Start editing to automatically create a version.`}
-              </p>
-            </>
+        <DropdownMenu
+          aria-label="Menu history"
+          className="w-[300px]"
+          emptyContent={
+            <p className="text-sm text-muted-foreground px-2 py-1.5">
+              {`There are no previous versions of your document. Start editing to automatically create a version.`}
+            </p>
           }
+        >
+          <DropdownSection title={"Version history"}>
+            {
+              historyData?.versions?.sort(function(a: any, b: any) {
+                return b?.version - a?.version
+              })?.slice(0, 20)?.map((version: any) =>
+                <DropdownItem key={version.date} description={renderDate(version?.date)} onClick={() => selectVersionAndOpenModal(version)}>
+                  {`Version ${version?.version}`}
+                </DropdownItem>
+              )
+            }
+          </DropdownSection>
         </DropdownMenu>
       </Dropdown>
 
-      <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange} size='xl' hideCloseButton>
+      <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange} scrollBehavior="inside" size='xl' hideCloseButton>
         <ModalContent>
           <>
             <ModalHeader className="flex flex-col gap-1">

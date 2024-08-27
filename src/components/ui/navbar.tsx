@@ -190,7 +190,7 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown> :
-            <CreateNewDocument email={user?.email} onDocumentSaved={() => null} />
+            <CreateNewDocument user={user} onDocumentSaved={() => null} />
           }
         </NavbarBrand>
 

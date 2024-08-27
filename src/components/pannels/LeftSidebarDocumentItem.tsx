@@ -79,8 +79,9 @@ export const LeftSidebarDocumentItem = ({ email, document, onDocumentRemoved, on
       <Link href={`/app/${document?._id}`}>
         <div className='w-full px-4 py-2 rounded-md flex flex-col hover:bg-foreground-100'>
           <p className="line-clamp-1 text-start font-semibold break-all">
-            {document?.name}
+            {document?.title}
           </p>
+          
           <p className="line-clamp-1 text-foreground-500 text-sm">
           {'Updated '} {moment(document?.updatedAt).calendar()}
           </p>

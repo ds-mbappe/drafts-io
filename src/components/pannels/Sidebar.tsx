@@ -8,7 +8,7 @@ import { CreateNewDocument } from "./CreateNewDocument";
 import { AddExistingDocument } from "./AddExistingDocument";
 import { LeftSidebarDocumentItem } from "./LeftSidebarDocumentItem";
 import { useDebouncedCallback } from "use-debounce";
-import { Input, Button } from "@nextui-org/react";
+import { Input, Button, Divider } from "@nextui-org/react";
 import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { getSession } from "next-auth/react";
@@ -18,7 +18,6 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     const [user, setUser] = useState<any>()
     const [search, setSearch] = useState("");
     const [documents, setDocuments] = useState([])
-    const [sharedDocuments, setSharedDocuments] = useState([])
     
     const handlePotentialClose = useCallback(() => {
       if (window.innerWidth < 1024) {
@@ -27,7 +26,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }, [onClose])
 
     const windowClassName = cn(
-      'absolute left-0 top-0 lg:relative z-[2] mt-14 lg:mt-0 w-0 duration-300 transition-all',
+      'absolute left-0 top-0 xl:relative z-[2] mt-14 xl:mt-0 w-0 duration-300 transition-all',
       !isOpen && 'border-r-transparent',
       isOpen && 'w-80 border-r border-r-divider',
     )
@@ -38,7 +37,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         duration: 5000,
         important: true,
       })
-    } 
+    }
 
     const showToastError = (deleted: Boolean) => {
       toast.error(`Error`, {
@@ -59,49 +58,10 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         setDocuments(realDocs.documents)
       } else {
         toast.error(`Error`, {
-          description: `Error fetching personal documents, please try again!`,
+          description: `Error fetching documents, please try again!`,
           duration: 5000,
           important: true,
         })
-      }
-    }
-
-    const fetchSharedDocuments = async () => {
-      const data = await fetch(`/api/documents/${user?.email}/shared`, {
-        method: 'GET',
-        headers: { "content-type": "application/json" },
-      });
-
-      if (data?.ok) {
-        const realDocs = await data.json();
-        setSharedDocuments(realDocs.documents)
-      } else {
-        toast.error(`Error`, {
-          description: `Error fetching shared documents, please try again!`,
-          duration: 5000,
-          important: true,
-        })
-      }
-    }
-
-    const onDocumentRemoved = async (document: any) => {
-      let newHoldersId = document?.holders_id?.filter((el: String) => el !== user?.email)
-      const res = await fetch(`/api/document/${document?._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          holders_id: newHoldersId
-        }),
-      })
-  
-      if (!res.ok) {
-        showToastError(false)
-      } else {
-        showToastSuccess(false)
-
-        const newDocsShared = sharedDocuments?.filter((doc: any) => doc?._id !== document?._id)
-        setSharedDocuments(newDocsShared)
-        router.push('/app')
       }
     }
 
@@ -129,17 +89,11 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
       }
     }
 
-    const updateDocumentsList = (data: any) => {
-      let newDocs: any = [...sharedDocuments, data?.updatedDocument]
-      setSharedDocuments(newDocs)
-    }
-
+    // Search
     const filterDocuments = useDebouncedCallback(async(e: any) => {
       // let dataPersonal = documents
-      // let dataShared = sharedDocuments
 
       // dataPersonal = dataPersonal.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
-      // dataShared = dataShared.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
 
       // const res = await fetch(`/api/documents/${user?.email}?search=${e?.target?.value}`, {
       //   method: "GET",
@@ -148,6 +102,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
       // const data = await res.json()
     }, 300)
 
+    // Fetch session
     useEffect(() => {
       const fetchSession = async () => {
         const response = await getSession()
@@ -159,14 +114,14 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
       })
     }, [])
 
+    // Fetch documents
     useEffect(() => {
       if (user?.email) {
-        if (!documents?.length) {
-          fetchDocuments();
+        const justFetch = async() => {
+          await fetchDocuments()
         }
-        if (!sharedDocuments?.length) {
-          fetchSharedDocuments()
-        }
+  
+        justFetch();
       }
     }, [user]);
 
@@ -196,64 +151,36 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         </Link>
 
         <div className="flex flex-col gap-5">
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-3">
             {/* Documents */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col">
               <p className="text-base font-semibold px-4">
-                {`Documents`} {'(12)'}
+                {`My personnal documents`} {`(${documents?.length})`}
               </p>
-
-              {/* <div className="w-full h-[1px] bg-muted" /> */}
-
-              <div className="flex flex-col gap-3">
-                <p className="text-sm font-normal text-foreground-500 px-4">
-                  {`Here, a list of all your personal and shared documents.`}
-                </p>
-
-                <div className="flex flex-col gap-0.5">
-                  {
-                    documents?.map((doc: any) =>
-                      <LeftSidebarDocumentItem
-                        key={doc?._id}
-                        email={user?.email}
-                        document={doc}
-                        onDocumentEdited={onDocumentEdited}
-                        onDocumentDeleted={onDocumentDeleted}
-                      />
-                    )
-                  }
-                </div>
-              </div>
+              
+              <p className="text-sm font-normal text-foreground-500 px-4">
+                {`Here, a list of all your creations.`}
+              </p>
             </div>
 
-            {/* Shared Documents */}
-            {/* <div className="flex flex-col gap-2">
-              <p className="text-base font-semibold px-4">
-                {`Shared documents`}
-              </p>
+            <Divider />
 
-              <div className="w-full h-[1px] bg-muted" />
+            <div className="flex flex-col gap-3">
 
-              <div className="flex flex-col gap-3">
-                <p className="text-sm font-normal text-[#64748B] px-4">
-                  {`Your Shared documents are documents you have added via their document ids.`}
-                </p>
-
-                <div className="flex flex-col gap-0.5">
-                  {
-                    sharedDocuments?.map((doc: any) =>
-                      <LeftSidebarDocumentItem
-                        key={doc?._id}
-                        email={user?.email}
-                        document={doc}
-                        onDocumentEdited={onDocumentEdited}
-                        onDocumentRemoved={onDocumentRemoved}
-                      />
-                    )
-                  }
-                </div>
+              <div className="flex flex-col gap-0.5">
+                {
+                  documents?.map((doc: any) =>
+                    <LeftSidebarDocumentItem
+                      key={doc?._id}
+                      email={user?.email}
+                      document={doc}
+                      onDocumentEdited={onDocumentEdited}
+                      onDocumentDeleted={onDocumentDeleted}
+                    />
+                  )
+                }
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
