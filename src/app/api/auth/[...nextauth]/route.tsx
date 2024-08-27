@@ -28,7 +28,10 @@ const authOptions: NextAuthOptions = {
             const user = {
               _id: data?.user?._id,
               email: data?.user?.email,
-              name: `${data?.user?.firstname} ${data?.user?.lastname}`
+              avatar: data?.user?.avatar,
+              username: data?.user?.username,
+              lastname: data?.user?.lastname,
+              firstname: data?.user?.firstname,
             }
             return user
           } else {

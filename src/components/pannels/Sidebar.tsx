@@ -27,9 +27,9 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }, [onClose])
 
     const windowClassName = cn(
-      'absolute left-0 top-0 lg:relative z-[2] mt-14 lg:mt-0 w-0 duration-300 transition-all',
+      'absolute left-0 top-0 xl:relative z-[2] mt-14 xl:mt-0 w-0 duration-300 transition-all',
       !isOpen && 'border-r-transparent',
-      isOpen && 'w-80 border-r border-r-divider',
+      isOpen && 'w-[400px] border-r border-r-divider',
     )
 
     const showToastSuccess = (deleted: Boolean) => {
