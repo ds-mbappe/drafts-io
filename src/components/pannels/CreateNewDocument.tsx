@@ -31,22 +31,19 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
   const [docTitle, setDocTitle] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [docPrivate, setDocPrivate] = useState(true)
-  const [docLocked, setDocLocked] = useState(false)
   const [docCaption, setDocCaption] = useState("")
 
   const handleSaveData = async () => {
     let formData = {
       title: docTitle,
       caption: docCaption,
+      creator_email: user?.email,
       creator: {
-        email: user?.email,
-        avatar: null,
+        avatar: "https://sm.ign.com/ign_fr/cover/a/avatar-gen/avatar-generations_bssq.jpg",
         fullname: `Daniel Stéphane`,
       },
-      private: docPrivate,
-      locked: docLocked,
-      content: "",
+      cover: "https://pyxis.nymag.com/v1/imgs/51b/28a/622789406b8850203e2637d657d5a0e0c3-avatar-rerelease.1x.rsquare.w1400.jpg",
+      topic: "Random",
     }
 
     const res = await fetch("/api/documents", {
@@ -62,23 +59,23 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
         duration: 5000,
         important: true,
       })
+    } else {
+      // Force a cache invalidation and redirect to the new document.
+      startTransition(() => {
+        router.refresh();
+        router.push(`/app/${data?.document?._id}`);
+      });
+  
+      toast.success(`Document created`, {
+        description: `Successfully created document ${docTitle}.`,
+        duration: 5000,
+        action: {
+          label: "Close",
+          onClick: () => {},
+        },
+      })
+      onDocumentSaved();
     }
-
-    // Force a cache invalidation and redirect to the new document.
-    startTransition(() => {
-      // router.refresh();
-      router.push(`/app/${data?.document?._id}`)
-    });
-
-    toast.success(`Document created`, {
-      description: `Successfully created document ${docTitle}.`,
-      duration: 5000,
-      action: {
-        label: "Close",
-        onClick: () => {},
-      },
-    })
-    onDocumentSaved();
     setIsLoading(false);
   };
 
@@ -97,8 +94,6 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
   const resetStates = () => {
     setDocTitle("")
     setDocCaption("")
-    setDocPrivate(true)
-    setDocLocked(false)
   }
 
   return (
@@ -141,7 +136,7 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
                 />
               </div>
 
-              <div className="grid grid-cols-4 items-center gap-4">
+              {/* <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="doc-private" className="text-right">{'Private'}</Label>
 
                 <Switch id="doc-private" isSelected={docPrivate} onValueChange={() => setDocPrivate(!docPrivate)} className="col-span-3" />
@@ -153,7 +148,7 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
                   
                   <Switch id="doc-locked" isSelected={docLocked} onValueChange={() => setDocLocked(!docLocked)} className="col-span-3" />
                 </div> : <></>
-              }
+              } */}
             </div>
           </ModalBody>
 

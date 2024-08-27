@@ -43,7 +43,7 @@ export default function App(props: DocumentProps) {
   const [userFullName, setUserFullName] = useState<String>("");
   const [saveStatus, setSaveStatus] = useState<String>("");
   const [collabToken, setCollabToken] = useState<string | null>(null)
-  const [provider, setProvider] = useState<TiptapCollabProvider | undefined>()
+  const [provider, setProvider] = useState<TiptapCollabProvider | null>(null)
 
   const hasCollab = parseInt(searchParams.get('noCollab') as string) !== 1
 

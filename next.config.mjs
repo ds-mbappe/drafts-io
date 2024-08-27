@@ -13,6 +13,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'pyxis.nymag.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

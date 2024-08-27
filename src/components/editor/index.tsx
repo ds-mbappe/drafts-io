@@ -25,7 +25,7 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
   setSaveStatus: Function,
   setCharacterCount: Function,
   yDoc: YDoc,
-  provider: TiptapCollabProvider | undefined,
+  provider: TiptapCollabProvider | null,
   userFullName: String,
   updateHistoryData: Function,
 }) {

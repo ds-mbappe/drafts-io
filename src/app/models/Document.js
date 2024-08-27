@@ -5,22 +5,22 @@ mongoose.Promise = global.Promise
 
 const documentSchema = new Schema(
   {
-    _id: String,
     private: { type: Boolean, default: true },
-    locked: { type: Boolean, default: null },
+    locked: { type: Boolean, default: false },
     creator: Object,
+    creator_email: String,
     cover: String,
     topic: String,
     title: String,
     caption: String,
-    content: { type: Boolean, default: null },
+    content: { type: String, default: "" },
   },
   {
     timestamps: true,
   }
 );
 
-documentSchema.index({ name: 'text' });
+// documentSchema.index({ name: 'text' });
 
 const Document = mongoose.models.Document || mongoose.model("Document", documentSchema)
 
