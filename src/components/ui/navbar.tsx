@@ -3,7 +3,7 @@
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Switch, DropdownSection, useDisclosure, Input, Tooltip } from "@nextui-org/react";
 import EditorInfo from './EditorInfo';
 import { memo, useEffect, useState } from 'react';
-import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, CircleEllipsisIcon, Trash2Icon, ShareIcon, Share2Icon, PencilIcon } from 'lucide-react';
+import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, CircleEllipsisIcon, Trash2Icon, ShareIcon, Share2Icon, PencilIcon, EyeIcon, PencilLineIcon } from 'lucide-react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import HistoryDropdown from '../pannels/HistoryDropdown/HistoryDropdown';
 import { signOut, getSession } from "next-auth/react";
@@ -36,6 +36,7 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
   const { theme, setTheme } = useTheme();
   const [user, setUser] = useState<any>();
   const [docName, setDocName] = useState("");
+  const [isViewMode, setIsViewMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [docPassword, setDocPassword] = useState("");
   const [docPrivate, setDocPrivate] = useState(false);
@@ -189,9 +190,21 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
                   {'Delete document'}
                 </DropdownItem>
               </DropdownMenu>
-            </Dropdown> :
-            <CreateNewDocument user={user} onDocumentSaved={() => null} />
+            </Dropdown>
+            : <CreateNewDocument user={user} onDocumentSaved={() => null} />
           }
+
+          {/* View mode button */}
+          <Tooltip
+            content={isViewMode ? "Edit mode" : "View mode"}
+            delay={0}
+            closeDelay={0}
+            motionProps={motionProps}
+          >
+            <Button isIconOnly size={"sm"} variant={"light"} onClick={() => setIsViewMode(prev => !prev)}>
+              { isViewMode ? <PencilLineIcon /> : <EyeIcon /> }
+            </Button>
+          </Tooltip>
         </NavbarBrand>
 
         <NavbarContent justify="end">
