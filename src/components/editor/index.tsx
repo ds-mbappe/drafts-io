@@ -106,7 +106,7 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
 
   return (
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
-      <div className="relative w-full max-w-screen-xl" ref={menuContainerRef}>
+      <div className="relative w-full max-w-screen-xl mx-auto" ref={menuContainerRef}>
         <ContentItemMenu editor={editor} />
         <LinkMenu editor={editor} appendTo={menuContainerRef} />
         <TextMenu editor={editor} />

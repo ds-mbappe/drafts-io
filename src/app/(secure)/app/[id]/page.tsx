@@ -136,18 +136,16 @@ export default function App(props: DocumentProps) {
         <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
         <div className="w-full bg-content1 relative flex overflow-y-auto cursor-text flex-col items-start z-[1] flex-1 p-0 lg:p-6">
-          <div className="relative w-full max-w-screen-xl">
-            <Editor
-              documentId={props.params.id}
-              documentContent={doc}
-              setCharacterCount={getCharacterAndWordsCount}
-              setSaveStatus={getSaveStatus}
-              yDoc={yDoc}
-              provider={provider}
-              userFullName={userFullName}
-              updateHistoryData={updateHistoryData}
-            />
-          </div>
+          <Editor
+            documentId={props.params.id}
+            documentContent={doc}
+            setCharacterCount={getCharacterAndWordsCount}
+            setSaveStatus={getSaveStatus}
+            yDoc={yDoc}
+            provider={provider}
+            userFullName={userFullName}
+            updateHistoryData={updateHistoryData}
+          />
         </div>
       </div>
     </div>
