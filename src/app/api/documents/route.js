@@ -50,7 +50,7 @@ export async function PUT(req) {
     const document = await Document.findOneAndUpdate({
       _id: documentData?.id,
     }, {
-      $set: { name: documentData?.name, private: documentData?.private },
+      $set: { ...documentData },
     }, { new: true })
 
     return NextResponse.json({ document }, { status: 201 });

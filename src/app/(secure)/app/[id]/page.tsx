@@ -45,6 +45,7 @@ export default function App(props: DocumentProps) {
   const [collabToken, setCollabToken] = useState<string | null>(null)
   const [provider, setProvider] = useState<TiptapCollabProvider | null>(null)
 
+  const yDoc = useMemo(() => new YDoc(), [])
   const hasCollab = parseInt(searchParams.get('noCollab') as string) !== 1
 
   const getCharacterAndWordsCount = (characterCount: CharacterCountType) => {
@@ -101,8 +102,6 @@ export default function App(props: DocumentProps) {
   useEffect(() => {
     fetchDocument(props.params.id)
   }, [props.params.id]);
-
-  const yDoc = useMemo(() => new YDoc(), [])
 
   useLayoutEffect(() => {
     if (hasCollab && collabToken && doc) {
