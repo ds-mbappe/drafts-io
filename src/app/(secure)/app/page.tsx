@@ -145,7 +145,7 @@ export default function App() {
               tabContent: "group-data-[selected=true]:text-primary"
             }}
           >
-            <Tab key="foryou" title={"Latest"} className="flex flex-col gap-4">
+            <Tab key="latest" title={"Latest"} className="flex flex-col gap-4">
               {
                 latestDocuments?.map((document, index) => {
                   return <DocumentCard key={index} document={document} />
