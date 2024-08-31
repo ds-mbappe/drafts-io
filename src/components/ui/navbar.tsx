@@ -1,6 +1,6 @@
 "use client"
 
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Switch, DropdownSection, useDisclosure, Input, Tooltip } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Switch, DropdownSection, useDisclosure, Input, Tooltip, Textarea, Select, SelectItem } from "@nextui-org/react";
 import EditorInfo from './EditorInfo';
 import { memo, useEffect, useState } from 'react';
 import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, CircleEllipsisIcon, Trash2Icon, ShareIcon, Share2Icon, PencilIcon, EyeIcon, PencilLineIcon } from 'lucide-react';
@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { CreateNewDocument } from "../pannels/CreateNewDocument";
+import ExtensionKit from "../editor/extensions/extension-kit";
+import { EditorContent, useEditor } from "@tiptap/react";
 
 const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, historyData, provider, document }: any) => {
   const router = useRouter();
@@ -35,13 +37,54 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
   }
   const { theme, setTheme } = useTheme();
   const [user, setUser] = useState<any>();
-  const [docName, setDocName] = useState("");
-  const [isViewMode, setIsViewMode] = useState(false);
+  const [docTitle, setDocTitle] = useState("");
+  const [docCaption, setDocCaption] = useState("")
+  const [docTopic, setDocTopic] = useState("")
   const [isLoading, setIsLoading] = useState(false);
-  const [docPassword, setDocPassword] = useState("");
-  const [docPrivate, setDocPrivate] = useState(false);
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit, onOpenChange: onOpenChangeEdit } = useDisclosure();
+  const { isOpen: isOpenPreviewDoc, onOpen: onOpenPreviewDoc, onClose: onClosePreviewDoc, onOpenChange: onOpenChangePreviewDoc } = useDisclosure();
+
+  const topics = [
+    "World News",
+    "Politics",
+    "Business",
+    "Technology",
+    "Science",
+    "Health",
+    "Entertainment",
+    "Sports",
+    "Travel",
+    "Lifestyle",
+    "Environment",
+    "Education",
+    "Food & Drink",
+    "Culture",
+    "Fashion",
+    "Finance",
+    "Real Estate",
+    "Automotive",
+    "Gaming",
+    "Opinion"
+  ]
+
+  const editor = useEditor({
+    editable: false,
+    immediatelyRender: false,
+    shouldRerenderOnTransaction: false,
+    content: document?.content,
+    extensions: [
+      ...ExtensionKit(),
+    ],
+    editorProps: {
+      attributes: {
+        autocomplete: 'off',
+        autocorrect: 'off',
+        autocapitalize: 'off',
+        class: 'min-h-full !pt-0 !pr-0 !pb-0 !pl-0 overflow-y-auto',
+      },
+    },
+  });
 
   const onLogout = () => {
     signOut({
@@ -72,41 +115,46 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
 
     let formData = {
       id: document?._id,
-      name: docName,
-      private: docPrivate,
-      encrypted_password: docPassword,
+      title: docTitle,
+      topic: docTopic,
+      caption: docCaption,
     }
 
-    const res = await fetch("/api/documents", {
+    const response = await fetch("/api/documents", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ formData }),
     })
-    const data = await res.json()
+    const data = await response.json()
 
-    if (!res.ok) {
-      throw new Error("Failed to update document.")
+    if (!response.ok) {
+      toast.error(`Error`, {
+        description: `An error occured, please try again !`,
+        duration: 5000,
+        action: {
+          label: "Close",
+          onClick: () => {},
+        },
+      })
+    } else {
+      toast.success(`Document updated`, {
+        description: `Successfully updated document ${docTitle}.`,
+        duration: 5000,
+        action: {
+          label: "Close",
+          onClick: () => {},
+        },
+      })
+      onOpenChangeEdit();
+      setIsLoading(false);
     }
-
-    toast.success(`Document updated`, {
-      description: `Successfully updated document ${docName}.`,
-      duration: 5000,
-      action: {
-        label: "Close",
-        onClick: () => {},
-      },
-    })
-    onOpenChangeEdit();
-    // onDocumentEdited(data?.document);
-    setDocPassword("");
-    setIsLoading(false);
   };
 
   useEffect(() => {
     const setDocument = () => {
-      setDocName(document?.name);
-      setDocPrivate(document?.private);
-      setDocPassword(document?.password);
+      setDocTitle(document?.title);
+      setDocCaption(document?.caption);
+      setDocTopic(document?.topic);
     }
 
     setDocument();
@@ -195,16 +243,19 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
           }
 
           {/* View mode button */}
-          <Tooltip
-            content={isViewMode ? "Edit mode" : "View mode"}
-            delay={0}
-            closeDelay={0}
-            motionProps={motionProps}
-          >
-            <Button isIconOnly size={"sm"} variant={"light"} onClick={() => setIsViewMode(prev => !prev)}>
-              { isViewMode ? <PencilLineIcon /> : <EyeIcon /> }
-            </Button>
-          </Tooltip>
+          {document?._id ?
+            <Tooltip
+              content={"Preview document"}
+              delay={0}
+              closeDelay={0}
+              motionProps={motionProps}
+            >
+              <Button isIconOnly size={"sm"} variant={"light"} onClick={onOpenPreviewDoc}>
+                <EyeIcon />
+              </Button>
+            </Tooltip>
+            : <></>
+          }
         </NavbarBrand>
 
         <NavbarContent justify="end">
@@ -289,21 +340,43 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="doc-title" className="text-right">{'Title'}</Label>
 
-                <Input variant='bordered' id="doc-title" autoComplete="new-password" className="col-span-3" value={docName} onChange={(e) => setDocName(e?.target?.value)} />
+                <Input variant='bordered' id="doc-title" autoComplete="new-password" className="col-span-3" value={docTitle} onChange={(e) => setDocTitle(e?.target?.value)} />
               </div>
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="doc-private" className="text-right">{'Private'}</Label>
+                <Label htmlFor="doc-caption" className="text-right">{'Caption'}</Label>
 
-                <Switch id="doc-private" isSelected={docPrivate} onValueChange={() => setDocPrivate(!docPrivate)} className="col-span-3" />
+                <Textarea
+                  id="doc-caption"
+                  minRows={1}
+                  maxRows={10}
+                  value={docCaption}
+                  variant="bordered"
+                  className="col-span-3"
+                  placeholder="Document caption"
+                  onChange={(e) => setDocCaption(e.target.value)}
+                />
               </div>
-              { docPrivate ?
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="doc-password" className="text-right">{'Password'}</Label>
-                  
-                  <Input variant='bordered' id="doc-password" autoComplete="new-password" type="password" placeholder="Document password" className="col-span-3" value={docPassword} onChange={(e) => setDocPassword(e?.target?.value)} />
-                </div> : <></>
-              }
+
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="doc-topic" className="text-right">{'Topic'}</Label>
+
+                <Select 
+                  id="doc-topic"
+                  variant="bordered"
+                  aria-label="doc-topic"
+                  className="col-span-3"
+                  value={docTopic}
+                  placeholder="Select a topic"
+                  onChange={(e) => setDocTopic(e.target.value)}
+                >
+                  {topics.map((topic) => (
+                    <SelectItem key={topic}>
+                      {topic}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
             </div>
           </ModalBody>
 
@@ -312,7 +385,7 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
               {'Cancel'}
             </Button>
 
-            <Button isLoading={isLoading} isDisabled={!docName} color="primary" onPress={handleSaveData}>
+            <Button isLoading={isLoading} isDisabled={!(docTitle && docCaption && docTopic)} color="primary" onPress={handleSaveData}>
               {'Update'}
             </Button>
           </ModalFooter>
@@ -344,6 +417,29 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
 
                 <Button color="primary" onPress={confirmAction}>
                   { document?.creator_email === user?.email ? "Delete" : "Remove" }
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Modal Preview Document */}
+      <Modal hideCloseButton scrollBehavior="inside" isOpen={isOpenPreviewDoc} placement="center" size="3xl" onOpenChange={onOpenChangePreviewDoc}>
+        <ModalContent>
+          {(onClosePreviewDoc) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                {"Preview of "} {document?.title}
+              </ModalHeader>
+
+              <ModalBody className="!px-4 !py-0 overflow-y-auto">
+                <EditorContent editor={editor} />
+              </ModalBody>
+
+              <ModalFooter>
+                <Button color="primary" variant="light" onPress={onClosePreviewDoc}>
+                  {'Close'}
                 </Button>
               </ModalFooter>
             </>

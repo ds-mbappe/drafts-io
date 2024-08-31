@@ -2,7 +2,7 @@
 
 import React, { startTransition, useEffect, useState } from 'react'
 import { Label } from "@/components/ui/label";
-import { Button, Input, Switch, Textarea, Tooltip } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem, Switch, Textarea, Tooltip } from '@nextui-org/react';
 import { useRouter } from "next/navigation";
 import { Modal,  ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import { toast } from "sonner";
@@ -32,6 +32,29 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
   const [isLoading, setIsLoading] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [docCaption, setDocCaption] = useState("")
+  const [docTopic, setDocTopic] = useState("")
+  const topics = [
+    "World News",
+    "Politics",
+    "Business",
+    "Technology",
+    "Science",
+    "Health",
+    "Entertainment",
+    "Sports",
+    "Travel",
+    "Lifestyle",
+    "Environment",
+    "Education",
+    "Food & Drink",
+    "Culture",
+    "Fashion",
+    "Finance",
+    "Real Estate",
+    "Automotive",
+    "Gaming",
+    "Opinion"
+  ]
 
   const handleSaveData = async () => {
     let formData = {
@@ -136,19 +159,24 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
                 />
               </div>
 
-              {/* <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="doc-private" className="text-right">{'Private'}</Label>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="doc-topic" className="text-right">{'Topic'}</Label>
 
-                <Switch id="doc-private" isSelected={docPrivate} onValueChange={() => setDocPrivate(!docPrivate)} className="col-span-3" />
+                <Select 
+                  id="doc-topic"
+                  variant="bordered"
+                  className="col-span-3"
+                  value={docTopic}
+                  placeholder="Select a topic"
+                  onChange={(e) => setDocTopic(e.target.value)}
+                >
+                  {topics.map((topic) => (
+                    <SelectItem key={topic}>
+                      {topic}
+                    </SelectItem>
+                  ))}
+                </Select>
               </div>
-              
-              { !docPrivate ?
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="doc-locked" className="text-right">{'Locked'}</Label>
-                  
-                  <Switch id="doc-locked" isSelected={docLocked} onValueChange={() => setDocLocked(!docLocked)} className="col-span-3" />
-                </div> : <></>
-              } */}
             </div>
           </ModalBody>
 
@@ -159,7 +187,7 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
 
             <Button
               isLoading={isLoading}
-              isDisabled={!(docTitle && docCaption)}
+              isDisabled={!(docTitle && docCaption && docTopic)}
               color="primary"
               onPress={submitAndCloseDialog}
             >
