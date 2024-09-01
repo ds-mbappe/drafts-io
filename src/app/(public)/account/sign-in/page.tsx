@@ -21,6 +21,7 @@ export default function SignInPage() {
     password: "",
   })
 
+  // Social
   const socials = [
     {
       id: "facebook",

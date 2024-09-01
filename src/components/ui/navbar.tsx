@@ -1,9 +1,9 @@
 "use client"
 
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Switch, DropdownSection, useDisclosure, Input, Tooltip, Textarea, Select, SelectItem } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Switch, DropdownSection, useDisclosure, Input, Tooltip, Textarea, Select, SelectItem } from "@nextui-org/react";
 import EditorInfo from './EditorInfo';
 import { memo, useEffect, useState } from 'react';
-import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, CircleEllipsisIcon, Trash2Icon, ShareIcon, Share2Icon, PencilIcon, EyeIcon, PencilLineIcon } from 'lucide-react';
+import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, CircleEllipsisIcon, Trash2Icon, ShareIcon, Share2Icon, PencilIcon, EyeIcon, PencilLineIcon, HomeIcon, BookPlusIcon } from 'lucide-react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import HistoryDropdown from '../pannels/HistoryDropdown/HistoryDropdown';
 import { signOut, getSession } from "next-auth/react";
@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { CreateNewDocument } from "../pannels/CreateNewDocument";
 import ExtensionKit from "../editor/extensions/extension-kit";
 import { EditorContent, useEditor } from "@tiptap/react";
+import Link from "next/link";
 
 const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSidebar, historyData, provider, document }: any) => {
   const router = useRouter();
@@ -40,9 +41,11 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
   const [docTitle, setDocTitle] = useState("");
   const [docCaption, setDocCaption] = useState("")
   const [docTopic, setDocTopic] = useState("")
+  const [docLocked, setDocLocked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit, onOpenChange: onOpenChangeEdit } = useDisclosure();
+  const { isOpen: isOpenPublish, onOpen: onOpenPublish, onClose: onClosePublish, onOpenChange: onOpenChangePublish } = useDisclosure();
   const { isOpen: isOpenPreviewDoc, onOpen: onOpenPreviewDoc, onClose: onClosePreviewDoc, onOpenChange: onOpenChangePreviewDoc } = useDisclosure();
 
   const topics = [
@@ -108,6 +111,40 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
     // }
     // onClose()
     // router.push("/app")
+  }
+
+  const onPublishDocument = async() => {
+    setIsLoading(true);
+
+    let formData = {
+      id: document?._id,
+      private: !document?.private,
+    }
+
+    const res = await fetch(`/api/documents/${user?.email}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ formData }),
+    });
+
+    if (!res.ok) {
+      toast.error(`Error`, {
+        description: `An error occurred, please try again.`,
+        duration: 5000,
+        important: true,
+      })
+    } else {
+      toast.success(`Sucess`, {
+        description: document?.private ? `Your document is now available for everyone.` : `Your document has been removed from the public space.`,
+        duration: 5000,
+        action: {
+          label: "Close",
+          onClick: () => {},
+        },
+      })
+    }
+    setIsLoading(false);
+    onOpenChangePublish()
   }
 
   const handleSaveData = async () => {
@@ -177,8 +214,12 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
     <>
       <Navbar isBordered maxWidth={"full"} className="bg-content1">
         <NavbarBrand className="flex gap-2">
+          <Button isIconOnly size={"sm"} variant={"light"} onClick={() => router.push('/')}>
+            <HomeIcon />
+          </Button>
+
           {/* Sidebar button */}
-          <Tooltip
+          {/* <Tooltip
             content={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
             delay={0}
             closeDelay={0}
@@ -187,10 +228,10 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
             <Button isIconOnly size={"sm"} variant={"light"} onClick={toggleSidebar}>
               { isSidebarOpen ? <PanelTopClose className="-rotate-90" /> : <PanelLeft /> }
             </Button>
-          </Tooltip>
+          </Tooltip> */}
 
           {/* Document options */}
-          { document?._id ?
+          { document?._id && document?.creator_email === user?.email ?
             <Dropdown placement="bottom-start">
               <DropdownTrigger>
                 <Button isIconOnly size={"sm"} variant={"light"}>
@@ -206,6 +247,14 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
               </DropdownTrigger>
 
               <DropdownMenu aria-label="Document Actions" variant="flat">
+                <DropdownItem
+                  key="publish"
+                  startContent={<BookPlusIcon />}
+                  onClick={onOpenChangePublish}
+                >
+                  {document?.private ? 'Publish document' : 'Unpublish document'}
+                </DropdownItem>
+
                 <DropdownItem
                   key="share"
                   startContent={<Share2Icon />}
@@ -243,7 +292,7 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
           }
 
           {/* View mode button */}
-          {document?._id ?
+          {document?._id && document?.creator_email === user?.email ?
             <Tooltip
               content={"Preview document"}
               delay={0}
@@ -260,13 +309,13 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
 
         <NavbarContent justify="end">
           {/* History dropdown */}
-          { provider &&
+          { provider && document?.creator_email === user?.email ?
             <NavbarItem>
               <HistoryDropdown
                 provider={provider}
                 historyData={historyData}
               />
-            </NavbarItem>
+            </NavbarItem> : <></>
           }
 
           {/* Status */}
@@ -440,6 +489,46 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
               <ModalFooter>
                 <Button color="primary" variant="light" onPress={onClosePreviewDoc}>
                   {'Close'}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Publish document */}
+      <Modal isOpen={isOpenPublish} placement="center" onOpenChange={onOpenChangePublish}>
+        <ModalContent>
+          {(onClosePublish) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                { document?.private ? "Publish document" : "Unpublish document" }
+              </ModalHeader>
+
+              <ModalBody className="flex flex-col gap-4">
+                {document?.private ?
+                  <p className="text-foreground-500">
+                    {"By default, all your documents are private, that means they are only visible to you and you only. If you choose to publish your document, users from around the world will be able to see it."}
+                  </p> :
+                  <p className="text-foreground-500">
+                    {"If you choose to unpublish your document, if will be unavailable to the public."}
+                  </p>
+                }
+
+                {/* <div className="flex items-center gap-4">
+                  <Label htmlFor="doc-locked" className="text-right">{'Locked'}</Label>
+
+                  <Switch id="doc-private" isSelected={docLocked} onValueChange={() => setDocLocked(!docLocked)} />
+                </div> */}
+              </ModalBody>
+
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClosePublish}>
+                  {'Cancel'}
+                </Button>
+
+                <Button isLoading={isLoading} color="primary" onPress={onPublishDocument}>
+                  { document?.private ? "Publish" : "Unpublish" }
                 </Button>
               </ModalFooter>
             </>

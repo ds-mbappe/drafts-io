@@ -20,7 +20,8 @@ export const useBlockEditor = ({
   provider,
   updateHistoryData,
   setSaveStatus,
-  userFullName,
+  currentUser,
+  doc,
   updateStatusAndCount,
   debouncedUpdates,
   UpdateHistoryVersions,
@@ -28,16 +29,15 @@ export const useBlockEditor = ({
   yDoc: YDoc | null | undefined,
   provider?: TiptapCollabProvider | null,
   updateHistoryData: Function,
+  doc: any,
   setSaveStatus: Function,
-  userFullName: String,
+  currentUser: any,
   updateStatusAndCount: Function,
   debouncedUpdates: Function,
   UpdateHistoryVersions: Function,
 }) => {
+  const leftSidebar = useSidebar();
   const [hasChanges, setHasChanges] = useState(false);
-
-  const leftSidebar = useSidebar()
-
   const initialContent = "<p>Drafts is a notes taking app with really cool features ! Try and hit the '/' key or try the markdown shortcuts, which make it easy to format the text while typing.</p><p>Consider this page as your 'playground'; here you can test all features and when you're done, you can go ahead and tap the burger menu to your left to create new documents, or import existing ones.</p><p>To test that, start a new line and type # followed by a space to get aheading. Try #, ##, ###, ####, #####, ###### for different levels. Those conventions are called input rules in tiptap. Some of them are enabled by default. Try '>' for blockquotes, *, - or + for bullet lists, or ~~tildes~~ to strike text. These are some of the multiple 'cheat codes' you can have, but we'll let you explore to find out all of them.</p><p>Happy texting !</p>"
 
   const onUpdate = () => {
@@ -60,6 +60,7 @@ export const useBlockEditor = ({
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
     autofocus: true,
+    editable: doc?.creator_email === currentUser?.email,
     onCreate: ({ editor }) => {
       provider?.on('synced', () => {
         onSynced();

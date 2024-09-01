@@ -11,6 +11,7 @@ import { JWT } from "node-jsonwebtoken";
 import { useSidebar } from '@/components/editor/hooks/useSidebar';
 import 'katex/dist/katex.min.css';
 import { toast } from 'sonner';
+import { getSession } from 'next-auth/react';
 
 type DocumentProps = {
   params: {
@@ -38,6 +39,7 @@ export default function App(props: DocumentProps) {
   const searchParams = useSearchParams()
   const [doc, setDocument] = useState<any>(null)
   const [words, setWords] = useState(0)
+  const [user, setUser] = useState<any>()
   const [characters, setCharacters] = useState(0)
   const [historyData, setHistoryData] = useState({})
   const [userFullName, setUserFullName] = useState<String>("");
@@ -99,6 +101,18 @@ export default function App(props: DocumentProps) {
     dataFetch()
   }, [])
 
+  // Fetch session
+  useEffect(() => {
+    const fetchSession = async () => {
+      const response = await getSession()
+      setUser(response?.user)
+    }
+
+    fetchSession().catch((error) => {
+      console.log(error)
+    })
+  }, [])
+
   useEffect(() => {
     fetchDocument(props.params.id)
   }, [props.params.id]);
@@ -132,17 +146,17 @@ export default function App(props: DocumentProps) {
       />
       
       <div className="flex flex-1 h-full">
-        <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
+        {/* <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} /> */}
 
         <div className="w-full bg-content1 relative flex overflow-y-auto cursor-text flex-col items-start z-[1] flex-1 p-0 lg:p-6">
           <Editor
             documentId={props.params.id}
-            documentContent={doc}
+            doc={doc}
+            currentUser={user}
             setCharacterCount={getCharacterAndWordsCount}
             setSaveStatus={getSaveStatus}
             yDoc={yDoc}
             provider={provider}
-            userFullName={userFullName}
             updateHistoryData={updateHistoryData}
           />
         </div>

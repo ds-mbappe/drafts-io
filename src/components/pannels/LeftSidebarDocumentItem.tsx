@@ -17,7 +17,7 @@ export const LeftSidebarDocumentItem = ({ document }: any) => {
             </p>
             
             <p className="line-clamp-1 text-foreground-500 text-sm">
-              {'Updated '} {moment(document?.updatedAt).calendar()}
+              {'Updated '} {moment(document?.updatedAt).fromNow()}
             </p>
           </div>
 
