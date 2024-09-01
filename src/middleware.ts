@@ -8,7 +8,7 @@ export default withAuth(
     } = req;
 
     const tokenEmail = req.cookies.get('token')?.value || ''
-    const shouldRedirectToApp = pathname.startsWith('/account') || pathname === '/'
+    const shouldRedirectToApp = pathname.startsWith('/account')
 
     if (shouldRedirectToApp && (token || tokenEmail)) {
       return NextResponse.redirect(new URL("/app", req.url));

@@ -1,5 +1,5 @@
 .ProseMirror {
-  @apply caret-black dark:caret-white outline-0 pr-8 pl-20 py-24 lg:py-16 z-0 lg:pl-16 lg:pr-8;
+  @apply caret-foreground-500 outline-0 z-0;
 
   & > * {
     @apply mx-auto max-w-7xl;
@@ -61,6 +61,11 @@
 *::-webkit-scrollbar-button {
   display:none;
 }
+
+/* Change cursor */
+/* * {
+  cursor: url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 96 104" xmlns="http://www.w3.org/2000/svg"><path style="fill: black" d="M0.86065 0.697766L95.7812 51.5907L50.3553 59.6832L34.4976 103.014L0.86065 0.697766Z" /></svg>'), default !important;
+} */
 
 @import './partials/animations.css';
 @import './partials/blocks.css';
