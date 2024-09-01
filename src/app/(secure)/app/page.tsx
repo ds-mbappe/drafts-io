@@ -14,7 +14,7 @@ import { LinkMenu } from '../../../components/editor/menus/LinkMenu'
 import TextMenu from '@/components/editor/menus/TextMenu/TextMenu';
 import TableRowMenu from '@/components/editor/extensions/Table/menus/TableRow/TableRow';
 import TableColumnMenu from '@/components/editor/extensions/Table/menus/TableColumn/TableColumn';
-import { Button, Input, Chip, Tabs, Tab } from "@nextui-org/react";
+import { Button, Input, Chip, Tabs, Tab, Skeleton, Spinner } from "@nextui-org/react";
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { CircleArrowRightIcon } from 'lucide-react';
 import DocumentCard from '@/components/card/DocumentCard';
@@ -25,6 +25,8 @@ export default function App() {
   const leftSidebar = useSidebar();
   const menuContainerRef = useRef(null);
   const [user, setUser] = useState<any>()
+  const [loading, setIsLoading] = useState(false)
+  const [loadingLatest, setIsLoadingLatest] = useState(false)
   const [documents, setDocuments] = useState([])
   const [saveStatus, setSaveStatus] = useState("Synced")
   const [latestDocuments, setLatestDocuments] = useState([])
@@ -79,6 +81,7 @@ export default function App() {
 
   // Fetch documents
   const fetchDocuments = async () => {
+    setIsLoading(true);
     const data = await fetch(`/api/documents/${user?.email}`, {
       method: 'GET',
       headers: { "content-type": "application/json" },
@@ -94,10 +97,12 @@ export default function App() {
         important: true,
       })
     }
+    setIsLoading(false)
   }
 
   useEffect(() => {
     const fetchLatestDocuments = async() => {
+      setIsLoadingLatest(true)
       const res = await fetch("/api/documents", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -110,9 +115,10 @@ export default function App() {
           duration: 5000,
           important: true,
         })
+      } else {
+        setLatestDocuments(data?.documents);
       }
-
-      setLatestDocuments(data?.documents);
+      setIsLoadingLatest(false)
     }
 
     fetchLatestDocuments();
@@ -173,7 +179,7 @@ export default function App() {
             type="text"
             placeholder="Search"
             variant="bordered"
-            className="w-full md:!w-3/4"
+            className="w-full md:!w-1/2"
             startContent={<MagnifyingGlassIcon className="w-6 h-6" />}
             isClearable
           />
@@ -199,18 +205,32 @@ export default function App() {
                   {`Here, a list of all your creations.`}
                 </p>
               </div>
-              {
-                documents?.map((document, index) => {
-                  return <DocumentCard key={index} document={document} />
-                })
+              {loading ?
+                <div className="w-full h-screen flex items-center justify-center">
+                  <Spinner size="lg" />
+                </div>:
+                <>
+                  {
+                    documents?.map((document, index) => {
+                      return <DocumentCard key={index} document={document} />
+                    })
+                  }
+                </>
               }
             </Tab>
 
             <Tab key="latest" title={"Latest"} className="flex flex-col gap-4">
-              {
-                latestDocuments?.map((document, index) => {
-                  return <DocumentCard key={index} document={document} />
-                })
+              {loadingLatest ?
+                <div className="w-full h-screen flex items-center justify-center">
+                  <Spinner size="lg" />
+                </div>:
+                <>
+                  {
+                    latestDocuments?.map((document, index) => {
+                      return <DocumentCard key={index} document={document} />
+                    })
+                  }
+                </>
               }
             </Tab>
 

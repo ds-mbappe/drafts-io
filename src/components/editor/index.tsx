@@ -120,7 +120,11 @@ export default function BlockEditor({ documentId, doc, setCharacterCount, setSav
             :
             <></>
         }
-        <EditorContent editor={editor} className="tiptap" spellCheck={"false"} />
+        <EditorContent
+          editor={editor}
+          className={doc?.creator_email === currentUser?.email ? 'tiptap pr-8 pl-20 py-24 lg:py-16 lg:pl-16' : 'tiptap px-8 py-24'}
+          spellCheck={"false"}
+        />
       </div>
     </div>
   )

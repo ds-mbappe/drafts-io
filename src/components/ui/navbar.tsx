@@ -208,13 +208,13 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
     })
   }, [])
 
-  if (!user) return
+  // if (!user) return
 
   return (
     <>
       <Navbar isBordered maxWidth={"full"} className="bg-content1">
         <NavbarBrand className="flex gap-2">
-          <Button isIconOnly size={"sm"} variant={"light"} onClick={() => router.push('/')}>
+          <Button isIconOnly size={"sm"} variant={"light"} onClick={() => router.push('/app')}>
             <HomeIcon />
           </Button>
 
@@ -343,6 +343,7 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
                   isBordered
                   as="button"
                   color="primary"
+                  showFallback
                   name={user?.email?.split("")?.[0]?.toUpperCase()}
                   size="sm"
                   src={user?.image}
