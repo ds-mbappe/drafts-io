@@ -164,6 +164,7 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
 
                 <Select 
                   id="doc-topic"
+                  aria-label="toc-topic"
                   variant="bordered"
                   className="col-span-3"
                   value={docTopic}

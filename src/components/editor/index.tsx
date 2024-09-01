@@ -19,14 +19,14 @@ import { toast } from "sonner";
 import TableRowMenu from "./extensions/Table/menus/TableRow/TableRow";
 import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
 
-export default function BlockEditor({ documentId, documentContent, setCharacterCount, setSaveStatus, yDoc, provider, userFullName, updateHistoryData }: {
+export default function BlockEditor({ documentId, doc, setCharacterCount, setSaveStatus, yDoc, provider, currentUser, updateHistoryData }: {
   documentId: String,
-  documentContent: String | null,
+  doc: any,
   setSaveStatus: Function,
   setCharacterCount: Function,
   yDoc: YDoc,
+  currentUser: any,
   provider: TiptapCollabProvider | null,
-  userFullName: String,
   updateHistoryData: Function,
 }) {
   const router = useRouter();
@@ -61,7 +61,8 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
   const { editor } = useBlockEditor({
     yDoc,
     provider,
-    userFullName,
+    doc,
+    currentUser,
     updateHistoryData,
     setSaveStatus,
     updateStatusAndCount,
@@ -107,11 +108,18 @@ export default function BlockEditor({ documentId, documentContent, setCharacterC
   return (
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
       <div className="relative w-full max-w-screen-xl mx-auto" ref={menuContainerRef}>
-        <ContentItemMenu editor={editor} />
-        <LinkMenu editor={editor} appendTo={menuContainerRef} />
-        <TextMenu editor={editor} />
-        <TableRowMenu editor={editor} appendTo={menuContainerRef} />
-        <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
+        {
+          doc?.creator_email === currentUser?.email ?
+            <>
+              <ContentItemMenu editor={editor} />
+              <LinkMenu editor={editor} appendTo={menuContainerRef} />
+              <TextMenu editor={editor} />
+              <TableRowMenu editor={editor} appendTo={menuContainerRef} />
+              <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
+            </>
+            :
+            <></>
+        }
         <EditorContent editor={editor} className="tiptap" spellCheck={"false"} />
       </div>
     </div>

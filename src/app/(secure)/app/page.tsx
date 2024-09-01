@@ -19,10 +19,13 @@ import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { CircleArrowRightIcon } from 'lucide-react';
 import DocumentCard from '@/components/card/DocumentCard';
 import { toast } from "sonner";
+import { getSession } from 'next-auth/react';
 
 export default function App() {
   const leftSidebar = useSidebar();
   const menuContainerRef = useRef(null);
+  const [user, setUser] = useState<any>()
+  const [documents, setDocuments] = useState([])
   const [saveStatus, setSaveStatus] = useState("Synced")
   const [latestDocuments, setLatestDocuments] = useState([])
   const topics = [
@@ -74,6 +77,25 @@ export default function App() {
     ],
   });
 
+  // Fetch documents
+  const fetchDocuments = async () => {
+    const data = await fetch(`/api/documents/${user?.email}`, {
+      method: 'GET',
+      headers: { "content-type": "application/json" },
+    });
+    
+    if (data?.ok) {
+      const realDocs = await data.json();
+      setDocuments(realDocs.documents)
+    } else {
+      toast.error(`Error`, {
+        description: `Error fetching documents, please try again!`,
+        duration: 5000,
+        important: true,
+      })
+    }
+  }
+
   useEffect(() => {
     const fetchLatestDocuments = async() => {
       const res = await fetch("/api/documents", {
@@ -96,6 +118,28 @@ export default function App() {
     fetchLatestDocuments();
   }, [])
 
+  useEffect(() => {
+    if (user?.email) {
+      const justFetch = async() => {
+        await fetchDocuments()
+      }
+
+      justFetch();
+    }
+  }, [user]);
+
+  // Fetch session
+  useEffect(() => {
+    const fetchSession = async () => {
+      const response = await getSession()
+      setUser(response?.user)
+    }
+
+    fetchSession().catch((error) => {
+      console.log(error)
+    })
+  }, [])
+
   if (!editor) return
 
   return (
@@ -109,10 +153,10 @@ export default function App() {
       />
 
       <div className="flex flex-1 h-full bg-content1">
-        <Sidebar
+        {/* <Sidebar
           isOpen={leftSidebar.isOpen}
           onClose={leftSidebar.close}
-        />
+        /> */}
 
         {/* <div className="w-full relative flex overflow-y-auto cursor-text flex-col items-center z-[1] flex-1 p-0 lg:p-6">
           <div className="relative w-full max-w-screen-xl flex flex-col gap-2" ref={menuContainerRef}>
@@ -141,10 +185,27 @@ export default function App() {
             aria-label="Tabs"
             fullWidth
             classNames={{
-              tabList: "w-full p-0 border-b border-divider",
+              tabList: "w-full md:w-1/2 p-0 border-b border-divider",
               tabContent: "group-data-[selected=true]:text-primary"
             }}
           >
+            <Tab key="for_you" title={`${'For you'} (${documents?.length})`} className="flex flex-col gap-4">
+              <div className="flex flex-col">
+                <p className="text-base font-semibold">
+                  {`My personnal documents`}
+                </p>
+                
+                <p className="text-sm font-normal text-foreground-500">
+                  {`Here, a list of all your creations.`}
+                </p>
+              </div>
+              {
+                documents?.map((document, index) => {
+                  return <DocumentCard key={index} document={document} />
+                })
+              }
+            </Tab>
+
             <Tab key="latest" title={"Latest"} className="flex flex-col gap-4">
               {
                 latestDocuments?.map((document, index) => {
@@ -153,7 +214,7 @@ export default function App() {
               }
             </Tab>
 
-            {
+            {/* {
               topics?.map((topic, index) => {
                 return (
                   <Tab key={index} title={topic}>
@@ -161,7 +222,7 @@ export default function App() {
                   </Tab>
                 )
               })
-            }
+            } */}
           </Tabs>
         </div>
       </div>

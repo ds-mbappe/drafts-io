@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import moment from 'moment';
 import NextImage from "next/image";
 import { Avatar, Button, Card, CardBody, Chip, Image } from '@nextui-org/react';
@@ -24,13 +24,21 @@ export type DocumentCardTypeprops = {
 }
 
 const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
-  const toggleLike = () => {
+  const toggleLike = (e: any) => {
+    e.preventDefault();
+  }
 
+  const toggleComment = (e: any) => {
+    e.preventDefault();
+  }
+
+  const toggleOptions = (e: any) => {
+    e.preventDefault();
   }
 
   return (
     <Link href={`/app/${document?._id}`}>
-      <Card shadow="none" className="border border-divider cursor-pointer hover:bg-foreground-100">
+      <Card shadow="none" className="border border-divider cursor-pointer hover:bg-foreground-100 active:scale-[0.95]">
         <CardBody className="flex flex-row gap-4">
           <div className="hidden sm:!flex border border-divider rounded-large">
             <Image
@@ -92,19 +100,19 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
               </div>
 
               {/* Like & comment button */}
-              <div className="flex items-center gap-2">
-                <Button isIconOnly radius="full" size={"sm"} variant={"light"}>
+              {/* <div className="flex items-center gap-2">
+                <Button isIconOnly size={"sm"} variant={"light"} onClick={toggleLike}>
                   <HeartIcon />
                 </Button>
 
-                <Button isIconOnly radius="full" size={"sm"} variant={"light"}>
+                <Button isIconOnly size={"sm"} variant={"light"} onClick={toggleComment}>
                   <MessageCircleIcon />
                 </Button>
 
-                <Button isIconOnly radius="full" size={"sm"} variant={"light"}>
+                <Button isIconOnly size={"sm"} variant={"light"} onClick={toggleOptions}>
                   <EllipsisIcon />
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
         </CardBody>
