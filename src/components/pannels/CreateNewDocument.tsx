@@ -6,7 +6,7 @@ import { Button, Input, Select, SelectItem, Switch, Textarea, Tooltip } from '@n
 import { useRouter } from "next/navigation";
 import { Modal,  ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import { toast } from "sonner";
-import { CirclePlusIcon } from 'lucide-react';
+import { SquarePenIcon } from 'lucide-react';
 
 export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
   const router = useRouter();
@@ -128,7 +128,7 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
         motionProps={motionProps}
       >
         <Button isIconOnly size={"sm"} variant={"light"} onPress={changeDialogOpenState}>
-          <CirclePlusIcon />
+          <SquarePenIcon />
         </Button>
       </Tooltip>
 
