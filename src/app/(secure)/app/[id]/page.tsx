@@ -146,7 +146,7 @@ export default function App(props: DocumentProps) {
       />
       
       <div className="flex flex-1 h-full">
-        {/* <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} /> */}
+        <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
 
         <div className="w-full bg-content1 relative flex overflow-y-auto cursor-text flex-col items-start z-[1] flex-1 p-0 lg:p-6">
           <Editor

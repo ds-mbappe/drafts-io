@@ -3,7 +3,7 @@
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Switch, DropdownSection, useDisclosure, Input, Tooltip, Textarea, Select, SelectItem } from "@nextui-org/react";
 import EditorInfo from './EditorInfo';
 import { memo, useEffect, useState } from 'react';
-import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, CircleEllipsisIcon, Trash2Icon, ShareIcon, Share2Icon, PencilIcon, EyeIcon, PencilLineIcon, HomeIcon, BookPlusIcon } from 'lucide-react';
+import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, CircleEllipsisIcon, Trash2Icon, ShareIcon, Share2Icon, PencilIcon, EyeIcon, PencilLineIcon, HomeIcon, BookPlusIcon, SettingsIcon, CircleHelpIcon, LogOutIcon } from 'lucide-react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import HistoryDropdown from '../pannels/HistoryDropdown/HistoryDropdown';
 import { signOut, getSession } from "next-auth/react";
@@ -214,21 +214,23 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
     <>
       <Navbar isBordered maxWidth={"full"} className="bg-content1">
         <NavbarBrand className="flex gap-2">
-          <Button isIconOnly size={"sm"} variant={"light"} onClick={() => router.push('/app')}>
+          {/* <Button isIconOnly size={"sm"} variant={"light"} onClick={() => router.push('/app')}>
             <HomeIcon />
-          </Button>
+          </Button> */}
 
           {/* Sidebar button */}
-          {/* <Tooltip
-            content={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
-            delay={0}
-            closeDelay={0}
-            motionProps={motionProps}
-          >
-            <Button isIconOnly size={"sm"} variant={"light"} onClick={toggleSidebar}>
-              { isSidebarOpen ? <PanelTopClose className="-rotate-90" /> : <PanelLeft /> }
-            </Button>
-          </Tooltip> */}
+          {document?._id &&
+            <Tooltip
+              content={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+              delay={0}
+              closeDelay={0}
+              motionProps={motionProps}
+            >
+              <Button isIconOnly size={"sm"} variant={"light"} onClick={toggleSidebar}>
+                { isSidebarOpen ? <PanelTopClose className="-rotate-90" /> : <PanelLeft /> }
+              </Button>
+            </Tooltip>
+          }
 
           {/* Document options */}
           { document?._id && document?.creator_email === user?.email ?
@@ -357,23 +359,38 @@ const NavbarApp = memo(({ characters, words, status, isSidebarOpen, toggleSideba
                   <p className="font-semibold">{user?.email}</p>
                 </DropdownItem>
 
-                <DropdownItem key="dark_mode" textValue={'Dark mode'} onClick={changeTheme}>  
-                  <div className="flex gap-1 items-center">
-                    <Button isIconOnly size={"sm"} variant={"light"}>
-                      {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-                    </Button>
-                    
-                    <p className="font-semibold">
-                      {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-                    </p>
-                  </div>
+                <DropdownItem
+                  key="dark_mode"
+                  textValue={'Dark mode'}
+                  onClick={changeTheme}
+                  startContent={theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+                >  
+                  {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                 </DropdownItem>
 
-                <DropdownItem key="settings">{'My Settings'}</DropdownItem>
+                <DropdownItem
+                  key="settings"
+                  startContent={<SettingsIcon />}
+                >
+                  {'Settings'}
+                </DropdownItem>
 
-                <DropdownItem key="help_and_feedback">{'Help & Feedback'}</DropdownItem>
+                <DropdownItem
+                  key="help_and_feedback"
+                  startContent={<CircleHelpIcon />}
+                >
+                  {'Help & Feedback'}
+                </DropdownItem>
 
-                <DropdownItem key="logout" className="text-danger" color="danger" onClick={onLogout}>{'Log Out'}</DropdownItem>
+                <DropdownItem
+                  key="logout"
+                  className="text-danger"
+                  color="danger"
+                  onClick={onLogout}
+                  startContent={<LogOutIcon />}
+                >
+                  {'Log Out'}
+                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </NavbarItem>

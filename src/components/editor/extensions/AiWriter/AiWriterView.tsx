@@ -44,6 +44,10 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
             content: "When you give an answer, you don't use any form of courtesy or politeness."
           },
           {
+            role: "system",
+            content: "Wrap all your answers in html tags."
+          },
+          {
             role: "user",
             content: payload.text
           },
@@ -56,51 +60,51 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
 
       for await (const chunk of completion) {
         content += chunk.choices[0]?.delta?.content || ""
-        // let position = getPos()
-        // let chunkContent = chunk.choices[0]?.delta?.content || ""
+        let position = getPos()
+        let chunkContent = chunk.choices[0]?.delta?.content || ""
 
-        // if (content?.length && content !== "\n") {
-        //   let newContent = chunkContent.replace(content, "")
-        //   if (newContent === '<h') {
-        //     editor.commands.enter()
-        //     editor.chain().focus().setHeading({ level: 1 }).run()
-        //     const transaction = editor.state.tr.insertText(newContent)
-        //     editor.view.dispatch(transaction)
-        //   } else if (newContent === '<p') {
-        //     editor.commands.enter()
-        //     const transaction = editor.state.tr.insertText(newContent)
-        //     editor.view.dispatch(transaction)
-        //   } else if (newContent === '<br') {
-        //     editor.commands.enter()
-        //   } else if (newContent?.endsWith("\n")) {
-        //     const transaction = editor.state.tr.insertText(newContent)
-        //     editor.view.dispatch(transaction)
-        //     editor.commands.enter()
-        //   } else {
-        //     const transaction = editor.state.tr.insertText(newContent)
-        //     editor.view.dispatch(transaction)
-        //   }
-        //   editor.commands.scrollIntoView()
-        //   console.log(newContent)
-        //   console.log(newContent?.endsWith("\n"))
-        // }
+        if (content?.length && content !== "\n") {
+          let newContent = chunkContent.replace(content, "")
+          if (newContent === '<h') {
+            editor.commands.enter()
+            editor.chain().focus().setHeading({ level: 1 }).run()
+            const transaction = editor.state.tr.insertText(newContent)
+            editor.view.dispatch(transaction)
+          } else if (newContent === '<p') {
+            editor.commands.enter()
+            const transaction = editor.state.tr.insertText(newContent)
+            editor.view.dispatch(transaction)
+          } else if (newContent === '<br') {
+            editor.commands.enter()
+          } else if (newContent?.endsWith("\n")) {
+            const transaction = editor.state.tr.insertText(newContent)
+            editor.view.dispatch(transaction)
+            editor.commands.enter()
+          } else {
+            const transaction = editor.state.tr.insertText(newContent)
+            editor.view.dispatch(transaction)
+          }
+          editor.commands.scrollIntoView()
+          // console.log(newContent)
+          // console.log(newContent?.endsWith("\n"))
+        }
       }
 
-      const lines = content.split('\n')
-      lines.forEach(line => {
-        let newLine = line.trimStart()
-        // console.log(newLine)
-        if (newLine.startsWith('- ')) {
-          editor.commands.enter()
-          editor.chain().focus().insertContent(newLine.substring(2)).toggleBulletList().run()
-        } else if (newLine.match(/^\d+\. /)) {
-          editor.commands.enter()
-          editor.chain().focus().insertContent(newLine.replace(/^\d+\. /, '')).toggleOrderedList().run()
-        } else {
-          editor.commands.enter()
-          editor.chain().focus().insertContent(newLine).run()
-        }
-      })
+      // const lines = content.split('\n')
+      // lines.forEach(line => {
+      //   let newLine = line.trimStart()
+      //   // console.log(newLine)
+      //   if (newLine.startsWith('- ')) {
+      //     editor.commands.enter()
+      //     editor.chain().focus().insertContent(newLine.substring(2)).toggleBulletList().run()
+      //   } else if (newLine.match(/^\d+\. /)) {
+      //     editor.commands.enter()
+      //     editor.chain().focus().insertContent(newLine.replace(/^\d+\. /, '')).toggleOrderedList().run()
+      //   } else {
+      //     editor.commands.enter()
+      //     editor.chain().focus().insertContent(newLine).run()
+      //   }
+      // })
       setIsFetching(false)
       setPreviewText(content)
     } catch (error) {
