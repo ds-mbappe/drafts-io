@@ -100,6 +100,19 @@ export default function App() {
     setIsLoading(false)
   }
 
+  // Search
+  const filterDocuments = useDebouncedCallback(async(e: any) => {
+    let dataPersonal = documents
+
+    dataPersonal = dataPersonal.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
+
+    const res = await fetch(`/api/documents?search=${e?.target?.value}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+    const data = await res.json()
+  }, 300)
+
   useEffect(() => {
     const fetchLatestDocuments = async() => {
       setIsLoadingLatest(true)
@@ -182,6 +195,7 @@ export default function App() {
             className="w-full md:!w-1/2"
             startContent={<MagnifyingGlassIcon className="w-6 h-6" />}
             isClearable
+            onChange={filterDocuments}
           />
 
           <Tabs

@@ -20,7 +20,7 @@ const documentSchema = new Schema(
   }
 );
 
-// documentSchema.index({ name: 'text' });
+// documentSchema.index({ title: "text" });
 
 const Document = mongoose.models.Document || mongoose.model("Document", documentSchema)
 
