@@ -15,7 +15,7 @@ export async function GET(req, { params }) {
     if (search) {
       documents = await Document.find({
         $text: {
-          $search: search,
+          $search: `\"${search}\"`,
         }
       })
     } else {
