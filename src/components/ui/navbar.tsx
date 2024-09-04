@@ -80,9 +80,9 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
           {/* Create new document */}
           <CreateNewDocument user={user} onDocumentSaved={() => null} />
 
-          <Button isIconOnly size={"sm"} variant={"light"} onClick={onStartSpeak}>
+          {/* <Button isIconOnly size={"sm"} variant={"light"} onClick={onStartSpeak}>
             <CirclePlayIcon />
-          </Button>
+          </Button> */}
         </NavbarBrand>
 
         <NavbarContent justify="end">
