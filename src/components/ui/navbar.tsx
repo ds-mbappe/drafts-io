@@ -2,7 +2,7 @@
 
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Tooltip } from "@nextui-org/react";
 import { memo, useEffect, useState } from 'react';
-import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon } from 'lucide-react';
+import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CirclePlayIcon } from 'lucide-react';
 import HistoryDropdown from '../pannels/HistoryDropdown/HistoryDropdown';
 import { signOut, getSession } from "next-auth/react";
 import { useTheme } from "next-themes";
@@ -44,6 +44,10 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
     }
   }
 
+  const onStartSpeak = async() => {
+    
+  }
+
   useEffect(() => {
     const fetchSession = async () => {
       const response = await getSession()
@@ -59,10 +63,6 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
     <>
       <Navbar isBordered maxWidth={"full"} className="bg-content1">
         <NavbarBrand className="flex gap-2">
-          {/* <Button isIconOnly size={"sm"} variant={"light"} onClick={() => router.push('/app')}>
-            <HomeIcon />
-          </Button> */}
-
           {/* Sidebar button */}
           {document?._id &&
             <Tooltip
@@ -79,6 +79,10 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
 
           {/* Create new document */}
           <CreateNewDocument user={user} onDocumentSaved={() => null} />
+
+          {/* <Button isIconOnly size={"sm"} variant={"light"} onClick={onStartSpeak}>
+            <CirclePlayIcon />
+          </Button> */}
         </NavbarBrand>
 
         <NavbarContent justify="end">

@@ -4,27 +4,27 @@ import { NextResponse } from "next/server";
 export async function GET(req, { params }) {
   try {
     // const { search } = params
-    // const search = req?.nextUrl?.searchParams.get("search")
+    const search = req?.nextUrl?.searchParams.get("search")
     
     let documents = null
 
-    documents = await Document.find({
-      private: false,
-    })
+    // documents = await Document.find({
+    //   private: false,
+    // })
 
-    // if (search) {
-    //   documents = await Document.find({
-    //     title: search,
-    //     // $where: function() {
-    //     //   return this.name.toLowerCase().startsWith(search)
-    //     // }
-    //   })
-    // } else {
-    //   documents = await Document.find({})
-    // }
+    if (search) {
+      documents = await Document.find({
+        $text: {
+          $search: `\"${search}\"`,
+        }
+      })
+    } else {
+      documents = await Document.find({})
+    }
 
     return NextResponse.json({ documents }, { status: 200 });
   } catch (error) {
+    console.log(error)
     return NextResponse.json({ message: "Error", error }, { status: 500 });
   }
 }

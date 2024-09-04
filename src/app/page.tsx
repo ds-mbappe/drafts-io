@@ -1,25 +1,46 @@
-import { Link, NextUIProvider } from "@nextui-org/react";
+import { Button, Link, NextUIProvider } from "@nextui-org/react";
 import Navbar from "@/components/navigation/Navbar";
+import { SquarePenIcon } from "lucide-react";
 
 export default function Home() {
   return (
     <NextUIProvider>
-      <main className="flex min-h-screen flex-col bg-gradient-to-b from-gray-200">
+      <main className="flex min-h-screen flex-col bg-content1">
         <Navbar />
         
-        <h1 className="max-w-7xl border-b-4 border-r-4 border-t-4 border-primary py-8 pr-4 text-4xl font-medium sm:text-6xl md:text-7xl lg:text-8xl">
-          Log into your Drafts App account.
-        </h1>
+        <section className="bg-content1">
+          <div className="w-full h-[80vh] flex flex-col container max-w-[675px] mx-auto px-4 gap-10 text-center justify-center items-center">
+            <h1 className="text-4xl font-bold">
+              {'Share Your adventures with the World !'}
+            </h1>
 
-        <>
-          <Link href="/account/sign-up">
-            Sign-up
-          </Link>
-          
-          <Link href="/account/sign-in">
-            Sign-in
-          </Link>
-        </>
+            <p className="text-xl text-foreground-500">
+              {'Create, publish, and discover amazing content from writers around the globe.'}
+            </p>
+
+            <Button
+              as={Link}
+              color="default"
+              href="/app"
+              size="lg"
+              variant="faded"
+            >
+              {'Start writing'}
+            </Button>
+          </div>
+        </section>
+
+        {/* <section className="bg-content1">
+          <div className="w-full h-[60vh] flex flex-col container max-w-[675px] mx-auto px-4 gap-8 text-center justify-center items-center">
+            <h1 className="text-4xl font-bold">
+              {'App features'}
+            </h1>
+
+            <div className="flex flex-col md:grid md:grid-cols-2">
+
+            </div>
+          </div>
+        </section> */}
       </main>
     </NextUIProvider>
   );

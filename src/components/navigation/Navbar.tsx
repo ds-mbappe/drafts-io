@@ -24,7 +24,7 @@ const Navbar = (userId: any) => {
   const menuItems = [
     "Product",
     "Features",
-    "Pricing",
+    // "Pricing",
     "About us",
     "Help & Feedback",
     "Log Out",
@@ -33,20 +33,23 @@ const Navbar = (userId: any) => {
   return (
     <NavbarComponent
       maxWidth="full"
+      className="bg-content1"
       onMenuOpenChange={setIsMenuOpen}
+      isBordered
     >
       <NavbarContent>
-        <NavbarMenuToggle
+        {/* <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
-        />
+        /> */}
+
         <NavbarBrand>
           {/* <AcmeLogo /> */}
-          <p className="font-bold text-inherit">{'Drafts App'}</p>
+          <p className="font-bold text-content1-foreground">{'Drafts App'}</p>
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex gap-8" justify="center">
+      {/* <NavbarContent className="hidden sm:flex gap-8" justify="center">
         <NavbarItem>
           <Link color="foreground" href="#">
             {'Product'}
@@ -70,31 +73,15 @@ const Navbar = (userId: any) => {
             {'About us'}
           </Link>
         </NavbarItem>
-      </NavbarContent>
+      </NavbarContent> */}
 
-      <NavbarContent justify="end">
-        {!userId ? (
-          <>
-            <NavbarItem>
-              <Button as={Link} color="primary" href="/sign-in" variant="shadow">
-                {'Sign In'}
-              </Button>
-            </NavbarItem>
-            
-            <NavbarItem>
-              <Button as={Link} color="default" href="/sign-up" variant="shadow">
-                {'Sign Up'}
-              </Button>
-            </NavbarItem>
-          </>
-        ) : (
-          <NavbarItem>
-            <Button as={Link} color="primary" href="/app" variant="shadow">
-              {'Go to App'}
-            </Button>
-          </NavbarItem>
-        )}
-      </NavbarContent>
+      {/* <NavbarContent justify="end">
+        <NavbarItem>
+          <Button as={Link} color="default" href="/app" variant="faded">
+            {'Get started'}
+          </Button>
+        </NavbarItem>
+      </NavbarContent> */}
 
       <NavbarMenu>
         {menuItems.map((item, index) => (
@@ -112,36 +99,6 @@ const Navbar = (userId: any) => {
           </NavbarMenuItem>
         ))}
       </NavbarMenu>
-
-      {/* <>
-        {user &&
-          <NavbarContent as="div" justify="end">
-            <Dropdown placement="bottom-end">
-              <DropdownTrigger>
-                <Avatar
-                  isBordered
-                  as="button"
-                  className="transition-transform"
-                  color="secondary"
-                  name={user.fullName ? user?.fullName : ""}
-                  size="sm"
-                  src={user?.imageUrl}
-                />
-              </DropdownTrigger>
-
-              <DropdownMenu aria-label="Profile Actions" variant="flat">
-                <DropdownItem key="profile" className="h-14 gap-2">
-                  <p className="font-semibold">{'Signed in as'}</p>
-                  <p className="font-semibold">{ user?.fullName }</p>
-                </DropdownItem>
-                <DropdownItem key="settings">{'Settings'}</DropdownItem>
-                <DropdownItem key="help_and_feedback">{'Help & Feedback'}</DropdownItem>
-                <DropdownItem key="logout" color="danger">{'Log Out'}</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </NavbarContent>
-        }
-      </> */}
     </NavbarComponent>
   )
 }
