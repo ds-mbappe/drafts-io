@@ -57,16 +57,18 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
   ]
 
   const handleSaveData = async () => {
+    // const response = await getSession()
+
     let formData = {
       title: docTitle,
       caption: docCaption,
       creator_email: user?.email,
       creator: {
-        avatar: "https://sm.ign.com/ign_fr/cover/a/avatar-gen/avatar-generations_bssq.jpg",
-        fullname: `Daniel Stéphane`,
+        avatar: user?.avatar,
+        fullname: `${user?.firstname} ${user?.lastname}`,
       },
       cover: "https://pyxis.nymag.com/v1/imgs/51b/28a/622789406b8850203e2637d657d5a0e0c3-avatar-rerelease.1x.rsquare.w1400.jpg",
-      topic: "Random",
+      topic: docTopic,
     }
 
     const res = await fetch("/api/documents", {

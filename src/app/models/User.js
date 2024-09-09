@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-mongoose.connect(process.env.MONGO_DB_URI);
+mongoose.connect(process?.env?.VERCEL_ENV === 'production' ? process.env.MONGO_DB_URI_PROD : process.env.MONGO_DB_URI_DEV);
 mongoose.Promise = global.Promise
 
 const userSchema = new Schema(
@@ -9,6 +9,10 @@ const userSchema = new Schema(
       type: String,
       required: false,
       unique: true,
+    },
+    avatar: {
+      type: String,
+      required: false,
     },
     firstname: {
       type: String,
@@ -22,6 +26,10 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Please provide email"],
     },
+    draftContent: {
+      type: String,
+      required: false,
+    },
     password: {
       type: String,
       required: [true, "Please provide a password"],
@@ -33,6 +41,10 @@ const userSchema = new Schema(
     lang: {
       type: String,
       default: "en",
+    },
+    draft: {
+      type: String,
+      default: "",
     },
     forgotPasswordToken: String,
     forgotPasswordTokenExpiry: Date,

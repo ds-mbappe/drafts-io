@@ -25,13 +25,13 @@ const authOptions: NextAuthOptions = {
           
           // If no error and we have user data, return it
           if (response?.ok && data) {
-            const user = {
-              _id: data?.user?._id,
-              email: data?.user?.email,
-              image: data?.user?.avatar,
-              name: `${data?.user?.firstname} ${data?.user?.lastname}`,
-            }
-            return user
+            // const user = {
+            //   _id: data?.user?._id,
+            //   email: data?.user?.email,
+            //   image: data?.user?.avatar,
+            //   name: `${data?.user?.firstname} ${data?.user?.lastname}`,
+            // }
+            return data?.user
           } else {
             return null
           }

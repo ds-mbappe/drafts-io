@@ -3,6 +3,8 @@ import { HorizontalRule } from '../extensions/HorizontalRule';
 import { Link } from '../extensions/Link';
 import { CodeBlock } from '@tiptap/extension-code-block';
 import AiWriter from '../extensions/AiWriter/AiWriter';
+import ImageBlock from '../extensions/ImageBlock/ImageBlock';
+import ImageUpload from '../extensions/ImageUpload/ImageUpload';
 
 export const isTableGripSelected = (node: HTMLElement) => {
   let container = node
@@ -27,6 +29,8 @@ export const isCustomNodeSelected = (editor: Editor, node: HTMLElement) => {
     CodeBlock.name,
     Link.name,
     AiWriter.name,
+    ImageBlock.name,
+    ImageUpload.name,
   ]
 
   return customNodes.some(type => editor.isActive(type)) || isTableGripSelected(node)

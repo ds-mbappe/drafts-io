@@ -18,6 +18,7 @@ import { TextMenu } from './menus/TextMenu/TextMenu'
 import { toast } from "sonner";
 import TableRowMenu from "./extensions/Table/menus/TableRow/TableRow";
 import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
+import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu";
 
 export default function BlockEditor({ documentId, doc, setCharacterCount, setSaveStatus, yDoc, provider, currentUser, updateHistoryData }: {
   documentId: String,
@@ -116,6 +117,7 @@ export default function BlockEditor({ documentId, doc, setCharacterCount, setSav
               <TextMenu editor={editor} />
               <TableRowMenu editor={editor} appendTo={menuContainerRef} />
               <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
+              <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
             </>
             :
             <></>
