@@ -16,12 +16,14 @@ import TableRowMenu from '@/components/editor/extensions/Table/menus/TableRow/Ta
 import TableColumnMenu from '@/components/editor/extensions/Table/menus/TableColumn/TableColumn';
 import { Button, Input, Chip, Tabs, Tab, Skeleton, Spinner } from "@nextui-org/react";
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { CircleArrowRightIcon } from 'lucide-react';
+import { CircleArrowRightIcon, CirclePlusIcon } from 'lucide-react';
 import DocumentCard from '@/components/card/DocumentCard';
 import { toast } from "sonner";
 import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function App() {
+  const router = useRouter();
   const leftSidebar = useSidebar();
   const menuContainerRef = useRef(null);
   const [user, setUser] = useState<any>()
@@ -112,6 +114,10 @@ export default function App() {
     })
     const data = await res.json()
   }, 300)
+
+  const goToNewDocument = () => {
+    router.push("/app/new-doc")
+  }
 
   useEffect(() => {
     const fetchLatestDocuments = async() => {
@@ -220,7 +226,7 @@ export default function App() {
                 </p>
               </div>
               {loading ?
-                <div className="w-full h-screen flex items-center justify-center">
+                <div className="w-full h-full my-12 flex items-center justify-center">
                   <Spinner size="lg" />
                 </div>:
                 <>
@@ -235,7 +241,7 @@ export default function App() {
 
             <Tab key="latest" title={"Latest"} className="flex flex-col gap-4">
               {loadingLatest ?
-                <div className="w-full h-screen flex items-center justify-center">
+                <div className="w-full h-full my-12 flex items-center justify-center">
                   <Spinner size="lg" />
                 </div>:
                 <>
@@ -260,6 +266,17 @@ export default function App() {
           </Tabs>
         </div>
       </div>
+
+      <Button
+        isIconOnly
+        variant="shadow"
+        radius="full"
+        color="primary"
+        className="fixed bottom-4 right-4 z-[99]"
+        onClick={goToNewDocument}
+      >
+        <CirclePlusIcon />
+      </Button>
     </div>
   )
 }

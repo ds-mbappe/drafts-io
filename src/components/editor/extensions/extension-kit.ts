@@ -18,20 +18,23 @@ import CharacterCount from '@tiptap/extension-character-count';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 
 import Link from "./Link";
+import Image from './Image/Image';
 import Table from './Table/Table';
 import FontSize from './FontSize';
 import TableRow from './Table/Row';
 import Selection from './Selection';
 import TableCell from './Table/Cell';
 import TableHeader from './Table/Header';
+import AiWriter from './AiWriter/AiWriter';
 import UnderlineMark from './MarkUnderline';
 import BoldMark from './MarkBold';
 import ItalicMark from './MarkItalic';
 import HeadingMark from './MarkHeading';
-import AiWriter from './AiWriter/AiWriter';
 import ParagraphMark from './MarkParagraph';
 import HorizontalRule from "./HorizontalRule";
 import { TrailingNode } from './TrailingNode';
+import ImageBlock from './ImageBlock/ImageBlock';
+import ImageUpload from './ImageUpload/ImageUpload';
 import SlashCommand from "./SlashCommand/SlashCommand";
 import emojiSuggestion from './EmojiSuggestion/Suggestion';
 
@@ -77,10 +80,13 @@ export const ExtensionKit = () => [
     openOnClick: false,
     linkOnPaste: true,
   }),
+  Image,
+  ImageBlock,
+  ImageUpload,
   AiWriter,
-  ItalicMark,
+  // ItalicMark,
   // BoldMark,
-  UnderlineMark,
+  // UnderlineMark,
   // ParagraphMark,
   // HeadingMark,
   Placeholder.configure({
@@ -88,7 +94,7 @@ export const ExtensionKit = () => [
       if (node.type.name === "heading") {
         return `Heading ${node.attrs.level}`;
       }
-      return "Press '/' for commands, or enter some text.";
+      return "Press '/' for commands";
     },
     showOnlyCurrent: true,
     considerAnyAsEmpty: true,

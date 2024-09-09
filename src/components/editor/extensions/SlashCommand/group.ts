@@ -128,16 +128,16 @@ export const GROUPS: Group[] = [
           editor.chain().focus().insertTable({ rows: 2, cols: 2, withHeaderRow: true }).run()
         },
       },
-      // {
-      //   name: 'image',
-      //   label: 'Image',
-      //   iconName: 'Image',
-      //   description: 'Insert an image',
-      //   aliases: ['img'],
-      //   action: editor => {
-      //     editor.chain().focus().setImageUpload().run()
-      //   },
-      // },
+      {
+        name: 'image',
+        label: 'Image',
+        iconName: 'Image',
+        description: 'Insert an image',
+        aliases: ['img'],
+        action: editor => {
+          editor.chain().focus().setImageUpload().run()
+        },
+      },
       {
         name: 'horizontalRule',
         label: 'Horizontal Rule',

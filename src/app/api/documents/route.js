@@ -19,7 +19,9 @@ export async function GET(req, { params }) {
         }
       })
     } else {
-      documents = await Document.find({})
+      documents = await Document.find({
+        private: false,
+      })
     }
 
     return NextResponse.json({ documents }, { status: 200 });

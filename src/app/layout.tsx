@@ -31,15 +31,15 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en">
       <body>
-      <NextUIProvider>
-        <NextThemesProvider attribute="class" defaultTheme="light">
-          <SessionProvider session={session}>
-            <Alert />
-            {children}
-            <Toaster richColors/>
-          </SessionProvider>
-        </NextThemesProvider>
-      </NextUIProvider>
+        <NextUIProvider>
+          <NextThemesProvider attribute="class" defaultTheme="light">
+            <SessionProvider session={session}>
+              <Alert />
+              {children}
+              <Toaster richColors/>
+            </SessionProvider>
+          </NextThemesProvider>
+        </NextUIProvider>
       </body>
     </html>
   );
