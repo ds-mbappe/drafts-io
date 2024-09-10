@@ -32,7 +32,7 @@ export const ImageBlockView = (props: ImageBlockViewProps) => {
   return (
     <NodeViewWrapper>
       <div className={wrapperClassName} style={{ width: node.attrs.width }}>
-        <div contentEditable={false} ref={imageWrapperRef}>
+        <div contentEditable={false} ref={imageWrapperRef} className="border border-divider rounded-[12px]">
           <img className="block rounded-[12px] cursor-pointer" src={src} alt="" onClick={onClick} />
         </div>
       </div>
