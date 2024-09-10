@@ -16,7 +16,7 @@ import TableRowMenu from '@/components/editor/extensions/Table/menus/TableRow/Ta
 import TableColumnMenu from '@/components/editor/extensions/Table/menus/TableColumn/TableColumn';
 import { Button, Input, Chip, Tabs, Tab, Skeleton, Spinner } from "@nextui-org/react";
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { CircleArrowRightIcon, CirclePlusIcon } from 'lucide-react';
+import { CircleArrowRightIcon, CirclePlusIcon, SquarePenIcon } from 'lucide-react';
 import DocumentCard from '@/components/card/DocumentCard';
 import { toast } from "sonner";
 import { getSession } from 'next-auth/react';
@@ -25,7 +25,6 @@ import { useRouter } from 'next/navigation';
 export default function App() {
   const router = useRouter();
   const leftSidebar = useSidebar();
-  const menuContainerRef = useRef(null);
   const [user, setUser] = useState<any>()
   const [loading, setIsLoading] = useState(false)
   const [loadingLatest, setIsLoadingLatest] = useState(false)
@@ -54,32 +53,6 @@ export default function App() {
     "Gaming",
     "Opinion"
   ]
-
-  // Simulate a delay in saving.
-  const debouncedUpdates = useDebouncedCallback(() => {
-    setTimeout(() => {
-      setSaveStatus("Synced");
-    }, 500);
-  }, 1000);
-
-  // Editor instance
-  const editor = useEditor({
-    immediatelyRender: false,
-    shouldRerenderOnTransaction: false,
-    autofocus: 'end',
-    onCreate: ({ editor }) => {
-      // editor.commands.setContent(initialContent)
-      // editor.commands.focus('start', { scrollIntoView: true })
-    },
-    onUpdate: ({ editor }) => {
-      setSaveStatus("Syncing...");
-      debouncedUpdates()
-    },
-    extensions: [
-      ...ExtensionKit(),
-      History,
-    ],
-  });
 
   // Fetch documents
   const fetchDocuments = async () => {
@@ -115,8 +88,41 @@ export default function App() {
     const data = await res.json()
   }, 300)
 
-  const goToNewDocument = () => {
-    router.push("/app/new-doc")
+  const goToNewDocument = async () => {
+    let formData = {
+      title: `Untitled_${new Date()}`,
+      caption: null,
+      creator_email: user?.email,
+      creator: {
+        avatar: user?.avatar,
+        fullname: `${user?.firstname} ${user?.lastname}`,
+      },
+      cover: null,
+      topic: null,
+    }
+
+    const res = await fetch("/api/documents", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ formData }),
+    })
+
+    if (res?.ok) {
+      await res.json().then((data) => {
+        toast.success(`Success`, {
+          description: `Document created successfully!`,
+          duration: 5000,
+          important: true,
+        })
+        router.push(`/app/${data?.document?._id}`)
+      })
+    } else {
+      toast.error(`Error`, {
+        description: `Error creating new document.`,
+        duration: 5000,
+        important: true,
+      })
+    }
   }
 
   useEffect(() => {
@@ -165,16 +171,12 @@ export default function App() {
     })
   }, [])
 
-  if (!editor) return
-
   return (
     <div className="w-full h-screen flex flex-col pb-[64px]">
       <Navbar
         status={saveStatus}
         isSidebarOpen={leftSidebar.isOpen}
         toggleSidebar={leftSidebar.toggle}
-        words={editor?.storage?.characterCount.words()}
-        characters={editor?.storage?.characterCount.characters()}
       />
 
       <div className="flex flex-1 h-full bg-content1">
@@ -194,7 +196,7 @@ export default function App() {
           </div>
         </div> */}
         <div className="w-full max-w-[1024px] mx-auto relative flex overflow-y-auto cursor-text flex-col gap-4 z-[1] flex-1 px-5 2xl:!px-0 pt-8 pb-5">
-          <Input
+          {/* <Input
             type="text"
             placeholder="Search"
             variant="bordered"
@@ -202,7 +204,7 @@ export default function App() {
             startContent={<MagnifyingGlassIcon className="w-6 h-6" />}
             isClearable
             onChange={filterDocuments}
-          />
+          /> */}
 
           <Tabs
             key="tabs"
@@ -215,7 +217,7 @@ export default function App() {
               tabContent: "group-data-[selected=true]:text-primary"
             }}
           >
-            <Tab key="for_you" title={`${'For you'} (${documents?.length})`} className="flex flex-col gap-4">
+            <Tab key="for_you" title={`${'For you'} (${documents?.length || 0})`} className="flex flex-col gap-4">
               <div className="flex flex-col">
                 <p className="text-base font-semibold">
                   {`My personnal documents`}
@@ -230,52 +232,57 @@ export default function App() {
                   <Spinner size="lg" />
                 </div>:
                 <>
-                  {
+                  { documents?.length ?
                     documents?.map((document, index) => {
                       return <DocumentCard key={index} document={document} />
-                    })
+                    }):
+                    <p className="text-sm font-normal text-foreground-500">
+                      {`You have not created a document yet, start by clicking the button at the bottom right of your screen.`}
+                    </p>
                   }
                 </>
               }
             </Tab>
 
-            <Tab key="latest" title={"Latest"} className="flex flex-col gap-4">
+            <Tab key="latest" title={`${'Latest'} (${latestDocuments?.length || 0})`} className="flex flex-col gap-4">
+              <div className="flex flex-col">
+                <p className="text-base font-semibold">
+                  {`Latest documents`}
+                </p>
+                
+                <p className="text-sm font-normal text-foreground-500">
+                  {`Read the most up-to-date documents published by people from around the world.`}
+                </p>
+              </div>
               {loadingLatest ?
                 <div className="w-full h-full my-12 flex items-center justify-center">
                   <Spinner size="lg" />
                 </div>:
                 <>
-                  {
+                  { latestDocuments?.length ?
                     latestDocuments?.map((document, index) => {
                       return <DocumentCard key={index} document={document} />
-                    })
+                    }) :
+                    <p className="text-sm font-normal text-foreground-500">
+                      {`There is no public document for now, come back later ;).`}
+                    </p>
                   }
                 </>
               }
             </Tab>
-
-            {/* {
-              topics?.map((topic, index) => {
-                return (
-                  <Tab key={index} title={topic}>
-
-                  </Tab>
-                )
-              })
-            } */}
           </Tabs>
         </div>
       </div>
 
       <Button
-        isIconOnly
         variant="shadow"
         radius="full"
         color="primary"
+        startContent={<SquarePenIcon />}
         className="fixed bottom-4 right-4 z-[99]"
         onClick={goToNewDocument}
       >
-        <CirclePlusIcon />
+        {'New document'}
       </Button>
     </div>
   )

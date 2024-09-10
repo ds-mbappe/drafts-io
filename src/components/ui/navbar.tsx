@@ -89,14 +89,14 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
 
         <NavbarContent justify="end">
           {/* History dropdown */}
-          { provider && document?.creator_email === user?.email ?
+          {/* { provider && document?.creator_email === user?.email ?
             <NavbarItem>
               <HistoryDropdown
                 provider={provider}
                 historyData={historyData}
               />
             </NavbarItem> : <></>
-          }
+          } */}
 
           {/* Status */}
           { (document?._id || pathname === '/app/new-doc') &&

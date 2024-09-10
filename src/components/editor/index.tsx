@@ -20,15 +20,14 @@ import TableRowMenu from "./extensions/Table/menus/TableRow/TableRow";
 import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
 import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu";
 
-export default function BlockEditor({ documentId, doc, setCharacterCount, setSaveStatus, yDoc, provider, currentUser, updateHistoryData }: {
+export default function BlockEditor({ documentId, doc, setSaveStatus, currentUser }: {
   documentId: String,
   doc: any,
   setSaveStatus: Function,
-  setCharacterCount: Function,
-  yDoc: YDoc,
+  // yDoc: YDoc | null,
   currentUser: any,
-  provider: TiptapCollabProvider | null,
-  updateHistoryData: Function,
+  // provider: TiptapCollabProvider | null,
+  // updateHistoryData: Function | null,
 }) {
   const router = useRouter();
 
@@ -36,39 +35,35 @@ export default function BlockEditor({ documentId, doc, setCharacterCount, setSav
 
   const [isPending, startTransition] = useTransition();
 
-  const updateStatusAndCount = (characterCount: any) => {
-    setCharacterCount(characterCount)
-  }
-
   // Simulate a delay in saving.
   const debouncedUpdates = useDebouncedCallback(async ({ editor }: { editor: Editor }) => {
-    const editorData = editor.getHTML();
+    const editorData = editor?.getHTML();
     await patchRequest(documentId, editorData);
-    setTimeout(() => {
-      if (provider?.isAuthenticated) {
-        setSaveStatus("Synced");
-      } else {
-        setSaveStatus("Not Synced");
-      }
-    }, 500);
+    setSaveStatus("Synced");
+    // setTimeout(() => {
+    //   if (provider?.isAuthenticated) {
+    //     setSaveStatus("Synced");
+    //   } else {
+    //     setSaveStatus("Not Synced");
+    //   }
+    // }, 500);
   }, 1000);
 
-  const UpdateHistoryVersions = useDebouncedCallback(() => {
-    if (editor?.can().saveVersion()) {
-      // console.log("Can save new version")
-    }
-  }, 30000)
+  // const UpdateHistoryVersions = useDebouncedCallback(() => {
+  //   if (editor?.can().saveVersion()) {
+  //     // console.log("Can save new version")
+  //   }
+  // }, 30000)
 
   const { editor } = useBlockEditor({
-    yDoc,
-    provider,
+    // yDoc,
+    // provider,
     doc,
     currentUser,
-    updateHistoryData,
+    // updateHistoryData,
     setSaveStatus,
-    updateStatusAndCount,
     debouncedUpdates,
-    UpdateHistoryVersions
+    // UpdateHistoryVersions
   });
   
   const patchRequest = async (documentId: String, document: any) => {
@@ -92,11 +87,11 @@ export default function BlockEditor({ documentId, doc, setCharacterCount, setSav
       })
     }
 
-    if (provider?.isAuthenticated) {
-      setSaveStatus("Synced");
-    } else {
-      setSaveStatus("Not Synced");
-    }
+    // if (provider?.isAuthenticated) {
+    //   setSaveStatus("Synced");
+    // } else {
+    //   setSaveStatus("Not Synced");
+    // }
 
     // Force a cache invalidation.
     startTransition(() => {
@@ -104,7 +99,7 @@ export default function BlockEditor({ documentId, doc, setCharacterCount, setSav
     });
   }
 
-  if (!editor) return
+  if (!editor || !doc || !currentUser) return
 
   return (
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">

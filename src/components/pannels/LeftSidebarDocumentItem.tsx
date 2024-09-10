@@ -214,13 +214,22 @@ export const LeftSidebarDocumentItem = ({ document, user }: any) => {
               </p>
             </div>
 
-            <Chip variant="bordered" size="sm">
-              <div className="flex items-center gap-1">
-                <span className="text-sm font-medium">#</span>
+            {document?.topic ?
+              <Chip variant="bordered" size="sm">
+                <div className="flex items-center gap-1">
+                  <span className="text-sm font-medium">#</span>
 
-                <p>{document?.topic}</p>
-              </div>
-            </Chip>
+                  <p>{document?.topic}</p>
+                </div>
+              </Chip> :
+              <Chip variant="bordered" size="sm">
+                <div className="flex items-center gap-1">
+                  <span className="text-sm font-medium">
+                    {'No topic'}
+                  </span>
+                </div>
+              </Chip>
+            }
           </div>
 
           <Dropdown placement="bottom-start">
@@ -414,7 +423,7 @@ export const LeftSidebarDocumentItem = ({ document, user }: any) => {
               {'Cancel'}
             </Button>
 
-            <Button isLoading={isLoading} isDisabled={!(docTitle && docCaption && docTopic)} color="primary" onPress={handleSaveData}>
+            <Button isLoading={isLoading} isDisabled={!(docTitle)} color="primary" onPress={handleSaveData}>
               {'Update'}
             </Button>
           </ModalFooter>
