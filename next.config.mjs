@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: false,
   webpack: (config) => {
+    config.resolve.fallback = { fs: false };
     config.externals = [...config.externals, 'bcrypt'];
     return config;
   },

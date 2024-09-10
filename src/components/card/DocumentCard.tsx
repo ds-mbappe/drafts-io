@@ -40,16 +40,18 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
     <Link href={`/app/${document?._id}`}>
       <Card shadow="none" className="border border-divider cursor-pointer hover:bg-foreground-100 active:scale-[0.95]">
         <CardBody className="flex flex-row gap-4">
-          <div className="hidden sm:!flex border border-divider rounded-large">
-            <Image
-              as={NextImage}
-              isZoomed
-              width={200}
-              height={200}
-              src={document?.cover}
-              alt={`${document?.title}_cover`}
-            />
-          </div>
+          {document?.cover &&
+            <div className="hidden sm:!flex border border-divider rounded-large">
+              <Image
+                as={NextImage}
+                isZoomed
+                width={200}
+                height={200}
+                src={document?.cover}
+                alt={`${document?.title}_cover`}
+              />
+            </div>
+          }
 
           <div className="flex flex-1 flex-col gap-2 justify-around">
             {/* User & topic */}
@@ -70,12 +72,14 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
               </div>
 
               {/* Topic */}
-              <Chip variant="bordered">
-                <div className="flex items-center gap-1">
-                  <span className="text-base font-medium">#</span>
-                  <p>{document?.topic}</p>
-                </div>
-              </Chip>
+              {document?.topic &&
+                <Chip variant="bordered">
+                  <div className="flex items-center gap-1">
+                    <span className="text-base font-medium">#</span>
+                    <p>{document?.topic}</p>
+                  </div>
+                </Chip>
+              }
             </div>
 
             {/* Title & caption */}
