@@ -57,16 +57,16 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
             {/* User & topic */}
             <div className="flex items-center justify-between">
               {/* User */}
-              <div className="flex gap-3 items-center">
-                <Avatar
+              <div className="flex gap-1 items-center">
+                {/* <Avatar
                   isBordered
                   color="primary"
                   className="w-6 h-6"
                   name={document?.creator?.fullname?.split("")?.[0]?.toUpperCase()}
                   src={document?.creator?.avatar}
-                />
+                /> */}
 
-                <p className="line-clamp-1 text-sm font-medium">
+                <p className="line-clamp-1 font-medium">
                   {document?.creator?.fullname}
                 </p>
               </div>
@@ -84,11 +84,11 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
 
             {/* Title & caption */}
             <div className="flex flex-col gap-1">
-              <p className="font-medium text-base line-clamp-1">
+              <p className="font-medium text-sm line-clamp-1">
                 {document?.title}
               </p>
 
-              <p className="text-base line-clamp-2 text-foreground-500">
+              <p className="text-sm line-clamp-2 text-foreground-500">
                 {document?.caption}
               </p>
             </div>

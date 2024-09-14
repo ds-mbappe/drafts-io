@@ -100,12 +100,33 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 			if (result?.ok) {
 				const data = await result.json()
 				await update({ ...user, avatar: data?.url })
-				setEditUser({ ...editUser, avatar: data?.url })
-				toast.success(`Success`, {
-					description: 'Successfully updated avatar!',
-					duration: 5000,
-					important: true,
+
+				const formData = {
+					id: user?._id,
+					avatar: data?.url
+				}
+		
+				const response = await fetch(`/api/user/${user?.email}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ formData }),
 				})
+
+				if (response?.ok) {
+					setEditUser({ ...editUser, avatar: data?.url })
+
+					toast.success(`Success`, {
+						description: 'Successfully updated avatar!',
+						duration: 5000,
+						important: true,
+					})
+				} else {
+					toast.error(`Error`, {
+						description: 'Error updating avatar. Please try again!',
+						duration: 5000,
+						important: true,
+					})
+				}
 			} else {
 				toast.error(`Error`, {
 					description: 'Error updating avatar. Please try again!',
