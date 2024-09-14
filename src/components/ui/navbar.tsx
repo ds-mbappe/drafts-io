@@ -130,7 +130,7 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
                   showFallback
                   name={user?.email?.split("")?.[0]?.toUpperCase()}
                   size="sm"
-                  src={user?.image}
+                  src={user?.avatar}
                 />
               </DropdownTrigger>
 

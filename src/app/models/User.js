@@ -38,6 +38,10 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    phone: {
+      type: String,
+      required: false,
+    },
     lang: {
       type: String,
       default: "en",

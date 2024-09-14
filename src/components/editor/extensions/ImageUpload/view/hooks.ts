@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { v2 as cloudinary } from "cloudinary";
 import { DragEvent, useCallback, useEffect, useRef, useState } from 'react';
 
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
@@ -7,12 +8,21 @@ export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) =
   const uploadFile = useCallback(
     async (file: File) => {
       setLoading(true)
+      const timestamp = Math.round((new Date).getTime()/1000)
+      const signature = cloudinary.utils.api_sign_request({
+        timestamp: timestamp,
+        folder: "images",
+      }, process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET as string )
+
       try {
         const formData = new FormData()
         formData.append('file', file)
-        formData.append('upload_preset', 'test_unsigned')
+        formData.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY as string)
+        formData.append('signature', signature)
+        formData.append('timestamp', JSON.stringify(timestamp))
+        formData.append('folder', 'images')
 
-        const result = await fetch('https://api.cloudinary.com/v1_1/dcag48okr/upload', {
+        const result = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME as string}/auto/upload`, {
           method: 'POST',
           body: formData,
         })
