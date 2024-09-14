@@ -1,6 +1,6 @@
 "use client"
 
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Tooltip } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Tooltip, useDisclosure } from "@nextui-org/react";
 import { memo, useEffect, useState } from 'react';
 import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CirclePlayIcon, CircleUserRoundIcon } from 'lucide-react';
 import HistoryDropdown from '../pannels/HistoryDropdown/HistoryDropdown';
@@ -8,6 +8,7 @@ import { signOut, getSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { CreateNewDocument } from "../pannels/CreateNewDocument";
 import { usePathname } from "next/navigation";
+import ProfileModal from "../pannels/ProfileModal";
 
 const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, provider, document }: any) => {
   const motionProps = {
@@ -31,6 +32,7 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
   const pathname = usePathname()
   const { theme, setTheme } = useTheme();
   const [user, setUser] = useState<any>();
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
   const onLogout = () => {
     signOut({
@@ -128,7 +130,7 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
                   showFallback
                   name={user?.email?.split("")?.[0]?.toUpperCase()}
                   size="sm"
-                  src={user?.image}
+                  src={user?.avatar}
                 />
               </DropdownTrigger>
 
@@ -142,6 +144,7 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
                 <DropdownItem
                   key="profile"
                   startContent={<CircleUserRoundIcon />}
+                  onClick={onOpenChange}
                 >
                   {'My profile'}
                 </DropdownItem>
@@ -183,6 +186,12 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
           </NavbarItem>
         </NavbarContent>
       </Navbar>
+
+      <ProfileModal
+        user={user}
+        changeDialogOpenState={onOpenChange}
+        dialogOpen={isOpen}
+      />
     </>
   )
 })
