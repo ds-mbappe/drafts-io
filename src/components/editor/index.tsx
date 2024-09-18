@@ -72,6 +72,8 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         content: document,
+        word_count: editor?.storage.characterCount?.words(),
+        character_count: editor?.storage.characterCount?.characters(),
       }),
     });
 

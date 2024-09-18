@@ -13,6 +13,8 @@ const documentSchema = new Schema(
     topic: String,
     title: String,
     caption: String,
+    character_count: Number,
+    word_count: Number,
     content: { type: String, default: "" },
   },
   {
