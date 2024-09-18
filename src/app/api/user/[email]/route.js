@@ -1,11 +1,15 @@
-import User from "../../../models/User";
 import { NextResponse } from "next/server";
+import prisma from '../../../../../lib/prisma';
 
 export async function GET(req, { params }) {
   const { email } = params
 
   try {
-    const user = await User.findOne({ email: email });
+    const user = await prisma.user.findFirst({
+      where:  {
+        email: email,
+      }
+    });
 
     return NextResponse.json({ user }, { status: 200 });
   } catch (error) {
@@ -18,11 +22,12 @@ export async function PUT(req) {
     const body = await req.json();
     const userData = body.formData
 
-    const user = await User.findOneAndUpdate({
-      _id: userData?.id,
-    }, {
-      $set: { ...userData },
-    }, { new: true })
+    const user = await prisma.user.update({
+      where: {
+        id: userData?.id,
+      },
+      data: { ...userData }
+    })
 
     return NextResponse.json({ user }, { status: 201 });
   } catch (error) {

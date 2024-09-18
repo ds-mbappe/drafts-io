@@ -1,5 +1,5 @@
 import bcryptjs from "bcryptjs";
-import User from "../../../models/User";
+import prisma from "../../../../../lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/app/_helpers/mailer";
 
@@ -12,7 +12,11 @@ export async function POST(request: NextRequest){
     const { username, email, password } = reqBody
 
     // Checks if a user with the provided email already exists. 
-    const user = await User.findOne({ email })
+    const user = await prisma.user.findFirst({
+      where: {
+        email: email,
+      }
+    })
 
     // If yes, returns a 400 response.
     if(user){
@@ -23,19 +27,19 @@ export async function POST(request: NextRequest){
     const salt = await bcryptjs.genSalt(10)
     const hashedPassword = await bcryptjs.hash(password, salt)
 
-    const newUser = new User({
-      username,
-      email,
-      password: hashedPassword
-    })
-
     // Saves the new user to the database.
-    const savedUser = await newUser.save()
+    const savedUser = await prisma.user.create({
+      data: {
+        username,
+        email,
+        password: hashedPassword
+      }
+    })
 
     await sendEmail({
       email,
       emailType: "VERIFY",
-      userId: savedUser._id
+      userId: savedUser.id,
     })
 
     return NextResponse.json({

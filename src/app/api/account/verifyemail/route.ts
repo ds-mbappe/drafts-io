@@ -1,4 +1,4 @@
-import User from "@/app/models/User";
+import prisma from "../../../../../lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -7,17 +7,27 @@ export async function POST(request: NextRequest) {
     const reqBody = await request.json()
     const { token } = reqBody
 
-    const user = await User.findOne({ verifyToken: token, verifyTokenExpiry: { $gt: Date.now() } });
+    const user = await prisma.user.findFirst({
+      where: {
+        verifyToken: token,
+      }
+    })
 
     if(!user){
       return NextResponse.json({ error: "Invalid token" }, { status: 400 })
     }
 
     // Update user properties and save the changes
-    user.isVerified = true;
-    user.verifyToken = undefined;
-    user.verifyTokenExpiry = undefined;
-    await user.save();
+    await prisma.user.update({
+      where: {
+        id: user?.id,
+      },
+      data: {
+        isVerified: true,
+        verifyToken: undefined,
+        verifyTokenExpiry: undefined,
+      }
+    })
 
     return NextResponse.json({
       message: "Email Verified successfully",

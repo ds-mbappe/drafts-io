@@ -1,7 +1,7 @@
 import { sendEmail } from "@/app/_helpers/mailer";
-import User from "@/app/models/User";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+import prisma from "../../../../../lib/prisma";
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,7 +9,11 @@ export async function POST(request: NextRequest) {
     const reqBody = await request.json()
     const { email, token, password } = reqBody
 
-    const user = await User.findOne({ email });
+    const user = await prisma.user.findFirst({
+      where: {
+        email: email,
+      }
+    });
 
     // If there is a token, then reset the password
     if (token) {
@@ -20,10 +24,16 @@ export async function POST(request: NextRequest) {
         const hashedPassword = await bcrypt.hash(password, salt)
 
         // Update user properties and save the changes
-        user.password = hashedPassword
-        user.forgotPasswordToken = undefined;
-        user.forgotPasswordTokenExpiry = undefined;
-        await user.save();
+        await prisma.user.update({
+          where: {
+            id: user?.id,
+          },
+          data: {
+            password: hashedPassword,
+            forgotPasswordToken: undefined,
+            forgotPasswordTokenExpiry: undefined,
+          }
+        })
 
         return NextResponse.json({
           message: "Password reset successful.",
@@ -39,15 +49,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 400 })
     }
 
-    await User.findByIdAndUpdate(user?._id, {
-      forgotPasswordToken: String(user?.verifyToken),
-      forgotPasswordTokenExpiry: Date.now() + 3600000
+    await prisma.user.update({
+      where: {
+        id: user?.id,
+      },
+      data: {
+        forgotPasswordToken: String(user?.verifyToken),
+        forgotPasswordTokenExpiry: new Date(),
+      }
     })
 
     await sendEmail({
       email,
       emailType: "RESET",
-      userId: user?._id
+      userId: user?.id
     })
 
     return NextResponse.json({
