@@ -7,7 +7,6 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 import { sendEmail } from "@/app/_helpers/mailer";
-import User from "@/app/models/User";
 import Link from "next/link";
 
 export default function ResetPass() {

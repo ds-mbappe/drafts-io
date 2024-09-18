@@ -88,7 +88,7 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
       // Force a cache invalidation and redirect to the new document.
       startTransition(() => {
         router.refresh();
-        router.push(`/app/${data?.document?._id}`);
+        router.push(`/app/${data?.document?.id}`);
       });
   
       toast.success(`Document created`, {

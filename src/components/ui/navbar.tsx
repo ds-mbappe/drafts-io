@@ -68,7 +68,7 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
       <Navbar isBordered maxWidth={"full"} className="bg-content1">
         <NavbarBrand className="flex gap-2">
           {/* Sidebar button */}
-          {(document?._id || pathname === '/app/new-doc') &&
+          {(document?.id || pathname === '/app/new-doc') &&
             <Tooltip
               content={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
               delay={0}
@@ -101,7 +101,7 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
           } */}
 
           {/* Status */}
-          { (document?._id || pathname === '/app/new-doc') &&
+          { (document?.id || pathname === '/app/new-doc') &&
             <NavbarItem>
               <div className="flex items-center justify-center gap-5">
                 <div className="flex gap-2 items-center justify-center">

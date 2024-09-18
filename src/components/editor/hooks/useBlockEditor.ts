@@ -59,7 +59,7 @@ export const useBlockEditor = ({
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
     autofocus: true,
-    editable: doc?.creator_email === currentUser?.email,
+    editable: doc?.authorId === currentUser?.id,
     onCreate: ({ editor }) => {
       editor.commands.setContent(doc?.content)
 

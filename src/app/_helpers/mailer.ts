@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
-import User from "../models/User";
+import prisma from "../../../lib/prisma";
 
 export const sendEmail = async({ email, emailType, userId }:any) =>{
   const verifyEmail = (token: String) => {
@@ -17,19 +17,25 @@ export const sendEmail = async({ email, emailType, userId }:any) =>{
 
     // Update the user document in the database with the generated token and expiry time
     if(emailType === "VERIFY") {
-      await User.findByIdAndUpdate(userId,
-        {
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
           verifyToken: hashedToken,
-          verifyTokenExpiry: Date.now() + 3600000
-        },
-      )
+          verifyTokenExpiry: new Date() // Add milliseconds later
+        }
+      })
     } else if(emailType === "RESET") {
-      await User.findByIdAndUpdate(userId,
-        {
-          forgotPasswordToken: hashedToken,
-          forgotPasswordTokenExpiry: Date.now() + 3600000
+      await prisma.user.update({
+        where: {
+          id: userId,
         },
-      )
+        data: {
+          forgotPasswordToken: hashedToken,
+          forgotPasswordTokenExpiry: new Date() // Add milliseconds later
+        }
+      })
     }
 
     // Create a nodemailer transport

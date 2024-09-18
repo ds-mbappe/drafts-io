@@ -6,7 +6,7 @@ import { BookmarkIcon, CalendarIcon, EllipsisIcon, HeartIcon, MessageCircleIcon 
 import Link from "next/link";
 
 export type DocumentCardTypeprops = {
-  _id: string,
+  id: string,
   private: Boolean,
   locked: Boolean | undefined
   creator: {
@@ -37,11 +37,11 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
   }
 
   const toggleBookmark = (e: any) => {
-    e.preventDefault();
+    e.stopPropagation();
   }
 
   return (
-    <Link href={`/app/${document?._id}`}>
+    <Link href={`/app/${document?.id}`}>
       <Card shadow="none" className="border border-divider cursor-pointer hover:bg-foreground-100 active:scale-[0.95]">
         <CardBody className="flex flex-row gap-4">
           {document?.cover &&
@@ -51,6 +51,7 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
                 isZoomed
                 width={200}
                 height={200}
+                priority
                 src={document?.cover}
                 alt={`${document?.title}_cover`}
               />

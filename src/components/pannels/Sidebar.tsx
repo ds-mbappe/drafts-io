@@ -30,7 +30,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
   )
 
   const fetchDocuments = async () => {
-    const data = await fetch(`/api/documents/${user?.email}`, {
+    const data = await fetch(`/api/documents/${user?.id}`, {
       method: 'GET',
       headers: { "content-type": "application/json" },
     });
@@ -48,7 +48,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
   }
 
   const onDocumentEdited = async (document: any) => {
-    // let editedDocument: any = documents?.find((doc: any) => doc?._id === document?._id)
+    // let editedDocument: any = documents?.find((doc: any) => doc?._id === document?.id)
     // if (editedDocument) {
     //   editedDocument.name = document?.name
     // }
@@ -130,7 +130,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
               {
                 documents?.map((doc: any) =>
                   <LeftSidebarDocumentItem
-                    key={doc?._id}
+                    key={doc?.id}
                     user={user}
                     document={doc}
                   />

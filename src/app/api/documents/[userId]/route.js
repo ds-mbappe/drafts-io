@@ -1,23 +1,24 @@
-import Document from "../../../models/Document";
 import { NextResponse } from "next/server";
+import prisma from "../../../../../lib/prisma";
 
 export async function GET(req, { params }) {
   try {
-    const { email } = params
+    const { userId } = params
     const search = req?.nextUrl?.searchParams.get("search")
     
     let documents = null
 
     if (search) {
-      documents = await Document.find({
-        creator_email: email,
-        // $where: function() {
-        //   return this.name.toLowerCase().startsWith(search)
-        // }
+      documents = await prisma.document.findMany({
+        where: {
+          authorId: userId,
+        }
       })
     } else {
-      documents = await Document.find({
-        creator_email: email
+      documents = await prisma.document.findMany({
+        where: {
+          authorId: userId,
+        }
       })
     }
 
@@ -32,11 +33,12 @@ export async function PUT(req) {
     const body = await req.json();
     const documentData = body.formData
 
-    const document = await Document.findOneAndUpdate({
-      _id: documentData?.id,
-    }, {
-      $set: { ...documentData },
-    }, { new: true })
+    const document = await prisma.document.update({
+      where: {
+        id: documentData?.id,
+      },
+      data: { ...documentData },
+    });
 
     return NextResponse.json({ document }, { status: 201 });
   } catch (error) {

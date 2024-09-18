@@ -107,7 +107,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
       <div className="relative w-full max-w-screen-xl mx-auto" ref={menuContainerRef}>
         {
-          doc?.creator_email === currentUser?.email ?
+          doc?.authorId === currentUser?.id ?
             <>
               <ContentItemMenu editor={editor} />
               <LinkMenu editor={editor} appendTo={menuContainerRef} />

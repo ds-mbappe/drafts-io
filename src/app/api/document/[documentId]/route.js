@@ -1,11 +1,15 @@
-import Document from "../../../models/Document";
 import { NextResponse } from "next/server";
+import prisma from "../../../../../lib/prisma";
 
 export async function GET(req, { params }) {
   const { documentId } = params
 
   try {
-    const document = await Document.findById(documentId)
+    const document = await prisma.document.findFirst({
+      where: {
+        id: documentId
+      }
+    })
 
     if (document) {
       return NextResponse.json({ document }, { status: 200 });
@@ -21,8 +25,11 @@ export async function PUT(req, { params }) {
   try {
     const { documentId } = params;
     const body = await req.json();
-    const updatedDocument = await Document.findByIdAndUpdate(documentId, { ...body }, {
-      new: true,
+    const updatedDocument = await prisma.document.update({
+      where: {
+        id: documentId
+      },
+      data: { ...body }
     });
 
     return NextResponse.json({ updatedDocument }, { status: 200 });
@@ -34,7 +41,11 @@ export async function PUT(req, { params }) {
 export async function DELETE(req, { params }) {
   try {
     const { documentId } = params;
-    const updatedDocument = await Document.findOneAndDelete(documentId)
+    const updatedDocument = await prisma.document.delete({
+      where: {
+        id: documentId
+      }
+    })
 
     return NextResponse.json({ updatedDocument }, { status: 200 });
   } catch (error) {

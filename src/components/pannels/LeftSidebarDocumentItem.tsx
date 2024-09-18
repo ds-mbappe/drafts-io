@@ -102,7 +102,7 @@ export const LeftSidebarDocumentItem = ({ document, user }: any) => {
     setIsLoading(true);
 
     let formData = {
-      id: document?._id,
+      id: document?.id,
       title: docTitle,
       topic: docTopic,
       caption: docCaption,
@@ -142,7 +142,7 @@ export const LeftSidebarDocumentItem = ({ document, user }: any) => {
     setIsLoading(true);
 
     let formData = {
-      id: document?._id,
+      id: document?.id,
       private: !document?.private,
     }
 
@@ -173,7 +173,7 @@ export const LeftSidebarDocumentItem = ({ document, user }: any) => {
   }
 
   const onDocumentDeleted = async() => {
-    const res = await fetch(`/api/document/${document?._id}`, {
+    const res = await fetch(`/api/document/${document?.id}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     })
@@ -183,7 +183,7 @@ export const LeftSidebarDocumentItem = ({ document, user }: any) => {
     } else {
       showToastSuccess(true)
 
-      // const newDocs = documents?.filter((doc: any) => doc?._id !== document?._id)
+      // const newDocs = documents?.filter((doc: any) => doc?._id !== document?.id)
       // setDocuments(newDocs)
       router.push('/app')
     }
@@ -201,7 +201,7 @@ export const LeftSidebarDocumentItem = ({ document, user }: any) => {
 
   return (
     <>
-      <Link href={`/app/${document?._id}`}>
+      <Link href={`/app/${document?.id}`}>
         <div className='w-full px-4 py-2 rounded-md flex items-center gap-1 hover:bg-foreground-100'>
           <div className='w-full flex flex-col gap-1'>
             <div className="flex flex-col">

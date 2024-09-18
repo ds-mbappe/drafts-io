@@ -4,9 +4,12 @@ import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import FacebookProvider from "next-auth/providers/facebook";
-import User from "@/app/models/User";
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import prisma from "../../../../../lib/prisma";
 
 const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -23,14 +26,7 @@ const authOptions: NextAuthOptions = {
           });
           const data = await response.json();
           
-          // If no error and we have user data, return it
           if (response?.ok && data) {
-            // const user = {
-            //   _id: data?.user?._id,
-            //   email: data?.user?.email,
-            //   image: data?.user?.avatar,
-            //   name: `${data?.user?.firstname} ${data?.user?.lastname}`,
-            // }
             return data?.user
           } else {
             return null
@@ -66,14 +62,13 @@ const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/account/sign-in",
     error: "/account/sign-in",
   },
   session: {
     strategy: "jwt"
-  }
+  },
 }
 const handler = NextAuth(authOptions);
 

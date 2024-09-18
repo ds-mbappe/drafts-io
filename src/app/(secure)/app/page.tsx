@@ -31,33 +31,11 @@ export default function App() {
   const [documents, setDocuments] = useState([])
   const [saveStatus, setSaveStatus] = useState("Synced")
   const [latestDocuments, setLatestDocuments] = useState([])
-  const topics = [
-    "World News",
-    "Politics",
-    "Business",
-    "Technology",
-    "Science",
-    "Health",
-    "Entertainment",
-    "Sports",
-    "Travel",
-    "Lifestyle",
-    "Environment",
-    "Education",
-    "Food & Drink",
-    "Culture",
-    "Fashion",
-    "Finance",
-    "Real Estate",
-    "Automotive",
-    "Gaming",
-    "Opinion"
-  ]
 
   // Fetch documents
   const fetchDocuments = async () => {
     setIsLoading(true);
-    const data = await fetch(`/api/documents/${user?.email}`, {
+    const data = await fetch(`/api/documents/${user?.id}`, {
       method: 'GET',
       headers: { "content-type": "application/json" },
     });
@@ -114,7 +92,7 @@ export default function App() {
           duration: 5000,
           important: true,
         })
-        router.push(`/app/${data?.document?._id}`)
+        router.push(`/app/${data?.document?.id}`)
       })
     } else {
       toast.error(`Error`, {

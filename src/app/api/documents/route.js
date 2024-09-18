@@ -1,5 +1,5 @@
-import Document from "../../models/Document";
 import { NextResponse } from "next/server";
+import prisma from "../../../../lib/prisma";
 
 export async function GET(req, { params }) {
   try {
@@ -8,19 +8,17 @@ export async function GET(req, { params }) {
     
     let documents = null
 
-    // documents = await Document.find({
-    //   private: false,
-    // })
-
     if (search) {
-      documents = await Document.find({
-        $text: {
-          $search: `\"${search}\"`,
+      documents = await prisma.document.findMany({
+        where: {
+          title: search
         }
       })
     } else {
-      documents = await Document.find({
-        private: false,
+      documents = await prisma.document.findMany({
+        where: {
+          private: false
+        }
       })
     }
 
@@ -36,7 +34,7 @@ export async function POST(req) {
     const body = await req.json();
     const documentData = body.formData
     
-    const document = await Document.create(documentData)
+    const document = await prisma.document.create(documentData)
 
     return NextResponse.json({ document }, { status: 201 });
   } catch (error) {
@@ -49,11 +47,12 @@ export async function PUT(req) {
     const body = await req.json();
     const documentData = body.formData
 
-    const document = await Document.findOneAndUpdate({
-      _id: documentData?.id,
-    }, {
-      $set: { ...documentData },
-    }, { new: true })
+    const document = await prisma.document.update({
+      where: {
+        id: documentData?.id,
+      },
+      data: { ...documentData },
+    })
 
     return NextResponse.json({ document }, { status: 201 });
   } catch (error) {
