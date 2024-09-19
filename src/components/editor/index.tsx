@@ -1,7 +1,7 @@
 "use client";
 
 import { Editor, EditorContent, useEditor } from "@tiptap/react";
-import React, { useState, useEffect, useTransition, useMemo, useRef } from "react";
+import React, { useState, useEffect, useTransition, useMemo, useRef, useCallback } from "react";
 import { ExtensionKit } from './extensions/extension-kit';
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
@@ -10,15 +10,17 @@ import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
 import CollaborationHistory, { CollabOnUpdateProps } from '@tiptap-pro/extension-collaboration-history';
 import { useBlockEditor } from "./hooks/useBlockEditor";
-import { Button } from "../ui/button";
 import type { Doc as YDoc } from 'yjs'
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import { LinkMenu } from './menus/LinkMenu'
 import { TextMenu } from './menus/TextMenu/TextMenu'
 import { toast } from "sonner";
+import { Image, Spinner, Button } from "@nextui-org/react";
+import { useDropzone } from 'react-dropzone';
 import TableRowMenu from "./extensions/Table/menus/TableRow/TableRow";
 import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
 import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu";
+import { v2 as cloudinary } from "cloudinary";
 
 export default function BlockEditor({ documentId, doc, setSaveStatus, currentUser }: {
   documentId: String,
@@ -30,10 +32,10 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
   // updateHistoryData: Function | null,
 }) {
   const router = useRouter();
-
   const menuContainerRef = useRef(null);
-
+  const [image, setImage] = useState([]);
   const [isPending, startTransition] = useTransition();
+  const [uploadLoading, setUploadLoading] = useState(false);
 
   // Simulate a delay in saving.
   const debouncedUpdates = useDebouncedCallback(async ({ editor }: { editor: Editor }) => {
@@ -54,6 +56,28 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
   //     // console.log("Can save new version")
   //   }
   // }, 30000)
+
+  const ErrorToast = (text: string) => {
+    toast.error(`Error`, {
+      description: text,
+      duration: 3000,
+      action: {
+        label: "Close",
+        onClick: () => {},
+      },
+    })
+  }
+
+  const SuccessToast = (text: string) => {
+    toast.success(``, {
+      description: text,
+      duration: 3000,
+      action: {
+        label: "Close",
+        onClick: () => {},
+      },
+    })
+  }
 
   const { editor } = useBlockEditor({
     // yDoc,
@@ -79,14 +103,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
 
     if (!response.ok) {
       setSaveStatus("Waiting to Save.");
-      toast.error(`Error`, {
-        description: `Failed to update document, please try again !`,
-        duration: 3000,
-        action: {
-          label: "Close",
-          onClick: () => {},
-        },
-      })
+      ErrorToast(`Failed to update document, please try again !`)
     }
 
     // if (provider?.isAuthenticated) {
@@ -101,14 +118,121 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
     });
   }
 
+  const onDrop = useCallback(async(acceptedFiles: any) => {
+    setUploadLoading(true)
+    const file = acceptedFiles?.[0]
+    if (file) {
+			const timestamp = Math.round((new Date).getTime()/1000)
+      const signature = cloudinary.utils.api_sign_request({
+        timestamp: timestamp,
+        folder: "cover_urls",
+      }, process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET as string )
+
+      const formData = new FormData()
+			formData.append('file', file)
+			formData.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY as string)
+			formData.append('signature', signature)
+			formData.append('timestamp', JSON.stringify(timestamp))
+			formData.append('folder', 'cover_urls')
+
+			const result = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME as string}/auto/upload`, {
+				method: 'POST',
+				body: formData,
+			})
+      if (result?.ok) {
+        const data = await result.json()
+        setImage(data?.url)
+
+        const response = await fetch(`/api/document/${documentId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cover: data?.url,
+            word_count: editor?.storage.characterCount?.words(),
+            character_count: editor?.storage.characterCount?.characters(),
+          }),
+        });
+
+        if (response?.ok) {
+          SuccessToast(`Document cover updated!`)
+        } else {
+          ErrorToast(`Error updating document cover, please try again!`)
+        }
+      } else {
+        ErrorToast(`Error uploading image, please try again!`)
+      }
+    }
+    setUploadLoading(false)
+  }, [])
+
+  const { getRootProps, getInputProps, isDragActive, acceptedFiles, open } = useDropzone({
+    maxFiles: 1,
+    noClick: true,
+    noKeyboard: true,
+    onDrop,
+    onDropRejected(fileRejections, event) {
+      ErrorToast(`File format not supported, accepted formats are ".png, .jpg, .jpeg, .gif, .avif, .webp"`)
+    },
+    accept: {
+      'image/png': ['.png', '.jpg', '.jpeg', '.gif', '.avif', '.webp']
+    }
+  })
+
+  const files = acceptedFiles.map((file: any) => (
+    <li key={file.path}>
+      {file.path} - {file.size} bytes
+    </li>
+  ));
+
   if (!editor || !doc || !currentUser) return
 
   return (
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
       <div className="flex flex-col gap-10 relative w-full max-w-screen-xl mx-auto py-24 px-20 lg:px-16" ref={menuContainerRef}>
-        <div className="w-full h-[400px] mx-auto max-w-7xl bg-warning-50">
+        {doc?.cover ?
+          <div className="w-full flex justify-center items-center mx-auto cursor-default">
+            <Image
+              isBlurred
+              height={350}
+              src={doc?.cover}
+              alt="Document Cover Image"
+            />
+          </div> :
+          <div
+            className={isDragActive ?
+              "w-full h-[350px] rounded-[12px] mx-auto max-w-4xl border border-dashed border-primary cursor-default flex items-center justify-center" :
+              "w-full h-[350px] rounded-[12px] mx-auto max-w-4xl border border-divider cursor-default flex items-center justify-center"
+            }
+          >
+            {uploadLoading ?
+              <Spinner size="lg" /> :
+              <div
+                {...getRootProps()}
+                className="w-full h-full flex flex-col"
+              >
+                <input {...getInputProps()} />
 
-        </div>
+                <div className="w-full h-full flex flex-col gap-8 items-center justify-center">
+                  <p className={isDragActive ? "text-primary font-medium text-xl" : "font-medium text-xl"}>
+                    {isDragActive ? "Release to drop file" : "Drag and drop an image to upload"}
+                  </p>
+
+                  {!isDragActive &&
+                    <Button
+                      color="default"
+                      variant={"bordered"}
+                      className="w-fit font-medium"
+                      onClick={open}
+                    >
+                      {'Select image'}
+                    </Button>
+                  }
+                </div>
+              </div>
+            }
+            {/* <ul>{files}</ul> */}
+          </div>
+        }
 
         {
           doc?.authorId === currentUser?.id ?

@@ -47,11 +47,9 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
           {document?.cover &&
             <div className="hidden sm:!flex border border-divider rounded-large">
               <Image
-                as={NextImage}
                 isZoomed
-                width={200}
-                height={200}
-                priority
+                width={140}
+                height={140}
                 src={document?.cover}
                 alt={`${document?.title}_cover`}
               />

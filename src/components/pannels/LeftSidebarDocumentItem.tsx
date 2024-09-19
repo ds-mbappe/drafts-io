@@ -3,7 +3,7 @@
 import moment from "moment";
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Textarea, Tooltip, useDisclosure } from "@nextui-org/react";
+import { Image, Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Textarea, Tooltip, useDisclosure } from "@nextui-org/react";
 import { BookPlusIcon, EllipsisIcon, EyeIcon, PencilIcon, Share2Icon, ShareIcon, Trash2Icon } from "lucide-react";
 import { Label } from "@radix-ui/react-label";
 import { toast } from "sonner";
@@ -314,7 +314,18 @@ export const LeftSidebarDocumentItem = ({ document, user }: any) => {
                 {"Preview of "} {document?.title}
               </ModalHeader>
 
-              <ModalBody className="!px-4 !py-0 overflow-y-auto">
+              <ModalBody className="w-full flex flex-col gap-8 !px-4 !py-0 overflow-y-auto">
+                {document?.cover &&
+                  <div className="w-full mx-auto flex justify-center pt-8">                    
+                    <Image
+                      isBlurred
+                      height={350}
+                      src={document?.cover}
+                      alt="Document Cover Image"
+                    />
+                  </div>
+                }
+
                 <EditorContent editor={editor} />
               </ModalBody>
 
