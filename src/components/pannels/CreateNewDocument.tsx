@@ -62,12 +62,8 @@ export const CreateNewDocument = ({ user, onDocumentSaved }: any) => {
     let formData = {
       title: docTitle,
       caption: docCaption,
-      creator_email: user?.email,
-      creator: {
-        avatar: user?.avatar,
-        fullname: `${user?.firstname} ${user?.lastname}`,
-      },
-      cover: "https://pyxis.nymag.com/v1/imgs/51b/28a/622789406b8850203e2637d657d5a0e0c3-avatar-rerelease.1x.rsquare.w1400.jpg",
+      authorId: user?.id,
+      cover: "",
       topic: docTopic,
     }
 

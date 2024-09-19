@@ -105,7 +105,11 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
 
   return (
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
-      <div className="relative w-full max-w-screen-xl mx-auto" ref={menuContainerRef}>
+      <div className="flex flex-col gap-10 relative w-full max-w-screen-xl mx-auto py-24 px-20 lg:px-16" ref={menuContainerRef}>
+        <div className="w-full h-[400px] mx-auto max-w-7xl bg-warning-50">
+
+        </div>
+
         {
           doc?.authorId === currentUser?.id ?
             <>
@@ -121,7 +125,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
         }
         <EditorContent
           editor={editor}
-          className="tiptap"
+          className="tiptap z-0"
           spellCheck={"false"}
         />
       </div>

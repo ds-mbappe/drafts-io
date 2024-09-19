@@ -1,5 +1,5 @@
 .ProseMirror {
-  @apply caret-foreground-500 outline-0 pr-8 pl-20 py-24 z-0 lg:pl-16 lg:pr-8;
+  @apply caret-foreground-500 outline-0;
 
   & > * {
     @apply mx-auto max-w-7xl;

@@ -34,7 +34,9 @@ export async function POST(req) {
     const body = await req.json();
     const documentData = body.formData
     
-    const document = await prisma.document.create(documentData)
+    const document = await prisma.document.create({
+      data: documentData
+    })
 
     return NextResponse.json({ document }, { status: 201 });
   } catch (error) {

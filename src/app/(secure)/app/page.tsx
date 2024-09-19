@@ -70,11 +70,7 @@ export default function App() {
     let formData = {
       title: `Untitled_${new Date()}`,
       caption: null,
-      creator_email: user?.email,
-      creator: {
-        avatar: user?.avatar,
-        fullname: `${user?.firstname} ${user?.lastname}`,
-      },
+      authorId: user?.id,
       cover: null,
       topic: null,
     }
