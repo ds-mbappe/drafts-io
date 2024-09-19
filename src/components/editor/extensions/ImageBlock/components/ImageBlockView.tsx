@@ -14,7 +14,7 @@ interface ImageBlockViewProps {
   updateAttributes: (attrs: Record<string, string>) => void
 }
 
-export const ImageBlockView = (props: ImageBlockViewProps) => {
+export const ImageBlockView = (props: any) => {
   const { editor, getPos, node } = props
   const imageWrapperRef = useRef<HTMLDivElement>(null)
   const { src } = node.attrs
