@@ -26,14 +26,14 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 	};
 
 	const saveUserInfo = async () => {
-		setLoading(true);
+	  setLoading(true);
 
-		let formData = {
-      id: user?._id,
+	  let formData = {
+      id: user?.id,
       firstname: editUser?.firstname,
       lastname: editUser?.lastname,
       email: editUser?.email,
-			phone: editUser?.phone
+	  phone: editUser?.phone
     }
 
     const response = await fetch(`/api/user/${user?.email}`, {
@@ -102,7 +102,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 				await update({ ...user, avatar: data?.url })
 
 				const formData = {
-					id: user?._id,
+					id: user?.id,
 					avatar: data?.url
 				}
 		
