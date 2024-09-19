@@ -9,7 +9,6 @@ import { Icon } from '@iconify/react';
 import { toast } from "sonner";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useSearchParams } from 'next/navigation'
-import { NextResponse } from "next/server";
 
 export default function SignInPage() {
   const router = useRouter();
