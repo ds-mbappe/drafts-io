@@ -128,32 +128,21 @@ export default function App(props: DocumentProps) {
   // }
 
   return (
-    <div className="w-full h-screen flex flex-col">
-      <NavbarApp
-        // words={words}
-        status={saveStatus}
-        isSidebarOpen={leftSidebar.isOpen}
-        toggleSidebar={leftSidebar.toggle}
-        // historyData={historyData}
+    <div className="w-full bg-content1 relative flex overflow-y-auto cursor-text flex-col items-start z-[1] flex-1 p-0 lg:p-6">
+      <Editor
+        documentId={props?.params?.id}
+        doc={doc}
+        currentUser={user}
+        setSaveStatus={getSaveStatus}
+        // yDoc={yDoc}
         // provider={provider}
-        document={doc}
+        // updateHistoryData={updateHistoryData}
       />
-      
-      <div className="flex flex-1 h-full">
-        <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
-
-        <div className="w-full bg-content1 relative flex overflow-y-auto cursor-text flex-col items-start z-[1] flex-1 p-0 lg:p-6">
-          <Editor
-            documentId={props?.params?.id}
-            doc={doc}
-            currentUser={user}
-            setSaveStatus={getSaveStatus}
-            // yDoc={yDoc}
-            // provider={provider}
-            // updateHistoryData={updateHistoryData}
-          />
-        </div>
-      </div>
     </div>
+    // <div className="w-full h-screen flex flex-col">
+    //   <div className="flex flex-1 h-full">
+
+    //   </div>
+    // </div>
   )
 }

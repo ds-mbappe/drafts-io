@@ -188,9 +188,9 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
 
   return (
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
-      <div className="flex flex-col gap-10 relative w-full max-w-screen-xl mx-auto py-24 px-20 lg:px-16" ref={menuContainerRef}>
+      <div className="flex flex-col gap-10 relative w-full mx-auto py-12" ref={menuContainerRef}>
         {doc?.cover ?
-          <div className="w-full flex justify-center items-center mx-auto cursor-default relative">
+          <div className="w-full flex justify-center items-center max-w-4xl mx-auto cursor-default relative px-5 md:!px-0">
             <Image
               isBlurred
               height={350}
@@ -209,7 +209,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
                 color="default"
                 size="sm"
                 isIconOnly
-                className="absolute -top-3 -right-3"
+                className="absolute -top-3 right-1/2 translate-x-1/2 !z-[10]"
                 onClick={open}
               >
                 <PencilIcon size={16} className="text-foreground-500" />
@@ -252,22 +252,21 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
           </div>
         }
 
-        {
-          doc?.authorId === currentUser?.id ?
-            <>
-              <ContentItemMenu editor={editor} />
-              <LinkMenu editor={editor} appendTo={menuContainerRef} />
-              <TextMenu editor={editor} />
-              <TableRowMenu editor={editor} appendTo={menuContainerRef} />
-              <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
-              <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
-            </>
-            :
-            <></>
+        {doc?.authorId === currentUser?.id ?
+          <>
+            <ContentItemMenu editor={editor} />
+            <LinkMenu editor={editor} appendTo={menuContainerRef} />
+            <TextMenu editor={editor} />
+            <TableRowMenu editor={editor} appendTo={menuContainerRef} />
+            <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
+            <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
+          </>
+          :
+          <></>
         }
         <EditorContent
           editor={editor}
-          className="tiptap z-0"
+          className="tiptap"
           spellCheck={"false"}
         />
       </div>

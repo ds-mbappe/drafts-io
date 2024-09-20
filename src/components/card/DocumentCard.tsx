@@ -4,6 +4,7 @@ import NextImage from "next/image";
 import { Avatar, Button, Card, CardBody, Chip, Image } from '@nextui-org/react';
 import { BookmarkIcon, CalendarIcon, EllipsisIcon, HeartIcon, MessageCircleIcon } from 'lucide-react';
 import Link from "next/link";
+import { useSidebar } from '../editor/hooks/useSidebar';
 
 export type DocumentCardTypeprops = {
   id: string,

@@ -10,7 +10,7 @@ import { CreateNewDocument } from "../pannels/CreateNewDocument";
 import { usePathname } from "next/navigation";
 import ProfileModal from "../pannels/ProfileModal";
 
-const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, provider, document }: any) => {
+const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, provider }: any) => {
   const motionProps = {
     variants: {
       exit: {
@@ -65,21 +65,19 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
 
   return (
     <>
-      <Navbar isBordered maxWidth={"full"} className="bg-content1">
+      <Navbar isBordered maxWidth={"full"} className="bg-content1 sticky top-0">
         <NavbarBrand className="flex gap-2">
           {/* Sidebar button */}
-          {(document?.id || pathname === '/app/new-doc') &&
-            <Tooltip
-              content={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
-              delay={0}
-              closeDelay={0}
-              motionProps={motionProps}
-            >
-              <Button isIconOnly size={"sm"} variant={"light"} onClick={toggleSidebar}>
-                { isSidebarOpen ? <PanelTopClose className="-rotate-90" /> : <PanelLeft /> }
-              </Button>
-            </Tooltip>
-          }
+          <Tooltip
+            content={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+            delay={0}
+            closeDelay={0}
+            motionProps={motionProps}
+          >
+            <Button isIconOnly size={"sm"} variant={"light"} onClick={toggleSidebar}>
+              { isSidebarOpen ? <PanelTopClose className="-rotate-90" /> : <PanelLeft /> }
+            </Button>
+          </Tooltip>
 
           {/* Create new document */}
           {/* <CreateNewDocument user={user} onDocumentSaved={() => null} /> */}
@@ -101,7 +99,7 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
           } */}
 
           {/* Status */}
-          { (document?.id || pathname === '/app/new-doc') &&
+          {/* { (document?.id || pathname === '/app/new-doc') &&
             <NavbarItem>
               <div className="flex items-center justify-center gap-5">
                 <div className="flex gap-2 items-center justify-center">
@@ -111,13 +109,9 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
                     { status }
                   </span>
                 </div>
-
-                {/* <div className="h-8 border-r" /> */}
-
-                {/* <EditorInfo words={words} characters={characters} /> */}
               </div>
             </NavbarItem>
-          }
+          } */}
           
           {/* Avatar */}
           <NavbarItem>
