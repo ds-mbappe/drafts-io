@@ -21,6 +21,8 @@ import TableRowMenu from "./extensions/Table/menus/TableRow/TableRow";
 import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
 import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu";
 import { v2 as cloudinary } from "cloudinary";
+import { PencilIcon } from "lucide-react";
+import { motion } from 'framer-motion'
 
 export default function BlockEditor({ documentId, doc, setSaveStatus, currentUser }: {
   documentId: String,
@@ -33,7 +35,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
 }) {
   const router = useRouter();
   const menuContainerRef = useRef(null);
-  const [image, setImage] = useState([]);
+  const [isHovering, setIsHovering] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [uploadLoading, setUploadLoading] = useState(false);
 
@@ -141,8 +143,6 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
 			})
       if (result?.ok) {
         const data = await result.json()
-        setImage(data?.url)
-
         const response = await fetch(`/api/document/${documentId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -190,13 +190,31 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
       <div className="flex flex-col gap-10 relative w-full max-w-screen-xl mx-auto py-24 px-20 lg:px-16" ref={menuContainerRef}>
         {doc?.cover ?
-          <div className="w-full flex justify-center items-center mx-auto cursor-default">
+          <div className="w-full flex justify-center items-center mx-auto cursor-default relative">
             <Image
               isBlurred
               height={350}
               src={doc?.cover}
               alt="Document Cover Image"
             />
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ ease: 'easeInOut', duration: 0.75 }}
+            >
+              <Button
+                variant="solid"
+                radius="full"
+                color="default"
+                size="sm"
+                isIconOnly
+                className="absolute -top-3 -right-3"
+                onClick={open}
+              >
+                <PencilIcon size={16} className="text-foreground-500" />
+              </Button>
+            </motion.div>
           </div> :
           <div
             className={isDragActive ?
