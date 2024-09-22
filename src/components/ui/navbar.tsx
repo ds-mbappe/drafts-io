@@ -2,12 +2,12 @@
 
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Tooltip, useDisclosure } from "@nextui-org/react";
 import { memo, useEffect, useState } from 'react';
-import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CirclePlayIcon, CircleUserRoundIcon } from 'lucide-react';
+import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CirclePlayIcon, CircleUserRoundIcon, HomeIcon } from 'lucide-react';
 import HistoryDropdown from '../pannels/HistoryDropdown/HistoryDropdown';
 import { signOut, getSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { CreateNewDocument } from "../pannels/CreateNewDocument";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import ProfileModal from "../pannels/ProfileModal";
 
 const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, provider }: any) => {
@@ -29,10 +29,11 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
       },
     },
   }
+  const router = useRouter();
   const pathname = usePathname()
   const { theme, setTheme } = useTheme();
   const [user, setUser] = useState<any>();
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const onLogout = () => {
     signOut({
@@ -52,6 +53,10 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
     
   }
 
+  const goToHome = () => {
+    router.push('/app')
+  }
+
   useEffect(() => {
     const fetchSession = async () => {
       const response = await getSession()
@@ -67,24 +72,12 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
     <>
       <Navbar isBordered maxWidth={"full"} className="bg-content1 sticky top-0">
         <NavbarBrand className="flex gap-2">
-          {/* Sidebar button */}
-          <Tooltip
-            content={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
-            delay={0}
-            closeDelay={0}
-            motionProps={motionProps}
-          >
-            <Button isIconOnly size={"sm"} variant={"light"} onClick={toggleSidebar}>
-              { isSidebarOpen ? <PanelTopClose className="-rotate-90" /> : <PanelLeft /> }
+          {/* Home button */}
+          {pathname !== '/app' &&
+            <Button isIconOnly size={"sm"} variant={"light"} onClick={goToHome}>
+              { <HomeIcon /> }
             </Button>
-          </Tooltip>
-
-          {/* Create new document */}
-          {/* <CreateNewDocument user={user} onDocumentSaved={() => null} /> */}
-
-          {/* <Button isIconOnly size={"sm"} variant={"light"} onClick={onStartSpeak}>
-            <CirclePlayIcon />
-          </Button> */}
+          }
         </NavbarBrand>
 
         <NavbarContent justify="end">

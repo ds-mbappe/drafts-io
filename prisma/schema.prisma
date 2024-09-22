@@ -51,7 +51,6 @@ model VerificationToken {
 model Document {
   id                 String @default(cuid()) @id
   title              String
-  caption            String?
   cover              String?
   topic              String?
   content            String?   @default("")
@@ -59,8 +58,11 @@ model Document {
   locked             Boolean   @default(false)
   character_count    Int?
   word_count         Int?
-  author             User?     @relation(fields: [authorId], references: [id])
+  author             User?     @relation(fields: [authorId, authorAvatar, authorFirstname, authorLastname], references: [id, avatar, firstname, lastname])
   authorId           String?
+  authorAvatar       String?
+  authorFirstname    String?
+  authorLastname     String?
   createdAt          DateTime  @default(now()) @map(name: "created_at")
   updatedAt          DateTime  @updatedAt @map(name: "updated_at")
 }
@@ -88,4 +90,5 @@ model User {
   sessions                  Session[]
 
   @@map(name: "users")
+  @@unique([id, avatar, firstname, lastname])
 }

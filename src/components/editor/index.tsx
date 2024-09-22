@@ -189,6 +189,12 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
   return (
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
       <div className="flex flex-col gap-10 relative w-full mx-auto py-12" ref={menuContainerRef}>
+        <div className="max-w-7xl mx-auto px-20 xl:!px-0">
+          <p className="font-medium text-xl">
+            {doc?.title}
+          </p>
+        </div>
+
         {doc?.cover ?
           <div className="w-full flex justify-center items-center max-w-4xl mx-auto cursor-default relative px-5 md:!px-0">
             <Image
@@ -198,24 +204,19 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
               alt="Document Cover Image"
             />
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ ease: 'easeInOut', duration: 0.75 }}
+            <Button
+              variant="solid"
+              radius="full"
+              color="default"
+              size="sm"
+              isIconOnly
+              className="absolute -top-3 right-1/2 translate-x-1/2 !z-[10]"
+              onClick={open}
             >
-              <Button
-                variant="solid"
-                radius="full"
-                color="default"
-                size="sm"
-                isIconOnly
-                className="absolute -top-3 right-1/2 translate-x-1/2 !z-[10]"
-                onClick={open}
-              >
-                <PencilIcon size={16} className="text-foreground-500" />
-              </Button>
-            </motion.div>
+              <PencilIcon size={16} className="text-foreground-500" />
+            </Button>
           </div> :
+          // Upload a cover photo
           <div
             className={isDragActive ?
               "w-full h-[350px] rounded-[12px] mx-auto max-w-4xl border border-dashed border-primary cursor-default flex items-center justify-center" :

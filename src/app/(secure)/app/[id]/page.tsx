@@ -139,10 +139,5 @@ export default function App(props: DocumentProps) {
         // updateHistoryData={updateHistoryData}
       />
     </div>
-    // <div className="w-full h-screen flex flex-col">
-    //   <div className="flex flex-1 h-full">
-
-    //   </div>
-    // </div>
   )
 }

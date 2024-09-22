@@ -10,17 +10,14 @@ export type DocumentCardTypeprops = {
   id: string,
   private: Boolean,
   locked: Boolean | undefined
-  creator: {
-    email: string,
-    avatar: string | undefined,
-    fullname: string,
-  },
+  authorFirstname: string,
+  authorLastname: string,
+  authorAvatar: string,
   createdAt: string,
   updatedAt: string,
   cover: string | undefined,
   topic: string,
   title: string,
-  caption: string,
   content: string | null,
 }
 
@@ -57,7 +54,7 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
             </div>
           }
 
-          <div className="flex flex-1 flex-col gap-2 justify-around">
+          <div className="flex flex-1 flex-col gap-2">
             {/* User & topic */}
             <div className="flex items-center gap-2.5">
               {/* User */}
@@ -65,16 +62,16 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
                 <Avatar
                   color="primary"
                   className="w-6 h-6"
-                  name={document?.creator?.fullname?.split("")?.[0]?.toUpperCase()}
-                  src={document?.creator?.avatar}
+                  name={document?.authorFirstname?.split("")?.[0]?.toUpperCase()}
+                  src={document?.authorAvatar}
                 />
 
-                <p className="line-clamp-1 text-sm">
-                  {document?.creator?.fullname}
+                <p className="line-clamp-1 text-sm font-medium">
+                  {`${document?.authorFirstname} ${document?.authorLastname}`}
                 </p>
               </div>
 
-              <p className="font-medium">
+              <p className="font-medium text-foreground-500">
                 {'•'}
               </p>
 
@@ -87,13 +84,9 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
             </div>
 
             {/* Title & caption */}
-            <div className="flex flex-col gap-1">
-              <p className="font-medium line-clamp-1">
+            <div className="h-full flex flex-col gap-1 flex-1">
+              <p className="font-medium line-clamp-3">
                 {document?.title}
-              </p>
-
-              <p className="text-sm line-clamp-2 text-foreground-500">
-                {document?.caption}
               </p>
             </div>
 
@@ -109,9 +102,9 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
 
               {/* Like & comment button */}
               <div className="flex items-center gap-2">
-                <Button className="text-foreground-500" isIconOnly size={"sm"} variant={"light"} onClick={toggleBookmark}>
+                {/* <Button className="text-foreground-500" isIconOnly size={"sm"} variant={"light"} onClick={toggleBookmark}>
                   <BookmarkIcon />
-                </Button>
+                </Button> */}
                 
                 {/* <Button className="text-foreground-500" isIconOnly size={"sm"} variant={"light"} onClick={toggleLike}>
                   <HeartIcon />

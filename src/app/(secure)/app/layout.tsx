@@ -12,12 +12,14 @@ export default function AppLayout(props: { children: React.ReactNode }) {
     <main className="min-h-screen bg-content1">
       <div className="w-full flex flex-col">
         <Alert />
+
         <NavbarApp
           isSidebarOpen={leftSidebar.isOpen}
           toggleSidebar={leftSidebar.toggle}
         />
+
         <div className="w-full h-full flex">
-          <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} />
+          {/* <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} /> */}
           {props.children}
         </div>
       </div>

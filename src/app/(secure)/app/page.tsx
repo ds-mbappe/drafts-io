@@ -69,8 +69,10 @@ export default function App() {
   const goToNewDocument = async () => {
     let formData = {
       title: `Untitled_${new Date()}`,
-      caption: null,
       authorId: user?.id,
+      authorAvatar: user?.avatar,
+      authorFirstname: user?.firstname,
+      authorLastname: user?.lastname,
       cover: null,
       topic: null,
     }
@@ -200,9 +202,13 @@ export default function App() {
               </div>:
               <>
                 { documents?.length ?
-                  documents?.map((document, index) => {
-                    return <DocumentCard key={index} document={document} />
-                  }):
+                  <div className="w-full flex flex-col md:!grid md:!grid-cols-2">
+                    {
+                      documents?.map((document, index) => {
+                        return <DocumentCard key={index} document={document} />
+                      })
+                    }
+                  </div> :
                   <p className="text-sm font-normal text-foreground-500">
                     {`You have not created a document yet, start by clicking the button at the bottom right of your screen.`}
                   </p>
@@ -227,9 +233,13 @@ export default function App() {
               </div>:
               <>
                 { latestDocuments?.length ?
-                  latestDocuments?.map((document, index) => {
-                    return <DocumentCard key={index} document={document} />
-                  }) :
+                  <div className="w-full flex flex-col md:!grid md:!grid-cols-2">
+                    {
+                      latestDocuments?.map((document, index) => {
+                        return <DocumentCard key={index} document={document} />
+                      })
+                    }
+                  </div> :
                   <p className="text-sm font-normal text-foreground-500">
                     {`There is no public document for now, come back later ;).`}
                   </p>
