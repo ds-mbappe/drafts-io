@@ -1,19 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 
+const omitConfig = {
+  user: {
+    password: true,
+    updatedAt: true,
+    createdAt: true,
+    isVerified: true,
+    verifyToken: true,
+    verifyTokenExpiry: true,
+    forgotPasswordToken: true,
+    forgotPasswordTokenExpiry: true,
+  }
+}
+
 const prismaClientSingleton = () => {
   return new PrismaClient({
-    omit: {
-      user: {
-        password: true,
-        updatedAt: true,
-        createdAt: true,
-        isVerified: true,
-        verifyToken: true,
-        verifyTokenExpiry: true,
-        forgotPasswordToken: true,
-        forgotPasswordTokenExpiry: true,
-      }
-    }
+    omit: omitConfig
   })
 }
 
