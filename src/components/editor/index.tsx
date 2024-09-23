@@ -22,7 +22,7 @@ import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
 import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu";
 import { v2 as cloudinary } from "cloudinary";
 import { CheckIcon, PencilIcon, PlusIcon } from "lucide-react";
-import { motion } from 'framer-motion'
+import { motion, useMotionValueEvent, useScroll, useSpring } from 'framer-motion'
 import moment from "moment";
 import { followUser } from "@/actions/followUser";
 import { checkFollowState } from "@/actions/checkFollowState";
@@ -38,10 +38,17 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
   // updateHistoryData: Function | null,
 }) {
   const router = useRouter();
+  const { scrollYProgress } = useScroll();
   const menuContainerRef = useRef(null);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isFollowingAuthor, setIsFollowingAuthor] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [uploadLoading, setUploadLoading] = useState(false);
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
   // Simulate a delay in saving.
   const debouncedUpdates = useDebouncedCallback(async ({ editor }: { editor: Editor }) => {
@@ -183,12 +190,14 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
   })
 
   const onToggleFollowUser = useDebouncedCallback(async () => {
+    setIsFollowLoading(true)
     if (isFollowingAuthor) {
       await unfollowUser(currentUser?.id, doc?.authorId)
     } else {
       await followUser(currentUser?.id, doc?.authorId)
     }
     getFollowSate()
+    setIsFollowLoading(false)
   }, 300)
 
   const getFollowSate = async () => {
@@ -205,6 +214,11 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
   return (
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
       <div className="flex flex-col gap-10 relative w-full mx-auto py-12" ref={menuContainerRef}>
+        <motion.div
+          className="z-[50] fixed top-[64px] left-0 right-0 h-1.5 bg-primary origin-[0%]"
+          style={{ scaleX }}
+        />
+
         <div className="w-full flex flex-col gap-5 max-w-7xl mx-auto px-20 xl:!px-0">
           <p className="font-medium text-xl">
             {doc?.title}
@@ -218,11 +232,12 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
                 showFallback
                 name={doc?.authorFirstname?.split("")?.[0]?.toUpperCase()}
                 size="md"
+                className="cursor-default"
                 src={doc?.authorAvatar}
               />
 
               <div className="flex flex-col">
-                <p className="font-medium">
+                <p className="font-medium cursor-default">
                   {`${doc?.authorFirstname} ${doc?.authorLastname}`}
                 </p>
 
@@ -243,6 +258,8 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
                 color="primary"
                 variant={isFollowingAuthor ? 'solid' : 'flat'}
                 radius="full"
+                className="px-6"
+                isLoading={isFollowLoading}
                 startContent={
                   <div>
                     {isFollowingAuthor ? <CheckIcon size={20} /> : <PlusIcon size={20} /> }
