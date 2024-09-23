@@ -1,5 +1,17 @@
+.editableClass {
+  .ProseMirror {
+    @apply z-0 pl-20 pr-5 md:pr-20 xl:pr-0
+  }
+}
+
+.readOnlyClass {
+  .ProseMirror {
+    @apply z-0 px-5
+  }
+}
+
 .ProseMirror {
-  @apply caret-foreground-500 outline-0 px-20 z-0 lg:pl-16 lg:pr-8;
+  @apply caret-foreground-500 outline-0;
 
   & > * {
     @apply mx-auto max-w-7xl;

@@ -13,6 +13,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 	const [editPersonalInfo, setEditPersonalInfo] = useState(false);
 	const { data: session, status, update } = useSession();
 	const [loading, setLoading] = useState(false);
+	const [isPictureLoading, setPictureLoading] = useState(false);
 	const [editUser, setEditUser] = useState<any>({
 		firstname: "",
 		lastname: "",
@@ -77,6 +78,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 	}
 
 	const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		setPictureLoading(true)
 		const file = e.target?.files?.[0]
 		if (file) {
 			const timestamp = Math.round((new Date).getTime()/1000)
@@ -135,6 +137,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 				})
 			}
 		}
+		setPictureLoading(false)
 	}
 
 	useEffect(() => {
@@ -148,46 +151,63 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 
 				<ModalBody className="p-4">
 					<div className="w-full flex flex-col gap-4">
-						<div className="w-full p-3 flex items-center gap-4 border border-divider rounded-[8px]">
-							<div className="w-[60px] h-[60px] flex relative">
-								<Avatar
-									src={editUser?.avatar}
-									showFallback
-									name={editUser?.firsname?.split('')?.[0]}
-									className="w-[60px] h-[60px] text-large"
-								/>
+						<div className="w-full flex flex-col gap-2.5 p-3 border border-divider rounded-[8px]">
+							<div className="w-full flex items-center gap-4">
+								<div className="w-[60px] h-[60px] flex relative">
+									<Avatar
+										src={editUser?.avatar}
+										showFallback
+										name={editUser?.firsname?.split('')?.[0]}
+										className="w-[60px] h-[60px] text-large"
+									/>
 
-								<Button
-									variant="solid"
-									radius="full"
-									size="sm"
-									isIconOnly
-									className="absolute bottom-0 -right-2"
-									onClick={onOpenPicker}
-								>
-									<PencilIcon size={16} className="text-foreground-500" />
-								</Button>
+									<Button
+										variant="solid"
+										radius="full"
+										size="sm"
+										isLoading={isPictureLoading}
+										isIconOnly
+										className="absolute bottom-0 -right-2"
+										onPress={onOpenPicker}
+									>
+										<PencilIcon size={16} className="text-foreground-500" />
+									</Button>
 
-								<input
-									id="picker"
-									type="file"
-									className="hidden opacity-0"
-									accept="image/png, image/gif, image/jpeg"
-									onChange={handleFileChange}
-								/>
+									<input
+										id="picker"
+										type="file"
+										className="hidden opacity-0"
+										accept="image/png, image/gif, image/jpeg"
+										onChange={handleFileChange}
+									/>
+								</div>
+
+								<div className="flex flex-col">
+									<p className="text-base font-medium">
+										{`${editUser?.firstname} ${editUser?.lastname}`}
+									</p>
+
+									<p className="text-sm font-normal text-foreground-500">
+										{editUser?.email}
+									</p>
+								</div>
 							</div>
 
-							<div className="flex flex-col">
-								<p className="text-base font-medium">
-									{`${editUser?.firstname} ${editUser?.lastname}`}
-								</p>
+							{/* Following & Followers */}
+							<div className="flex items-center gap-5">
+								<div className="flex items-center gap-1">
+									<p className="text font-medium">{8.8873}</p>
+									<p className="text-sm font-medium text-foreground-500">{`Followers`}</p>
+								</div>
 
-								<p className="text-sm font-normal text-foreground-500">
-									{editUser?.email}
-								</p>
+								<div className="flex items-center gap-1">
+									<p className="text font-medium">{349}</p>
+									<p className="text-sm font-medium text-foreground-500">{`Following`}</p>
+								</div>
 							</div>
 						</div>
 
+						{/* Personal information */}
 						<div className="w-full p-3 flex flex-col gap-3 border border-divider rounded-[8px]">
 							<div className="h-[32px] flex items-center justify-between">
 								<p className="text-sm font-medium">
@@ -199,7 +219,6 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 										variant="bordered"
 										radius="full"
 										size="sm"
-										endContent={!editPersonalInfo ? <PencilIcon size={16} className="text-foreground-500" /> : null}
 										onClick={() => setEditPersonalInfo(prev => !prev)}
 									>
 										{'Edit'}
@@ -209,7 +228,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 
 							<div className="flex flex-col gap-3">
 								{/* Firstname */}
-								<div className="flex flex-col gap-2">
+								<div className="flex flex-col gap-1">
 									<p className="text-sm font-normal text-foreground-500">
 										{'First Name'}
 									</p>
@@ -226,7 +245,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 								</div>
 
 								{/* Lastname */}
-								<div className="flex flex-col gap-2">
+								<div className="flex flex-col gap-1">
 									<p className="text-sm font-normal text-foreground-500">
 										{'Last Name'}
 									</p>
@@ -243,7 +262,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 								</div>
 
 								{/* Email address */}
-								<div className="flex flex-col gap-2">
+								<div className="flex flex-col gap-1">
 									<p className="text-sm font-normal text-foreground-500">
 										{'Email address'}
 									</p>
@@ -261,7 +280,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 								</div>
 
 								{/* Phone number */}
-								<div className="flex flex-col gap-2">
+								<div className="flex flex-col gap-1">
 									<p className="text-sm font-normal text-foreground-500">
 										{'Phone'}
 									</p>

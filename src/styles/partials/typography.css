@@ -1,6 +1,6 @@
 .ProseMirror {
   p {
-    @apply leading-relaxed my-1;
+    @apply leading-relaxed my-1 !text-start;
   }
 
   /* & > p {

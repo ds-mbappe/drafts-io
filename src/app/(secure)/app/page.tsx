@@ -164,7 +164,7 @@ export default function App() {
           <EditorContent editor={editor} spellCheck={"false"} />
         </div>
       </div> */}
-      <div className="w-full max-w-[1024px] mx-auto relative flex overflow-y-auto cursor-text flex-col gap-4 z-[1] flex-1 px-5 2xl:!px-0 pt-8 pb-5">
+      <div className="w-full max-w-[1024px] mx-auto relative flex overflow-y-auto cursor-text flex-col gap-2 z-[1] flex-1 px-5 2xl:!px-0 pt-8 pb-5">
         {/* <Input
           type="text"
           placeholder="Search"
@@ -186,16 +186,16 @@ export default function App() {
             tabContent: "group-data-[selected=true]:text-primary"
           }}
         >
-          <Tab key="latest" title={`${'Latest'} (${latestDocuments?.length || 0})`} className="flex flex-col gap-4">
-            <div className="flex flex-col">
+          <Tab key="latest" title={`Discover`} className="flex flex-col gap-4">
+            {/* <div className="flex flex-col">
               <p className="text-base font-semibold">
-                {`Latest documents`}
+                {`Latest drafts`}
               </p>
               
               <p className="text-sm font-normal text-foreground-500">
-                {`Read the most up-to-date documents published by people from around the world.`}
+                {`Read the most up-to-date drafts published by people from around the world.`}
               </p>
-            </div>
+            </div> */}
             {loadingLatest ?
               <div className="w-full h-full my-12 flex items-center justify-center">
                 <Spinner size="lg" />
@@ -217,8 +217,8 @@ export default function App() {
             }
           </Tab>
           
-          <Tab key="for_you" title={`${'For you'} (${documents?.length || 0})`} className="flex flex-col gap-4">
-            <div className="flex flex-col">
+          <Tab key="for_you" title={`Following`} className="flex flex-col gap-4">
+            {/* <div className="flex flex-col">
               <p className="text-base font-semibold">
                 {`My personnal documents`}
               </p>
@@ -226,7 +226,7 @@ export default function App() {
               <p className="text-sm font-normal text-foreground-500">
                 {`Here, a list of all your creations.`}
               </p>
-            </div>
+            </div> */}
             {loading ?
               <div className="w-full h-full my-12 flex items-center justify-center">
                 <Spinner size="lg" />
@@ -258,7 +258,7 @@ export default function App() {
         className="fixed bottom-4 right-4 z-[99]"
         onClick={goToNewDocument}
       >
-        {'New document'}
+        {'New draft'}
       </Button>
     </div>
   )

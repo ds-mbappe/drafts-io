@@ -15,13 +15,13 @@ import { TiptapCollabProvider } from "@hocuspocus/provider";
 import { LinkMenu } from './menus/LinkMenu'
 import { TextMenu } from './menus/TextMenu/TextMenu'
 import { toast } from "sonner";
-import { Image, Spinner, Button, Avatar } from "@nextui-org/react";
+import { Image, Spinner, Button, Avatar, Tooltip, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import { useDropzone } from 'react-dropzone';
 import TableRowMenu from "./extensions/Table/menus/TableRow/TableRow";
 import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
 import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu";
 import { v2 as cloudinary } from "cloudinary";
-import { CheckIcon, PencilIcon, PlusIcon } from "lucide-react";
+import { BookPlusIcon, CheckIcon, EllipsisIcon, EyeIcon, PencilIcon, PlusIcon, Share2Icon, ShareIcon, Trash2Icon } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll, useSpring } from 'framer-motion'
 import moment from "moment";
 import { followUser } from "@/actions/followUser";
@@ -40,10 +40,32 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
   const router = useRouter();
   const { scrollYProgress } = useScroll();
   const menuContainerRef = useRef(null);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen: isOpenEdit, onOpen: onOpenEdit, onOpenChange: onOpenChangeEdit } = useDisclosure();
+  const { isOpen: isOpenPublish, onOpen: onOpenPublish, onOpenChange: onOpenChangePublish } = useDisclosure();
+  const { isOpen: isOpenPreviewDoc, onOpen: onOpenPreviewDoc, onOpenChange: onOpenChangePreviewDoc } = useDisclosure();
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isFollowingAuthor, setIsFollowingAuthor] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [uploadLoading, setUploadLoading] = useState(false);
+  const motionProps = {
+    variants: {
+      exit: {
+        opacity: 0,
+        transition: {
+          duration: 0.15,
+          ease: "easeIn",
+        }
+      },
+      enter: {
+        opacity: 1,
+        transition: {
+          duration: 0.15,
+          ease: "easeOut",
+        }
+      },
+    },
+  }
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
@@ -101,6 +123,25 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
     setSaveStatus,
     debouncedUpdates,
     // UpdateHistoryVersions
+  });
+
+  // Preview editor
+  const previewEditor = useEditor({
+    editable: false,
+    immediatelyRender: false,
+    shouldRerenderOnTransaction: false,
+    content: doc?.content,
+    extensions: [
+      ...ExtensionKit(),
+    ],
+    editorProps: {
+      attributes: {
+        autocomplete: 'off',
+        autocorrect: 'off',
+        autocapitalize: 'off',
+        class: 'min-h-full !pt-0 !pr-0 !pb-0 !pl-0 overflow-y-auto',
+      },
+    },
   });
   
   const patchRequest = async (documentId: String, document: any) => {
@@ -231,7 +272,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
             <div className="w-full flex gap-3 items-center">
               <Avatar
                 isBordered
-                color="primary"
+                color="default"
                 showFallback
                 name={doc?.authorFirstname?.split("")?.[0]?.toUpperCase()}
                 size="md"
@@ -241,11 +282,11 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
 
               <div className="flex flex-col">
                 <p className="font-medium cursor-default">
-                  {`${doc?.authorFirstname} ${doc?.authorLastname}`}
+                  Written by {doc?.authorId === currentUser?.id ? `You` : `${doc?.authorFirstname} ${doc?.authorLastname}`}
                 </p>
 
                 <div className="flex items-center gap-1">
-                  <p className="text-foreground-500">
+                  <p className="text-foreground-500 text-sm">
                     {`Published`}
                   </p>
 
@@ -269,11 +310,79 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
                     {isFollowingAuthor ? <CheckIcon size={20} /> : <PlusIcon size={20} /> }
                   </div>
                 }
-                onClick={onToggleFollowUser}
+                onPress={onToggleFollowUser}
               >
                 {isFollowingAuthor ? `Following` : `Follow`}
               </Button>
             }
+          </div>
+
+          <div className="w-full flex items-center justify-between py-2 border-y border-divider">
+            <div className="w-full flex-1" />
+
+            <Dropdown placement="bottom-start">
+              <DropdownTrigger>
+                <Button isIconOnly size={"sm"} variant={"light"}>
+                  <EllipsisIcon className="rotate-90" />
+                </Button>
+              </DropdownTrigger>
+
+              <DropdownMenu aria-label="Document Actions" variant="flat">
+                {/* Preview */}
+                <DropdownItem
+                  key="preview"
+                  startContent={<EyeIcon />}
+                  onClick={onOpenPreviewDoc}
+                >
+                  {'Preview draft'}
+                </DropdownItem>
+
+                {/* Publish */}
+                <DropdownItem
+                  key="publish"
+                  startContent={<BookPlusIcon />}
+                  onClick={onOpenPublish}
+                >
+                  {doc?.private ? 'Publish draft' : 'Unpublish draft'}
+                </DropdownItem>
+
+                {/* Share */}
+                <DropdownItem
+                  key="share"
+                  startContent={<Share2Icon />}
+                >
+                  {'Share draft'}
+                </DropdownItem>
+
+                {/* Export */}
+                <DropdownItem
+                  key="export_document"
+                  startContent={<ShareIcon />}
+                >
+                  {'Export draft'}
+                </DropdownItem>
+
+                {/* Edit */}
+                <DropdownItem
+                  key="edit_document"
+                  showDivider
+                  onPress={onOpenEdit}
+                  startContent={<PencilIcon />}
+                >
+                  {'Edit draft settings'}
+                </DropdownItem>
+
+                {/* Delete */}
+                <DropdownItem
+                  key="delete_document"
+                  color="danger"
+                  onPress={onOpen}
+                  startContent={<Trash2Icon className="text-danger" />}
+                >
+                  {'Delete draft'}
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </div>
         </div>
 
@@ -287,7 +396,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
               alt="Document Cover Image"
             /> */}
             <div
-              className="w-full h-[350px] rounded-[12px] mx-auto max-w-3xl flex justify-center items-center bg-cover bg-center overflow-hidden border border-divider"
+              className="w-full h-[350px] rounded-[12px] max-w-3xl flex justify-center items-center bg-cover bg-center overflow-hidden border border-divider"
               style={{backgroundImage: `url(${doc?.cover})`}}
             />
 
@@ -298,7 +407,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
                 color="default"
                 size="sm"
                 isIconOnly
-                className="absolute -top-3 right-1/2 translate-x-1/2 !z-[10]"
+                className="absolute -top-4 right-1/2 translate-x-1/2 !z-[10]"
                 onClick={open}
               >
                 <PencilIcon size={16} className="text-foreground-500" />
@@ -338,7 +447,6 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
                 </div>
               </div>
             }
-            {/* <ul>{files}</ul> */}
           </div>
         }
 
@@ -356,10 +464,112 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
         }
         <EditorContent
           editor={editor}
-          className="tiptap"
+          className={doc?.authorId === currentUser?.id ? 'tiptap editableClass' : 'tiptap readOnlyClass'}
           spellCheck={"false"}
         />
       </div>
+
+      {/* Modal Preview Document */}
+      <Modal hideCloseButton scrollBehavior="inside" isOpen={isOpenPreviewDoc} placement="center" size="3xl" onOpenChange={onOpenChangePreviewDoc}>
+        <ModalContent>
+          {(onClosePreviewDoc) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                {"Preview of "} {document?.title}
+              </ModalHeader>
+
+              <ModalBody className="w-full flex flex-col gap-8 !px-4 !py-0 overflow-y-auto">
+                {doc?.cover &&
+                  <div className="w-full mx-auto flex justify-center pt-8">                    
+                    <Image
+                      isBlurred
+                      height={350}
+                      src={doc?.cover}
+                      alt="Document Cover Image"
+                    />
+                  </div>
+                }
+
+                <EditorContent editor={previewEditor} />
+              </ModalBody>
+
+              <ModalFooter>
+                <Button color="default" variant="light" onPress={onClosePreviewDoc}>
+                  {'Close'}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Publish document */}
+      <Modal isOpen={isOpenPublish} placement="center" onOpenChange={onOpenChangePublish}>
+        <ModalContent>
+          {(onClosePublish) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                { doc?.private ? "Publish document" : "Unpublish document" }
+              </ModalHeader>
+
+              <ModalBody className="flex flex-col gap-4">
+                {doc?.private ?
+                  <p className="text-foreground-500">
+                    {"By default, all your documents are private, that means they are only visible to you and you only. If you choose to publish your document, users from around the world will be able to see it."}
+                  </p> :
+                  <p className="text-foreground-500">
+                    {"If you choose to unpublish your document, it will be unavailable to the public."}
+                  </p>
+                }
+              </ModalBody>
+
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClosePublish}>
+                  {'Cancel'}
+                </Button>
+
+                <Button color="primary">
+                  { doc?.private ? "Publish" : "Unpublish" }
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Edit document settings */}
+
+      {/* Delete document */}
+      <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                { doc?.authorId === currentUser?.id ? "Delete document" : "Remove Document" }
+              </ModalHeader>
+
+              <ModalBody>
+                <p> 
+                  { doc?.authorId === currentUser?.id ?
+                    "If you delete this document, other users who have added it will no longer be able to access it" :
+                    "If you remove this document, you will need to import it again in the future."
+                  }
+                </p>
+              </ModalBody>
+
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  {'Cancel'}
+                </Button>
+
+                <Button color="primary">
+                  { doc?.authorId === currentUser?.id ? "Delete" : "Remove" }
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   )
 }
