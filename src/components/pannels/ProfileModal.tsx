@@ -33,7 +33,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
       firstname: editUser?.firstname,
       lastname: editUser?.lastname,
       email: editUser?.email,
-	  phone: editUser?.phone
+	  	phone: editUser?.phone
     }
 
     const response = await fetch(`/api/user/${user?.email}`, {

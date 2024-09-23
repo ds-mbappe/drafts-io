@@ -186,37 +186,6 @@ export default function App() {
             tabContent: "group-data-[selected=true]:text-primary"
           }}
         >
-          <Tab key="for_you" title={`${'For you'} (${documents?.length || 0})`} className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <p className="text-base font-semibold">
-                {`My personnal documents`}
-              </p>
-              
-              <p className="text-sm font-normal text-foreground-500">
-                {`Here, a list of all your creations.`}
-              </p>
-            </div>
-            {loading ?
-              <div className="w-full h-full my-12 flex items-center justify-center">
-                <Spinner size="lg" />
-              </div>:
-              <>
-                { documents?.length ?
-                  <div className="w-full flex flex-col md:!grid md:!grid-cols-2">
-                    {
-                      documents?.map((document, index) => {
-                        return <DocumentCard key={index} document={document} />
-                      })
-                    }
-                  </div> :
-                  <p className="text-sm font-normal text-foreground-500">
-                    {`You have not created a document yet, start by clicking the button at the bottom right of your screen.`}
-                  </p>
-                }
-              </>
-            }
-          </Tab>
-
           <Tab key="latest" title={`${'Latest'} (${latestDocuments?.length || 0})`} className="flex flex-col gap-4">
             <div className="flex flex-col">
               <p className="text-base font-semibold">
@@ -242,6 +211,37 @@ export default function App() {
                   </div> :
                   <p className="text-sm font-normal text-foreground-500">
                     {`There is no public document for now, come back later ;).`}
+                  </p>
+                }
+              </>
+            }
+          </Tab>
+          
+          <Tab key="for_you" title={`${'For you'} (${documents?.length || 0})`} className="flex flex-col gap-4">
+            <div className="flex flex-col">
+              <p className="text-base font-semibold">
+                {`My personnal documents`}
+              </p>
+              
+              <p className="text-sm font-normal text-foreground-500">
+                {`Here, a list of all your creations.`}
+              </p>
+            </div>
+            {loading ?
+              <div className="w-full h-full my-12 flex items-center justify-center">
+                <Spinner size="lg" />
+              </div>:
+              <>
+                { documents?.length ?
+                  <div className="w-full flex flex-col md:!grid md:!grid-cols-2">
+                    {
+                      documents?.map((document, index) => {
+                        return <DocumentCard key={index} document={document} />
+                      })
+                    }
+                  </div> :
+                  <p className="text-sm font-normal text-foreground-500">
+                    {`You have not created a document yet, start by clicking the button at the bottom right of your screen.`}
                   </p>
                 }
               </>

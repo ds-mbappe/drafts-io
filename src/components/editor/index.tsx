@@ -15,14 +15,18 @@ import { TiptapCollabProvider } from "@hocuspocus/provider";
 import { LinkMenu } from './menus/LinkMenu'
 import { TextMenu } from './menus/TextMenu/TextMenu'
 import { toast } from "sonner";
-import { Image, Spinner, Button } from "@nextui-org/react";
+import { Image, Spinner, Button, Avatar } from "@nextui-org/react";
 import { useDropzone } from 'react-dropzone';
 import TableRowMenu from "./extensions/Table/menus/TableRow/TableRow";
 import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
 import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu";
 import { v2 as cloudinary } from "cloudinary";
-import { PencilIcon } from "lucide-react";
+import { CheckIcon, PencilIcon, PlusIcon } from "lucide-react";
 import { motion } from 'framer-motion'
+import moment from "moment";
+import { followUser } from "@/actions/followUser";
+import { checkFollowState } from "@/actions/checkFollowState";
+import { unfollowUser } from "@/actions/unfollowUser";
 
 export default function BlockEditor({ documentId, doc, setSaveStatus, currentUser }: {
   documentId: String,
@@ -35,7 +39,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
 }) {
   const router = useRouter();
   const menuContainerRef = useRef(null);
-  const [isHovering, setIsHovering] = useState(false);
+  const [isFollowingAuthor, setIsFollowingAuthor] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [uploadLoading, setUploadLoading] = useState(false);
 
@@ -178,21 +182,78 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
     }
   })
 
-  const files = acceptedFiles.map((file: any) => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes
-    </li>
-  ));
+  const onToggleFollowUser = useDebouncedCallback(async () => {
+    if (isFollowingAuthor) {
+      await unfollowUser(currentUser?.id, doc?.authorId)
+    } else {
+      await followUser(currentUser?.id, doc?.authorId)
+    }
+    getFollowSate()
+  }, 300)
+
+  const getFollowSate = async () => {
+    const res = await checkFollowState(currentUser?.id, doc?.authorId)
+    setIsFollowingAuthor(res)
+  }
+
+  useEffect(() => {
+    getFollowSate();
+  }, [])
 
   if (!editor || !doc || !currentUser) return
 
   return (
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
       <div className="flex flex-col gap-10 relative w-full mx-auto py-12" ref={menuContainerRef}>
-        <div className="max-w-7xl mx-auto px-20 xl:!px-0">
+        <div className="w-full flex flex-col gap-5 max-w-7xl mx-auto px-20 xl:!px-0">
           <p className="font-medium text-xl">
             {doc?.title}
           </p>
+
+          <div className="w-full flex items-center justify-between">
+            <div className="w-full flex gap-3 items-center">
+              <Avatar
+                isBordered
+                color="primary"
+                showFallback
+                name={doc?.authorFirstname?.split("")?.[0]?.toUpperCase()}
+                size="md"
+                src={doc?.authorAvatar}
+              />
+
+              <div className="flex flex-col">
+                <p className="font-medium">
+                  {`${doc?.authorFirstname} ${doc?.authorLastname}`}
+                </p>
+
+                <div className="flex items-center gap-1">
+                  <p className="text-foreground-500">
+                    {`Published`}
+                  </p>
+
+                  <p className="text-foreground-500">
+                    {moment(doc?.createdAt).format('MMM DD, YYYY')}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {doc?.authorId !== currentUser?.id &&
+              <Button
+                color="primary"
+                variant={isFollowingAuthor ? 'solid' : 'flat'}
+                radius="full"
+                startContent={
+                  <div>
+                    {isFollowingAuthor ? <CheckIcon size={20} /> : <PlusIcon size={20} /> }
+                  </div>
+                }
+                onClick={onToggleFollowUser}
+              >
+                {isFollowingAuthor ? `Following` : `Follow`}
+              </Button>
+            }
+          </div>
         </div>
 
         {doc?.cover ?
@@ -204,17 +265,19 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
               alt="Document Cover Image"
             />
 
-            <Button
-              variant="solid"
-              radius="full"
-              color="default"
-              size="sm"
-              isIconOnly
-              className="absolute -top-3 right-1/2 translate-x-1/2 !z-[10]"
-              onClick={open}
-            >
-              <PencilIcon size={16} className="text-foreground-500" />
-            </Button>
+            {doc?.authorId === currentUser?.id &&
+              <Button
+                variant="solid"
+                radius="full"
+                color="default"
+                size="sm"
+                isIconOnly
+                className="absolute -top-3 right-1/2 translate-x-1/2 !z-[10]"
+                onClick={open}
+              >
+                <PencilIcon size={16} className="text-foreground-500" />
+              </Button>
+            }
           </div> :
           // Upload a cover photo
           <div

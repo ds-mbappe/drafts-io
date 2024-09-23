@@ -2,6 +2,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["omitApi"]
 }
 
 datasource db {
@@ -68,10 +69,10 @@ model Document {
 }
 
 model User {
-  id                        String @default(cuid()) @id
-  email                     String?
+  id                        String   @default(cuid()) @id
+  email                     String?  @unique
   password                  String
-  username                  String?
+  username                  String?  @unique
   avatar                    String?
   firstname                 String?
   lastname                  String?
@@ -85,10 +86,20 @@ model User {
   documents                 Document[]
   createdAt                 DateTime @default(now()) @map(name: "created_at")
   updatedAt                 DateTime @updatedAt @map(name: "updated_at")
-
+  followers                 Follows[] @relation("following")
+  following                 Follows[] @relation("follower")
   accounts                  Account[]
   sessions                  Session[]
 
   @@map(name: "users")
   @@unique([id, avatar, firstname, lastname])
+}
+model Follows {
+  id                        Int     @id @default(autoincrement())
+  follower                  User    @relation("follower", fields: [followerId], references: [id])
+  followerId                String
+  following                 User    @relation("following", fields: [followingId], references: [id])
+  followingId               String
+
+  @@unique([followerId, followingId])
 }

@@ -1,22 +1,20 @@
-// import { PrismaClient } from '@prisma/client';
-
-// let prisma
-
-// if (process.env.NODE_ENV === 'production') {
-//   prisma = new PrismaClient()
-// } else {
-//   if (!global.prisma) {
-//     global.prisma = new PrismaClient()
-//   }
-//   prisma = global.prisma
-// }
-
-// export default prisma
-
 import { PrismaClient } from '@prisma/client';
 
 const prismaClientSingleton = () => {
-  return new PrismaClient()
+  return new PrismaClient({
+    omit: {
+      user: {
+        password: true,
+        updatedAt: true,
+        createdAt: true,
+        isVerified: true,
+        verifyToken: true,
+        verifyTokenExpiry: true,
+        forgotPasswordToken: true,
+        forgotPasswordTokenExpiry: true,
+      }
+    }
+  })
 }
 
 declare const globalThis: {
