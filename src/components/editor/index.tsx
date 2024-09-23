@@ -209,7 +209,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
     if (doc?.authorId !== currentUser?.id) {
       getFollowSate();
     }
-  }, [])
+  }, [currentUser?.id])
 
   if (!editor || !doc || !currentUser) return
 
@@ -221,12 +221,13 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
           style={{ scaleX }}
         />
 
-        <div className="w-full flex flex-col gap-5 max-w-7xl mx-auto px-20 xl:!px-0">
+        <div className="w-full flex flex-col gap-5 max-w-7xl mx-auto px-5 md:!px-20 xl:!px-0">
           <p className="font-medium text-xl">
             {doc?.title}
           </p>
 
-          <div className="w-full flex items-center justify-between">
+          <div className="w-full flex flex-col md:!flex-row items-start md:!items-center gap-5 md:!gap-0 justify-start md:!justify-between">
+            {/* Author details */}
             <div className="w-full flex gap-3 items-center">
               <Avatar
                 isBordered
@@ -255,6 +256,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
               </div>
             </div>
 
+            {/* Follow/Unfollow button */}
             {doc?.authorId !== currentUser?.id &&
               <Button
                 color="primary"
@@ -276,12 +278,17 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
         </div>
 
         {doc?.cover ?
-          <div className="w-full flex justify-center items-center max-w-4xl mx-auto cursor-default relative px-5 md:!px-0">
-            <Image
+          // Show cover if it's present
+          <div className="w-full flex justify-center items-center max-w-3xl mx-auto cursor-default relative px-5 md:!px-0">
+            {/* <Image
               isBlurred
               height={350}
               src={doc?.cover}
               alt="Document Cover Image"
+            /> */}
+            <div
+              className="w-full h-[350px] rounded-[12px] mx-auto max-w-3xl flex justify-center items-center bg-cover bg-center overflow-hidden border border-divider"
+              style={{backgroundImage: `url(${doc?.cover})`}}
             />
 
             {doc?.authorId === currentUser?.id &&
@@ -298,11 +305,11 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
               </Button>
             }
           </div> :
-          // Upload a cover photo
+          // Upload a cover photo if no cover
           <div
             className={isDragActive ?
-              "w-full h-[350px] rounded-[12px] mx-auto max-w-4xl border border-dashed border-primary cursor-default flex items-center justify-center" :
-              "w-full h-[350px] rounded-[12px] mx-auto max-w-4xl border border-divider cursor-default flex items-center justify-center"
+              "w-full h-[350px] rounded-[12px] mx-auto max-w-3xl border border-dashed border-primary cursor-default flex items-center justify-center" :
+              "w-full h-[350px] rounded-[12px] mx-auto max-w-3xl border border-divider cursor-default flex items-center justify-center"
             }
           >
             {uploadLoading ?
