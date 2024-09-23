@@ -12,6 +12,9 @@ export async function POST(request: NextRequest){
 
     // Check if user exists
     const user = await prisma.user.findFirst({
+      omit: {
+        password: false,
+      },
       where: {
         email: email
       }

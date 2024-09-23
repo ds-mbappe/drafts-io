@@ -10,6 +10,10 @@ export async function POST(request: NextRequest) {
     const { email, token, password } = reqBody
 
     const user = await prisma.user.findFirst({
+      omit: {
+        verifyToken: false,
+        forgotPasswordToken: false,
+      },
       where: {
         email: email,
       }
