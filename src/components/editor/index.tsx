@@ -206,7 +206,9 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
   }
 
   useEffect(() => {
-    getFollowSate();
+    if (doc?.authorId !== currentUser?.id) {
+      getFollowSate();
+    }
   }, [])
 
   if (!editor || !doc || !currentUser) return
