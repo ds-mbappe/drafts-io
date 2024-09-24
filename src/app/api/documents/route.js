@@ -16,6 +16,10 @@ export async function GET(req, { params }) {
       })
     } else {
       documents = await prisma.document.findMany({
+        take: 10,
+        orderBy: {
+          createdAt: 'desc'
+        },
         where: {
           private: false
         }

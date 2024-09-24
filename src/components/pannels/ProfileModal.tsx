@@ -20,6 +20,8 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 		email: "",
 		phone: "",
 		avatar: "",
+		followers: null,
+		following: null,
 	});
 
 	const setUser = () => {

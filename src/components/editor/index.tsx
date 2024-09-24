@@ -21,7 +21,7 @@ import TableRowMenu from "./extensions/Table/menus/TableRow/TableRow";
 import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
 import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu";
 import { v2 as cloudinary } from "cloudinary";
-import { BookPlusIcon, CheckIcon, EllipsisIcon, EyeIcon, PencilIcon, PlusIcon, Share2Icon, ShareIcon, Trash2Icon } from "lucide-react";
+import { BookPlusIcon, CheckIcon, EllipsisIcon, EyeIcon, HeartIcon, MessageCircleMoreIcon, PencilIcon, PlusIcon, Share2Icon, ShareIcon, Trash2Icon } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll, useSpring } from 'framer-motion'
 import moment from "moment";
 import { followUser } from "@/actions/followUser";
@@ -142,7 +142,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
         class: 'min-h-full !pt-0 !pr-0 !pb-0 !pl-0 overflow-y-auto',
       },
     },
-  });
+  }, [doc]);
   
   const patchRequest = async (documentId: String, document: any) => {
     const response = await fetch(`/api/document/${documentId}`, {
@@ -252,7 +252,13 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
     }
   }, [currentUser?.id])
 
-  if (!editor || !doc || !currentUser) return
+  if (!editor || !doc || !currentUser) {
+    return (
+      <div className="relative w-full flex min-h-screen flex-1 cursor-text flex-col items-center justify-center">
+        <Spinner size="lg" />
+      </div>
+    )
+  }
 
   return (
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
@@ -290,7 +296,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
                     {`Published`}
                   </p>
 
-                  <p className="text-foreground-500">
+                  <p className="text-foreground-500 text-sm">
                     {moment(doc?.createdAt).format('MMM DD, YYYY')}
                   </p>
                 </div>
@@ -318,12 +324,20 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
           </div>
 
           <div className="w-full flex items-center justify-between py-2 border-y border-divider">
-            <div className="w-full flex-1" />
+            <div className="w-full flex items-center gap-3 flex-1">
+              <Button isIconOnly size={"sm"} variant={"light"}>
+                <HeartIcon className="text-foreground-500" />
+              </Button>
+
+              <Button isIconOnly size={"sm"} variant={"light"}>
+                <MessageCircleMoreIcon className="text-foreground-500" />
+              </Button>
+            </div>
 
             <Dropdown placement="bottom-start">
               <DropdownTrigger>
                 <Button isIconOnly size={"sm"} variant={"light"}>
-                  <EllipsisIcon className="rotate-90" />
+                  <EllipsisIcon className="rotate-90 text-foreground-500" />
                 </Button>
               </DropdownTrigger>
 
@@ -408,7 +422,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
                 size="sm"
                 isIconOnly
                 className="absolute -top-4 right-1/2 translate-x-1/2 !z-[10]"
-                onClick={open}
+                onPress={open}
               >
                 <PencilIcon size={16} className="text-foreground-500" />
               </Button>
@@ -469,7 +483,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
         />
       </div>
 
-      {/* Modal Preview Document */}
+      {/* Modal Preview draft */}
       <Modal hideCloseButton scrollBehavior="inside" isOpen={isOpenPreviewDoc} placement="center" size="3xl" onOpenChange={onOpenChangePreviewDoc}>
         <ModalContent>
           {(onClosePreviewDoc) => (
@@ -485,7 +499,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
                       isBlurred
                       height={350}
                       src={doc?.cover}
-                      alt="Document Cover Image"
+                      alt="Draft Cover Image"
                     />
                   </div>
                 }
@@ -503,22 +517,22 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
         </ModalContent>
       </Modal>
 
-      {/* Publish document */}
+      {/* Publish/Unpublish draft */}
       <Modal isOpen={isOpenPublish} placement="center" onOpenChange={onOpenChangePublish}>
         <ModalContent>
           {(onClosePublish) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                { doc?.private ? "Publish document" : "Unpublish document" }
+                { doc?.private ? "Publish draft" : "Unpublish draft" }
               </ModalHeader>
 
               <ModalBody className="flex flex-col gap-4">
                 {doc?.private ?
                   <p className="text-foreground-500">
-                    {"By default, all your documents are private, that means they are only visible to you and you only. If you choose to publish your document, users from around the world will be able to see it."}
+                    {"By default, all your drafts are private, that means they are only visible to you and you only. If you choose to publish your draft, users from around the world will be able to see it."}
                   </p> :
                   <p className="text-foreground-500">
-                    {"If you choose to unpublish your document, it will be unavailable to the public."}
+                    {"If you choose to unpublish your draft, it will be unavailable to the public."}
                   </p>
                 }
               </ModalBody>
@@ -537,22 +551,22 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
         </ModalContent>
       </Modal>
 
-      {/* Edit document settings */}
+      {/* Edit draft settings */}
 
-      {/* Delete document */}
+      {/* Delete draft */}
       <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                { doc?.authorId === currentUser?.id ? "Delete document" : "Remove Document" }
+                { doc?.authorId === currentUser?.id ? "Delete draft" : "Remove Document" }
               </ModalHeader>
 
               <ModalBody>
                 <p> 
                   { doc?.authorId === currentUser?.id ?
-                    "If you delete this document, other users who have added it will no longer be able to access it" :
-                    "If you remove this document, you will need to import it again in the future."
+                    "If you delete this draft, other users who have added it will no longer be able to access it" :
+                    "If you remove this draft, you will need to import it again in the future."
                   }
                 </p>
               </ModalBody>
