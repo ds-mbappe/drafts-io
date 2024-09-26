@@ -262,13 +262,15 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
 
   return (
     <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
-      <div className="flex flex-col gap-10 relative w-full mx-auto py-12" ref={menuContainerRef}>
-        <motion.div
-          className="z-[50] fixed top-[64px] left-0 right-0 h-1.5 bg-primary origin-[0%]"
-          style={{ scaleX }}
-        />
+      <div className="flex flex-col gap-10 relative w-full h-full mx-auto py-12" ref={menuContainerRef}>
+        {doc?.authorId !== currentUser?.id &&
+          <motion.div
+            className="z-[50] fixed top-[64px] left-0 right-0 h-1.5 bg-primary origin-[0%]"
+            style={{ scaleX }}
+          />
+        }
 
-        <div className="w-full flex flex-col gap-5 max-w-7xl mx-auto px-5 md:!px-20 xl:!px-0">
+        <div className="w-full flex flex-col gap-5 max-w-5xl mx-auto px-5 md:!px-20 xl:!px-0">
           <p className="font-medium text-xl">
             {doc?.title}
           </p>

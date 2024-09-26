@@ -1,3 +1,11 @@
+.hideScroll {
+  ::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 .editableClass {
   .ProseMirror {
     @apply z-0 pl-20 pr-5 md:pr-20 xl:pr-0
@@ -6,7 +14,7 @@
 
 .readOnlyClass {
   .ProseMirror {
-    @apply z-0 px-5
+    @apply z-0 px-5 md:!px-20 xl:!px-0
   }
 }
 
@@ -14,7 +22,7 @@
   @apply caret-foreground-500 outline-0;
 
   & > * {
-    @apply mx-auto max-w-7xl;
+    @apply mx-auto max-w-5xl;
   }
 
   .selection {

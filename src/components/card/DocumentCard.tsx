@@ -2,7 +2,7 @@ import React, { MouseEventHandler } from 'react';
 import moment from 'moment';
 import NextImage from "next/image";
 import { Avatar, Button, Card, CardBody, Chip, Image } from '@nextui-org/react';
-import { BookmarkIcon, CalendarIcon, EllipsisIcon, HeartIcon, MessageCircleIcon } from 'lucide-react';
+import { BookmarkIcon, CalendarIcon, CircleHelpIcon, EllipsisIcon, HeartIcon, MessageCircleIcon } from 'lucide-react';
 import Link from "next/link";
 import { useSidebar } from '../editor/hooks/useSidebar';
 
@@ -42,7 +42,7 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
     <Link href={`/app/${document?.id}`}>
       <Card shadow="none" className="border border-divider cursor-pointer hover:bg-foreground-100 active:scale-[0.95]">
         <CardBody className="flex flex-row gap-4">
-          {document?.cover &&
+          {document?.cover ?
             <div className="hidden sm:!flex border border-divider rounded-large">
               <Image
                 isZoomed
@@ -51,6 +51,9 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
                 src={document?.cover}
                 alt={`${document?.title}_cover`}
               />
+            </div> :
+            <div className="w-[140px] h-[142px] bg-divider justify-center items-center hidden sm:!flex border border-divider rounded-large">
+              <CircleHelpIcon size={50} />
             </div>
           }
 

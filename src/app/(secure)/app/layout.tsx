@@ -19,6 +19,8 @@ export default function AppLayout(props: { children: React.ReactNode }) {
         />
 
         <div className="w-full h-full flex">
+          {/* <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} /> */}
+
           {props.children}
         </div>
       </div>

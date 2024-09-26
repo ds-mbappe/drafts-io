@@ -27,7 +27,8 @@ export async function GET(req, { params }) {
                 followerId: userId,
               }
             }
-          }
+          },
+          private: false
         }
       })
     }
