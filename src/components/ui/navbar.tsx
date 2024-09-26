@@ -70,7 +70,7 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
 
   return (
     <>
-      <Navbar isBordered maxWidth={"full"} className="bg-content1 sticky top-0">
+      <Navbar isBordered maxWidth={"full"} className="bg-content1">
         <NavbarBrand className="flex gap-2">
           {/* Home button */}
           {pathname !== '/app' &&
