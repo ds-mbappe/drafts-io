@@ -9,7 +9,7 @@ export default function AppLayout(props: { children: React.ReactNode }) {
   const leftSidebar = useSidebar();
 
   return (
-    <main className="w-full min-h-screen bg-content1 flex flex-col overflow-hidden">
+    <main className="w-full bg-content1 flex flex-col overflow-hidden">
       <Alert />
 
       <NavbarApp
