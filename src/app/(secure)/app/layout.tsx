@@ -9,19 +9,15 @@ export default function AppLayout(props: { children: React.ReactNode }) {
   const leftSidebar = useSidebar();
 
   return (
-    <main className="min-h-screen bg-content1">
-      <div className="w-full flex flex-col">
-        <Alert />
+    <main className="w-full min-h-screen bg-content1 flex flex-col overflow-hidden">
+      <Alert />
 
-        <NavbarApp
-          isSidebarOpen={leftSidebar.isOpen}
-          toggleSidebar={leftSidebar.toggle}
-        />
+      <NavbarApp
+        isSidebarOpen={leftSidebar.isOpen}
+        toggleSidebar={leftSidebar.toggle}
+      />
 
-        <div className="w-full h-full flex">
-          {props.children}
-        </div>
-      </div>
+      {props.children}
     </main>
   );
 }

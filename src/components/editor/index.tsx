@@ -139,7 +139,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
         autocomplete: 'off',
         autocorrect: 'off',
         autocapitalize: 'off',
-        class: 'min-h-full !pt-0 !pr-0 !pb-0 !pl-0 overflow-y-auto',
+        class: 'min-h-full !pt-0 !pr-0 !pb-0 !pl-0 overflow-y-auto select-all',
       },
     },
   }, [doc]);
