@@ -334,69 +334,71 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
               </Button>
             </div>
 
-            <Dropdown placement="bottom-start">
-              <DropdownTrigger>
-                <Button isIconOnly size={"sm"} variant={"light"}>
-                  <EllipsisIcon className="rotate-90 text-foreground-500" />
-                </Button>
-              </DropdownTrigger>
+            {doc?.authorId === currentUser?.id &&
+              <Dropdown placement="bottom-start">
+                <DropdownTrigger>
+                    <Button isIconOnly size={"sm"} variant={"light"}>
+                      <EllipsisIcon className="rotate-90 text-foreground-500" />
+                    </Button>
+                </DropdownTrigger>
 
-              <DropdownMenu aria-label="Document Actions" variant="flat">
-                {/* Preview */}
-                <DropdownItem
-                  key="preview"
-                  startContent={<EyeIcon />}
-                  onClick={onOpenPreviewDoc}
-                >
-                  {'Preview draft'}
-                </DropdownItem>
+                <DropdownMenu aria-label="Document Actions" variant="flat">
+                  {/* Preview */}
+                  <DropdownItem
+                    key="preview"
+                    startContent={<EyeIcon />}
+                    onClick={onOpenPreviewDoc}
+                  >
+                    {'Preview draft'}
+                  </DropdownItem>
 
-                {/* Publish */}
-                <DropdownItem
-                  key="publish"
-                  startContent={<BookPlusIcon />}
-                  onClick={onOpenPublish}
-                >
-                  {doc?.private ? 'Publish draft' : 'Unpublish draft'}
-                </DropdownItem>
+                  {/* Publish */}
+                  <DropdownItem
+                    key="publish"
+                    startContent={<BookPlusIcon />}
+                    onClick={onOpenPublish}
+                  >
+                    {doc?.private ? 'Publish draft' : 'Unpublish draft'}
+                  </DropdownItem>
 
-                {/* Share */}
-                <DropdownItem
-                  key="share"
-                  startContent={<Share2Icon />}
-                >
-                  {'Share draft'}
-                </DropdownItem>
+                  {/* Share */}
+                  <DropdownItem
+                    key="share"
+                    startContent={<Share2Icon />}
+                  >
+                    {'Share draft'}
+                  </DropdownItem>
 
-                {/* Export */}
-                <DropdownItem
-                  key="export_document"
-                  startContent={<ShareIcon />}
-                >
-                  {'Export draft'}
-                </DropdownItem>
+                  {/* Export */}
+                  <DropdownItem
+                    key="export_document"
+                    startContent={<ShareIcon />}
+                  >
+                    {'Export draft'}
+                  </DropdownItem>
 
-                {/* Edit */}
-                <DropdownItem
-                  key="edit_document"
-                  showDivider
-                  onPress={onOpenEdit}
-                  startContent={<PencilIcon />}
-                >
-                  {'Edit draft settings'}
-                </DropdownItem>
+                  {/* Edit */}
+                  <DropdownItem
+                    key="edit_document"
+                    showDivider
+                    onPress={onOpenEdit}
+                    startContent={<PencilIcon />}
+                  >
+                    {'Edit draft settings'}
+                  </DropdownItem>
 
-                {/* Delete */}
-                <DropdownItem
-                  key="delete_document"
-                  color="danger"
-                  onPress={onOpen}
-                  startContent={<Trash2Icon className="text-danger" />}
-                >
-                  {'Delete draft'}
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+                  {/* Delete */}
+                  <DropdownItem
+                    key="delete_document"
+                    color="danger"
+                    onPress={onOpen}
+                    startContent={<Trash2Icon className="text-danger" />}
+                  >
+                    {'Delete draft'}
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            }
           </div>
         </div>
 

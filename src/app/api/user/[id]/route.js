@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import prisma from '../../../../../lib/prisma';
 
 export async function GET(req, { params }) {
-  const { email } = params
+  const { id } = params
 
   try {
     const user = await prisma.user.findFirst({
       where:  {
-        email: email,
+        id: id,
       }
     });
 

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'sonner';
 import { useSession } from "next-auth/react"
 import { v2 as cloudinary } from "cloudinary";
+import { getFollowData } from '@/actions/getFollowData';
 
 const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 	changeDialogOpenState: (isOpen: boolean) => void | undefined,
@@ -20,8 +21,8 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 		email: "",
 		phone: "",
 		avatar: "",
-		followers: null,
-		following: null,
+		followers: 0,
+		following: 0,
 	});
 
 	const setUser = () => {
@@ -39,7 +40,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 	  	phone: editUser?.phone
     }
 
-    const response = await fetch(`/api/user/${user?.email}`, {
+    const response = await fetch(`/api/user/${user?.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ formData }),
@@ -110,7 +111,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 					avatar: data?.url
 				}
 		
-				const response = await fetch(`/api/user/${user?.email}`, {
+				const response = await fetch(`/api/user/${user?.id}`, {
 					method: "PUT",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ formData }),
@@ -142,8 +143,20 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 		setPictureLoading(false)
 	}
 
+	// Set follow data
+	const setFollowData = async () => {
+		const data = await getFollowData(user?.id);
+		setEditUser((prev: any) => ({
+			...prev,
+			followers: data?.followers_count,
+			following: data?.following_count,
+		}))
+	}
+
+	// Use states
 	useEffect(() => {
-		setEditUser({ ...editUser, ...user })
+		setEditUser({ ...editUser, ...user });
+		setFollowData();
 	}, [user])
 
   return (
@@ -197,13 +210,13 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 
 							{/* Following & Followers */}
 							<div className="flex items-center gap-5">
-								<div className="flex items-center gap-1">
-									<p className="text font-medium">{8.8873}</p>
+								<div className="flex items-center gap-2">
+									<p className="text font-medium">{editUser?.followers}</p>
 									<p className="text-sm font-medium text-foreground-500">{`Followers`}</p>
 								</div>
 
-								<div className="flex items-center gap-1">
-									<p className="text font-medium">{349}</p>
+								<div className="flex items-center gap-2">
+									<p className="text font-medium">{editUser?.following}</p>
 									<p className="text-sm font-medium text-foreground-500">{`Following`}</p>
 								</div>
 							</div>
