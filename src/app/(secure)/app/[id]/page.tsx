@@ -50,6 +50,20 @@ export default function App(props: DocumentProps) {
   // const yDoc = useMemo(() => new YDoc(), [])
   // const hasCollab = parseInt(searchParams.get('noCollab') as string) !== 1
 
+  useEffect(() => {
+    const resizer = () => {
+      if (window.innerWidth > 1024 && !leftSidebar.isOpen) {
+        leftSidebar.toggle()
+      }
+    }
+
+    window.addEventListener('resize', resizer)
+
+    return () => {
+      window.removeEventListener('resize', resizer)
+    }
+  })
+
   const getSaveStatus = (status: String) => {
     setSaveStatus(status)
   }

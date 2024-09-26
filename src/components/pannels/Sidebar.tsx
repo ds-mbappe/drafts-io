@@ -7,7 +7,7 @@ import React, { useEffect, useState, memo, useCallback } from 'react';
 import { LeftSidebarDocumentItem } from "./LeftSidebarDocumentItem";
 import { useDebouncedCallback } from "use-debounce";
 import { Input, Divider, Button } from "@nextui-org/react";
-import { ChevronLeftIcon, SearchIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { getSession } from "next-auth/react";
 
@@ -144,12 +144,11 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         variant="solid"
         radius="full"
         color="primary"
-        size="sm"
         isIconOnly
-        className={cn(!isOpen && 'hover:scale-[1.15] hover:translate-x-[20px] transition-all duration-400', 'z-[20] bg-divider absolute top-1/2 -translate-y-1/2 -right-4')}
+        className={cn(!isOpen && 'hover:scale-[1.15] hover:translate-x-[20px] transition-all duration-400', 'z-[20] bg-divider absolute top-1/2 -translate-y-1/2 -right-[20px]')}
         onPress={onClose}
       >
-        <ChevronLeftIcon />
+        {isOpen ? <ChevronLeftIcon size={28} /> : <ChevronRightIcon size={28} />}
       </Button>
     </div>
   )
