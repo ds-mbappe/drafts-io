@@ -128,19 +128,24 @@ export default function App(props: DocumentProps) {
   // }
 
   return (
-    <div className="w-full h-full flex flex-1">
-      <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.toggle} />
+    <div className="w-full h-[calc(100vh-65px)] flex relative">
+      <Sidebar
+        isOpen={leftSidebar.isOpen}
+        onClose={leftSidebar.toggle}
+      />
 
-      <div className="w-full bg-content1 relative flex overflow-y-auto cursor-text flex-col items-start z-[1] flex-1 p-0 lg:p-6">
-        <Editor
-          documentId={props?.params?.id}
-          doc={doc}
-          currentUser={user}
-          setSaveStatus={getSaveStatus}
-          // yDoc={yDoc}
-          // provider={provider}
-          // updateHistoryData={updateHistoryData}
-        />
+      <div className="w-full h-full flex flex-col flex-1 overflow-y-auto">
+        <div className="w-full max-w-[1024px] mx-auto relative flex cursor-text flex-col z-[1] flex-1">
+          <Editor
+            documentId={props?.params?.id}
+            doc={doc}
+            currentUser={user}
+            setSaveStatus={getSaveStatus}
+            // yDoc={yDoc}
+            // provider={provider}
+            // updateHistoryData={updateHistoryData}
+          />
+        </div>
       </div>
     </div>
   )
