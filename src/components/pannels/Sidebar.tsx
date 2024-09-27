@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState, memo, useCallback } from 'react';
 import { LeftSidebarDocumentItem } from "./LeftSidebarDocumentItem";
 import { useDebouncedCallback } from "use-debounce";
-import { Input, Divider, Button } from "@nextui-org/react";
-import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from "lucide-react";
+import { Input, Divider, Button, Avatar } from "@nextui-org/react";
+import { ChevronLeftIcon, ChevronRightIcon, HomeIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { getSession } from "next-auth/react";
 
@@ -26,7 +26,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
   const windowClassName = cn(
     'absolute h-screen left-0 top-0 xl:relative z-[2] w-0 duration-300 transition-all',
     !isOpen && 'border-r-transparent',
-    isOpen && 'w-80 xl:!static border-r border-r-divider',
+    isOpen && 'w-[350px] xl:!static border-r border-r-divider',
   )
 
   const fetchDocuments = async () => {
@@ -92,37 +92,39 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
 
   return (
     <div className={`${windowClassName} h-full bg-content1 flex flex-col overflow-visible gap-8 xl:!relative hideScroll`}>
-      <div className={`${windowClassName} h-full bg-content1 flex flex-col overflow-x-hidden overflow-y-auto py-8 gap-8 relative`}>
-        <Input
-          key="input-search"
-          variant="bordered"
-          type="text"
-          className="px-4"
-          isClearable
-          placeholder={"Search"}
-          startContent={<SearchIcon/>}
-        />
-        
-        {/* Home button */}
-        <Link href="/app">
-          <div className="w-full flex px-4 py-2 flex-col rounded-md hover:bg-foreground-100">
-            <p className="font-semibold">{'Home'}</p>
-          </div>
-        </Link>
+      <div className={`${windowClassName} ${isOpen ? 'opacity-100 px-4' : 'opacity-0 px-0'} h-full bg-content1 flex flex-col overflow-x-hidden overflow-y-auto py-8 gap-8 relative`}>
+        {/* Profile */}
+        <div className="w-full flex items-center gap-2.5 p-2.5 rounded-[12px] border border-divider cursor-pointer transition-all hover:bg-foreground-100 active:scale-[0.95]">
+          <Avatar
+            as="button"
+            color="primary"
+            showFallback
+            name={user?.firstname?.split("")?.[0]?.toUpperCase()}
+            size="md"
+            src={user?.avatar}
+          />
 
-        <div className="flex flex-col gap-3">
-          {/* Documents */}
           <div className="flex flex-col">
-            <p className="text-base font-semibold px-4">
-              {`My personnal documents`} {`(${documents?.length})`}
+            <p className="font-semibold text-sm">
+              {`${user?.firstname} ${user?.lastname}`}
             </p>
-            
-            <p className="text-sm font-normal text-foreground-500 px-4">
-              {`Here, a list of all your creations.`}
+
+            <p className="text-foreground-500 text-sm">
+              {user?.email}
             </p>
           </div>
+        </div>
 
-          <Divider />
+        <div className="flex flex-col gap-2">
+          {/* Home button */}
+          <Link href="/app">
+            <div className="w-full flex gap-2 p-2.5 items-center rounded-md hover:bg-foreground-100 transition-all active:scale-[0.95]">
+              <HomeIcon size={20} />
+              <p className="font-semibold">{'Home'}</p>
+            </div>
+          </Link>
+
+          {/* <Divider />
 
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-0.5">
@@ -136,7 +138,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
                 )
               }
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

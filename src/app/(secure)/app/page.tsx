@@ -16,7 +16,7 @@ import TableRowMenu from '@/components/editor/extensions/Table/menus/TableRow/Ta
 import TableColumnMenu from '@/components/editor/extensions/Table/menus/TableColumn/TableColumn';
 import { Button, Input, Chip, Tabs, Tab, Skeleton, Spinner } from "@nextui-org/react";
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { CircleArrowRightIcon, CirclePlusIcon, SquarePenIcon } from 'lucide-react';
+import { CircleArrowRightIcon, CirclePlusIcon, SearchIcon, SquarePenIcon } from 'lucide-react';
 import DocumentCard from '@/components/card/DocumentCard';
 import { toast } from "sonner";
 import { getSession } from 'next-auth/react';
@@ -35,6 +35,8 @@ export default function App() {
   useEffect(() => {
     const resizer = () => {
       if (window.innerWidth > 1024 && !leftSidebar.isOpen) {
+        leftSidebar.toggle()
+      } else if (window.innerWidth <= 1023 && leftSidebar.isOpen) {
         leftSidebar.toggle()
       }
     }
@@ -170,6 +172,16 @@ export default function App() {
 
       <div className="w-full h-full flex flex-col flex-1 overflow-y-auto">
         <div className="w-full max-w-[1024px] mx-auto relative flex cursor-text flex-col gap-2 z-[1] flex-1 px-5 2xl:!px-0 pt-8 pb-5">
+          <Input
+            key="input-search"
+            variant="bordered"
+            type="text"
+            className="px-4"
+            isClearable
+            placeholder={"Search"}
+            startContent={<SearchIcon/>}
+          />
+          
           {/* <Input
             type="text"
             placeholder="Search"
@@ -187,7 +199,7 @@ export default function App() {
             aria-label="Tabs"
             fullWidth
             classNames={{
-              tabList: "w-full md:w-1/2 p-0 border-b border-divider",
+              tabList: "w-full p-0 border-b border-divider",
               tabContent: "group-data-[selected=true]:text-primary"
             }}
           >

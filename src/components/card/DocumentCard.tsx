@@ -62,13 +62,15 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
             <div className="flex items-center gap-2.5">
               {/* User */}
               <div className="flex gap-3 items-center">
-                <Avatar
-                  isBordered
-                  color="default"
-                  className="w-6 h-6"
-                  name={document?.authorFirstname?.split("")?.[0]?.toUpperCase()}
-                  src={document?.authorAvatar}
-                />
+                <div>
+                  <Avatar
+                    isBordered
+                    color="default"
+                    className="w-6 h-6"
+                    name={document?.authorFirstname?.split("")?.[0]?.toUpperCase()}
+                    src={document?.authorAvatar}
+                  />
+                </div>
 
                 <p className="line-clamp-1 text-sm font-medium">
                   {`${document?.authorFirstname} ${document?.authorLastname}`}
@@ -82,7 +84,7 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
                     {'•'}
                   </p>
 
-                  <p className="font-medium text-xs text-foreground-500">
+                  <p className="font-medium text-sm text-foreground-500">
                     {document?.topic}
                   </p>
                 </>
