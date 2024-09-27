@@ -12,10 +12,10 @@ export default function AppLayout(props: { children: React.ReactNode }) {
     <main className="w-full bg-content1 flex flex-col h-screen">
       <Alert />
 
-      <NavbarApp
+      {/* <NavbarApp
         isSidebarOpen={leftSidebar.isOpen}
         toggleSidebar={leftSidebar.toggle}
-      />
+      /> */}
 
       <div className="w-full flex flex-col overflow-hidden">
         {props.children}
