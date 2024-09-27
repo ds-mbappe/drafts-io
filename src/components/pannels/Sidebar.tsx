@@ -24,7 +24,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
   // }, [onClose])
 
   const windowClassName = cn(
-    'absolute h-[calc(100vh-65px)] left-0 top-0 xl:relative z-[2] w-0 duration-300 transition-all',
+    'absolute h-screen left-0 top-0 xl:relative z-[2] w-0 duration-300 transition-all',
     !isOpen && 'border-r-transparent',
     isOpen && 'w-80 xl:!static border-r border-r-divider',
   )

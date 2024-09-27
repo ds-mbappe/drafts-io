@@ -261,7 +261,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
   }
 
   return (
-    <>
+    <div className="relative w-full flex cursor-text flex-col items-start overflow-hidden">
       <div className="w-full cursor-text flex flex-col gap-10 relative mx-auto py-12 overflow-hidden" ref={menuContainerRef}>
         <div className="w-full flex flex-col gap-5 mx-auto px-5 md:!px-20 xl:!px-0">
           <p className="font-medium text-xl">
@@ -475,7 +475,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
         }
         <EditorContent
           editor={editor}
-          className={doc?.authorId === currentUser?.id ? 'tiptap editableClass' : 'tiptap readOnlyClass'}
+          className={doc?.authorId === currentUser?.id ? 'tiptap editableClass' : 'tiptap readOnlyClass select-all'}
           spellCheck={"false"}
         />
       </div>
@@ -581,8 +581,6 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
           )}
         </ModalContent>
       </Modal>
-    </>
-    // <div className="relative w-full flex cursor-text flex-col items-start overflow-hidden">
-    // </div>
+    </div>
   )
 }
