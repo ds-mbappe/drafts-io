@@ -261,8 +261,8 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
   }
 
   return (
-    <div className="relative w-full flex min-h-screen cursor-text flex-col items-start">
-      <div className="flex flex-col gap-10 relative w-full h-full mx-auto py-12" ref={menuContainerRef}>
+    <>
+      <div className="w-full cursor-text flex flex-col gap-10 relative mx-auto py-12 overflow-hidden" ref={menuContainerRef}>
         <div className="w-full flex flex-col gap-5 mx-auto px-5 md:!px-20 xl:!px-0">
           <p className="font-medium text-xl">
             {doc?.title}
@@ -581,6 +581,8 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
           )}
         </ModalContent>
       </Modal>
-    </div>
+    </>
+    // <div className="relative w-full flex cursor-text flex-col items-start overflow-hidden">
+    // </div>
   )
 }
