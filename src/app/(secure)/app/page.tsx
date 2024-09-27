@@ -162,7 +162,7 @@ export default function App() {
   }, [])
 
   return (
-    <div className="w-full h-[calc(100vh-65px)] flex relative">
+    <div className="w-full h-[calc(100vh-65px)] flex relative overflow-hidden">
       <Sidebar
         isOpen={leftSidebar.isOpen}
         onClose={leftSidebar.toggle}

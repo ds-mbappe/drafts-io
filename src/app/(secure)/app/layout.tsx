@@ -17,7 +17,7 @@ export default function AppLayout(props: { children: React.ReactNode }) {
         toggleSidebar={leftSidebar.toggle}
       />
 
-      <div className="w-full h-[calc(100vh-65px)] flex flex-col overflow-hidden">
+      <div className="w-full flex flex-col overflow-hidden">
         {props.children}
       </div>
     </main>
