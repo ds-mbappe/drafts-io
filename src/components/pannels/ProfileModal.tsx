@@ -1,4 +1,4 @@
-import { Avatar, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/react'
+import { Avatar, Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/react'
 import { PencilIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'sonner';
@@ -165,8 +165,8 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 				<ModalHeader className="flex flex-col gap-1">{'Profile'}</ModalHeader>
 
 				<ModalBody className="p-4">
-					<div className="w-full flex flex-col gap-4">
-						<div className="w-full flex flex-col gap-2.5 p-3 border border-divider rounded-[8px]">
+					<div className="w-full flex flex-col gap-2">
+						<div className="w-full flex flex-col gap-2.5 p-3">
 							<div className="w-full flex items-center gap-4">
 								<div className="w-[60px] h-[60px] flex relative">
 									<Avatar
@@ -222,8 +222,10 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 							</div>
 						</div>
 
+						<Divider />
+
 						{/* Personal information */}
-						<div className="w-full p-3 flex flex-col gap-3 border border-divider rounded-[8px]">
+						<div className="w-full p-3 flex flex-col gap-3">
 							<div className="h-[32px] flex items-center justify-between">
 								<p className="text-sm font-medium">
 									{'Personal information'}

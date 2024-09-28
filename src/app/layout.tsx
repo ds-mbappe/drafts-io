@@ -32,7 +32,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang="en">
       <body>
         <NextUIProvider>
-          <NextThemesProvider attribute="class" defaultTheme="light">
+          <NextThemesProvider attribute="class" enableSystem defaultTheme="system">
             <SessionProvider session={session}>
               <Alert />
               {children}
