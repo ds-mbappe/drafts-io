@@ -143,10 +143,10 @@ export default function App(props: DocumentProps) {
 
   return (
     <div className="w-full h-screen flex relative overflow-hidden">
-      <Sidebar
+      {/* <Sidebar
         isOpen={leftSidebar.isOpen}
         onClose={leftSidebar.toggle}
-      />
+      /> */}
 
       <div className="w-full h-full flex flex-col flex-1 overflow-y-auto">
         <div className="w-full max-w-[1024px] mx-auto relative flex cursor-text flex-col z-[1] flex-1">
