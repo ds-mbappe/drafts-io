@@ -9,7 +9,7 @@ export default function AppLayout(props: { children: React.ReactNode }) {
   const leftSidebar = useSidebar();
 
   return (
-    <main className="w-full h-[100vh] bg-content1 flex flex-col">
+    <main className="w-full h-[90vh] bg-content1 flex flex-col">
       <Alert />
 
       {/* <NavbarApp
