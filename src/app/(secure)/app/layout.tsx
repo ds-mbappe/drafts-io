@@ -9,7 +9,7 @@ export default function AppLayout(props: { children: React.ReactNode }) {
   const leftSidebar = useSidebar();
 
   return (
-    <main className="w-full bg-content1 flex flex-col h-screen">
+    <main className="w-full bg-content1 flex flex-col">
       <Alert />
 
       {/* <NavbarApp
@@ -17,9 +17,7 @@ export default function AppLayout(props: { children: React.ReactNode }) {
         toggleSidebar={leftSidebar.toggle}
       /> */}
 
-      <div className="w-full flex flex-col overflow-hidden">
-        {props.children}
-      </div>
+      {props.children}
     </main>
   );
 }
