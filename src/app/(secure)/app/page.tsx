@@ -165,10 +165,10 @@ export default function App() {
 
   return (
     <div className="w-full h-screen flex flex-1 relative">
-      <Sidebar
+      {/* <Sidebar
         isOpen={leftSidebar.isOpen}
         onClose={leftSidebar.toggle}
-      />
+      /> */}
 
       <div className="w-full h-full flex flex-col overflow-y-auto">
         <div className="w-full max-w-[1024px] mx-auto relative flex cursor-text flex-col gap-2 z-[1] flex-1 px-5 2xl:!px-0 pt-8 pb-5">
