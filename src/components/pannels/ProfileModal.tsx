@@ -6,15 +6,20 @@ import { useSession } from "next-auth/react"
 import { v2 as cloudinary } from "cloudinary";
 import { getFollowData } from '@/actions/getFollowData';
 
-const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
+const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }: {
 	changeDialogOpenState: (isOpen: boolean) => void | undefined,
 	dialogOpen: boolean,
 	user: any | undefined,
+	onUserUpdated: Function,
 }) => {
 	const [editPersonalInfo, setEditPersonalInfo] = useState(false);
 	const { data: session, status, update } = useSession();
 	const [loading, setLoading] = useState(false);
 	const [isPictureLoading, setPictureLoading] = useState(false);
+	const [follow, setFollow] = useState<any>({
+		followers: 0,
+		following: 0,
+	})
 	const [editUser, setEditUser] = useState<any>({
 		firstname: "",
 		lastname: "",
@@ -24,10 +29,6 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 		followers: 0,
 		following: 0,
 	});
-
-	const setUser = () => {
-		setEditUser({ ...user })
-	};
 
 	const saveUserInfo = async () => {
 	  setLoading(true);
@@ -50,6 +51,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 		if (response.ok) {
 			await update({ ...data.user })
 			setEditPersonalInfo(false);
+			onUserUpdated()
 
 			toast.success(`User updated`, {
 				description: `You have successfully updated your info!`,
@@ -77,7 +79,11 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 
 	const cancelAndRollback = () => {
 		setEditPersonalInfo(prev => !prev);
-		setUser();
+		setEditUser((prev: any) => ({
+			...user,
+			followers: follow?.followers,
+			following: follow?.following,
+		}))
 	}
 
 	const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -146,6 +152,10 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 	// Set follow data
 	const setFollowData = async () => {
 		const data = await getFollowData(user?.id);
+		setFollow({
+			followers: data?.followers_count,
+			following: data?.following_count,
+		})
 		setEditUser((prev: any) => ({
 			...prev,
 			followers: data?.followers_count,
@@ -168,6 +178,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 					<div className="w-full flex flex-col gap-2">
 						<div className="w-full flex flex-col gap-2.5 p-3">
 							<div className="w-full flex items-center gap-4">
+								{/* Avatar + Edit */}
 								<div className="w-[60px] h-[60px] flex relative">
 									<Avatar
 										src={editUser?.avatar}
@@ -197,13 +208,14 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 									/>
 								</div>
 
+								{/* Firstname + Lastname + Email */}
 								<div className="flex flex-col">
 									<p className="text-base font-medium">
-										{`${editUser?.firstname} ${editUser?.lastname}`}
+										{`${user?.firstname} ${user?.lastname}`}
 									</p>
 
 									<p className="text-sm font-normal text-foreground-500">
-										{editUser?.email}
+										{user?.email}
 									</p>
 								</div>
 							</div>
@@ -288,11 +300,11 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user }: {
 										variant='bordered'
 										id="email"
 										type="email"
-										isDisabled={!editPersonalInfo}
+										isDisabled
 										autoComplete="new-password"
 										placeholder="Email"
 										value={editUser.email}
-										onValueChange={(value) => setEditUser({...editUser, email: value})}
+										// onValueChange={(value) => setEditUser({...editUser, email: value})}
 									/>
 								</div>
 

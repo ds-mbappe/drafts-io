@@ -2,7 +2,7 @@
 
 import { toast } from "sonner";
 import { cn } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import React, { useEffect, useState, memo, useCallback } from 'react';
 import { LeftSidebarDocumentItem } from "./LeftSidebarDocumentItem";
 import { useDebouncedCallback } from "use-debounce";
@@ -15,11 +15,10 @@ import { useTheme } from "next-themes";
 
 const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => void }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { resolvedTheme, setTheme } = useTheme();
   const [user, setUser] = useState<any>()
-  const [search, setSearch] = useState("");
   const [mounted, setMounted] = useState(false)
-  const [documents, setDocuments] = useState([]);
   const { isOpen: isOpenProfile, onOpen, onOpenChange } = useDisclosure();
     
   // const handlePotentialClose = useCallback(() => {
@@ -48,43 +47,14 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }
   }
 
-  const fetchDocuments = async () => {
-    const data = await fetch(`/api/documents/${user?.id}`, {
-      method: 'GET',
-      headers: { "content-type": "application/json" },
-    });
-    
-    if (data?.ok) {
-      const realDocs = await data.json();
-      setDocuments(realDocs.documents)
-    } else {
-      toast.error(`Error`, {
-        description: `Error fetching documents, please try again!`,
-        duration: 5000,
-        important: true,
-      })
-    }
+  const fetchSession = async () => {
+    const response = await getSession()
+    setUser(response?.user)
   }
 
-  const onDocumentEdited = async (document: any) => {
-    // let editedDocument: any = documents?.find((doc: any) => doc?._id === document?.id)
-    // if (editedDocument) {
-    //   editedDocument.name = document?.name
-    // }
+  const onUserUpdated = () => {
+    fetchSession()
   }
-
-  // Search
-  const filterDocuments = useDebouncedCallback(async(e: any) => {
-    // let dataPersonal = documents
-
-    // dataPersonal = dataPersonal.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
-
-    // const res = await fetch(`/api/documents/${user?.email}?search=${e?.target?.value}`, {
-    //   method: "GET",
-    //   headers: { "Content-Type": "application/json" },
-    // })
-    // const data = await res.json()
-  }, 300)
 
   useEffect(() => {
     setMounted(true)
@@ -92,26 +62,10 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
 
   // Fetch session
   useEffect(() => {
-    const fetchSession = async () => {
-      const response = await getSession()
-      setUser(response?.user)
-    }
-
     fetchSession().catch((error) => {
       console.log(error)
     })
   }, [])
-
-  // Fetch documents
-  useEffect(() => {
-    if (user?.email) {
-      const justFetch = async() => {
-        await fetchDocuments()
-      }
-
-      justFetch();
-    }
-  }, [user]);
 
   if (!mounted) {
     return null
@@ -119,7 +73,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
 
   return (
     <div className={`${windowClassName} h-full bg-content1 flex flex-col overflow-visible gap-8 xl:!relative hideScroll`}>
-      <div className={`${windowClassName} ${isOpen ? 'opacity-100 px-4' : 'opacity-0 px-0'} h-full bg-content1 flex flex-col overflow-x-hidden overflow-y-auto py-8 gap-8 relative`}>
+      <div className={`${windowClassName} ${isOpen ? 'opacity-100 px-4' : 'opacity-0 px-0'} h-full bg-content1 flex flex-col overflow-x-hidden overflow-y-auto py-8 gap-5 relative`}>
         {/* Profile */}
         <div className="w-full flex items-center gap-2.5 p-2.5 rounded-[12px] border border-divider cursor-pointer transition-all hover:bg-foreground-100 active:scale-[0.95]" onClick={onOpenChange}>
           <Avatar
@@ -151,7 +105,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         <div className="flex flex-col gap-2">
           {/* Home button */}
           <Link href="/app">
-            <div className="w-full flex gap-2 p-2.5 items-center rounded-[12px] hover:bg-foreground-100 transition-all active:scale-[0.95]">
+            <div className={cn('w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]', pathname === '/app' && '!text-foreground !bg-foreground-100')}>
               <HomeIcon size={20} />
               <p className="font-semibold">{'Home'}</p>
             </div>
@@ -208,20 +162,6 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
             <LogOutIcon size={20} />
             <p className="font-semibold">{'Sign out'}</p>
           </div>
-
-          {/* <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-0.5">
-              {
-                documents?.map((doc: any) =>
-                  <LeftSidebarDocumentItem
-                    key={doc?.id}
-                    user={user}
-                    document={doc}
-                  />
-                )
-              }
-            </div>
-          </div> */}
         </div>
       </div>
 
@@ -229,14 +169,15 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         user={user}
         changeDialogOpenState={onOpenChange}
         dialogOpen={isOpenProfile}
+        onUserUpdated={onUserUpdated}
       />
 
       <Button
-        variant="solid"
+        variant={isOpen ? 'solid' : 'flat'}
         radius="full"
         color="primary"
         isIconOnly
-        className={cn(!isOpen && 'hover:scale-[1.15] hover:translate-x-[20px] transition-all duration-400', 'z-[20] bg-divider absolute top-1/2 -translate-y-1/2 -right-[20px]')}
+        className={cn(!isOpen && 'hover:scale-[1.15] hover:translate-x-[20px] transition-all duration-400', 'z-[20] absolute top-1/2 -translate-y-1/2 -right-[20px]')}
         onPress={onClose}
       >
         {isOpen ? <ChevronLeftIcon size={28} /> : <ChevronRightIcon size={28} />}
