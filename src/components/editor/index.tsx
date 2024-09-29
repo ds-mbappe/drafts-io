@@ -475,7 +475,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
         }
         <EditorContent
           editor={editor}
-          className={doc?.authorId === currentUser?.id ? 'tiptap editableClass' : 'tiptap readOnlyClass select-all'}
+          className={doc?.authorId === currentUser?.id ? 'tiptap editableClass' : 'tiptap readOnlyClass select-text'}
           spellCheck={"false"}
         />
       </div>
