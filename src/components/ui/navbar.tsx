@@ -174,11 +174,11 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
         </NavbarContent>
       </Navbar>
 
-      <ProfileModal
+      {/* <ProfileModal
         user={user}
         changeDialogOpenState={onOpenChange}
         dialogOpen={isOpen}
-      />
+      /> */}
     </>
   )
 })
