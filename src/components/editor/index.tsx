@@ -262,7 +262,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
 
   return (
     <div className="relative w-full flex cursor-text flex-col items-start">
-      <div className="w-full cursor-text flex flex-col gap-10 relative mx-auto" ref={menuContainerRef}>
+      <div className="w-full cursor-text flex flex-col gap-10 relative mx-auto py-12" ref={menuContainerRef}>
         <div className="w-full flex flex-col gap-5 mx-auto px-5 md:!px-20 xl:!px-0">
           <p className="font-medium text-xl">
             {doc?.title}
