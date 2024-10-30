@@ -39,6 +39,10 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     });
   }
 
+  const goToMyLibrary = () => {
+    router.push(`/app/library?id=${user?.id}`)
+  }
+
   const changeTheme = () => {
     if (resolvedTheme === 'dark') {
       setTheme('light')
@@ -112,9 +116,9 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
           </Link>
 
           {/* Library */}
-          <div className="w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]">
+          <div className="w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]" onClick={goToMyLibrary}>
             <BookTextIcon size={20} />
-            <p className="font-semibold">{'Library'}</p>
+            <p className="font-semibold">{'My library'}</p>
           </div>
 
           {/* Saved Drafts */}
