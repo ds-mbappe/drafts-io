@@ -50,20 +50,6 @@ export default function App(props: DocumentProps) {
   // const yDoc = useMemo(() => new YDoc(), [])
   // const hasCollab = parseInt(searchParams.get('noCollab') as string) !== 1
 
-  useEffect(() => {
-    const resizer = () => {
-      if (window.innerWidth > 1024 && !leftSidebar.isOpen) {
-        leftSidebar.toggle()
-      }
-    }
-
-    window.addEventListener('resize', resizer)
-
-    return () => {
-      window.removeEventListener('resize', resizer)
-    }
-  })
-
   const getSaveStatus = (status: String) => {
     setSaveStatus(status)
   }
@@ -143,11 +129,6 @@ export default function App(props: DocumentProps) {
 
   return (
     <div className="w-full h-screen flex flex-1 relative">
-      <Sidebar
-        isOpen={leftSidebar.isOpen}
-        onClose={leftSidebar.toggle}
-      />
-
       <div className="w-full h-full flex flex-col overflow-y-auto">
         <div className="w-full max-w-[1024px] mx-auto relative flex cursor-text flex-col z-[1] flex-1">
           <Editor
@@ -155,6 +136,7 @@ export default function App(props: DocumentProps) {
             doc={doc}
             currentUser={user}
             setSaveStatus={getSaveStatus}
+            onTitleUpdated={fetchDocument}
             // yDoc={yDoc}
             // provider={provider}
             // updateHistoryData={updateHistoryData}

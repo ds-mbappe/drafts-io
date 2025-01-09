@@ -15,23 +15,24 @@ import { TiptapCollabProvider } from "@hocuspocus/provider";
 import { LinkMenu } from './menus/LinkMenu'
 import { TextMenu } from './menus/TextMenu/TextMenu'
 import { toast } from "sonner";
-import { Image, Spinner, Button, Avatar, Tooltip, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
+import { Image, Spinner, Button, Avatar, Tooltip, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input } from "@nextui-org/react";
 import { useDropzone } from 'react-dropzone';
 import TableRowMenu from "./extensions/Table/menus/TableRow/TableRow";
 import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
 import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu";
 import { v2 as cloudinary } from "cloudinary";
-import { BookPlusIcon, CheckIcon, EllipsisIcon, EyeIcon, HeartIcon, MessageCircleMoreIcon, PencilIcon, PlusIcon, Share2Icon, ShareIcon, Trash2Icon } from "lucide-react";
+import { BookPlusIcon, CheckIcon, CircleCheckIcon, CircleXIcon, EllipsisIcon, EyeIcon, HeartIcon, MessageCircleMoreIcon, PencilIcon, PlusIcon, Share2Icon, ShareIcon, Trash2Icon } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll, useSpring } from 'framer-motion'
 import moment from "moment";
 import { followUser } from "@/actions/followUser";
 import { checkFollowState } from "@/actions/checkFollowState";
 import { unfollowUser } from "@/actions/unfollowUser";
 
-export default function BlockEditor({ documentId, doc, setSaveStatus, currentUser }: {
+export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpdated, currentUser }: {
   documentId: String,
   doc: any,
   setSaveStatus: Function,
+  onTitleUpdated: Function,
   // yDoc: YDoc | null,
   currentUser: any,
   // provider: TiptapCollabProvider | null,
@@ -48,6 +49,8 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
   const [isFollowingAuthor, setIsFollowingAuthor] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [uploadLoading, setUploadLoading] = useState(false);
+  const [isUpdatingTitle, setIsUpdatingTitle] = useState(false);
+  const [titleValue, setTitleValue] = useState("");
   const motionProps = {
     variants: {
       exit: {
@@ -246,6 +249,31 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
     setIsFollowingAuthor(res)
   }
 
+  const updateTitleWithTitleValue = async () => {
+    await fetch(`/api/document/${documentId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: titleValue
+      }),
+    })
+    onTitleUpdated(documentId);
+    setIsUpdatingTitle(false);
+  }
+
+  const resetField = () => {
+    setTitleValue(doc?.title);
+    setIsUpdatingTitle(false);
+  }
+
+  const isTitleInvalid = () => {
+    return (titleValue === doc?.title || titleValue?.length < 1)
+  }
+
+  useEffect(() => {
+    setTitleValue(doc?.title);
+  }, [])
+
   useEffect(() => {
     if (doc?.authorId !== currentUser?.id) {
       getFollowSate();
@@ -264,9 +292,65 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
     <div className="relative w-full flex cursor-text flex-col items-start">
       <div className="w-full cursor-text flex flex-col gap-10 relative mx-auto py-12" ref={menuContainerRef}>
         <div className="w-full flex flex-col gap-5 mx-auto px-5 md:!px-20 xl:!px-0">
-          <p className="font-medium text-xl">
-            {doc?.title}
-          </p>
+          <div className="flex gap-1 justify-between items-start">
+            { isUpdatingTitle ?
+                <Input
+                  isClearable
+                  errorMessage={"Enter at lest one character !"}
+                  isInvalid={titleValue?.length < 1}
+                  value={titleValue}
+                  variant="bordered"
+                  label="Document title"
+                  onValueChange={setTitleValue}
+                />
+                :
+                <p className="font-medium text-xl">
+                  {doc?.title}
+                </p>
+            }
+
+            <div className="flex flex-col items-center justify-center">
+              { isUpdatingTitle ?
+                <>
+                  <Button
+                    variant="light"
+                    radius="full"
+                    size="sm"
+                    isIconOnly
+                    isDisabled={isTitleInvalid()}
+                    color={isTitleInvalid() ? 'default' : 'success'}
+                    className={isTitleInvalid() ? '!cursor-not-allowed' : '!cursor-pointer'}
+                    onPress={updateTitleWithTitleValue}
+                  >
+                    <CircleCheckIcon />
+                  </Button>
+
+                  <Button
+                    variant="light"
+                    radius="full"
+                    color="danger"
+                    size="sm"
+                    isIconOnly
+                    onPress={resetField}
+                  >
+                    <CircleXIcon />
+                  </Button>
+                </>
+                :
+                <Button
+                  variant="light"
+                  radius="full"
+                  color="default"
+                  size="sm"
+                  isIconOnly
+                  onPress={() => setIsUpdatingTitle(!isUpdatingTitle)}
+                >
+                  <PencilIcon size={12} className="text-foreground-500" />
+                </Button>
+              }
+            </div>
+
+          </div>
 
           <div className="w-full flex flex-col md:!flex-row items-start md:!items-center gap-5 md:!gap-0 justify-start md:!justify-between">
             {/* Author details */}
@@ -413,7 +497,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, currentUse
 
             {doc?.authorId === currentUser?.id &&
               <Button
-                variant="solid"
+                variant="light"
                 radius="full"
                 color="default"
                 size="sm"

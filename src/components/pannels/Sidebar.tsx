@@ -1,13 +1,10 @@
 "use client"
 
-import { toast } from "sonner";
 import { cn } from '@/lib/utils';
 import { useRouter, usePathname } from 'next/navigation';
-import React, { useEffect, useState, memo, useCallback } from 'react';
-import { LeftSidebarDocumentItem } from "./LeftSidebarDocumentItem";
-import { useDebouncedCallback } from "use-debounce";
-import { Input, Divider, Button, Avatar, Dropdown, DropdownTrigger, DropdownMenu, useDisclosure } from "@nextui-org/react";
-import { BookmarkIcon, BookOpenTextIcon, BookTextIcon, ChevronLeftIcon, ChevronRightIcon, CircleHelpIcon, ClockIcon, HomeIcon, LayoutListIcon, LogOutIcon, MoonIcon, SearchIcon, SettingsIcon, SunIcon } from "lucide-react";
+import React, { useEffect, useState, memo } from 'react';
+import { Divider, Button, Avatar, useDisclosure } from "@nextui-org/react";
+import { BookmarkIcon, BookOpenTextIcon, BookTextIcon, ChevronLeftIcon, ChevronRightIcon, CircleHelpIcon, ClockIcon, HomeIcon, LayoutListIcon, LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
 import Link from "next/link";
 import { getSession, signOut } from "next-auth/react";
 import ProfileModal from "./ProfileModal";
@@ -20,12 +17,6 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
   const [user, setUser] = useState<any>()
   const [mounted, setMounted] = useState(false)
   const { isOpen: isOpenProfile, onOpen, onOpenChange } = useDisclosure();
-    
-  // const handlePotentialClose = useCallback(() => {
-  //   if (window.innerWidth < 1024) {
-  //     onClose()
-  //   }
-  // }, [onClose])
 
   const windowClassName = cn(
     'absolute h-screen left-0 top-0 xl:relative z-[2] w-0 duration-300 transition-all',
@@ -181,6 +172,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         radius="full"
         color="primary"
         isIconOnly
+        title={isOpen ? 'Close sidebar (Alt + S)' : 'Open sidebar (Alt + S)'}
         className={cn(!isOpen && 'hover:scale-[1.15] hover:translate-x-[20px] transition-all duration-400', 'z-[20] absolute top-1/2 -translate-y-1/2 -right-[20px]')}
         onPress={onClose}
       >

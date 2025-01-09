@@ -357,4 +357,6 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }
   )
 }
 
+ProfileModal.displayName = 'ProfileModal'
+
 export default ProfileModal

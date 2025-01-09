@@ -32,22 +32,6 @@ export default function App() {
   const [saveStatus, setSaveStatus] = useState("Synced")
   const [latestDocuments, setLatestDocuments] = useState([])
 
-  useEffect(() => {
-    const resizer = () => {
-      if (window.innerWidth > 1024 && !leftSidebar.isOpen) {
-        leftSidebar.toggle()
-      } else if (window.innerWidth <= 1023 && leftSidebar.isOpen) {
-        leftSidebar.toggle()
-      }
-    }
-
-    window.addEventListener('resize', resizer)
-
-    return () => {
-      window.removeEventListener('resize', resizer)
-    }
-  })
-
   // Fetch documents
   const fetchDocuments = async () => {
     setIsLoading(true);
@@ -68,19 +52,6 @@ export default function App() {
     }
     setIsLoading(false)
   }
-
-  // Search
-  const filterDocuments = useDebouncedCallback(async(e: any) => {
-    let dataPersonal = documents
-
-    dataPersonal = dataPersonal.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
-
-    const res = await fetch(`/api/documents?search=${e?.target?.value}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    })
-    const data = await res.json()
-  }, 300)
 
   const goToNewDocument = async () => {
     let formData = {
@@ -117,6 +88,7 @@ export default function App() {
     }
   }
 
+  // Fetch latest documents
   useEffect(() => {
     const fetchLatestDocuments = async() => {
       setIsLoadingLatest(true)
@@ -141,6 +113,7 @@ export default function App() {
     fetchLatestDocuments();
   }, [])
 
+  // Fetch user documents
   useEffect(() => {
     if (user?.email) {
       const justFetch = async() => {
@@ -163,13 +136,21 @@ export default function App() {
     })
   }, [])
 
+  // Search
+  const filterDocuments = useDebouncedCallback(async(e: any) => {
+    let dataPersonal = documents
+
+    dataPersonal = dataPersonal.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
+
+    const res = await fetch(`/api/documents?search=${e?.target?.value}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+    const data = await res.json()
+  }, 300)
+
   return (
     <div className="w-full h-screen flex flex-1 relative">
-      <Sidebar
-        isOpen={leftSidebar.isOpen}
-        onClose={leftSidebar.toggle}
-      />
-
       <div className="w-full h-full flex flex-col overflow-y-auto">
         <div className="w-full max-w-[1024px] mx-auto relative flex cursor-text flex-col gap-2 z-[1] flex-1 px-5 2xl:!px-0 pt-8 pb-5">
           <Input
@@ -218,7 +199,7 @@ export default function App() {
                       }
                     </div> :
                     <p className="text-sm font-normal text-foreground-500">
-                      {`You have not created a document yet, start by clicking the button at the bottom right of your screen.`}
+                      {`You are currently not following anybody. Start following people to see their posts`}
                     </p>
                   }
                 </>
