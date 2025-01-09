@@ -272,7 +272,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpd
 
   useEffect(() => {
     setTitleValue(doc?.title);
-  }, [])
+  }, [doc?.title])
 
   useEffect(() => {
     if (doc?.authorId !== currentUser?.id) {
