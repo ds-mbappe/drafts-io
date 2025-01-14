@@ -1,5 +1,5 @@
-import { toast } from "sonner";
 import { v2 as cloudinary } from "cloudinary";
+import { errorToast } from "@/actions/showToast";
 import { DragEvent, useCallback, useEffect, useRef, useState } from 'react';
 
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
@@ -29,11 +29,7 @@ export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) =
         const data = await result.json()
         onUpload(data?.url)
       } catch (errPayload: any) {
-        toast.error(`Error`, {
-          description: errPayload?.response?.data?.error || 'Something went wrong',
-          duration: 5000,
-          important: true,
-        })
+        errorToast(errPayload?.response?.data?.error || 'Something went wrong');
       }
       setLoading(false)
     },

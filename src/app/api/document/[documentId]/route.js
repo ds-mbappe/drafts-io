@@ -25,14 +25,15 @@ export async function PUT(req, { params }) {
   try {
     const { documentId } = params;
     const body = await req.json();
+    const documentData = body.formData
     const updatedDocument = await prisma.document.update({
       where: {
         id: documentId
       },
-      data: { ...body }
+      data: { ...documentData }
     });
 
-    return NextResponse.json({ updatedDocument }, { status: 200 });
+    return NextResponse.json({ updatedDocument }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ message: "Error", error }, { status: 500 });
   }

@@ -1,35 +1,20 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import Navbar from "@/components/ui/navbar";
-import { EditorContent, useEditor } from "@tiptap/react";
-import { ExtensionKit } from '../../../components/editor/extensions/extension-kit';
-import ContentItemMenu from '@/components/editor/menus/ContentItemMenu';
-import { useDebouncedCallback } from 'use-debounce';
-import Sidebar from '@/components/pannels/Sidebar';
-import History from '@tiptap/extension-history';
-import { useSidebar } from '@/components/editor/hooks/useSidebar';
 import 'katex/dist/katex.min.css';
-import { LinkMenu } from '../../../components/editor/menus/LinkMenu'
-import TextMenu from '@/components/editor/menus/TextMenu/TextMenu';
-import TableRowMenu from '@/components/editor/extensions/Table/menus/TableRow/TableRow';
-import TableColumnMenu from '@/components/editor/extensions/Table/menus/TableColumn/TableColumn';
-import { Button, Input, Chip, Tabs, Tab, Skeleton, Spinner } from "@nextui-org/react";
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { CircleArrowRightIcon, CirclePlusIcon, SearchIcon, SquarePenIcon } from 'lucide-react';
-import DocumentCard from '@/components/card/DocumentCard';
-import { toast } from "sonner";
-import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { getSession } from 'next-auth/react';
+import React, { useEffect, useState } from 'react';
+import { SearchIcon, SquarePenIcon } from 'lucide-react';
+import DocumentCard from '@/components/card/DocumentCard';
+import { errorToast, successToast } from '@/actions/showToast';
+import { Button, Input, Tabs, Tab, Spinner } from "@nextui-org/react";
 
 export default function App() {
   const router = useRouter();
-  const leftSidebar = useSidebar();
   const [user, setUser] = useState<any>()
   const [loading, setIsLoading] = useState(false)
   const [loadingLatest, setIsLoadingLatest] = useState(false)
   const [documents, setDocuments] = useState([])
-  const [saveStatus, setSaveStatus] = useState("Synced")
   const [latestDocuments, setLatestDocuments] = useState([])
 
   // Fetch documents
@@ -44,11 +29,7 @@ export default function App() {
       const realDocs = await data.json();
       setDocuments(realDocs.documents)
     } else {
-      toast.error(`Error`, {
-        description: `Error fetching documents, please try again!`,
-        duration: 5000,
-        important: true,
-      })
+      errorToast("Error fetching documents, please try again!");
     }
     setIsLoading(false)
   }
@@ -72,19 +53,12 @@ export default function App() {
 
     if (res?.ok) {
       await res.json().then((data) => {
-        toast.success(`Success`, {
-          description: `Document created successfully!`,
-          duration: 5000,
-          important: true,
-        })
+        successToast("Document created successfully!");
+
         router.push(`/app/${data?.document?.id}`)
       })
     } else {
-      toast.error(`Error`, {
-        description: `Error creating new document.`,
-        duration: 5000,
-        important: true,
-      })
+      errorToast("Error creating new document, please try again!");
     }
   }
 
@@ -99,11 +73,7 @@ export default function App() {
       const data = await res.json();
       
       if (!res.ok) {
-        toast.error(`Error`, {
-          description: `Error fetching documents, please verify your network and try again.`,
-          duration: 5000,
-          important: true,
-        })
+        errorToast("Error fetching documents, please verify your network and try again.");
       } else {
         setLatestDocuments(data?.documents);
       }
@@ -136,19 +106,6 @@ export default function App() {
     })
   }, [])
 
-  // Search
-  const filterDocuments = useDebouncedCallback(async(e: any) => {
-    let dataPersonal = documents
-
-    dataPersonal = dataPersonal.filter((doc: any) => doc?.name?.toLowerCase()?.startsWith(e.target.value))
-
-    const res = await fetch(`/api/documents?search=${e?.target?.value}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    })
-    const data = await res.json()
-  }, 300)
-
   return (
     <div className="w-full h-screen flex flex-1 relative">
       <div className="w-full h-full flex flex-col overflow-y-auto">
@@ -162,16 +119,6 @@ export default function App() {
             placeholder={"Search"}
             startContent={<SearchIcon/>}
           />
-          
-          {/* <Input
-            type="text"
-            placeholder="Search"
-            variant="bordered"
-            className="w-full md:!w-1/2"
-            startContent={<MagnifyingGlassIcon className="w-6 h-6" />}
-            isClearable
-            onChange={filterDocuments}
-          /> */}
 
           <Tabs
             key="tabs"

@@ -1,9 +1,9 @@
 import React from 'react';
 import moment from 'moment';
-import { Avatar, Card, CardBody, Image } from '@nextui-org/react';
-import { CalendarIcon, CircleHelpIcon } from 'lucide-react';
 import Link from "next/link";
 import { DocumentCardTypeprops } from '@/lib/types';
+import { CalendarIcon, CircleHelpIcon } from 'lucide-react';
+import { Avatar, Card, CardBody, Chip, Image } from '@nextui-org/react';
 
 const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
   const toggleLike = (e: any) => {
@@ -42,38 +42,33 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
           }
 
           <div className="flex flex-1 flex-col gap-2">
-            {/* User & topic */}
-            <div className="flex items-center gap-2.5">
-              {/* User */}
-              <div className="flex gap-3 items-center">
-                <div>
-                  <Avatar
-                    isBordered
-                    color="default"
-                    className="w-6 h-6"
-                    name={document?.authorFirstname?.split("")?.[0]?.toUpperCase()}
-                    src={document?.authorAvatar}
-                  />
-                </div>
-
-                <p className="line-clamp-1 text-sm font-medium">
-                  {`${document?.authorFirstname} ${document?.authorLastname}`}
-                </p>
+            {/* User */}
+            <div className="flex gap-3 items-center">
+              <div>
+                <Avatar
+                  isBordered
+                  color="default"
+                  className="w-6 h-6"
+                  name={document?.authorFirstname?.split("")?.[0]?.toUpperCase()}
+                  src={document?.authorAvatar}
+                />
               </div>
 
-              {/* Topic */}
-              {document?.topic &&
-                <>
-                  <p className="font-medium text-foreground-500">
-                    {'•'}
-                  </p>
+              <p className="line-clamp-1 text-sm font-medium">
+                {`${document?.authorFirstname} ${document?.authorLastname}`}
+              </p>
+            </div>
 
+            {/* Topic */}
+            { document?.topic &&
+              <div className="flex items-center gap-2">
+                <Chip variant="flat">
                   <p className="font-medium text-sm text-foreground-500">
                     {document?.topic}
                   </p>
-                </>
-              }
-            </div>
+                </Chip>
+              </div>
+            }
 
             {/* Title & caption */}
             <div className="h-full flex flex-col gap-1 flex-1">

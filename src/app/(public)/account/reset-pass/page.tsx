@@ -1,13 +1,12 @@
 "use client"
 
-import { Input, Button } from "@nextui-org/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { toast } from "sonner";
+import { Input, Button } from "@nextui-org/react";
 import { useSearchParams } from "next/navigation";
-import { sendEmail } from "@/app/_helpers/mailer";
-import Link from "next/link";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { errorToast, successToast } from "@/actions/showToast";
 
 export default function ResetPass() {
   const router = useRouter();
@@ -38,24 +37,10 @@ export default function ResetPass() {
       });
 
       if (response?.ok) {
-        toast.success(`Password reset`, {
-          description: `You can now sign in with your new password !`,
-          duration: 3000,
-          action: {
-            label: "Close",
-            onClick: () => {},
-          },
-        })
+        successToast("You can now sign in with your new password !");
         router.push(`/account/sign-in`);
       } else {
-        toast.error(`Error`, {
-          description: `An error occured, please try again !`,
-          duration: 3000,
-          action: {
-            label: "Close",
-            onClick: () => {},
-          },
-        })
+        errorToast("An error occured, please try again !");
       }
     } catch (error) {
       console.log(error)
@@ -74,23 +59,9 @@ export default function ResetPass() {
       });
 
       if (response?.ok) {
-        toast.success(`Email sent`, {
-          description: `We just sent you an email, follow the instructions to reset your password !`,
-          duration: 3000,
-          action: {
-            label: "Close",
-            onClick: () => {},
-          },
-        })
+        successToast("We just sent you an email, follow the instructions to reset your password !");
       } else {
-        toast.error(`Error`, {
-          description: `An error occured, please try again !`,
-          duration: 3000,
-          action: {
-            label: "Close",
-            onClick: () => {},
-          },
-        })
+        errorToast("An error occured, please try again !");
       }
     } catch (error) {
       console.log(error)

@@ -14,7 +14,6 @@ import type { Doc as YDoc } from 'yjs'
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import { LinkMenu } from './menus/LinkMenu'
 import { TextMenu } from './menus/TextMenu/TextMenu'
-import { toast } from "sonner";
 import { Image, Spinner, Button, Avatar, Tooltip, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input } from "@nextui-org/react";
 import { useDropzone } from 'react-dropzone';
 import TableRowMenu from "./extensions/Table/menus/TableRow/TableRow";
@@ -22,71 +21,63 @@ import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
 import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu";
 import { v2 as cloudinary } from "cloudinary";
 import { BookPlusIcon, CheckIcon, CircleCheckIcon, CircleXIcon, EllipsisIcon, EyeIcon, HeartIcon, MessageCircleMoreIcon, PencilIcon, PlusIcon, Share2Icon, ShareIcon, Trash2Icon } from "lucide-react";
-import { motion, useMotionValueEvent, useScroll, useSpring } from 'framer-motion'
 import moment from "moment";
 import { followUser } from "@/actions/followUser";
 import { checkFollowState } from "@/actions/checkFollowState";
 import { unfollowUser } from "@/actions/unfollowUser";
+import { deleteDocument, updateDocument } from "@/actions/document";
+import { errorToast, successToast } from "@/actions/showToast";
+import ModalPreviewDraft from "../pannels/ModalPreviewDraft";
+import ModalValidation from "../pannels/ModalValidation";
 
-export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpdated, currentUser }: {
+export default function BlockEditor({ documentId, doc, setSaveStatus, onDocumentUpdated, currentUser }: {
   documentId: String,
   doc: any,
   setSaveStatus: Function,
-  onTitleUpdated: Function,
+  onDocumentUpdated: Function,
   // yDoc: YDoc | null,
   currentUser: any,
   // provider: TiptapCollabProvider | null,
   // updateHistoryData: Function | null,
 }) {
   const router = useRouter();
-  const { scrollYProgress } = useScroll();
   const menuContainerRef = useRef(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { isOpen: isOpenEdit, onOpen: onOpenEdit, onOpenChange: onOpenChangeEdit } = useDisclosure();
   const { isOpen: isOpenPublish, onOpen: onOpenPublish, onOpenChange: onOpenChangePublish } = useDisclosure();
   const { isOpen: isOpenPreviewDoc, onOpen: onOpenPreviewDoc, onOpenChange: onOpenChangePreviewDoc } = useDisclosure();
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isFollowingAuthor, setIsFollowingAuthor] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [uploadLoading, setUploadLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
   const [isUpdatingTitle, setIsUpdatingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState("");
-  const motionProps = {
-    variants: {
-      exit: {
-        opacity: 0,
-        transition: {
-          duration: 0.15,
-          ease: "easeIn",
-        }
-      },
-      enter: {
-        opacity: 1,
-        transition: {
-          duration: 0.15,
-          ease: "easeOut",
-        }
-      },
-    },
-  }
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
 
-  // Simulate a delay in saving.
+  // Update document, simulate a delay in saving.
   const debouncedUpdates = useDebouncedCallback(async ({ editor }: { editor: Editor }) => {
     const editorData = editor?.getHTML();
-    await patchRequest(documentId, editorData);
-    setSaveStatus("Synced");
-    // setTimeout(() => {
-    //   if (provider?.isAuthenticated) {
-    //     setSaveStatus("Synced");
-    //   } else {
-    //     setSaveStatus("Not Synced");
-    //   }
-    // }, 500);
+    const formData = {
+      content: editorData,
+      word_count: editor?.storage.characterCount?.words(),
+      character_count: editor?.storage.characterCount?.characters(),
+    }
+    const response = await updateDocument(documentId, formData);
+
+    if (!response.ok) {
+      // setSaveStatus("Waiting to Save.");
+      errorToast(`Failed to update document, please try again !`)
+    } else {
+      // if (provider?.isAuthenticated) {
+      //   setSaveStatus("Synced");
+      // } else {
+      //   setSaveStatus("Not Synced");
+      // }
+  
+      // Force a cache invalidation.
+      startTransition(() => {
+        router.refresh();
+      });
+    }
   }, 1000);
 
   // const UpdateHistoryVersions = useDebouncedCallback(() => {
@@ -94,28 +85,6 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpd
   //     // console.log("Can save new version")
   //   }
   // }, 30000)
-
-  const ErrorToast = (text: string) => {
-    toast.error(`Error`, {
-      description: text,
-      duration: 3000,
-      action: {
-        label: "Close",
-        onClick: () => {},
-      },
-    })
-  }
-
-  const SuccessToast = (text: string) => {
-    toast.success(``, {
-      description: text,
-      duration: 3000,
-      action: {
-        label: "Close",
-        onClick: () => {},
-      },
-    })
-  }
 
   const { editor } = useBlockEditor({
     // yDoc,
@@ -146,35 +115,8 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpd
       },
     },
   }, [doc]);
-  
-  const patchRequest = async (documentId: String, document: any) => {
-    const response = await fetch(`/api/document/${documentId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        content: document,
-        word_count: editor?.storage.characterCount?.words(),
-        character_count: editor?.storage.characterCount?.characters(),
-      }),
-    });
 
-    if (!response.ok) {
-      setSaveStatus("Waiting to Save.");
-      ErrorToast(`Failed to update document, please try again !`)
-    }
-
-    // if (provider?.isAuthenticated) {
-    //   setSaveStatus("Synced");
-    // } else {
-    //   setSaveStatus("Not Synced");
-    // }
-
-    // Force a cache invalidation.
-    startTransition(() => {
-      router.refresh();
-    });
-  }
-
+  // Update document cover
   const onDrop = useCallback(async(acceptedFiles: any) => {
     setUploadLoading(true)
     const file = acceptedFiles?.[0]
@@ -198,23 +140,21 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpd
 			})
       if (result?.ok) {
         const data = await result.json()
-        const response = await fetch(`/api/document/${documentId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            cover: data?.url,
-            word_count: editor?.storage.characterCount?.words(),
-            character_count: editor?.storage.characterCount?.characters(),
-          }),
-        });
+        const formData = {
+          cover: data?.url,
+          word_count: editor?.storage.characterCount?.words(),
+          character_count: editor?.storage.characterCount?.characters(),
+        }
+        const response = await updateDocument(documentId, formData);
 
         if (response?.ok) {
-          SuccessToast(`Document cover updated!`)
+          successToast(`Document cover updated!`)
+          onDocumentUpdated();
         } else {
-          ErrorToast(`Error updating document cover, please try again!`)
+          errorToast(`Error updating document cover, please try again!`)
         }
       } else {
-        ErrorToast(`Error uploading image, please try again!`)
+        errorToast(`Error uploading image, please try again!`)
       }
     }
     setUploadLoading(false)
@@ -226,13 +166,14 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpd
     noKeyboard: true,
     onDrop,
     onDropRejected(fileRejections, event) {
-      ErrorToast(`File format not supported, accepted formats are ".png, .jpg, .jpeg, .gif, .avif, .webp"`)
+      errorToast(`File format not supported, accepted formats are ".png, .jpg, .jpeg, .gif, .avif, .webp"`)
     },
     accept: {
       'image/png': ['.png', '.jpg', '.jpeg', '.gif', '.avif', '.webp']
     }
   })
 
+  // Follow/unfollow toggle
   const onToggleFollowUser = useDebouncedCallback(async () => {
     setIsFollowLoading(true)
     if (isFollowingAuthor) {
@@ -249,26 +190,59 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpd
     setIsFollowingAuthor(res)
   }
 
-  const updateTitleWithTitleValue = async () => {
-    await fetch(`/api/document/${documentId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: titleValue
-      }),
-    })
-    onTitleUpdated(documentId);
+  // Update title
+  const updateTitleWithTitleValue = useDebouncedCallback(async () => {
+    const formData = { title: titleValue }
+    const response = await updateDocument(documentId, formData);
+  
+    if (!response.ok) {
+      errorToast(`An error occurred, please try again.`);
+    } else {
+      successToast("Title updated successfully.");
+      onDocumentUpdated(documentId);
+    }
+    onDocumentUpdated(documentId);
     setIsUpdatingTitle(false);
-  }
+  }, 300);
 
-  const resetField = () => {
+  // Reset title field
+  const resetTitleInput = () => {
     setTitleValue(doc?.title);
     setIsUpdatingTitle(false);
   }
 
+  // Checks if the title is valid
   const isTitleInvalid = () => {
     return (titleValue === doc?.title || titleValue?.length < 1)
   }
+
+  // Publish/Unpublish document
+  const onPublishDocument = useDebouncedCallback(async () => {
+    setActionLoading(true);
+    const formData = { private: !doc?.private }
+    const response = await updateDocument(documentId, formData);
+  
+    if (!response.ok) {
+      errorToast(`An error occurred, please try again.`);
+    } else {
+      successToast(doc?.private ? `Your document is now available for everyone.` : `Your document has been removed from the public space.`);
+      onOpenChangePublish();
+      onDocumentUpdated(documentId);
+    }
+    setActionLoading(false);
+  }, 300);
+
+  // Delete document
+  const onDelete = useDebouncedCallback( async() => {
+    const response = await deleteDocument(documentId);
+  
+    if (!response.ok) {
+      errorToast(`An error occurred, please try again.`);
+    } else {
+      successToast("Document deleted successfully.");
+      router.back();
+    }
+  }, 300)
 
   useEffect(() => {
     setTitleValue(doc?.title);
@@ -331,7 +305,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpd
                     color="danger"
                     size="sm"
                     isIconOnly
-                    onPress={resetField}
+                    onPress={resetTitleInput}
                   >
                     <CircleXIcon />
                   </Button>
@@ -345,7 +319,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpd
                   isIconOnly
                   onPress={() => setIsUpdatingTitle(!isUpdatingTitle)}
                 >
-                  <PencilIcon size={12} className="text-foreground-500" />
+                  <PencilIcon size={16} className="text-foreground-500" />
                 </Button>
               }
             </div>
@@ -366,7 +340,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpd
               />
 
               <div className="flex flex-col">
-                <p className="font-medium cursor-default">
+                <p className="w-fit font-medium cursor-default hover:underline transition-all">
                   Written by {doc?.authorId === currentUser?.id ? `You` : `${doc?.authorFirstname} ${doc?.authorLastname}`}
                 </p>
 
@@ -440,30 +414,12 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpd
                     {doc?.private ? 'Publish draft' : 'Unpublish draft'}
                   </DropdownItem>
 
-                  {/* Share */}
-                  <DropdownItem
-                    key="share"
-                    startContent={<Share2Icon />}
-                  >
-                    {'Share draft'}
-                  </DropdownItem>
-
                   {/* Export */}
                   <DropdownItem
                     key="export_document"
                     startContent={<ShareIcon />}
                   >
                     {'Export draft'}
-                  </DropdownItem>
-
-                  {/* Edit */}
-                  <DropdownItem
-                    key="edit_document"
-                    showDivider
-                    onPress={onOpenEdit}
-                    startContent={<PencilIcon />}
-                  >
-                    {'Edit draft settings'}
                   </DropdownItem>
 
                   {/* Delete */}
@@ -484,12 +440,6 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpd
         {doc?.cover ?
           // Show cover if it's present
           <div className="w-full flex justify-center items-center max-w-3xl mx-auto cursor-default relative px-5 md:!px-0">
-            {/* <Image
-              isBlurred
-              height={350}
-              src={doc?.cover}
-              alt="Document Cover Image"
-            /> */}
             <div
               className="w-full h-[350px] rounded-[12px] max-w-3xl flex justify-center items-center bg-cover bg-center overflow-hidden border border-divider"
               style={{backgroundImage: `url(${doc?.cover})`}}
@@ -564,107 +514,34 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onTitleUpd
         />
       </div>
 
-      {/* Modal Preview draft */}
-      <Modal hideCloseButton scrollBehavior="inside" isOpen={isOpenPreviewDoc} placement="center" size="3xl" onOpenChange={onOpenChangePreviewDoc}>
-        <ModalContent>
-          {(onClosePreviewDoc) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                {"Preview of "} {document?.title}
-              </ModalHeader>
+      <ModalPreviewDraft doc={doc} isOpen={isOpenPreviewDoc} previewEditor={previewEditor} onOpenChange={onOpenChangePreviewDoc} />
 
-              <ModalBody className="w-full flex flex-col gap-8 !px-4 !py-0 overflow-y-auto">
-                {doc?.cover &&
-                  <div className="w-full mx-auto flex justify-center pt-8">                    
-                    <Image
-                      isBlurred
-                      height={350}
-                      src={doc?.cover}
-                      alt="Draft Cover Image"
-                    />
-                  </div>
-                }
+      <ModalValidation
+        title={doc?.private ? "Publish draft" : "Unpublish draft"}
+        body={doc?.private ?
+          "By default, all your drafts are private, that means they are only visible to you and you only. If you choose to publish your draft, users from around the world will be able to see it." :
+          "If you choose to unpublish your draft, it will be unavailable to the public."
+        }
+        cancelText={"Cancel"}
+        validateText={doc?.private ? "Publish" : "Unpublish"}
+        isOpen={isOpenPublish}
+        validateLoading={actionLoading}
+        onOpenChange={onOpenChangePublish}
+        onCancel={onOpenChangePublish}
+        onValidate={onPublishDocument}
+      />
 
-                <EditorContent editor={previewEditor} />
-              </ModalBody>
-
-              <ModalFooter>
-                <Button color="default" variant="light" onPress={onClosePreviewDoc}>
-                  {'Close'}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-
-      {/* Publish/Unpublish draft */}
-      <Modal isOpen={isOpenPublish} placement="center" onOpenChange={onOpenChangePublish}>
-        <ModalContent>
-          {(onClosePublish) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                { doc?.private ? "Publish draft" : "Unpublish draft" }
-              </ModalHeader>
-
-              <ModalBody className="flex flex-col gap-4">
-                {doc?.private ?
-                  <p className="text-foreground-500">
-                    {"By default, all your drafts are private, that means they are only visible to you and you only. If you choose to publish your draft, users from around the world will be able to see it."}
-                  </p> :
-                  <p className="text-foreground-500">
-                    {"If you choose to unpublish your draft, it will be unavailable to the public."}
-                  </p>
-                }
-              </ModalBody>
-
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClosePublish}>
-                  {'Cancel'}
-                </Button>
-
-                <Button color="primary">
-                  { doc?.private ? "Publish" : "Unpublish" }
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-
-      {/* Edit draft settings */}
-
-      {/* Delete draft */}
-      <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                { doc?.authorId === currentUser?.id ? "Delete draft" : "Remove Document" }
-              </ModalHeader>
-
-              <ModalBody>
-                <p> 
-                  { doc?.authorId === currentUser?.id ?
-                    "If you delete this draft, other users who have added it will no longer be able to access it" :
-                    "If you remove this draft, you will need to import it again in the future."
-                  }
-                </p>
-              </ModalBody>
-
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  {'Cancel'}
-                </Button>
-
-                <Button color="primary">
-                  { doc?.authorId === currentUser?.id ? "Delete" : "Remove" }
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <ModalValidation
+        title={doc?.authorId === currentUser?.id ? "Delete draft" : "Remove Document"}
+        body={"Are you sure you want to delete this draft ? If you choose to proceed, other users will no longer be able to access it"}
+        cancelText={"Cancel"}
+        validateText={"Delete"}
+        isOpen={isOpen}
+        validateLoading={false}
+        onOpenChange={onOpenChange}
+        onCancel={onOpenChange}
+        onValidate={onDelete}
+      />
     </div>
   )
 }

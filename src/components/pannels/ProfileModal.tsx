@@ -1,10 +1,11 @@
-import { Avatar, Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/react'
-import { PencilIcon } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
-import { toast } from 'sonner';
-import { useSession } from "next-auth/react"
+import { PencilIcon } from 'lucide-react';
+import { useSession } from "next-auth/react";
 import { v2 as cloudinary } from "cloudinary";
+import React, { useEffect, useState } from 'react';
 import { getFollowData } from '@/actions/getFollowData';
+import { errorToast, successToast } from '@/actions/showToast';
+import { Avatar, Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/react';
+import { useDebouncedCallback } from 'use-debounce';
 
 const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }: {
 	changeDialogOpenState: (isOpen: boolean) => void | undefined,
@@ -30,8 +31,8 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }
 		following: 0,
 	});
 
-	const saveUserInfo = async () => {
-	  setLoading(true);
+	const saveUserInfo = useDebouncedCallback( async() => {
+		setLoading(true);
 
 	  let formData = {
       id: user?.id,
@@ -53,22 +54,14 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }
 			setEditPersonalInfo(false);
 			onUserUpdated()
 
-			toast.success(`User updated`, {
-				description: `You have successfully updated your info!`,
-				duration: 5000,
-				important: true,
-			})
+			successToast("You have successfully updated your info!");
 		} else {
-			toast.success(`Error`, {
-				description: `Error updating user info`,
-				duration: 5000,
-				important: true,
-			})
+			errorToast("Error updating your info!");
 		}
 		
 		setLoading(false);
 		changeDialogOpenState(false)
-	}
+	}, 300)
 
 	const onOpenPicker = () => {
 		const picker = document.getElementById('picker')
@@ -126,24 +119,12 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }
 				if (response?.ok) {
 					setEditUser({ ...editUser, avatar: data?.url })
 
-					toast.success(`Success`, {
-						description: 'Successfully updated avatar!',
-						duration: 5000,
-						important: true,
-					})
+					successToast("Successfully updated avatar!");
 				} else {
-					toast.error(`Error`, {
-						description: 'Error updating avatar. Please try again!',
-						duration: 5000,
-						important: true,
-					})
+					errorToast("Error updating avatar. Please try again!");
 				}
 			} else {
-				toast.error(`Error`, {
-					description: 'Error updating avatar. Please try again!',
-					duration: 5000,
-					important: true,
-				})
+				errorToast("Error updating avatar. Please try again!");
 			}
 		}
 		setPictureLoading(false)

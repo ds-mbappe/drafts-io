@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { errorToast, successToast } from "./showToast";
 
 export const followUser = async (followerId: string, followingId: string) => {
   const formData = {
@@ -14,25 +14,11 @@ export const followUser = async (followerId: string, followingId: string) => {
   if (res?.ok) {
     const data = await res.json();
 
-    toast.success(``, {
-      description: `User followed successfully`,
-      duration: 3000,
-      action: {
-        label: "Close",
-        onClick: () => {},
-      },
-    })
+    successToast("User followed successfully");
   
     return data
   } else {
-    toast.error(``, {
-      description: `Error following user`,
-      duration: 3000,
-      action: {
-        label: "Close",
-        onClick: () => {},
-      },
-    })
+    errorToast("Error following user");
 
     return null
   }

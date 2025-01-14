@@ -8,21 +8,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Sidebar from '@/components/pannels/Sidebar';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
 import { JWT } from "node-jsonwebtoken";
-import { useSidebar } from '@/components/editor/hooks/useSidebar';
 import 'katex/dist/katex.min.css';
-import { toast } from 'sonner';
 import { getSession } from 'next-auth/react';
+import { getDocument } from '@/actions/document';
+import { errorToast } from '@/actions/showToast';
 
 type DocumentProps = {
   params: {
     id: string;
   };
 };
-
-// type CharacterCountType = {
-//   words: Function,
-//   characters: Function
-// }
 
 // interface Payload {
 //   iat: number,
@@ -35,7 +30,6 @@ type DocumentProps = {
 export default function App(props: DocumentProps) {
   // const router = useRouter();
   // const docId = props.params.id
-  const leftSidebar = useSidebar();
   // const searchParams = useSearchParams();
   const [doc, setDocument] = useState<any>(null);
   // const [words, setWords] = useState(0)
@@ -55,24 +49,13 @@ export default function App(props: DocumentProps) {
   }
 
   const fetchDocument = async (documentId: String) => {
-    const data = await fetch(`/api/document/${documentId}`, {
-      method: 'GET',
-      headers: { "content-type": "application/json" },
-    });
+    const response = await getDocument(documentId);
 
-    if (data?.ok) {
-      const realDoc = await data.json();
-      setDocument(realDoc?.document)
+    if (response?.ok) {
+      const data = await response.json();
+      setDocument(data?.document)
     } else {
-      toast.error(`Error`, {
-        description: `An error occured, please try again !`,
-        duration: 3000,
-        action: {
-          label: "Close",
-          onClick: () => {},
-        },
-      })
-      // router.push("/not-found")
+      errorToast("An error occured, please try again !");
     }
   }
 
@@ -136,7 +119,7 @@ export default function App(props: DocumentProps) {
             doc={doc}
             currentUser={user}
             setSaveStatus={getSaveStatus}
-            onTitleUpdated={fetchDocument}
+            onDocumentUpdated={fetchDocument}
             // yDoc={yDoc}
             // provider={provider}
             // updateHistoryData={updateHistoryData}

@@ -1,4 +1,4 @@
-import { toast } from "sonner"
+import { errorToast, successToast } from "./showToast";
 
 export const unfollowUser = async (followerId: string, followingId: string) => {
   const formData = {
@@ -14,25 +14,11 @@ export const unfollowUser = async (followerId: string, followingId: string) => {
   if (res?.ok) {
     const data = await res.json();
 
-    toast.success(``, {
-      description: `User unfollowed successfully`,
-      duration: 3000,
-      action: {
-        label: "Close",
-        onClick: () => {},
-      },
-    })
+    successToast("User unfollowed successfully");
     
     return data
   } else {
-    toast.error(``, {
-      description: `Error unfollowing user`,
-      duration: 3000,
-      action: {
-        label: "Close",
-        onClick: () => {},
-      },
-    })
+    errorToast("Error unfollowing user");
 
     return null
   }

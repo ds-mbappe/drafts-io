@@ -1,8 +1,8 @@
-import { DocumentCardTypeprops } from '@/lib/types'
-import { Card, CardBody, CardFooter, CardHeader, Image } from '@nextui-org/react';
+import React from 'react';
 import moment from 'moment';
 import Link from 'next/link';
-import React from 'react';
+import { DocumentCardTypeprops } from '@/lib/types';
+import { Card, CardBody, CardFooter, CardHeader, Image } from '@nextui-org/react';
 
 const DocumentCardInLibrary = ({ document }: { document: DocumentCardTypeprops }) => {
   return (

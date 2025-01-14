@@ -1,14 +1,11 @@
 "use client"
 
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, Tooltip, useDisclosure } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, useDisclosure } from "@nextui-org/react";
 import { memo, useEffect, useState } from 'react';
-import { PanelTopClose, PanelLeft, MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CirclePlayIcon, CircleUserRoundIcon, HomeIcon } from 'lucide-react';
-import HistoryDropdown from '../pannels/HistoryDropdown/HistoryDropdown';
+import { MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CircleUserRoundIcon, HomeIcon } from 'lucide-react';
 import { signOut, getSession } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { CreateNewDocument } from "../pannels/CreateNewDocument";
 import { usePathname, useRouter } from "next/navigation";
-import ProfileModal from "../pannels/ProfileModal";
 
 const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, provider }: any) => {
   const motionProps = {

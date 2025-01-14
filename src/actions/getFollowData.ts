@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { errorToast } from "./showToast";
 
 export const getFollowData = async (id: string) => {
 
@@ -11,14 +11,7 @@ export const getFollowData = async (id: string) => {
   
     return data?.followData
   } else {
-    toast.error(``, {
-      description: `Error getting followers/folling data`,
-      duration: 3000,
-      action: {
-        label: "Close",
-        onClick: () => {},
-      },
-    })
+    errorToast("Error getting followers/folling data");
 
     return null
   }

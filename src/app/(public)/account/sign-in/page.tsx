@@ -1,14 +1,14 @@
 "use client"
 
-import { Input, Button } from "@nextui-org/react";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { Icon } from '@iconify/react';
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Icon } from '@iconify/react';
-import { toast } from "sonner";
+import { useSearchParams } from 'next/navigation';
+import { Input, Button } from "@nextui-org/react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useSearchParams } from 'next/navigation'
+import { errorToast, successToast } from "@/actions/showToast";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -65,14 +65,7 @@ export default function SignInPage() {
     if (response?.ok) {
       router.push("/app");
     } else {
-      toast.error(`Error`, {
-        description: `Incorrect credentials, please try again !`,
-        duration: 3000,
-        action: {
-          label: "Close",
-          onClick: () => {},
-        },
-      })
+      errorToast("Incorrect credentials, please try again !");
       setLoading(false);
     }
   }
@@ -84,10 +77,7 @@ export default function SignInPage() {
       if (email) {
         setUser({...user, email: email})
 
-        toast.success(`User created successfully !`, {
-          description: `You may now sign in with the email <b>${email}</b> and your password.<br/>Don't forget to verify your account later !`,
-          duration: 3000,
-        })
+        successToast(`You may now sign in with the email <b>${email}</b> and your password.<br/>Don't forget to verify your account later !`);
       }
     }
 

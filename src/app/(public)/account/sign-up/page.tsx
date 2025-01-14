@@ -1,13 +1,13 @@
 "use client"
 
-import { Input, Button } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import Link from "next/link";
+import { useState } from "react";
 import { Icon } from '@iconify/react';
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { errorToast } from "@/actions/showToast";
+import { Input, Button } from "@nextui-org/react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { toast } from "sonner";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -62,14 +62,7 @@ export default function SignInPage() {
     if (response?.ok) {
       router.push(`/account/sign-in?email=${user?.email}`);
     } else {
-      toast.error(`Error`, {
-        description: `An error occured, please try again !`,
-        duration: 3000,
-        action: {
-          label: "Close",
-          onClick: () => {},
-        },
-      })
+      errorToast("An error occured, please try again !");
     }
     setLoading(false)
   }

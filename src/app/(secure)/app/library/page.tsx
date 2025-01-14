@@ -1,18 +1,17 @@
 "use client"
 
-import DocumentCardInLibrary from '@/components/card/DocumentCardInLibrary';
-import { Spinner, Tab, Tabs } from '@nextui-org/react'
 import { getSession } from 'next-auth/react';
+import { errorToast } from '@/actions/showToast';
 import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
-import { toast } from 'sonner';
+import React, { useEffect, useState } from 'react';
+import { Spinner, Tab, Tabs } from '@nextui-org/react';
+import DocumentCardInLibrary from '@/components/card/DocumentCardInLibrary';
 
 const Library = () => {
   const [loading, setIsLoading] = useState(false);
   const [documents, setDocuments] = useState([]);
   const [user, setUser] = useState<any>();
   const params = useSearchParams();
-  const userId = params?.get('id');
 
   // Fetch session
   useEffect(() => {
@@ -37,11 +36,7 @@ const Library = () => {
       const realDocs = await data.json();
       setDocuments(realDocs.documents)
     } else {
-      toast.error(`Error`, {
-        description: `Error fetching documents, please try again!`,
-        duration: 5000,
-        important: true,
-      })
+      errorToast("Error fetching documents, please try again!");
     }
     setIsLoading(false)
   }
