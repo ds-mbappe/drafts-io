@@ -1,25 +1,9 @@
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 import moment from 'moment';
-import NextImage from "next/image";
-import { Avatar, Button, Card, CardBody, Chip, Image } from '@nextui-org/react';
-import { BookmarkIcon, CalendarIcon, CircleHelpIcon, EllipsisIcon, HeartIcon, MessageCircleIcon } from 'lucide-react';
+import { Avatar, Card, CardBody, Image } from '@nextui-org/react';
+import { CalendarIcon, CircleHelpIcon } from 'lucide-react';
 import Link from "next/link";
-import { useSidebar } from '../editor/hooks/useSidebar';
-
-export type DocumentCardTypeprops = {
-  id: string,
-  private: Boolean,
-  locked: Boolean | undefined
-  authorFirstname: string,
-  authorLastname: string,
-  authorAvatar: string,
-  createdAt: string,
-  updatedAt: string,
-  cover: string | undefined,
-  topic: string,
-  title: string,
-  content: string | null,
-}
+import { DocumentCardTypeprops } from '@/lib/types';
 
 const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
   const toggleLike = (e: any) => {
