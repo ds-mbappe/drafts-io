@@ -8,21 +8,21 @@ export default function AppLayout(props: { children: React.ReactNode }) {
   const leftSidebar = useSidebar();
 
   // Auto Resizer
-  useEffect(() => {
-    const resizer = () => {
-      if (window.innerWidth > 1024 && !leftSidebar.isOpen) {
-        leftSidebar.toggle()
-      } else if (window.innerWidth <= 1023 && leftSidebar.isOpen) {
-        leftSidebar.toggle()
-      }
-    }
+  // useEffect(() => {
+  //   const resizer = () => {
+  //     if (window.innerWidth > 1024 && !leftSidebar.isOpen) {
+  //       leftSidebar.toggle()
+  //     } else if (window.innerWidth <= 1023 && leftSidebar.isOpen) {
+  //       leftSidebar.toggle()
+  //     }
+  //   }
 
-    window.addEventListener('resize', resizer)
+  //   window.addEventListener('resize', resizer)
 
-    return () => {
-      window.removeEventListener('resize', resizer)
-    }
-  })
+  //   return () => {
+  //     window.removeEventListener('resize', resizer)
+  //   }
+  // })
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

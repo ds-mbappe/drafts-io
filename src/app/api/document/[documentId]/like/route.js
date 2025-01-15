@@ -108,7 +108,7 @@ export async function DELETE(req, { params }) {
       where: { documentId: documentId },
     });
 
-    return NextResponse.json({ message: "Document unliked successfully!", likeCount }, { status: 200 });
+    return NextResponse.json({ message: "Document disliked successfully!", likeCount }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: "Failed to unlike the document.", error: error.message }, { status: 500 });
   }

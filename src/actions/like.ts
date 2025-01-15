@@ -7,20 +7,21 @@ const getLikes = async (documentId: String, userId: String) => {
   return res;
 }
 
-const likeDocument = async (documentId: String, formData?: Object) => {
+const likeDocument = async (documentId: String, userId?: String) => {
   const res = await fetch(`/api/document/${documentId}/like`, {
     method: 'POST',
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ formData }),
+    body: JSON.stringify({ userId }),
   });
 
   return res;
 }
 
-const dislikeDocument = async (documentId: String) => {
+const dislikeDocument = async (documentId: String, userId?: String) => {
   const res = await fetch(`/api/document/${documentId}/like`, {
     method: 'DELETE',
     headers: { "content-type": "application/json" },
+    body: JSON.stringify({ userId }),
   });
 
   return res;

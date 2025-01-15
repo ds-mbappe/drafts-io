@@ -14,7 +14,7 @@ import type { Doc as YDoc } from 'yjs'
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import { LinkMenu } from './menus/LinkMenu'
 import { TextMenu } from './menus/TextMenu/TextMenu'
-import { Image, Spinner, Button, Avatar, Tooltip, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input } from "@nextui-org/react";
+import { Image, Spinner, Button, Avatar, Tooltip, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Badge } from "@nextui-org/react";
 import { useDropzone } from 'react-dropzone';
 import TableRowMenu from "./extensions/Table/menus/TableRow/TableRow";
 import TableColumnMenu from "./extensions/Table/menus/TableColumn/TableColumn";
@@ -29,7 +29,7 @@ import { deleteDocument, updateDocument } from "@/actions/document";
 import { errorToast, successToast } from "@/actions/showToast";
 import ModalPreviewDraft from "../pannels/ModalPreviewDraft";
 import ModalValidation from "../pannels/ModalValidation";
-import { getLikes } from "@/actions/like";
+import { dislikeDocument, getLikes, likeDocument } from "@/actions/like";
 
 export default function BlockEditor({ documentId, doc, setSaveStatus, onDocumentUpdated, currentUser }: {
   documentId: String,
@@ -46,6 +46,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { isOpen: isOpenPublish, onOpen: onOpenPublish, onOpenChange: onOpenChangePublish } = useDisclosure();
   const { isOpen: isOpenPreviewDoc, onOpen: onOpenPreviewDoc, onOpenChange: onOpenChangePreviewDoc } = useDisclosure();
+  const [likeStateLoading, setLikeStateLoading] = useState(false);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isFollowingAuthor, setIsFollowingAuthor] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -188,12 +189,31 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
     setIsFollowLoading(false)
   }, 300)
 
+  // Like/Dislike toggle
+  const onToggleLike = useDebouncedCallback(async () => {
+    // setLikeStateLoading(true)
+    const userId = currentUser?.id
+    if (hasLiked) {
+      await dislikeDocument(documentId, userId)
+      setLikeCount(prev => prev - 1)
+      setHasLiked(prev => !prev)
+    } else {
+      await likeDocument(documentId, userId)
+      setLikeCount(prev => prev + 1)
+      setHasLiked(prev => !prev)
+    }
+    // setLikeStateLoading(false)
+  }, 300)
+
+  // Check follow state method
   const getFollowSate = async () => {
     const res = await checkFollowState(currentUser?.id, doc?.authorId)
     setIsFollowingAuthor(res)
   }
 
+  // Check like state method
   const getLikeState = async () => {
+    setLikeStateLoading(true)
     const res = await getLikes(documentId, currentUser?.id)
     if (res.ok) {
       const data = await res.json();
@@ -202,6 +222,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
     } else {
       errorToast(res.statusText);
     }
+    setLikeStateLoading(false)
   }
 
   // Update title
@@ -263,13 +284,14 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
     setTitleValue(doc?.title);
   }, [doc?.title])
 
-  // useEffect check user follow state & check for like state
+  // useEffect check user follow state
   useEffect(() => {
     if (doc?.authorId !== currentUser?.id) {
       getFollowSate();
     }
   }, [currentUser?.id, doc])
 
+  // useEffect check for like state
   useEffect(() => {
     if (currentUser) {
       getLikeState();
@@ -400,9 +422,11 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
 
           <div className="w-full flex items-center justify-between py-2 border-y border-divider">
             <div className="w-full flex items-center gap-3 flex-1">
-              <Button isIconOnly size={"sm"} variant={"light"} radius="full">
-                <HeartIcon className="text-foreground-500" />
-              </Button>
+              <Badge color="danger" isInvisible={!likeCount} content={likeCount} size="md" shape="circle">
+                <Button isIconOnly size={"sm"} variant={"light"} radius="full" isLoading={likeStateLoading} onClick={onToggleLike}>
+                  <HeartIcon fill={hasLiked ? "#006FEE" : "none"} strokeWidth={hasLiked ? 0 : undefined} className="text-foreground-500" />
+                </Button>
+              </Badge>
 
               <Button isIconOnly size={"sm"} variant={"light"} radius="full">
                 <MessageCircleMoreIcon className="text-foreground-500" />
