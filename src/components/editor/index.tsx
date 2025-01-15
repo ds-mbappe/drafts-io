@@ -424,7 +424,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
             <div className="w-full flex items-center gap-3 flex-1">
               <Badge color="danger" isInvisible={!likeCount} content={likeCount} size="md" shape="circle">
                 <Button isIconOnly size={"sm"} variant={"light"} radius="full" isLoading={likeStateLoading} onClick={onToggleLike}>
-                  <HeartIcon fill={hasLiked ? "#006FEE" : "none"} strokeWidth={hasLiked ? 0 : undefined} className="text-foreground-500" />
+                  <HeartIcon fill={hasLiked ? "#006FEE" : "none"} strokeWidth={hasLiked ? 0 : undefined} className="text-foreground-500 transition-all duration-500" />
                 </Button>
               </Badge>
 
