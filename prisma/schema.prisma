@@ -50,7 +50,7 @@ model VerificationToken {
 }
 
 model Document {
-  id                 String @default(cuid()) @id
+  id                 String    @default(cuid()) @id
   title              String
   cover              String?
   topic              String?
@@ -66,6 +66,20 @@ model Document {
   authorLastname     String?
   createdAt          DateTime  @default(now()) @map(name: "created_at")
   updatedAt          DateTime  @updatedAt @map(name: "updated_at")
+  likes              Like[]
+  documentList       String[]  @default([])
+  likeCount          Int       @default(0) 
+}
+
+model Like {
+  id          String            @id @default(cuid())
+  documentId  String   
+  userId      String   
+  createdAt   DateTime          @default(now())
+  document    Document          @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, userId])
 }
 
 model User {
@@ -90,6 +104,7 @@ model User {
   following                 Follows[] @relation("follower")
   accounts                  Account[]
   sessions                  Session[]
+  likes                     Like[]
 
   @@map(name: "users")
   @@unique([id, avatar, firstname, lastname])

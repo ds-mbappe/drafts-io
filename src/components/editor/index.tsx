@@ -378,11 +378,11 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
 
           <div className="w-full flex items-center justify-between py-2 border-y border-divider">
             <div className="w-full flex items-center gap-3 flex-1">
-              <Button isIconOnly size={"sm"} variant={"light"}>
+              <Button isIconOnly size={"sm"} variant={"light"} radius="full">
                 <HeartIcon className="text-foreground-500" />
               </Button>
 
-              <Button isIconOnly size={"sm"} variant={"light"}>
+              <Button isIconOnly size={"sm"} variant={"light"} radius="full">
                 <MessageCircleMoreIcon className="text-foreground-500" />
               </Button>
             </div>
