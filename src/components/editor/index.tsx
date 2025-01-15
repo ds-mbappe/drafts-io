@@ -29,6 +29,7 @@ import { deleteDocument, updateDocument } from "@/actions/document";
 import { errorToast, successToast } from "@/actions/showToast";
 import ModalPreviewDraft from "../pannels/ModalPreviewDraft";
 import ModalValidation from "../pannels/ModalValidation";
+import { getLikes } from "@/actions/like";
 
 export default function BlockEditor({ documentId, doc, setSaveStatus, onDocumentUpdated, currentUser }: {
   documentId: String,
@@ -48,6 +49,8 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isFollowingAuthor, setIsFollowingAuthor] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [hasLiked, setHasLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const [uploadLoading, setUploadLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [isUpdatingTitle, setIsUpdatingTitle] = useState(false);
@@ -190,6 +193,17 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
     setIsFollowingAuthor(res)
   }
 
+  const getLikeState = async () => {
+    const res = await getLikes(documentId, currentUser?.id)
+    if (res.ok) {
+      const data = await res.json();
+      setLikeCount(data?.likeCount);
+      setHasLiked(data?.hasLiked);
+    } else {
+      errorToast(res.statusText);
+    }
+  }
+
   // Update title
   const updateTitleWithTitleValue = useDebouncedCallback(async () => {
     const formData = { title: titleValue }
@@ -244,15 +258,23 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
     }
   }, 300)
 
+  // useEffect to assign the new title value
   useEffect(() => {
     setTitleValue(doc?.title);
   }, [doc?.title])
 
+  // useEffect check user follow state & check for like state
   useEffect(() => {
     if (doc?.authorId !== currentUser?.id) {
       getFollowSate();
     }
-  }, [currentUser?.id])
+  }, [currentUser?.id, doc])
+
+  useEffect(() => {
+    if (currentUser) {
+      getLikeState();
+    }
+  }, [currentUser])
 
   if (!editor || !doc || !currentUser) {
     return (

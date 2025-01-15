@@ -7,7 +7,7 @@ const getDocument = async (documentId: String) => {
   return res;
 }
 
-const updateDocument = async (documentId: String, formData?: Object, ) => {
+const updateDocument = async (documentId: String, formData?: Object) => {
   const res = await fetch(`/api/document/${documentId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

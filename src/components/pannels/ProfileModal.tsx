@@ -146,8 +146,10 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }
 
 	// Use states
 	useEffect(() => {
-		setEditUser({ ...editUser, ...user });
-		setFollowData();
+		if (user) {
+			setEditUser({ ...editUser, ...user });
+			setFollowData();
+		}
 	}, [user])
 
   return (

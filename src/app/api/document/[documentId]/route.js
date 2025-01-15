@@ -11,11 +11,7 @@ export async function GET(req, { params }) {
       }
     })
 
-    if (document) {
-      return NextResponse.json({ document }, { status: 200 });
-    } else {
-      return NextResponse.json({ message: "Error", error }, { status: 500 });
-    }
+    return NextResponse.json({ document }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: "Error", error }, { status: 500 });
   }
