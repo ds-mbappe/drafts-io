@@ -30,19 +30,21 @@ import { errorToast, successToast } from "@/actions/showToast";
 import ModalPreviewDraft from "../pannels/ModalPreviewDraft";
 import ModalValidation from "../pannels/ModalValidation";
 import { dislikeDocument, getLikes, likeDocument } from "@/actions/like";
+import { useContext } from "react";
+import { NextSessionContext } from "@/contexts/SessionContext";
 
-export default function BlockEditor({ documentId, doc, setSaveStatus, onDocumentUpdated, currentUser }: {
+export default function BlockEditor({ documentId, doc, setSaveStatus, onDocumentUpdated }: {
   documentId: String,
   doc: any,
   setSaveStatus: Function,
   onDocumentUpdated: Function,
   // yDoc: YDoc | null,
-  currentUser: any,
   // provider: TiptapCollabProvider | null,
   // updateHistoryData: Function | null,
 }) {
   const router = useRouter();
   const menuContainerRef = useRef(null);
+  const { session } = useContext(NextSessionContext)
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { isOpen: isOpenPublish, onOpen: onOpenPublish, onOpenChange: onOpenChangePublish } = useDisclosure();
   const { isOpen: isOpenPreviewDoc, onOpen: onOpenPreviewDoc, onOpenChange: onOpenChangePreviewDoc } = useDisclosure();
@@ -51,6 +53,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
   const [isFollowingAuthor, setIsFollowingAuthor] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [hasLiked, setHasLiked] = useState(false);
+  const [previewData, setPreviewData] = useState("");
   const [likeCount, setLikeCount] = useState(0);
   const [uploadLoading, setUploadLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
@@ -71,6 +74,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
       // setSaveStatus("Waiting to Save.");
       errorToast(`Failed to update document, please try again !`)
     } else {
+      setPreviewData(editor?.getHTML())
       // if (provider?.isAuthenticated) {
       //   setSaveStatus("Synced");
       // } else {
@@ -94,7 +98,6 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
     // yDoc,
     // provider,
     doc,
-    currentUser,
     // updateHistoryData,
     setSaveStatus,
     debouncedUpdates,
@@ -106,7 +109,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
     editable: false,
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
-    content: doc?.content,
+    content: previewData,
     extensions: [
       ...ExtensionKit(),
     ],
@@ -118,7 +121,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
         class: 'min-h-full !pt-0 !pr-0 !pb-0 !pl-0 overflow-y-auto select-all',
       },
     },
-  }, [doc]);
+  }, [previewData]);
 
   // Update document cover
   const onDrop = useCallback(async(acceptedFiles: any) => {
@@ -181,9 +184,9 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
   const onToggleFollowUser = useDebouncedCallback(async () => {
     setIsFollowLoading(true)
     if (isFollowingAuthor) {
-      await unfollowUser(currentUser?.id, doc?.authorId)
+      await unfollowUser(session?.user?.id, doc?.authorId)
     } else {
-      await followUser(currentUser?.id, doc?.authorId)
+      await followUser(session?.user?.id, doc?.authorId)
     }
     getFollowSate()
     setIsFollowLoading(false)
@@ -192,7 +195,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
   // Like/Dislike toggle
   const onToggleLike = useDebouncedCallback(async () => {
     // setLikeStateLoading(true)
-    const userId = currentUser?.id
+    const userId = session?.user?.id
     if (hasLiked) {
       await dislikeDocument(documentId, userId)
       setLikeCount(prev => prev - 1)
@@ -207,14 +210,16 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
 
   // Check follow state method
   const getFollowSate = async () => {
-    const res = await checkFollowState(currentUser?.id, doc?.authorId)
-    setIsFollowingAuthor(res)
+    if (doc?.authorId !== session?.user?.id) {
+      const res = await checkFollowState(session?.user?.id, doc?.authorId)
+      setIsFollowingAuthor(res)
+    }
   }
 
   // Check like state method
   const getLikeState = async () => {
     setLikeStateLoading(true)
-    const res = await getLikes(documentId, currentUser?.id)
+    const res = await getLikes(documentId, session?.user?.id)
     if (res.ok) {
       const data = await res.json();
       setLikeCount(data?.likeCount);
@@ -286,19 +291,18 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
 
   // useEffect check user follow state
   useEffect(() => {
-    if (doc?.authorId !== currentUser?.id) {
-      getFollowSate();
-    }
-  }, [currentUser?.id, doc])
+    getFollowSate();
+    setPreviewData(doc?.content);
+  }, [doc])
 
   // useEffect check for like state
   useEffect(() => {
-    if (currentUser) {
+    if (session?.user?.id) {
       getLikeState();
     }
-  }, [currentUser])
+  }, [session?.user?.id])
 
-  if (!editor || !doc || !currentUser) {
+  if (!editor || !doc || !session?.user?.id) {
     return (
       <div className="relative w-full flex min-h-screen flex-1 cursor-text flex-col items-center justify-center">
         <Spinner size="lg" />
@@ -385,7 +389,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
 
               <div className="flex flex-col">
                 <p className="w-fit font-medium cursor-default hover:underline transition-all">
-                  Written by {doc?.authorId === currentUser?.id ? `You` : `${doc?.authorFirstname} ${doc?.authorLastname}`}
+                  Written by {doc?.authorId === session?.user?.id ? `You` : `${doc?.authorFirstname} ${doc?.authorLastname}`}
                 </p>
 
                 <div className="flex items-center gap-1">
@@ -401,7 +405,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
             </div>
 
             {/* Follow/Unfollow button */}
-            {doc?.authorId !== currentUser?.id &&
+            {doc?.authorId !== session?.user?.id &&
               <Button
                 color="primary"
                 variant={isFollowingAuthor ? 'solid' : 'flat'}
@@ -433,7 +437,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
               </Button>
             </div>
 
-            {doc?.authorId === currentUser?.id &&
+            {doc?.authorId === session?.user?.id &&
               <Dropdown placement="bottom-start">
                 <DropdownTrigger>
                     <Button isIconOnly size={"sm"} variant={"light"}>
@@ -491,7 +495,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
               style={{backgroundImage: `url(${doc?.cover})`}}
             />
 
-            {doc?.authorId === currentUser?.id &&
+            {doc?.authorId === session?.user?.id &&
               <Button
                 variant="light"
                 radius="full"
@@ -541,7 +545,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
           </div>
         }
 
-        {doc?.authorId === currentUser?.id ?
+        {doc?.authorId === session?.user?.id ?
           <>
             <ContentItemMenu editor={editor} />
             <LinkMenu editor={editor} appendTo={menuContainerRef} />
@@ -555,7 +559,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
         }
         <EditorContent
           editor={editor}
-          className={doc?.authorId === currentUser?.id ? 'tiptap editableClass' : 'tiptap readOnlyClass select-text'}
+          className={doc?.authorId === session?.user?.id ? 'tiptap editableClass' : 'tiptap readOnlyClass select-text'}
           spellCheck={"false"}
         />
       </div>
@@ -578,7 +582,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
       />
 
       <ModalValidation
-        title={doc?.authorId === currentUser?.id ? "Delete draft" : "Remove Document"}
+        title={doc?.authorId === session?.user?.id ? "Delete draft" : "Remove Document"}
         body={"Are you sure you want to delete this draft ? If you choose to proceed, other users will no longer be able to access it"}
         cancelText={"Cancel"}
         validateText={"Delete"}

@@ -1,11 +1,16 @@
 "use client"
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSidebar } from "@/components/editor/hooks/useSidebar";
 import Sidebar from "@/components/pannels/Sidebar";
+import { getSession } from "next-auth/react";
+import { Session } from "next-auth";
+import { NextSessionContext } from "@/contexts/SessionContext";
 
 export default function AppLayout(props: { children: React.ReactNode }) {
   const leftSidebar = useSidebar();
+  const [session, setSession] = useState<Session | null>();
+  const contextValue = { session, setSession }
 
   // Auto Resizer
   // useEffect(() => {
@@ -24,6 +29,7 @@ export default function AppLayout(props: { children: React.ReactNode }) {
   //   }
   // })
 
+  // Sidebar hook
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.altKey && event.key.toLowerCase() === 's') {
@@ -38,16 +44,30 @@ export default function AppLayout(props: { children: React.ReactNode }) {
     };
   }, [leftSidebar]);
 
-  return (
-    <div className="w-full h-screen flex flex-1 relative bg-content1">
-      <Sidebar
-        isOpen={leftSidebar.isOpen}
-        onClose={leftSidebar.toggle}
-      />
+  // Fetch NextAuth session
+  useEffect(() => {
+    const fetchSession = async () => {
+      const response = await getSession()
+      setSession(response);
+    }
 
-      <div className="w-full h-full flex flex-col overflow-y-auto">    
-        {props.children}
+    fetchSession().catch((error) => {
+      console.log(error)
+    })
+  }, [])
+
+  return (
+    <NextSessionContext.Provider value={contextValue}>
+      <div className="w-full h-screen flex flex-1 relative bg-content1">
+        <Sidebar
+          isOpen={leftSidebar.isOpen}
+          onClose={leftSidebar.toggle}
+        />
+
+        <div className="w-full h-full flex flex-col overflow-y-auto">    
+          {props.children}
+        </div>
       </div>
-    </div>
+    </NextSessionContext.Provider>
   );
 }

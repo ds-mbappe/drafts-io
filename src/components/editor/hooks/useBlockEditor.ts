@@ -21,7 +21,6 @@ export const useBlockEditor = ({
   // provider,
   // updateHistoryData,
   setSaveStatus,
-  currentUser,
   doc,
   debouncedUpdates,
   // UpdateHistoryVersions,
@@ -31,7 +30,6 @@ export const useBlockEditor = ({
   // updateHistoryData: Function | null,
   doc: any,
   setSaveStatus: Function,
-  currentUser: any,
   debouncedUpdates: Function,
   // UpdateHistoryVersions: Function,
 }) => {
@@ -59,7 +57,7 @@ export const useBlockEditor = ({
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
     autofocus: false,
-    editable: doc?.authorId === currentUser?.id,
+    editable: true,
     onCreate: ({ editor }) => {
       editor.commands.setContent(doc?.content)
 
@@ -117,7 +115,7 @@ export const useBlockEditor = ({
         class: 'min-h-full',
       },
     },
-  }, [doc, currentUser])
+  }, [doc])
 
   editor?.on('update', (e: any) => {
     setSaveStatus("Syncing...");

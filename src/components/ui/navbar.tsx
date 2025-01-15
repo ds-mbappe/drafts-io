@@ -1,36 +1,19 @@
 "use client"
 
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, useDisclosure } from "@nextui-org/react";
-import { memo, useEffect, useState } from 'react';
+import { memo, useContext } from 'react';
 import { MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CircleUserRoundIcon, HomeIcon } from 'lucide-react';
-import { signOut, getSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
+import { NextSessionContext } from "@/contexts/SessionContext";
 
-const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, provider }: any) => {
-  const motionProps = {
-    variants: {
-      exit: {
-        opacity: 0,
-        transition: {
-          duration: 0.15,
-          ease: "easeIn",
-        }
-      },
-      enter: {
-        opacity: 1,
-        transition: {
-          duration: 0.15,
-          ease: "easeOut",
-        }
-      },
-    },
-  }
+const NavbarApp = memo(() => {
   const router = useRouter();
   const pathname = usePathname()
   const { theme, setTheme } = useTheme();
-  const [user, setUser] = useState<any>();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { onOpenChange } = useDisclosure();
+  const nextSession = useContext(NextSessionContext)
 
   const onLogout = () => {
     signOut({
@@ -46,24 +29,9 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
     }
   }
 
-  const onStartSpeak = async() => {
-    
-  }
-
   const goToHome = () => {
     router.push('/app')
   }
-
-  useEffect(() => {
-    const fetchSession = async () => {
-      const response = await getSession()
-      setUser(response?.user)
-    }
-
-    fetchSession().catch((error) => {
-      console.log(error)
-    })
-  }, [])
 
   return (
     <>
@@ -77,32 +45,7 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
           }
         </NavbarBrand>
 
-        <NavbarContent justify="end">
-          {/* History dropdown */}
-          {/* { provider && document?.creator_email === user?.email ?
-            <NavbarItem>
-              <HistoryDropdown
-                provider={provider}
-                historyData={historyData}
-              />
-            </NavbarItem> : <></>
-          } */}
-
-          {/* Status */}
-          {/* { (document?.id || pathname === '/app/new-doc') &&
-            <NavbarItem>
-              <div className="flex items-center justify-center gap-5">
-                <div className="flex gap-2 items-center justify-center">
-                  <div className={`w-2 h-2 rounded-full flex gap-1 items-center justify-center ${status === 'Synced' ? 'bg-green-500' : status === 'Not Synced' ? 'bg-red-500' : 'bg-yellow-500'}`} />
-
-                  <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-                    { status }
-                  </span>
-                </div>
-              </div>
-            </NavbarItem>
-          } */}
-          
+        <NavbarContent justify="end">          
           {/* Avatar */}
           <NavbarItem>
             <Dropdown placement="bottom-end">
@@ -112,17 +55,17 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
                   as="button"
                   color="primary"
                   showFallback
-                  name={user?.email?.split("")?.[0]?.toUpperCase()}
+                  name={nextSession?.user?.email?.split("")?.[0]?.toUpperCase()}
                   size="sm"
-                  src={user?.avatar}
+                  src={nextSession?.user?.avatar}
                 />
               </DropdownTrigger>
 
               <DropdownMenu aria-label="Profile Actions" variant="flat">
-                <DropdownItem key="email" className="h-14 gap-2" textValue={`Signed in as ${user?.email}`}>
+                <DropdownItem key="email" className="h-14 gap-2" textValue={`Signed in as ${nextSession?.user?.email}`}>
                   <p className="font-semibold">{'Signed in as'}</p>
                   
-                  <p className="font-semibold">{user?.email}</p>
+                  <p className="font-semibold">{nextSession?.user?.email}</p>
                 </DropdownItem>
 
                 <DropdownItem
@@ -172,7 +115,7 @@ const NavbarApp = memo(({ status, isSidebarOpen, toggleSidebar, historyData, pro
       </Navbar>
 
       {/* <ProfileModal
-        user={user}
+        user={nextSession?.user}
         changeDialogOpenState={onOpenChange}
         dialogOpen={isOpen}
       /> */}

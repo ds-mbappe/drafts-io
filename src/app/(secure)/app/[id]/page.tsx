@@ -9,7 +9,6 @@ import Sidebar from '@/components/pannels/Sidebar';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
 import { JWT } from "node-jsonwebtoken";
 import 'katex/dist/katex.min.css';
-import { getSession } from 'next-auth/react';
 import { getDocument } from '@/actions/document';
 import { errorToast } from '@/actions/showToast';
 
@@ -33,7 +32,6 @@ export default function App(props: DocumentProps) {
   // const searchParams = useSearchParams();
   const [doc, setDocument] = useState<any>(null);
   // const [words, setWords] = useState(0)
-  const [user, setUser] = useState<any>()
   // const [characters, setCharacters] = useState(0)
   // const [historyData, setHistoryData] = useState({})
   // const [userFullName, setUserFullName] = useState<String>("");
@@ -79,18 +77,6 @@ export default function App(props: DocumentProps) {
   //   dataFetch()
   // }, [])
 
-  // Fetch session
-  useEffect(() => {
-    const fetchSession = async () => {
-      const response = await getSession()
-      setUser(response?.user)
-    }
-
-    fetchSession().catch((error) => {
-      console.log(error)
-    })
-  }, [])
-
   useEffect(() => {
     fetchDocument(props?.params?.id)
   }, [props?.params?.id]);
@@ -117,7 +103,6 @@ export default function App(props: DocumentProps) {
           <Editor
             documentId={props?.params?.id}
             doc={doc}
-            currentUser={user}
             setSaveStatus={getSaveStatus}
             onDocumentUpdated={fetchDocument}
             // yDoc={yDoc}

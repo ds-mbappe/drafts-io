@@ -2,21 +2,22 @@
 
 import { cn } from '@/lib/utils';
 import { useRouter, usePathname } from 'next/navigation';
-import React, { useEffect, useState, memo } from 'react';
+import React, { useEffect, useState, memo, useContext } from 'react';
 import { Divider, Button, Avatar, useDisclosure } from "@nextui-org/react";
 import { BookmarkIcon, BookOpenTextIcon, BookTextIcon, ChevronLeftIcon, ChevronRightIcon, CircleHelpIcon, ClockIcon, HomeIcon, LayoutListIcon, LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
 import Link from "next/link";
-import { getSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import ProfileModal from "./ProfileModal";
 import { useTheme } from "next-themes";
+import { NextSessionContext } from '@/contexts/SessionContext';
 
 const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => void }) => {
   const router = useRouter();
   const pathname = usePathname();
   const { resolvedTheme, setTheme } = useTheme();
-  const [user, setUser] = useState<any>()
+  const { session } = useContext(NextSessionContext)
   const [mounted, setMounted] = useState(false)
-  const { isOpen: isOpenProfile, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen: isOpenProfile, onOpenChange } = useDisclosure();
 
   const windowClassName = cn(
     'absolute h-screen left-0 top-0 xl:relative z-[2] w-0 duration-300 transition-all',
@@ -42,24 +43,8 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
     }
   }
 
-  const fetchSession = async () => {
-    const response = await getSession()
-    setUser(response?.user)
-  }
-
-  const onUserUpdated = () => {
-    fetchSession()
-  }
-
   useEffect(() => {
     setMounted(true)
-  }, [])
-
-  // Fetch session
-  useEffect(() => {
-    fetchSession().catch((error) => {
-      console.log(error)
-    })
   }, [])
 
   if (!mounted) {
@@ -75,18 +60,18 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
             as="button"
             color="primary"
             showFallback
-            name={user?.firstname?.split("")?.[0]?.toUpperCase()}
+            name={session?.user?.firstname?.split("")?.[0]?.toUpperCase()}
             size="md"
-            src={user?.avatar}
+            src={session?.user?.avatar}
           />
 
           <div className="flex flex-col">
             <p className="font-semibold text-sm">
-              {`${user?.firstname} ${user?.lastname}`}
+              {`${session?.user?.firstname} ${session?.user?.lastname}`}
             </p>
 
             <p className="text-foreground-500 text-sm">
-              {user?.email}
+              {session?.user?.email}
             </p>
           </div>
         </div>
@@ -161,10 +146,8 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
       </div>
 
       <ProfileModal
-        user={user}
         changeDialogOpenState={onOpenChange}
         dialogOpen={isOpenProfile}
-        onUserUpdated={onUserUpdated}
       />
 
       <Button

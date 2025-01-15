@@ -2,16 +2,16 @@
 
 import 'katex/dist/katex.min.css';
 import { useRouter } from 'next/navigation';
-import { getSession } from 'next-auth/react';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SearchIcon, SquarePenIcon } from 'lucide-react';
 import DocumentCard from '@/components/card/DocumentCard';
 import { errorToast, successToast } from '@/actions/showToast';
 import { Button, Input, Tabs, Tab, Spinner } from "@nextui-org/react";
+import { NextSessionContext } from '@/contexts/SessionContext';
 
 export default function App() {
   const router = useRouter();
-  const [user, setUser] = useState<any>()
+  const nextSession = useContext(NextSessionContext)
   const [loading, setIsLoading] = useState(false)
   const [loadingLatest, setIsLoadingLatest] = useState(false)
   const [documents, setDocuments] = useState([])
@@ -20,7 +20,7 @@ export default function App() {
   // Fetch documents
   const fetchDocuments = async () => {
     setIsLoading(true);
-    const data = await fetch(`/api/documents/${user?.id}`, {
+    const data = await fetch(`/api/documents/${nextSession?.user?.id}`, {
       method: 'GET',
       headers: { "content-type": "application/json" },
     });
@@ -37,10 +37,10 @@ export default function App() {
   const goToNewDocument = async () => {
     let formData = {
       title: `Untitled_${new Date()}`,
-      authorId: user?.id,
-      authorAvatar: user?.avatar,
-      authorFirstname: user?.firstname,
-      authorLastname: user?.lastname,
+      authorId: nextSession?.user?.id,
+      authorAvatar: nextSession?.user?.avatar,
+      authorFirstname: nextSession?.user?.firstname,
+      authorLastname: nextSession?.user?.lastname,
       cover: null,
       topic: null,
     }
@@ -85,26 +85,14 @@ export default function App() {
 
   // Fetch user documents
   useEffect(() => {
-    if (user?.email) {
+    if (nextSession?.user?.id) {
       const justFetch = async() => {
         await fetchDocuments()
       }
 
       justFetch();
     }
-  }, [user]);
-
-  // Fetch session
-  useEffect(() => {
-    const fetchSession = async () => {
-      const response = await getSession()
-      setUser(response?.user)
-    }
-
-    fetchSession().catch((error) => {
-      console.log(error)
-    })
-  }, [])
+  }, []);
 
   return (
     <div className="w-full h-screen flex flex-1 relative">

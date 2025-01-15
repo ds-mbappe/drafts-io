@@ -1,20 +1,20 @@
 import { PencilIcon } from 'lucide-react';
 import { useSession } from "next-auth/react";
 import { v2 as cloudinary } from "cloudinary";
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { getFollowData } from '@/actions/getFollowData';
 import { errorToast, successToast } from '@/actions/showToast';
 import { Avatar, Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/react';
 import { useDebouncedCallback } from 'use-debounce';
+import { NextSessionContext } from '@/contexts/SessionContext';
 
-const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }: {
+const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
 	changeDialogOpenState: (isOpen: boolean) => void | undefined,
 	dialogOpen: boolean,
-	user: any | undefined,
-	onUserUpdated: Function,
 }) => {
 	const [editPersonalInfo, setEditPersonalInfo] = useState(false);
-	const { data: session, status, update } = useSession();
+	const { update } = useSession();
+	const { session, setSession } = useContext(NextSessionContext)
 	const [loading, setLoading] = useState(false);
 	const [isPictureLoading, setPictureLoading] = useState(false);
 	const [follow, setFollow] = useState<any>({
@@ -35,14 +35,14 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }
 		setLoading(true);
 
 	  let formData = {
-      id: user?.id,
+      id: session?.user?.id,
       firstname: editUser?.firstname,
       lastname: editUser?.lastname,
       email: editUser?.email,
 	  	phone: editUser?.phone
     }
 
-    const response = await fetch(`/api/user/${user?.id}`, {
+    const response = await fetch(`/api/user/${session?.user?.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ formData }),
@@ -50,9 +50,9 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }
     const data = await response.json()
 
 		if (response.ok) {
-			await update({ ...data.user })
+			const response = await update({ ...data.user })
 			setEditPersonalInfo(false);
-			onUserUpdated()
+			setSession(response)
 
 			successToast("You have successfully updated your info!");
 		} else {
@@ -72,8 +72,8 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }
 
 	const cancelAndRollback = () => {
 		setEditPersonalInfo(prev => !prev);
-		setEditUser((prev: any) => ({
-			...user,
+		setEditUser(() => ({
+			...session?.user,
 			followers: follow?.followers,
 			following: follow?.following,
 		}))
@@ -103,14 +103,14 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }
 
 			if (result?.ok) {
 				const data = await result.json()
-				await update({ ...user, avatar: data?.url })
+				await update({ ...session?.user, avatar: data?.url })
 
 				const formData = {
-					id: user?.id,
+					id: session?.user?.id,
 					avatar: data?.url
 				}
 		
-				const response = await fetch(`/api/user/${user?.id}`, {
+				const response = await fetch(`/api/user/${session?.user?.id}`, {
 					method: "PUT",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ formData }),
@@ -132,7 +132,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }
 
 	// Set follow data
 	const setFollowData = async () => {
-		const data = await getFollowData(user?.id);
+		const data = await getFollowData(session?.user?.id);
 		setFollow({
 			followers: data?.followers_count,
 			following: data?.following_count,
@@ -146,11 +146,11 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }
 
 	// Use states
 	useEffect(() => {
-		if (user) {
-			setEditUser({ ...editUser, ...user });
+		if (session?.user) {
+			setEditUser({ ...editUser, ...session?.user });
 			setFollowData();
 		}
-	}, [user])
+	}, [session?.user])
 
   return (
     <Modal placement="center" isOpen={dialogOpen} scrollBehavior="inside" onOpenChange={changeDialogOpenState}>
@@ -194,11 +194,11 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen, user, onUserUpdated }
 								{/* Firstname + Lastname + Email */}
 								<div className="flex flex-col">
 									<p className="text-base font-medium">
-										{`${user?.firstname} ${user?.lastname}`}
+										{`${session?.user?.firstname} ${session?.user?.lastname}`}
 									</p>
 
 									<p className="text-sm font-normal text-foreground-500">
-										{user?.email}
+										{session?.user?.email}
 									</p>
 								</div>
 							</div>

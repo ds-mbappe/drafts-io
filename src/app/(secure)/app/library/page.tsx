@@ -1,33 +1,20 @@
 "use client"
 
-import { getSession } from 'next-auth/react';
 import { errorToast } from '@/actions/showToast';
-import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Spinner, Tab, Tabs } from '@nextui-org/react';
 import DocumentCardInLibrary from '@/components/card/DocumentCardInLibrary';
+import { NextSessionContext } from '@/contexts/SessionContext';
 
 const Library = () => {
   const [loading, setIsLoading] = useState(false);
   const [documents, setDocuments] = useState([]);
-  const [user, setUser] = useState<any>();
-  const params = useSearchParams();
+  const { session } = useContext(NextSessionContext)
 
-  // Fetch session
-  useEffect(() => {
-    const fetchSession = async () => {
-      const response = await getSession()
-      setUser(response?.user)
-    }
-
-    fetchSession().catch((error) => {
-      console.log(error)
-    })
-  }, [])
-
+  // Fetch documents method
   const fetchDocuments = async () => {
     setIsLoading(true);
-    const data = await fetch(`/api/documents/${user?.id}/library`, {
+    const data = await fetch(`/api/documents/${session?.user?.id}/library`, {
       method: 'GET',
       headers: { "content-type": "application/json" },
     });
@@ -41,13 +28,14 @@ const Library = () => {
     setIsLoading(false)
   }
 
+  // UseEffect to fetch documents
   useEffect(() => {
     const justFetch = async() => {
       await fetchDocuments()
     }
 
     justFetch();
-  }, [user?.id]);
+  }, []);
 
   return (
     <div className="w-full h-screen flex flex-1 relative mt-4 mb-10">
