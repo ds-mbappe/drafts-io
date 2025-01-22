@@ -42,14 +42,14 @@ export const FontSizePicker = ({ onChange, value }: FontSizePickerProps) => {
     <Dropdown placement="bottom-start">
       <DropdownTrigger>
         <Button size={"sm"} variant={"light"}>
-          <Tooltip
+          {/* <Tooltip
             content={"Font size"}
             delay={0}
             closeDelay={0}
             motionProps={motionProps}
           >
+          </Tooltip> */}
             <p className="text-foreground-500 font-medium text-base">{currentSizeLabel}</p>
-          </Tooltip>
         </Button>
       </DropdownTrigger>
 

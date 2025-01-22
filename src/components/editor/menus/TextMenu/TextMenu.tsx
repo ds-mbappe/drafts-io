@@ -1,5 +1,4 @@
 import { Icon } from '@/components/ui/Icon'
-import { Toolbar } from '@/components/ui/Toolbar'
 import { useTextMenuCommands } from '../../hooks/useTextMenuCommands'
 import { useTextMenuStates } from '../../hooks/useTextMenuStates'
 import { BubbleMenu, Editor } from '@tiptap/react'
@@ -12,9 +11,9 @@ import { FontSizePicker } from './components/FontSizePicker'
 import { useTextMenuContentTypes } from '../../hooks/useTextMenuContentTypes'
 import { ContentTypePicker } from './components/ContentTypePicker'
 import { EditLinkPopover } from './components/EditLinkPopover'
+import { Button, Card, CardBody, Tooltip } from '@nextui-org/react'
 
 // We memorize the button so each button is not rerendered every editor state change
-const MemoButton = memo(Toolbar.Button)
 const MemoColorPicker = memo(ColorPicker)
 const MemoFontFamilyPicker = memo(FontFamilyPicker)
 const MemoFontSizePicker = memo(FontSizePicker)
@@ -25,74 +24,101 @@ export type TextMenuProps = {
 }
 
 export const TextMenu = ({ editor }: TextMenuProps) => {
-  const commands = useTextMenuCommands(editor)
   const states = useTextMenuStates(editor)
+  const commands = useTextMenuCommands(editor)
   const blockOptions = useTextMenuContentTypes(editor)
+  const motionProps = {
+    variants: {
+      exit: {
+        opacity: 0,
+        transition: {
+          duration: 0.15,
+          ease: "easeIn",
+        }
+      },
+      enter: {
+        opacity: 1,
+        transition: {
+          duration: 0.15,
+          ease: "easeOut",
+        }
+      },
+    },
+  }
 
   return (
     <BubbleMenu
-      tippyOptions={{ popperOptions: { placement: 'top-start' } }}
+      tippyOptions={{ popperOptions: { placement: 'top-start' }, duration: 250 }}
       editor={editor}
       pluginKey="textMenu"
       shouldShow={states.shouldShow}
-      updateDelay={100}
     >
-      <Toolbar.Wrapper>
-        {/* <AIDropdown
-          onCompleteSentence={commands.onCompleteSentence}
-          onEmojify={commands.onEmojify}
-          onFixSpelling={commands.onFixSpelling}
-          onMakeLonger={commands.onMakeLonger}
-          onMakeShorter={commands.onMakeShorter}
-          onSimplify={commands.onSimplify}
-          onTldr={commands.onTldr}
-          onTone={commands.onTone}
-          onTranslate={commands.onTranslate}
-        /> */}
-        {/* <Toolbar.Divider /> */}
+      <Card>
+        <CardBody className="flex flex-row gap-1">
+          <MemoContentTypePicker options={blockOptions} />
 
-        <MemoContentTypePicker options={blockOptions} />
+          <MemoFontFamilyPicker onChange={commands.onSetFont} value={states.currentFont || ''} />
 
-        <MemoFontFamilyPicker onChange={commands.onSetFont} value={states.currentFont || ''} />
+          <MemoFontSizePicker onChange={commands.onSetFontSize} value={states.currentSize || ''} />
 
-        <MemoFontSizePicker onChange={commands.onSetFontSize} value={states.currentSize || ''} />
+          <Button variant="light" size="sm" onPress={commands.onBold} color="default" isIconOnly>
+            {/* <Tooltip
+              content={"Bold"}
+              delay={0}
+              closeDelay={0}
+              motionProps={motionProps}
+            >
+            </Tooltip> */}
+              <Icon name="Bold" className="text-foreground-500" />
+          </Button>
 
-        {/* <Toolbar.Divider /> */}
+          <Button variant="light" size="sm" onPress={commands.onItalic} color="default" isIconOnly>
+            {/* <Tooltip
+              content={"Italic"}
+              delay={0}
+              closeDelay={0}
+              motionProps={motionProps}
+            >
+            </Tooltip> */}
+              <Icon name="Italic" className="text-foreground-500" />
+          </Button>
 
-        <MemoButton tooltip="Bold" tooltipShortcut={['Mod', 'B']} onClick={commands.onBold} active={states.isBold}>
-          <Icon name="Bold" />
-        </MemoButton>
+          <Button variant="light" size="sm" onPress={commands.onUnderline} color="default" isIconOnly>
+            {/* <Tooltip
+              content={"Underline"}
+              delay={0}
+              closeDelay={0}
+              motionProps={motionProps}
+            >
+            </Tooltip> */}
+              <Icon name="Underline" className="text-foreground-500" />
+          </Button>
 
-        <MemoButton
-          tooltip="Italic"
-          tooltipShortcut={['Mod', 'I']}
-          onClick={commands.onItalic}
-          active={states.isItalic}
-        >
-          <Icon name="Italic" />
-        </MemoButton>
+          <Button variant="light" size="sm" onPress={commands.onStrike} color="default" isIconOnly>
+            {/* <Tooltip
+              content={"Striketrough"}
+              delay={0}
+              closeDelay={0}
+              motionProps={motionProps}
+            >
+            </Tooltip> */}
+              <Icon name="Strikethrough" className="text-foreground-500" />
+          </Button>
+          
+          <Button variant="light" size="sm" onPress={commands.onCodeBlock} isIconOnly>
+            {/* <Tooltip
+              content={"Code block"}
+              delay={0}
+              closeDelay={0}
+              motionProps={motionProps}
+            >
+            </Tooltip> */}
+              <Icon name="Code" className="text-foreground-500" />
+          </Button>
+        </CardBody>
+      </Card>
+      {/* <Toolbar.Wrapper>
 
-        <MemoButton
-          tooltip="Underline"
-          tooltipShortcut={['Mod', 'U']}
-          onClick={commands.onUnderline}
-          active={states.isUnderline}
-        >
-          <Icon name="Underline" />
-        </MemoButton>
-
-        <MemoButton
-          tooltip="Strikehrough"
-          tooltipShortcut={['Mod', 'Shift', 'S']}
-          onClick={commands.onStrike}
-          active={states.isStrike}
-        >
-          <Icon name="Strikethrough" />
-        </MemoButton>
-        
-        <MemoButton tooltip="Code block" onClick={commands.onCodeBlock}>
-          <Icon name="Code" />
-        </MemoButton>
 
         <EditLinkPopover onSetLink={commands.onLink} />
 
@@ -199,7 +225,7 @@ export const TextMenu = ({ editor }: TextMenuProps) => {
             </Toolbar.Wrapper>
           </Popover.Content>
         </Popover.Root>
-      </Toolbar.Wrapper>
+      </Toolbar.Wrapper> */}
     </BubbleMenu>
   )
 }

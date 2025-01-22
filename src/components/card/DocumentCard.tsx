@@ -24,7 +24,7 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
 
   return (
     <Link href={`/app/${document?.id}`}>
-      <Card shadow="none" className="border border-divider cursor-pointer hover:bg-foreground-100 active:scale-[0.95]">
+      <Card shadow="none" className="border border-divider cursor-pointer hover:bg-foreground-100 active:scale-[0.95] !rounded-large">
         <CardBody className="flex flex-row gap-4">
           {document?.cover ?
             <div className="hidden sm:!flex border border-divider rounded-large">
@@ -59,6 +59,13 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
               </p>
             </div>
 
+            {/* Title & caption */}
+            <div className="h-full flex flex-col gap-1 flex-1">
+              <p className="font-medium line-clamp-2">
+                {document?.title}
+              </p>
+            </div>
+
             {/* Topic */}
             { document?.topic &&
               <div className="flex items-center gap-2">
@@ -69,13 +76,6 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
                 </Chip>
               </div>
             }
-
-            {/* Title & caption */}
-            <div className="h-full flex flex-col gap-1 flex-1">
-              <p className="font-medium line-clamp-3">
-                {document?.title}
-              </p>
-            </div>
 
             <div className="flex items-center justify-between">
               {/* Crated at */}

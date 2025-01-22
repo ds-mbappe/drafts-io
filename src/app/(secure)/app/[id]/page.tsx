@@ -97,20 +97,16 @@ export default function App(props: DocumentProps) {
   // }
 
   return (
-    <div className="w-full h-screen flex flex-1 relative">
-      <div className="w-full h-full flex flex-col overflow-y-auto">
-        <div className="w-full max-w-[768px] 2xl:max-w-[1024px] mx-auto relative flex cursor-text flex-col z-[1] flex-1">
-          <Editor
-            documentId={props?.params?.id}
-            doc={doc}
-            setSaveStatus={getSaveStatus}
-            onDocumentUpdated={fetchDocument}
-            // yDoc={yDoc}
-            // provider={provider}
-            // updateHistoryData={updateHistoryData}
-          />
-        </div>
-      </div>
+    <div className="w-full max-w-[768px] 2xl:max-w-[1024px] mx-auto relative flex cursor-text flex-col z-[1] flex-1">
+      <Editor
+        documentId={props?.params?.id}
+        doc={doc}
+        setSaveStatus={getSaveStatus}
+        onDocumentUpdated={fetchDocument}
+        // yDoc={yDoc}
+        // provider={provider}
+        // updateHistoryData={updateHistoryData}
+      />
     </div>
   )
 }

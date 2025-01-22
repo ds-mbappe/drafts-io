@@ -49,14 +49,14 @@ export const ContentTypePicker = ({ options }: ContentTypePickerProps) => {
     <Dropdown placement="bottom-start">
       <DropdownTrigger>
         <Button isIconOnly size={"sm"} variant={"light"}>
-          <Tooltip
-            content={"Convert text into"}
+          {/* <Tooltip
+            content={"Convert into"}
             delay={0}
             closeDelay={0}
             motionProps={motionProps}
           >
+          </Tooltip> */}
             <PilcrowIcon className="text-foreground-500" size={20} />
-          </Tooltip>
         </Button>
       </DropdownTrigger>
 
@@ -80,40 +80,6 @@ export const ContentTypePicker = ({ options }: ContentTypePickerProps) => {
         })}
       </DropdownMenu>
     </Dropdown>
-
-
-    // Old Design
-    // <Dropdown.Root>
-    //   <Dropdown.Trigger asChild>
-    //     <Toolbar.Button active={activeItem?.id !== 'paragraph' && !!activeItem?.type}>
-    //       <Icon name={(activeItem?.type === 'option' && activeItem.icon) || 'Pilcrow'} />
-
-    //       <Icon name="ChevronDown" className="w-2 h-2" />
-    //     </Toolbar.Button>
-    //   </Dropdown.Trigger>
-
-    //   <Dropdown.Content asChild>
-    //     <Surface className="flex flex-col gap-1 px-2 py-4">
-    //       {options.map(option => {
-    //         if (isOption(option)) {
-    //           return (
-    //             <DropdownButton key={option.id} onClick={option.onClick} isActive={option.isActive()}>
-    //               <Icon name={option.icon} className="w-4 h-4 mr-1" />
-                  
-    //               {option.label}
-    //             </DropdownButton>
-    //           )
-    //         } else if (isCategory(option)) {
-    //           return (
-    //             <div className="mt-2 first:mt-0" key={option.id}>
-    //               <DropdownCategoryTitle key={option.id}>{option.label}</DropdownCategoryTitle>
-    //             </div>
-    //           )
-    //         }
-    //       })}
-    //     </Surface>
-    //   </Dropdown.Content>
-    // </Dropdown.Root>
   )
 }
 

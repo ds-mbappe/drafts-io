@@ -3,13 +3,11 @@ import deepEql from 'fast-deep-equal';
 import { Instance, sticky } from 'tippy.js';
 import React, { useCallback, useRef } from 'react';
 import { BubbleMenu as BaseBubbleMenu, useEditorState } from '@tiptap/react';
-
-import { Toolbar } from '@/components/ui/Toolbar'
 import { Icon } from '@/components/ui/Icon'
 import { ImageBlockWidth } from './ImageBlockWidth'
 import { MenuProps } from '../../../menus/types'
 import { getRenderContainer } from '../../../../editor/utils/getRenderContainer'
-import { Button, Tooltip } from '@nextui-org/react';
+import { Button, Divider, Tooltip } from '@nextui-org/react';
 import { AlignHorizontalDistributeCenterIcon, AlignHorizontalDistributeEndIcon, AlignHorizontalDistributeStartIcon } from 'lucide-react';
 
 export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
@@ -134,7 +132,7 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
           </Button>
         </Tooltip>
 
-        <Toolbar.Divider />
+        <Divider />
 
         <ImageBlockWidth onChange={onWidthChange} value={width} />
       </div>

@@ -1,6 +1,6 @@
 import { LinkEditorPanel } from '@/components/pannels/LinkEditorPanel/LinkEditorPanel'
 import { Icon } from '@/components/ui/Icon'
-import { Toolbar } from '@/components/ui/Toolbar'
+import { Button } from '@nextui-org/react'
 import * as Popover from '@radix-ui/react-popover'
 
 export type EditLinkPopoverProps = {
@@ -11,9 +11,9 @@ export const EditLinkPopover = ({ onSetLink }: EditLinkPopoverProps) => {
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
-        <Toolbar.Button tooltip="Set Link">
+        <Button variant="light">
           <Icon name="Link" />
-        </Toolbar.Button>
+        </Button>
       </Popover.Trigger>
       
       <Popover.Content>

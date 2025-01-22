@@ -1,7 +1,6 @@
 import { Icon } from '@/components/ui/Icon'
 import { Surface } from '@/components/ui/Surface'
-import { Toolbar } from '@/components/ui/Toolbar'
-import Tooltip from '@/components/ui/Tooltip/Tooltip'
+import { Button, Divider } from '@nextui-org/react'
 
 export type LinkPreviewPanelProps = {
   url: string
@@ -15,17 +14,16 @@ export const LinkPreviewPanel = ({ onClear, onEdit, url }: LinkPreviewPanelProps
       <a href={url} target="_blank" rel="noopener noreferrer" className="text-sm underline break-all">
         {url}
       </a>
-      <Toolbar.Divider />
-      <Tooltip title="Edit link">
-        <Toolbar.Button onClick={onEdit}>
-          <Icon name="Pen" />
-        </Toolbar.Button>
-      </Tooltip>
-      <Tooltip title="Remove link">
-        <Toolbar.Button onClick={onClear}>
-          <Icon name="Trash2" />
-        </Toolbar.Button>
-      </Tooltip>
+
+      <Divider />
+
+      <Button variant="light" onPress={onEdit}>
+        <Icon name="Pen" />
+      </Button>
+
+      <Button variant="light" onPress={onClear}>
+        <Icon name="Trash2" />
+      </Button>
     </Surface>
   )
 }

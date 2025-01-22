@@ -7,7 +7,7 @@ import { Card, CardBody, CardFooter, CardHeader, Image } from '@nextui-org/react
 const DocumentCardInLibrary = ({ document }: { document: DocumentCardTypeprops }) => {
   return (
     <Link href={`/app/${document?.id}`}>
-      <Card className="py-2 w-[200PX] h-[200PX] md:w-[300px] md:h-[300px] hover:scale-105 transition-all">
+      <Card className="py-2 w-[200PX] h-[200PX] md:w-[300px] md:h-[300px] border border-divider hover:scale-105 transition-all">
         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
           <p className="text-[10px] md:text-tiny uppercase font-bold line-clamp-1">{`${document?.title}`}</p>
           <small className="text-default-500">{`Created ${moment(document?.createdAt).fromNow()}`}</small>

@@ -6,6 +6,7 @@ import Sidebar from "@/components/pannels/Sidebar";
 import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { NextSessionContext } from "@/contexts/SessionContext";
+import NavbarApp from "@/components/ui/navbar";
 
 export default function AppLayout(props: { children: React.ReactNode }) {
   const leftSidebar = useSidebar();
@@ -30,19 +31,19 @@ export default function AppLayout(props: { children: React.ReactNode }) {
   // })
 
   // Sidebar hook
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.altKey && event.key.toLowerCase() === 's') {
-        leftSidebar.toggle()
-      }
-    };
+  // useEffect(() => {
+  //   const handleKeyDown = (event: KeyboardEvent) => {
+  //     if (event.altKey && event.key.toLowerCase() === 's') {
+  //       leftSidebar.toggle()
+  //     }
+  //   };
 
-    window.addEventListener('keydown', handleKeyDown);
+  //   window.addEventListener('keydown', handleKeyDown);
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [leftSidebar]);
+  //   return () => {
+  //     window.removeEventListener('keydown', handleKeyDown);
+  //   };
+  // }, [leftSidebar]);
 
   // Fetch NextAuth session
   useEffect(() => {
@@ -58,11 +59,13 @@ export default function AppLayout(props: { children: React.ReactNode }) {
 
   return (
     <NextSessionContext.Provider value={contextValue}>
-      <div className="w-full h-screen flex flex-1 relative bg-content1">
-        <Sidebar
+      <div className="w-full h-screen flex flex-col flex-1 relative bg-content1">
+        <NavbarApp user={session?.user} />
+
+        {/* <Sidebar
           isOpen={leftSidebar.isOpen}
           onClose={leftSidebar.toggle}
-        />
+        /> */}
 
         <div className="w-full h-full flex flex-col overflow-y-auto">    
           {props.children}

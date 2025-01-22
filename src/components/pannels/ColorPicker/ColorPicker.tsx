@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { ColorButton } from './ColorButton'
-import { Toolbar } from '../../ui/Toolbar'
 import { Icon } from '../../ui/Icon'
+import { Button } from '@nextui-org/react'
 
 export type ColorPickerProps = {
   color?: string
@@ -58,9 +58,9 @@ export const ColorPicker = ({ color, onChange, onClear }: ColorPickerProps) => {
           />
         ))}
 
-        <Toolbar.Button tooltip="Reset color to default" onClick={onClear}>
+        <Button variant="light" onPress={onClear}>
           <Icon name="Undo" />
-        </Toolbar.Button>
+        </Button>
       </div>
     </div>
   )
