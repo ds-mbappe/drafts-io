@@ -202,9 +202,9 @@ const NavbarApp = ({ user }: { user: any }) => {
               variant="flat"
               className="p-3 !bg-transparent"
               endContent={<Kbd keys={["command"]}>K</Kbd>}
-            />
+            ></Input>
 
-            <Divider />
+            <Divider></Divider>
 
             <div className="flex flex-col p-4">
               Hehehehe
