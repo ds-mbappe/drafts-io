@@ -73,7 +73,7 @@ const NavbarApp = ({ user }: { user: any }) => {
             variant="flat"
             className="hidden md:flex"
             onPress={onOpenChangeSearch}
-            children={
+          >
               <div className="flex justify-between w-[250px]">
                 <div className="flex items-center gap-1">
                   <SearchIcon />
@@ -82,8 +82,6 @@ const NavbarApp = ({ user }: { user: any }) => {
 
                 <Kbd keys={["command"]}>K</Kbd>
               </div>
-            }
-          >
           </Button>
 
           <NavbarItem>
