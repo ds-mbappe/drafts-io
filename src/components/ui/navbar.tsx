@@ -5,19 +5,27 @@ import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
 import ProfileModal from "../pannels/ProfileModal";
 import { usePathname, useRouter } from "next/navigation";
-import { MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CircleUserRoundIcon, HomeIcon, BookTextIcon, SearchIcon } from 'lucide-react';
+import { MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CircleUserRoundIcon, HomeIcon, BookTextIcon, SearchIcon, InfoIcon } from 'lucide-react';
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, useDisclosure, Input, Kbd, Modal, ModalBody, ModalContent, ModalHeader, Divider } from "@nextui-org/react";
 import { motion } from "framer-motion";
+import { search } from "@/actions/globalSearch";
+import { useDebouncedCallback } from "use-debounce";
+import UserItemInList from "./UserItemInList";
+import DocumentItemInList from "./DocumentItemInList";
 
 const NavbarApp = ({ user }: { user: any }) => {
   const router = useRouter();
   const pathname = usePathname()
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [isRotatingLight, setIsRotatingLight] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [isUsername, setIsUsername] = useState(false);
+  const [searchResults, setSearchResults] = useState<any>({});
   const [isRotatingDark, setIsRotatingDark] = useState(false);
-  const { isOpen: isOpenProfile, onOpenChange: onOpenChangeProfile } = useDisclosure();
+  const [isRotatingLight, setIsRotatingLight] = useState(false);
   const { isOpen: isOpenSearch, onOpenChange: onOpenChangeSearch } = useDisclosure();
+  const { isOpen: isOpenProfile, onOpenChange: onOpenChangeProfile } = useDisclosure();
 
   const onLogout = () => {
     signOut({
@@ -42,6 +50,56 @@ const NavbarApp = ({ user }: { user: any }) => {
   const goToMyLibrary = () => {
     router.push(`/app/library`)
   }
+
+  const updateSearch = (value: string) => {
+    setIsTyping(true)
+    setSearchText(value)
+    searchFunction(value)
+  }
+
+  const closeModalAndClearResults = () => {
+    setSearchText("")
+    setSearchResults({})
+    onOpenChangeSearch()
+  }
+
+  const searchFunction = useDebouncedCallback(async (value: string) => {
+    if (value) {
+      const res = await search(value)
+
+      if (res.ok) {
+        const data = await res.json()
+        setSearchResults(data)
+      }
+    } else {
+      setSearchResults({})
+    }
+    setIsTyping(false)
+  }, 300)
+  
+  useEffect(() => {
+    const handleKeyEvent = (e: KeyboardEvent): void => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        onOpenChangeSearch()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyEvent)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyEvent)
+    }
+  })
+
+  useEffect(() => {
+    if (searchText.startsWith('@')) {
+      if (!isUsername) {
+        setIsUsername(true)
+      }
+    } else {
+      setIsUsername(false)
+    }
+  }, [searchText])
 
   useEffect(() => {
     setMounted(true)
@@ -193,19 +251,98 @@ const NavbarApp = ({ user }: { user: any }) => {
 
       <Modal placement="center" size="xl" hideCloseButton isOpen={isOpenSearch} scrollBehavior="inside" onOpenChange={onOpenChangeSearch}>
         <ModalContent>
-          <ModalBody className="flex flex-col p-0 gap-0">
+          <ModalHeader className="flex flex-col gap-3 p-3">
             <Input
+              value={searchText}
               startContent={<SearchIcon />}
-              placeholder="Search for a document or a user by typing '@username'"
+              classNames={{ input: isUsername ? '!text-primary' : '' }}
+              placeholder="Search"
               variant="flat"
-              className="p-3 !bg-transparent"
-              endContent={<Kbd keys={["command"]}>K</Kbd>}
+              isClearable
+              className="!bg-transparent"
+              onValueChange={updateSearch}
             ></Input>
 
             <Divider></Divider>
+          </ModalHeader>
 
-            <div className="flex flex-col p-4">
-              Hehehehe
+          <ModalBody className="flex flex-col px-0 pt-0 gap-0">
+            <div className="flex flex-col h-[300px] gap-4">
+              {
+                isTyping ?
+                  <div className="flex flex-col gap-4 px-3">
+                    {
+                      Array.from({ length: 10 }).map((_, index) =>
+                        <UserItemInList
+                          key={index}
+                          avatar={""}
+                          username={""}
+                          firstname={""}
+                          lastname={""}
+                          loading={true}
+                        />
+                      )
+                    }
+                  </div>
+                :
+                searchText ?
+                  <>
+                    <div className="flex flex-col flex-1 gap-1.5">
+                      <p className="text-foreground-500 text-xs px-3">{"People"}</p>
+
+                      <div className={`flex h-full flex-col ${isTyping ? 'gap-4' : 'gap-1'}`}>
+                        {
+                          searchResults?.users?.length ?
+                            searchResults?.users?.map((result: any, index: number) =>
+                              <UserItemInList
+                                key={index}
+                                avatar={result?.avatar}
+                                username={result?.username}
+                                firstname={result?.firstname}
+                                lastname={result?.lastname}
+                                loading={false}
+                              />
+                            )
+                          :
+                          <p className="px-3">No results</p>
+                        }
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col flex-1 gap-1.5">
+                      <p className="text-foreground-500 text-xs px-3">{"Documents"}</p>
+
+                      <div className={`flex h-full flex-col ${isTyping ? 'gap-4' : 'gap-1'}`}>
+                        {
+                          searchResults?.documents?.length ?
+                            searchResults?.documents?.map((result: any, index: number) =>
+                              <DocumentItemInList
+                                key={index}
+                                loading={false}
+                                id={result?.id}
+                                title={result?.title}
+                                updatedAt={result?.updatedAt}
+                                onCloseModal={closeModalAndClearResults}
+                              />
+                            )
+                          :
+                          <p className="px-3">No results</p>
+                        }
+                      </div>
+                    </div>
+                  </>
+                :
+                <div className="flex flex-1 flex-col items-center justify-center gap-2 py-8">
+                  <InfoIcon size={36} className="text-foreground-500" />
+
+                  <p className="font-medium">{"Search"}</p>
+
+                  <div className="flex flex-col items-center">
+                    <p className="text-foreground-500 text-sm">{"Start typing something to see the results."}</p>
+                    <p className="text-foreground-500 text-sm text-center">{"You can search for a document, a user or a username by typing '@username'."}</p>
+                  </div>
+                </div>
+              }
             </div>
           </ModalBody>
         </ModalContent>

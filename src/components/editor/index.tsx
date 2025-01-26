@@ -325,10 +325,10 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
                   label="Document title"
                   onValueChange={setTitleValue}
                 />
-                :
-                <p className="font-medium text-xl">
-                  {doc?.title}
-                </p>
+              :
+              <p className="font-medium text-xl">
+                {doc?.title}
+              </p>
             }
 
             <div className="flex flex-col items-center justify-center">
