@@ -1,13 +1,13 @@
 // schema.prisma
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["omitApi"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
@@ -27,17 +27,17 @@ model Account {
   oauth_token_secret String?
   oauth_token        String?
 
-  user User @relation(fields:[userId], references:[id], onDelete: Cascade)
-  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
 }
 
 model Session {
   id           String   @id @default(cuid())
-  sessionToken String   @unique@map("session_token")
+  sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id")
   expires      DateTime
-  user         User     @relation(fields:[userId], references:[id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -50,42 +50,42 @@ model VerificationToken {
 }
 
 model Document {
-  id                 String    @default(cuid()) @id
-  title              String
-  cover              String?
-  topic              String?
-  content            String?   @default("")
-  private            Boolean   @default(true)
-  locked             Boolean   @default(false)
-  character_count    Int?
-  word_count         Int?
-  author             User?     @relation(fields: [authorId, authorAvatar, authorFirstname, authorLastname], references: [id, avatar, firstname, lastname])
-  authorId           String?
-  authorAvatar       String?
-  authorFirstname    String?
-  authorLastname     String?
-  createdAt          DateTime  @default(now()) @map(name: "created_at")
-  updatedAt          DateTime  @updatedAt @map(name: "updated_at")
-  likes              Like[]
-  likeCount          Int       @default(0) 
+  id              String   @id @default(cuid())
+  title           String
+  cover           String?
+  topic           String?
+  content         String?  @default("")
+  private         Boolean  @default(true)
+  locked          Boolean  @default(false)
+  character_count Int?
+  word_count      Int?
+  author          User?    @relation(fields: [authorId, authorAvatar, authorFirstname, authorLastname], references: [id, avatar, firstname, lastname])
+  authorId        String?
+  authorAvatar    String?
+  authorFirstname String?
+  authorLastname  String?
+  createdAt       DateTime @default(now()) @map(name: "created_at")
+  updatedAt       DateTime @updatedAt @map(name: "updated_at")
+  likes           Like[]
+  likeCount       Int      @default(0)
 }
 
 model Like {
-  id          String            @id @default(cuid())
-  documentId  String   
-  userId      String   
-  createdAt   DateTime          @default(now())
-  document    Document          @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  documentId String
+  userId     String
+  createdAt  DateTime @default(now())
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([documentId, userId])
 }
 
 model User {
-  id                        String   @default(cuid()) @id
-  email                     String   @unique
+  id                        String     @id @default(cuid())
+  email                     String     @unique
   password                  String
-  username                  String?  @unique
+  username                  String?    @unique
   avatar                    String?
   firstname                 String?
   lastname                  String?
@@ -97,23 +97,24 @@ model User {
   verifyTokenExpiry         DateTime?
   forgotPasswordTokenExpiry DateTime?
   documents                 Document[]
-  createdAt                 DateTime @default(now()) @map(name: "created_at")
-  updatedAt                 DateTime @updatedAt @map(name: "updated_at")
-  followers                 Follows[] @relation("following")
-  following                 Follows[] @relation("follower")
+  createdAt                 DateTime   @default(now()) @map(name: "created_at")
+  updatedAt                 DateTime   @updatedAt @map(name: "updated_at")
+  followers                 Follows[]  @relation("following")
+  following                 Follows[]  @relation("follower")
   accounts                  Account[]
   sessions                  Session[]
   likes                     Like[]
 
-  @@map(name: "users")
   @@unique([id, avatar, firstname, lastname])
+  @@map(name: "users")
 }
+
 model Follows {
-  id                        Int     @id @default(autoincrement())
-  follower                  User    @relation("follower", fields: [followerId], references: [id])
-  followerId                String
-  following                 User    @relation("following", fields: [followingId], references: [id])
-  followingId               String
+  id          Int    @id @default(autoincrement())
+  follower    User   @relation("follower", fields: [followerId], references: [id])
+  followerId  String
+  following   User   @relation("following", fields: [followingId], references: [id])
+  followingId String
 
   @@unique([followerId, followingId])
 }

@@ -194,18 +194,20 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
 
   // Like/Dislike toggle
   const onToggleLike = useDebouncedCallback(async () => {
-    // setLikeStateLoading(true)
+    setLikeStateLoading(true)
     const userId = session?.user?.id
     if (hasLiked) {
       await dislikeDocument(documentId, userId)
+      successToast('Document liked successfully.');
       setLikeCount(prev => prev - 1)
       setHasLiked(prev => !prev)
     } else {
       await likeDocument(documentId, userId)
+      successToast('Document disliked successfully.');
       setLikeCount(prev => prev + 1)
       setHasLiked(prev => !prev)
     }
-    // setLikeStateLoading(false)
+    setLikeStateLoading(false)
   }, 300)
 
   // Check follow state method
@@ -489,7 +491,9 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
 
         {doc?.cover ?
           // Show cover if it's present
-          <div className="w-full flex justify-center items-center max-w-3xl mx-auto cursor-default relative px-5 md:!px-0">
+          <div {...getRootProps()} className="w-full flex justify-center items-center max-w-3xl mx-auto cursor-default relative px-5 md:!px-0">
+            <input {...getInputProps()} />
+
             <div
               className="w-full h-[350px] rounded-[12px] max-w-3xl flex justify-center items-center bg-cover bg-center overflow-hidden border border-divider"
               style={{backgroundImage: `url(${doc?.cover})`}}
@@ -534,7 +538,7 @@ export default function BlockEditor({ documentId, doc, setSaveStatus, onDocument
                       color="default"
                       variant={"bordered"}
                       className="w-fit font-medium"
-                      onClick={open}
+                      onPress={open}
                     >
                       {'Select image'}
                     </Button>
