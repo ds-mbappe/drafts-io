@@ -14,6 +14,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
 }) => {
 	const [editPersonalInfo, setEditPersonalInfo] = useState(false);
 	const { update } = useSession();
+	const nextSession = useContext(NextSessionContext)
 	const { session, setSession } = useContext(NextSessionContext)
 	const [loading, setLoading] = useState(false);
 	const [isPictureLoading, setPictureLoading] = useState(false);
@@ -150,7 +151,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
 			setEditUser({ ...editUser, ...session?.user });
 			setFollowData();
 		}
-	}, [session?.user])
+	}, [])
 
   return (
     <Modal placement="center" isOpen={dialogOpen} scrollBehavior="inside" onOpenChange={changeDialogOpenState}>
@@ -194,7 +195,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
 								{/* Firstname + Lastname + Email */}
 								<div className="flex flex-col">
 									<p className="text-base font-medium">
-										{`${session?.user?.firstname} ${session?.user?.lastname}`}
+										{`${session?.user?.firstname ?? 'No Firstname'} ${session?.user?.lastname ?? ''}`}
 									</p>
 
 									<p className="text-sm font-normal text-foreground-500">
@@ -251,7 +252,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
 										isDisabled={!editPersonalInfo}
 										autoComplete="new-password"
 										placeholder="Firstname"
-										value={editUser.firstname}
+										value={editUser?.firstname}
 										onValueChange={(value) => setEditUser({...editUser, firstname: value})}
 									/>
 								</div>
@@ -268,7 +269,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
 										isDisabled={!editPersonalInfo}
 										autoComplete="new-password"
 										placeholder="Lastname"
-										value={editUser.lastname}
+										value={editUser?.lastname}
 										onValueChange={(value) => setEditUser({...editUser, lastname: value})}
 									/>
 								</div>
@@ -286,7 +287,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
 										isDisabled
 										autoComplete="new-password"
 										placeholder="Email"
-										value={editUser.email}
+										value={editUser?.email}
 										// onValueChange={(value) => setEditUser({...editUser, email: value})}
 									/>
 								</div>
@@ -303,7 +304,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
 										isDisabled={!editPersonalInfo}
 										autoComplete="new-password"
 										placeholder="Phone number"
-										value={editUser.phone}
+										value={editUser?.phone}
 										onValueChange={(value) => setEditUser({...editUser, phone: value})}
 									/>
 								</div>

@@ -1,60 +1,27 @@
-import { NextResponse } from 'next/server'
-import { withAuth } from "next-auth/middleware";
-export default withAuth(
-  async function middleware(req) {
-    const {
-      nextUrl: { pathname },
-      nextauth: { token },
-    } = req;
+import { auth } from "@/auth"
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
 
-    const tokenEmail = req.cookies.get('token')?.value || ''
-    const shouldRedirectToApp = pathname.startsWith('/account')
+export async function middleware(req: NextRequest) {
+  const session = await auth()
 
-    if (shouldRedirectToApp && (token || tokenEmail)) {
-      return NextResponse.redirect(new URL("/app", req.url));
-    }
-  },
-  {
-    callbacks: {
-      authorized: ({ token, req }) => {
-        const {
-          nextUrl: { pathname },
-        } = req;
+  const isLoggedIn = !!session?.user
+  const { pathname } = req.nextUrl
 
-        const tokenEmail = req.cookies.get('token')?.value || ''
-        const noToken = !(token || tokenEmail)
-        const isPublicPath = pathname.startsWith("/account") || pathname === "/"
+  const isAuthPage = pathname === "/account/sign-in" || pathname === "/account/sign-up"
+  const isProtectedPage = pathname.startsWith("/app")
 
-        return (noToken && isPublicPath) || !!(token || tokenEmail);
-      },
-    },
+  if (isLoggedIn && isAuthPage) {
+    return NextResponse.redirect(new URL("/app", req.url))
   }
-);
 
-// export function middleware(request: NextRequest) {
-//   const path = request.nextUrl.pathname
+  if (!isLoggedIn && isProtectedPage) {
+    return NextResponse.redirect(new URL("/account/sign-in", req.url))
+  }
 
-//   // Define paths that are considered public (accessible without a token)
-//   const isPublicPath = path === '/account/sign-in' || path === '/account/sign-up' || path === '/account/verifyemail'
+  return NextResponse.next()
+}
 
-//   // Get the token from the cookies
-//   const token = request.cookies.get('token')?.value || ''
-
-//   // Redirect logic based on the path and token presence
-//   if(isPublicPath && token) {
-
-//   // If trying to access a public path with a token, redirect to the home page
-//     return NextResponse.redirect(new URL('/app', request.nextUrl))
-//   }
-
-//   // If trying to access a secure path without a token, redirect to the login page
-//   if (!isPublicPath && !token) {
-//     return NextResponse.redirect(new URL('/account/sign-in', request.nextUrl))
-//   }
-// }
-
-// It specifies the paths for which this middleware should be executed. 
-// In this case, it's applied to '/app', '/sign-in', and '/sign-up'.
 export const config = {
   matcher: [
     "/((?!api|_next/static|_next/image|.*\\.png$).*)",

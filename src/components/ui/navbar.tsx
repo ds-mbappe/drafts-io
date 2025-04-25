@@ -29,7 +29,7 @@ const NavbarApp = ({ user }: { user: any }) => {
 
   const onLogout = () => {
     signOut({
-      callbackUrl: "/account/sign-in"
+      redirectTo: "/account/sign-in"
     });
   }
 

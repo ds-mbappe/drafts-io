@@ -3,10 +3,11 @@ import '../styles/index.css'
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { Alert } from "@/components/ui/Alert";
-import { getServerSession } from "next-auth";
+import { auth } from "@/auth";
 import SessionProvider from "./SessionProvider";
 import { NextUIProvider } from "@nextui-org/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import ClientOnly from "./ClientOnly";
 
 export const metadata: Metadata = {
   title: "Drafts App",
@@ -26,19 +27,21 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const session = await getServerSession();
+  const session = await auth();
 
   return (
     <html lang="en">
       <body>
         <NextUIProvider>
-          <NextThemesProvider attribute="class" enableSystem defaultTheme="system">
-            <SessionProvider session={session}>
-              <Alert />
-              {children}
-              <Toaster richColors/>
-            </SessionProvider>
-          </NextThemesProvider>
+          <ClientOnly>
+            <NextThemesProvider attribute="class" enableSystem defaultTheme="system">
+              <SessionProvider session={session}>
+                <Alert />
+                {children}
+                <Toaster richColors />
+              </SessionProvider>
+            </NextThemesProvider>
+          </ClientOnly>
         </NextUIProvider>
       </body>
     </html>

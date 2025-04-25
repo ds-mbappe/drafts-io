@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Icon } from '@iconify/react';
-import { signIn } from "next-auth/react";
+import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
@@ -27,7 +27,7 @@ export default function SignInPage() {
       icon: <Icon icon="logos:facebook" width={24} height={24} />,
       action: () => {
         signIn("facebook", {
-          callbackUrl: "/app"
+          redirectTo: "/app"
         })
       }
     },
@@ -36,7 +36,7 @@ export default function SignInPage() {
       icon: <Icon icon="icon-park:github" width={24} height={24} />,
       action: () => {
         signIn("github", {
-          callbackUrl: "/app"
+          redirectTo: "/app"
         })
       }
     },
@@ -45,7 +45,7 @@ export default function SignInPage() {
       icon: <Icon icon="logos:google-icon" width={24} height={24} />,
       action: () => {
         signIn("google", {
-          callbackUrl: "/app"
+          redirectTo: "/app"
         })
       }
     },
@@ -55,10 +55,10 @@ export default function SignInPage() {
 
   const onSignIn = async () => {
     setLoading(true);
+
     const response = await signIn('credentials', {
       email: user?.email,
       password: user?.password,
-      callbackUrl: "/app",
       redirect: false,
     })
 
@@ -66,23 +66,24 @@ export default function SignInPage() {
       router.push("/app");
     } else {
       errorToast("Incorrect credentials, please try again !");
-      setLoading(false);
     }
+
+    setLoading(false);
   }
 
-  useEffect(() => {
-    const getUrlParams = () => {
-      const email = searchParams.get('email');
+  // useEffect(() => {
+  //   const getUrlParams = () => {
+  //     const email = searchParams.get('email');
 
-      if (email) {
-        setUser({...user, email: email})
+  //     if (email) {
+  //       setUser({...user, email: email})
 
-        successToast(`You may now sign in with the email <b>${email}</b> and your password.<br/>Don't forget to verify your account later !`);
-      }
-    }
+  //       successToast(`You may now sign in with the email <b>${email}</b> and your password.<br/>Don't forget to verify your account later !`);
+  //     }
+  //   }
 
-    getUrlParams();
-  }, [])
+  //   getUrlParams();
+  // }, [])
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-5">
@@ -127,7 +128,7 @@ export default function SignInPage() {
           </div>
         </div>
 
-        <form onSubmit={onSignIn} className="w-full flex flex-col gap-6">
+        <form onSubmit={(e) => { e.preventDefault(); onSignIn() }} className="w-full flex flex-col gap-6">
           {/* Inputs */}
           <div className="w-full flex flex-col gap-2">
             <div className="w-full h-full flex flex-col gap-5">
@@ -139,7 +140,7 @@ export default function SignInPage() {
                 type="email"
                 label={"Email"}
                 variant="bordered"
-                onChange={(e) => setUser({...user, email: e?.target?.value})}
+                onChange={(e) => setUser({ ...user, email: e?.target?.value })}
               />
 
               <Input
@@ -149,7 +150,7 @@ export default function SignInPage() {
                 type={isVisible ? "text" : "password"}
                 label={"Password"}
                 variant="bordered"
-                endContent={ user?.password ?
+                endContent={user?.password ?
                   <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
                     {isVisible ? (
                       <EyeOffIcon className="text-2xl pointer-events-none" />
@@ -158,7 +159,7 @@ export default function SignInPage() {
                     )}
                   </button> : <></>
                 }
-                onChange={(e) => setUser({...user, password: e?.target?.value})}
+                onChange={(e) => setUser({ ...user, password: e?.target?.value })}
               />
             </div>
 
