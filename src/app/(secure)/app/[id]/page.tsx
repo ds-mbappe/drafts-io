@@ -26,9 +26,9 @@ type PageProps = {
 //   aud: string,
 // }
 
-export default async function App(props: PageProps) {
+export default async function App({ params }: PageProps) {
   // const router = useRouter();
-  // const docId = props.params.id
+  // const docId = params.id
   // const searchParams = useSearchParams();
   const [doc, setDocument] = useState<any>(null);
   // const [words, setWords] = useState(0)
@@ -78,8 +78,8 @@ export default async function App(props: PageProps) {
   // }, [])
 
   useEffect(() => {
-    fetchDocument(props?.params?.id)
-  }, [props?.params?.id]);
+    fetchDocument(params?.id)
+  }, [params?.id]);
 
   // useLayoutEffect(() => {
   //   if (hasCollab && collabToken && doc) {
@@ -99,7 +99,7 @@ export default async function App(props: PageProps) {
   return (
     <div className="w-full max-w-[768px] 2xl:max-w-[1024px] mx-auto relative flex cursor-text flex-col z-[1] flex-1">
       <Editor
-        documentId={props?.params?.id}
+        documentId={params?.id}
         doc={doc}
         setSaveStatus={getSaveStatus}
         onDocumentUpdated={fetchDocument}
