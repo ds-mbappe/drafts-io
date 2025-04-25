@@ -12,12 +12,6 @@ import 'katex/dist/katex.min.css';
 import { getDocument } from '@/actions/document';
 import { errorToast } from '@/actions/showToast';
 
-type PageProps = {
-  params: {
-    id: string;
-  };
-};
-
 // interface Payload {
 //   iat: number,
 //   // nbf: number,
@@ -26,7 +20,7 @@ type PageProps = {
 //   aud: string,
 // }
 
-export default async function App({ params }: PageProps) {
+export default async function App({ params }: { params: { id: string } }) {
   // const router = useRouter();
   // const docId = params.id
   // const searchParams = useSearchParams();
