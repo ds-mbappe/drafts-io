@@ -26,7 +26,7 @@ type PageProps = {
 //   aud: string,
 // }
 
-export default function App(props: PageProps) {
+export default async function App(props: PageProps) {
   // const router = useRouter();
   // const docId = props.params.id
   // const searchParams = useSearchParams();
