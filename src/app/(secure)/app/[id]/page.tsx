@@ -12,7 +12,7 @@ import 'katex/dist/katex.min.css';
 import { getDocument } from '@/actions/document';
 import { errorToast } from '@/actions/showToast';
 
-type DocumentProps = {
+type PageProps = {
   params: {
     id: string;
   };
@@ -26,7 +26,7 @@ type DocumentProps = {
 //   aud: string,
 // }
 
-export default function App(props: DocumentProps) {
+export default function App(props: PageProps) {
   // const router = useRouter();
   // const docId = props.params.id
   // const searchParams = useSearchParams();
@@ -103,9 +103,9 @@ export default function App(props: DocumentProps) {
         doc={doc}
         setSaveStatus={getSaveStatus}
         onDocumentUpdated={fetchDocument}
-        // yDoc={yDoc}
-        // provider={provider}
-        // updateHistoryData={updateHistoryData}
+      // yDoc={yDoc}
+      // provider={provider}
+      // updateHistoryData={updateHistoryData}
       />
     </div>
   )
