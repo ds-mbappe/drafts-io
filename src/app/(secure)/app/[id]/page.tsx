@@ -4,13 +4,14 @@ import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import NavbarApp from "@/components/ui/navbar";
 import Editor from "@/components/editor"
 import { Doc as YDoc } from 'yjs'
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Sidebar from '@/components/pannels/Sidebar';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
 import { JWT } from "node-jsonwebtoken";
 import 'katex/dist/katex.min.css';
 import { getDocument } from '@/actions/document';
 import { errorToast } from '@/actions/showToast';
+import { useRouter } from 'next/router'
 
 // interface Payload {
 //   iat: number,
@@ -20,8 +21,9 @@ import { errorToast } from '@/actions/showToast';
 //   aud: string,
 // }
 
-export default async function Page({ params }: { params: { id: string } }) {
-  // const router = useRouter();
+export default async function Page() {
+  const router = useRouter();
+  const documentId = router.query?.id?.toString() || '';
   // const docId = params.id
   // const searchParams = useSearchParams();
   const [doc, setDocument] = useState<any>(null);
@@ -72,8 +74,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   // }, [])
 
   useEffect(() => {
-    fetchDocument(params?.id)
-  }, [params?.id]);
+    fetchDocument(documentId);
+  }, [documentId]);
 
   // useLayoutEffect(() => {
   //   if (hasCollab && collabToken && doc) {
@@ -93,7 +95,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <div className="w-full max-w-[768px] 2xl:max-w-[1024px] mx-auto relative flex cursor-text flex-col z-[1] flex-1">
       <Editor
-        documentId={params?.id}
+        documentId={documentId}
         doc={doc}
         setSaveStatus={getSaveStatus}
         onDocumentUpdated={fetchDocument}
