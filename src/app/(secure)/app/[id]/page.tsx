@@ -20,7 +20,7 @@ import { errorToast } from '@/actions/showToast';
 //   aud: string,
 // }
 
-export default async function App({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: { id: string } }) {
   // const router = useRouter();
   // const docId = params.id
   // const searchParams = useSearchParams();
