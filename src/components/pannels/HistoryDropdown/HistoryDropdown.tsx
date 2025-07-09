@@ -3,7 +3,6 @@ import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, DropdownSection,
 import { FileClock } from 'lucide-react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import ExtensionKit from '@/components/editor/extensions/extension-kit';
-import { watchPreviewContent } from '@tiptap-pro/extension-collaboration-history';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/react";
 
@@ -82,17 +81,17 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
     onOpen()
   }
 
-  useEffect(() => {
-    const unbindContentWatcher = watchPreviewContent(provider, content => {
-      if (editor) {
-        editor.commands.setContent(content)
-      }
-    })
+  // useEffect(() => {
+  //   const unbindContentWatcher = watchPreviewContent(provider, content => {
+  //     if (editor) {
+  //       editor.commands.setContent(content)
+  //     }
+  //   })
 
-    return () => {
-      unbindContentWatcher()
-    }
-  }, [provider, editor])
+  //   return () => {
+  //     unbindContentWatcher()
+  //   }
+  // }, [provider, editor])
 
   if (!editor) return null
 
@@ -105,7 +104,7 @@ const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, pro
               content={"History"}
               delay={0}
               closeDelay={0}
-              motionProps={motionProps}
+              // motionProps={motionProps}
             >
               <FileClock />
             </Tooltip>
