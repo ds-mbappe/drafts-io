@@ -103,7 +103,7 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
           content={"Align left"}
           delay={0}
           closeDelay={0}
-          motionProps={motionProps}
+          // motionProps={motionProps}
         >
           <Button isIconOnly size={"sm"} variant={"light"} onClick={onAlignImageLeft}>
             <AlignHorizontalDistributeStartIcon />
@@ -114,7 +114,7 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
           content={"Align center"}
           delay={0}
           closeDelay={0}
-          motionProps={motionProps}
+          // motionProps={motionProps}
         >
           <Button isIconOnly size={"sm"} variant={"light"} onClick={onAlignImageCenter}>
             <AlignHorizontalDistributeCenterIcon />
@@ -125,7 +125,7 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
           content={"Align right"}
           delay={0}
           closeDelay={0}
-          motionProps={motionProps}
+          // motionProps={motionProps}
         >
           <Button isIconOnly size={"sm"} variant={"light"} onClick={onAlignImageRight}>
             <AlignHorizontalDistributeEndIcon />
