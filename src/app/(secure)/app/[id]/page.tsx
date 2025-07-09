@@ -12,7 +12,7 @@ import BlockEditor from '@/components/editor';
 import moment from 'moment';
 import { useDropzone } from 'react-dropzone';
 import { Icon } from '@/components/ui/Icon'
-import ModalValidation from '@/components/pannels/ModalValidation';
+// import ModalValidation from '@/components/pannels/ModalValidation';
 
 export default function Page() {
   const params = useParams();
