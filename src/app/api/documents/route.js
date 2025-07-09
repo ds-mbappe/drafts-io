@@ -33,20 +33,20 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function POST(req) {
-  try {
-    const body = await req.json();
-    const documentData = body.formData
+// export async function POST(req) {
+//   try {
+//     const body = await req.json();
+//     const documentData = body.formData
     
-    const document = await prisma.document.create({
-      data: documentData
-    })
+//     const document = await prisma.document.create({
+//       data: documentData
+//     })
 
-    return NextResponse.json({ document }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ message: "Error", error }, { status: 500 });
-  }
-}
+//     return NextResponse.json({ document }, { status: 201 });
+//   } catch (error) {
+//     return NextResponse.json({ message: "Error", error }, { status: 500 });
+//   }
+// }
 
 export async function PUT(req) {
   try {

@@ -6,7 +6,7 @@ import { signOut } from "next-auth/react";
 import ProfileModal from "../pannels/ProfileModal";
 import { usePathname, useRouter } from "next/navigation";
 import { MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CircleUserRoundIcon, HomeIcon, BookTextIcon, SearchIcon, InfoIcon } from 'lucide-react';
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, useDisclosure, Input, Kbd, Modal, ModalBody, ModalContent, ModalHeader, Divider } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, useDisclosure, Input, Kbd, Modal, ModalBody, ModalContent, ModalHeader, Divider } from "@heroui/react";
 import { motion } from "framer-motion";
 import { search } from "@/actions/globalSearch";
 import { useDebouncedCallback } from "use-debounce";

@@ -51,10 +51,14 @@
 }
 
 .ProseMirror code {
-  border-radius: 0.125rem;
+  @apply bg-secondary text-background;
+  
+  border-radius: 0.4rem;
+  font-size: 0.85rem;
+  padding: 0.25em 0.3em;
   --tw-bg-opacity: 1;
   --tw-text-opacity: 1;
-  caret-color: #fff;
+  /* caret-color: #fff; */
 }
 
 code, kbd, pre, samp {

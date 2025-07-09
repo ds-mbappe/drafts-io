@@ -1,7 +1,6 @@
-import { LinkEditorPanel } from '@/components/pannels/LinkEditorPanel/LinkEditorPanel'
-import { Icon } from '@/components/ui/Icon'
-import { Button } from '@nextui-org/react'
-import * as Popover from '@radix-ui/react-popover'
+import { Icon } from '@/components/ui/Icon';
+import { Button, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
+import { LinkEditorPanel } from '@/components/pannels/LinkEditorPanel/LinkEditorPanel';
 
 export type EditLinkPopoverProps = {
   onSetLink: (link: string, openInNewTab?: boolean) => void
@@ -9,17 +8,17 @@ export type EditLinkPopoverProps = {
 
 export const EditLinkPopover = ({ onSetLink }: EditLinkPopoverProps) => {
   return (
-    <Popover.Root>
-      <Popover.Trigger asChild>
-        <Button variant="light">
-          <Icon name="Link" />
+    <Popover placement="bottom">
+      <PopoverTrigger>
+        <Button variant="light" size="sm" isIconOnly>
+          <Icon name="Link" className="text-foreground-500" />
         </Button>
-      </Popover.Trigger>
-      
-      <Popover.Content>
+      </PopoverTrigger>
+
+      <PopoverContent>
         <LinkEditorPanel onSetLink={onSetLink} />
-      </Popover.Content>
-    </Popover.Root>
+      </PopoverContent>
+    </Popover>
   )
 }
 

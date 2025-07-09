@@ -1,6 +1,6 @@
 import { Icon } from '@/components/ui/Icon'
 import { icons, PilcrowIcon } from 'lucide-react'
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger, Tooltip } from '@nextui-org/react'
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger, Tooltip } from "@heroui/react"
 
 export type ContentTypePickerOption = {
   label: string
@@ -49,14 +49,7 @@ export const ContentTypePicker = ({ options }: ContentTypePickerProps) => {
     <Dropdown placement="bottom-start">
       <DropdownTrigger>
         <Button isIconOnly size={"sm"} variant={"light"}>
-          {/* <Tooltip
-            content={"Convert into"}
-            delay={0}
-            closeDelay={0}
-            motionProps={motionProps}
-          >
-          </Tooltip> */}
-            <PilcrowIcon className="text-foreground-500" size={20} />
+          <PilcrowIcon className="text-foreground-500" size={20} />
         </Button>
       </DropdownTrigger>
 

@@ -6,7 +6,7 @@ import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
-import { Input, Button } from "@nextui-org/react";
+import { Input, Button } from "@heroui/react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { errorToast, successToast } from "@/actions/showToast";
 

@@ -6,7 +6,7 @@ import { Icon } from '@iconify/react';
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { errorToast } from "@/actions/showToast";
-import { Input, Button } from "@nextui-org/react";
+import { Input, Button } from "@heroui/react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export default function SignInPage() {

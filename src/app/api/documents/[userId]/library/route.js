@@ -3,7 +3,7 @@ import prisma from "../../../../../../lib/prisma";
 
 export async function GET(req, { params }) {
   try {
-    const { userId } = params
+    const { userId } = await params
     const search = req?.nextUrl?.searchParams.get("search")
     
     let documents = null
@@ -15,6 +15,17 @@ export async function GET(req, { params }) {
       },
       where: {
         authorId: userId,
+      },
+      select: {
+        id: true,
+        authorAvatar: true,
+        authorFirstname: true,
+        character_count: true,
+        cover: true,
+        createdAt: true,
+        title: true,
+        topic: true,
+        word_count: true,
       }
     })
 

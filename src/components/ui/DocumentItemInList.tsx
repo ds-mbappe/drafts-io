@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Skeleton } from '@nextui-org/react';
+import { Button, Skeleton } from "@heroui/react";
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { FileIcon } from 'lucide-react';

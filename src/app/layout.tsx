@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Alert } from "@/components/ui/Alert";
 import { auth } from "@/auth";
 import SessionProvider from "./SessionProvider";
-import { NextUIProvider } from "@nextui-org/react";
+import { HeroUIProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ClientOnly from "./ClientOnly";
 
@@ -32,7 +32,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en">
       <body>
-        <NextUIProvider>
+        <HeroUIProvider>
           <ClientOnly>
             <NextThemesProvider attribute="class" enableSystem defaultTheme="system">
               <SessionProvider session={session}>
@@ -42,7 +42,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
               </SessionProvider>
             </NextThemesProvider>
           </ClientOnly>
-        </NextUIProvider>
+        </HeroUIProvider>
       </body>
     </html>
   );

@@ -2,7 +2,7 @@ import { BubbleMenu as BaseBubbleMenu } from '@tiptap/react'
 import React, { useCallback } from 'react'
 import { isRowGripSelected } from './utils'
 import { MenuProps, ShouldShowProps } from '@/components/editor/menus/types'
-import { cn, Listbox, ListboxItem } from '@nextui-org/react'
+import { cn, Listbox, ListboxItem } from "@heroui/react"
 import Icon from '@/components/ui/Icon'
 
 export const TableRowMenu = React.memo(({ editor, appendTo }: MenuProps): JSX.Element => {

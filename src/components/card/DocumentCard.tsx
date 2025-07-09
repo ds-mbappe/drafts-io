@@ -3,7 +3,7 @@ import moment from 'moment';
 import Link from "next/link";
 import { DocumentCardTypeprops } from '@/lib/types';
 import { CalendarIcon, CircleHelpIcon } from 'lucide-react';
-import { Avatar, Card, CardBody, Chip, Image } from '@nextui-org/react';
+import { Avatar, Card, CardBody, Chip, Image } from "@heroui/react";
 
 const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
   const toggleLike = (e: any) => {

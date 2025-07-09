@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Avatar, Skeleton } from '@nextui-org/react';
+import { Button, Avatar, Skeleton } from "@heroui/react";
 
 const UserItemInList = ({ avatar, username, firstname, lastname, loading }: {
   avatar: string | undefined,

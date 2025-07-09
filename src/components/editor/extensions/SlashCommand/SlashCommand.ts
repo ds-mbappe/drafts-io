@@ -72,7 +72,7 @@ export const SlashCommand = Extension.create({
           view.dispatch(tr)
 
           props.action(editor)
-          view.focus()
+          editor.commands.focus()
         },
         items: ({ query }: { query: string }) => {
           const withFilteredCommands = GROUPS.map(group => ({

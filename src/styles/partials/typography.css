@@ -1,11 +1,7 @@
 .ProseMirror {
   p {
-    @apply leading-relaxed my-1 !text-start;
+    @apply my-1;
   }
-
-  /* & > p {
-    @apply my-6 first:mt-0 last:mb-0;
-  } */
 
   h1 {
     @apply text-3xl;
@@ -54,14 +50,6 @@
 
   [data-type='horizontalRule'] {
     @apply my-1 py-4 transition-all duration-100 ease-in-out cursor-pointer;
-
-    &.ProseMirror-selectednode {
-      @apply bg-black/5 dark:bg-white/10;
-
-      hr {
-        @apply border-t-black/30 dark:border-t-white/30;
-      }
-    }
 
     &:hover:not(&.ProseMirror-selectednode) {
       @apply bg-black/5;

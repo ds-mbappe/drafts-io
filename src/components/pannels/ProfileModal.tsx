@@ -4,7 +4,7 @@ import { v2 as cloudinary } from "cloudinary";
 import React, { useContext, useEffect, useState } from 'react';
 import { getFollowData } from '@/actions/getFollowData';
 import { errorToast, successToast } from '@/actions/showToast';
-import { Avatar, Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/react';
+import { Avatar, Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
 import { useDebouncedCallback } from 'use-debounce';
 import { NextSessionContext } from '@/contexts/SessionContext';
 

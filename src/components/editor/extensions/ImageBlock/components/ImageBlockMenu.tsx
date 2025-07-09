@@ -7,7 +7,7 @@ import { Icon } from '@/components/ui/Icon'
 import { ImageBlockWidth } from './ImageBlockWidth'
 import { MenuProps } from '../../../menus/types'
 import { getRenderContainer } from '../../../../editor/utils/getRenderContainer'
-import { Button, Divider, Tooltip } from '@nextui-org/react';
+import { Button, Divider, Tooltip } from "@heroui/react";
 import { AlignHorizontalDistributeCenterIcon, AlignHorizontalDistributeEndIcon, AlignHorizontalDistributeStartIcon } from 'lucide-react';
 
 export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {

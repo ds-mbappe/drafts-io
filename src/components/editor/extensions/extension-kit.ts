@@ -1,6 +1,7 @@
 import { lowlight } from 'lowlight';
+import Code from '@tiptap/extension-code'
 import StarterKit from "@tiptap/starter-kit";
-import Emoji from '@tiptap-pro/extension-emoji';
+import Emoji from '@tiptap/extension-emoji';
 import { Color } from '@tiptap/extension-color';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
@@ -13,7 +14,7 @@ import Typography from '@tiptap/extension-typography';
 import FontFamily from '@tiptap/extension-font-family';
 import Placeholder from "@tiptap/extension-placeholder";
 import Superscript from '@tiptap/extension-superscript';
-import Mathematics from '@tiptap-pro/extension-mathematics';
+import Mathematics from '@tiptap/extension-mathematics';
 import CharacterCount from '@tiptap/extension-character-count';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 
@@ -40,7 +41,10 @@ import emojiSuggestion from './EmojiSuggestion/Suggestion';
 
 export const ExtensionKit = () => [
   StarterKit.configure({
+    code: false,
     history: false,
+    codeBlock: false,
+    horizontalRule: false,
     bulletList: {
       HTMLAttributes: {
         class: "list-disc list-outside leading-3",
@@ -61,12 +65,10 @@ export const ExtensionKit = () => [
         class: "border-l-4 border-gray-300 pl-4",
       },
     },
-    codeBlock: false,
     dropcursor: {
       color: "#DBEAFE",
       width: 4,
     },
-    horizontalRule: false,
   }),
   Typography,
   TaskList,
@@ -129,9 +131,10 @@ export const ExtensionKit = () => [
     multicolor: true,
   }),
   FontFamily.configure({
-    types: ['textStyle'],
+    types: ['textStyle', 'code'],
   }),
   FontSize,
+  Code,
 ]
 
 export default ExtensionKit

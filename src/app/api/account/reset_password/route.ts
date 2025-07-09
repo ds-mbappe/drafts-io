@@ -1,4 +1,4 @@
-import { sendEmail } from "@/app/_helpers/mailer";
+import { sendEmail } from "@/app/_helpers/email";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import prisma from "../../../../../lib/prisma";

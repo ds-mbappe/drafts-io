@@ -1,4 +1,4 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger, Tooltip } from '@nextui-org/react'
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger, Tooltip } from "@heroui/react"
 import { useCallback } from 'react'
 
 const FONT_SIZES = [
@@ -39,35 +39,6 @@ export const FontSizePicker = ({ onChange, value }: FontSizePickerProps) => {
   const selectSize = useCallback((size: string) => () => onChange(size), [onChange])
 
   return (
-    <Dropdown placement="bottom-start">
-      <DropdownTrigger>
-        <Button size={"sm"} variant={"light"}>
-          {/* <Tooltip
-            content={"Font size"}
-            delay={0}
-            closeDelay={0}
-            motionProps={motionProps}
-          >
-          </Tooltip> */}
-            <p className="text-foreground-500 font-medium text-base">{currentSizeLabel}</p>
-        </Button>
-      </DropdownTrigger>
-
-      <DropdownMenu aria-label="Actions" variant="flat">
-        {FONT_SIZES?.map(fontSize => {
-          return (
-            <DropdownItem
-              key={fontSize?.value}
-              textValue="font"
-              onClick={selectSize(fontSize?.value)}
-            >
-              <span style={{ fontSize: fontSize?.value }}>{fontSize?.label}</span>
-            </DropdownItem>
-          )
-        })}
-      </DropdownMenu>
-    </Dropdown>
-
     // Old design
     // <Dropdown.Root>
     //   <Dropdown.Trigger asChild>
@@ -76,7 +47,6 @@ export const FontSizePicker = ({ onChange, value }: FontSizePickerProps) => {
     //       <Icon name="ChevronDown" className="w-2 h-2" />
     //     </Toolbar.Button>
     //   </Dropdown.Trigger>
-
     //   <Dropdown.Content asChild>
     //     <Surface className="flex flex-col gap-1 px-2 py-4">
     //       {FONT_SIZES.map(size => (
@@ -91,7 +61,34 @@ export const FontSizePicker = ({ onChange, value }: FontSizePickerProps) => {
     //     </Surface>
     //   </Dropdown.Content>
     // </Dropdown.Root>
-  )
+    <Dropdown placement="bottom-start">
+      <DropdownTrigger>
+        <Button size={"sm"} variant={"light"}>
+          {/* <Tooltip
+            content={"Font size"}
+            delay={0}
+            closeDelay={0}
+            motionProps={motionProps}
+          >
+          </Tooltip> */}
+            <p className="text-foreground-500 font-medium text-base">{currentSizeLabel}</p>
+        </Button>
+      </DropdownTrigger>
+      <DropdownMenu aria-label="Actions" variant="flat">
+        {FONT_SIZES?.map(fontSize => {
+          return (
+            <DropdownItem
+              key={fontSize?.value}
+              textValue="font"
+              onClick={selectSize(fontSize?.value)}
+            >
+              <span style={{ fontSize: fontSize?.value }}>{fontSize?.label}</span>
+            </DropdownItem>
+          )
+        })}
+      </DropdownMenu>
+    </Dropdown>
+  );
 }
 
 FontSizePicker.displayName = 'FontSizePicker'

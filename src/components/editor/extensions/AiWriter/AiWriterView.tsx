@@ -1,8 +1,8 @@
 import { NodeViewWrapperProps, NodeViewWrapper, NodePos, Editor } from "@tiptap/react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import OpenAI from "openai"
-import { Button, Input, Textarea } from "@nextui-org/react"
-import { CircleArrowUpIcon, SparklesIcon } from "lucide-react"
+import { Button, Input, Textarea } from "@heroui/react"
+import { CircleArrowRight, CircleArrowUpIcon, SparklesIcon } from "lucide-react"
 
 export interface DataProps {
   text: string
@@ -48,7 +48,7 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
             content: payload.text
           },
         ],
-        model: "gpt-4o",
+        model: "gpt-4.1-mini",
         stream: true,
       })
 
@@ -56,34 +56,37 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
 
       for await (const chunk of completion) {
         content += chunk.choices[0]?.delta?.content || ""
-        // let position = getPos()
-        // let chunkContent = chunk.choices[0]?.delta?.content || ""
+        let position = getPos()
+        let chunkContent = chunk.choices[0]?.delta?.content || ""
 
-        // if (content?.length && content !== "\n") {
-        //   let newContent = chunkContent.replace(content, "")
-        //   if (newContent === '<h') {
-        //     editor.commands.enter()
-        //     editor.chain().focus().setHeading({ level: 1 }).run()
-        //     const transaction = editor.state.tr.insertText(newContent)
-        //     editor.view.dispatch(transaction)
-        //   } else if (newContent === '<p') {
-        //     editor.commands.enter()
-        //     const transaction = editor.state.tr.insertText(newContent)
-        //     editor.view.dispatch(transaction)
-        //   } else if (newContent === '<br') {
-        //     editor.commands.enter()
-        //   } else if (newContent?.endsWith("\n")) {
-        //     const transaction = editor.state.tr.insertText(newContent)
-        //     editor.view.dispatch(transaction)
-        //     editor.commands.enter()
-        //   } else {
-        //     const transaction = editor.state.tr.insertText(newContent)
-        //     editor.view.dispatch(transaction)
-        //   }
-        //   editor.commands.scrollIntoView()
-        //   console.log(newContent)
-        //   console.log(newContent?.endsWith("\n"))
-        // }
+        if (content?.length && content !== "\n") {
+          let newContent = chunkContent.replace(content, "")
+
+          // const transaction = editor.state.tr.insertText(newContent)
+          // editor.view.dispatch(transaction)
+          // if (newContent === '<h') {
+          //   editor.commands.enter()
+          //   editor.chain().focus().setHeading({ level: 1 }).run()
+          //   const transaction = editor.state.tr.insertText(newContent)
+          //   editor.view.dispatch(transaction)
+          // } else if (newContent === '<p') {
+          //   editor.commands.enter()
+          //   const transaction = editor.state.tr.insertText(newContent)
+          //   editor.view.dispatch(transaction)
+          // } else if (newContent === '<br') {
+          //   editor.commands.enter()
+          // } else if (newContent?.endsWith("\n")) {
+          //   const transaction = editor.state.tr.insertText(newContent)
+          //   editor.view.dispatch(transaction)
+          //   editor.commands.enter()
+          // } else {
+          //   const transaction = editor.state.tr.insertText(newContent)
+          //   editor.view.dispatch(transaction)
+          // }
+          editor.commands.scrollIntoView()
+          console.log(newContent)
+          console.log(newContent?.endsWith("\n"))
+        }
       }
 
       const lines = content.split('\n')
@@ -130,34 +133,47 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
 
   return (
     <NodeViewWrapper data-drag-handle>
-      <Textarea
-        id="ai-input"
-        ref={inputRef}
-        minRows={1}
-        maxRows={10}
-        value={data.text}
-        variant="bordered"
-        className="lg:!w-3/4 my-4"
-        label={"Ask something to the AI"}
-        onChange={onInputChange}
-        startContent={
-          <div className="flex items-center justify-center w-10 h-10">
-            <SparklesIcon />
-          </div>
+      <div className={"flex flex-col gap-2 my-2 rounded bg-background overflow-hidden"}>
+        <Textarea
+          id="ai-input"
+          ref={inputRef}
+          minRows={1}
+          maxRows={10}
+          autoFocus={true}
+          isClearable={true}
+          value={data.text}
+          variant="flat"
+          classNames={{
+            innerWrapper: 'p-2',
+          }}
+          placeholder={"Ask something to the AI"}
+          onChange={onInputChange}
+          onKeyDown={async (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+
+              if (data.text && data.text.trim() !== '') {
+                await generateAnswer();
+              }
+            }
+          }}
+        />
+
+        {
+          (data.text && data.text.trim() !== '') &&
+            <Button
+              isIconOnly={true}
+              color="primary"
+              variant="light"
+              className="self-end mr-2 mb-2"
+              // isDisabled={!data.text}
+              isLoading={isFetching}
+              onClick={generateAnswer}
+            >
+              <CircleArrowRight />
+            </Button>
         }
-        endContent={
-          <Button
-            isIconOnly={true}
-            color="primary"
-            variant="light"
-            isDisabled={!data.text}
-            isLoading={isFetching}
-            onClick={generateAnswer}
-          >
-            <CircleArrowUpIcon />
-          </Button>
-        }
-      />
+      </div>
     </NodeViewWrapper>
   )
 }

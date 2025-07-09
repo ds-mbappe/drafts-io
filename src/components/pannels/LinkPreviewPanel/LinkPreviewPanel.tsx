@@ -1,6 +1,6 @@
 import { Icon } from '@/components/ui/Icon'
 import { Surface } from '@/components/ui/Surface'
-import { Button, Divider } from '@nextui-org/react'
+import { Button, Divider } from "@heroui/react"
 
 export type LinkPreviewPanelProps = {
   url: string

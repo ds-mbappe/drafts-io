@@ -1,39 +1,35 @@
 .hideScroll {
   ::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
+    /* Chrome, Safari, Opera */
   }
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .editableClass {
   .ProseMirror {
-    @apply z-0 pl-20 pr-5 md:pr-20 xl:pr-0
+    @apply z-0 pl-5 pb-14
   }
 }
 
 .readOnlyClass {
   .ProseMirror {
-    @apply z-0 px-5 md:!px-20 xl:!px-0
+    @apply z-0 pb-5
   }
 }
 
 .ProseMirror {
   @apply caret-foreground-500 outline-0;
 
-  & > * {
+  &>* {
     @apply mx-auto max-w-5xl;
   }
 
-  .selection {
-    @apply inline;
-  }
-
-  .selection, *::selection {
-    @apply bg-foreground-500;
-  }
-
-  & > .react-renderer {
+  &>.react-renderer {
     @apply first:mt-0 last:mb-0;
   }
 
@@ -48,10 +44,26 @@
       @apply border-t-black/40 dark:border-t-white/40 w-full -top-[1.5em] max-w-2xl mx-auto left-0 right-0;
     }
   }
+}
 
-  .node-aiWriter {
-    @apply !my-0;
-  }
+.drag-handle {
+  align-items: center;
+  /* background: #f0f0f0; */
+  border-radius: .25rem;
+  /* border: 1px solid rgba(0, 0, 0, 0.1); */
+  cursor: grab;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  width: 1.5rem;
+}
+
+.ProseMirror-selectednode {
+  @apply bg-primary-50 rounded;
+}
+
+.bubble-menu {
+  @apply w-full bg-background rounded-xl shadow flex items-center p-1 gap-0.5
 }
 
 .tippy-box {
@@ -79,7 +91,21 @@
 
 /* set button(top and bottom of the scrollbar) */
 *::-webkit-scrollbar-button {
-  display:none;
+  display: none;
+}
+
+.hideScrollbar::-webkit-scrollbar {
+  background-color: transparent;
+  width: 0px;
+  height: 0px;
+}
+
+.hideScrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.hideScrollbar::-webkit-scrollbar-thumb {
+  background-color: transparent;
 }
 
 /* Change cursor */

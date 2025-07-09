@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { ColorButton } from './ColorButton'
 import { Icon } from '../../ui/Icon'
-import { Button } from '@nextui-org/react'
+import { Button } from "@heroui/react"
 
 export type ColorPickerProps = {
   color?: string

@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { icons } from 'lucide-react'
 import { Command, MenuListProps } from './types'
-import { Listbox, ListboxItem, ListboxSection, } from "@nextui-org/react";
+import { Listbox, ListboxItem, ListboxSection, } from "@heroui/react";
 
 export type IconProps = {
   name: keyof typeof icons
@@ -32,11 +32,11 @@ const MenuList = React.forwardRef((props: MenuListProps, ref) => {
 
   const Icon = memo(({ name, className, strokeWidth }: IconProps) => {
     const IconComponent = icons[name]
-  
+
     if (!IconComponent) {
       return null
     }
-  
+
     return <IconComponent />
   })
 
@@ -109,12 +109,27 @@ const MenuList = React.forwardRef((props: MenuListProps, ref) => {
 
   useEffect(() => {
     if (activeItem.current && scrollContainer.current) {
-      const offsetTop = activeItem.current.offsetTop
-      const offsetHeight = activeItem.current.offsetHeight
+      const itemTop = activeItem.current.offsetTop;
+      const itemBottom = itemTop + activeItem.current.offsetHeight;
 
-      scrollContainer.current.scrollTop = offsetTop - offsetHeight
+      const containerTop = scrollContainer.current.scrollTop;
+      const containerBottom = containerTop + scrollContainer.current.offsetHeight;
+
+      if (itemTop < containerTop) {
+        // Scroll up to the item
+        scrollContainer.current.scrollTo({
+          top: itemTop - 25,
+          behavior: 'smooth',
+        });
+      } else if (itemBottom > containerBottom) {
+        // Scroll down to the item
+        scrollContainer.current.scrollTo({
+          top: itemBottom - scrollContainer.current.offsetHeight + 25,
+          behavior: 'smooth',
+        });
+      }
     }
-  }, [selectedCommandIndex, selectedGroupIndex])
+  }, [selectedCommandIndex, selectedGroupIndex]);
 
   const createCommandClickHandler = useCallback(
     (groupIndex: number, commandIndex: number) => {
@@ -130,49 +145,50 @@ const MenuList = React.forwardRef((props: MenuListProps, ref) => {
   }
 
   return (
-    <div className="w-full max-w-[260px] max-h-[min(80vh,24rem)] p-1 overflow-auto bg-content1 rounded-[12px] border border-default-200 dark:border-default-100">
-      <Listbox variant="flat" aria-label="Listbox menu with sections">
+    <div className="w-full max-w-[275px] px-1 py-2 overflow-hidden bg-content1 rounded-xl border border-default-200 dark:border-default-100" ref={scrollContainer}>
+      <div aria-label="Listbox menu with sections" className="flex flex-col max-h-[min(80vh,24rem)] overflow-y-auto gap-2">
         {props.items.map((group, groupIndex: number) => (
-          <ListboxSection
-            key={`${group?.title}-wrapper`}
-            title={group?.title}
-          >
+          <div key={`${group?.title}-wrapper`}>
+            <p className="px-1 text-gray-500 font-medium text-sm">
+              {group?.title}
+            </p>
+
             {group.commands.map((command: Command, commandIndex: number) => {
               const isSelected = (commandIndex === selectedCommandIndex && groupIndex === selectedGroupIndex);
-              
+
               return (
-                <ListboxItem
-                  key={commandIndex}
-                  // ref={isSelected ? activeItem : null}
-                  description={command?.description}
-                  startContent={<Icon name={command?.iconName} className="w-10 h-10" />}
-                  onClick={createCommandClickHandler(groupIndex, commandIndex)}
-                >
-                  {command?.label}
-                </ListboxItem>
-                // <button
-                //   ref={isSelected ? activeItem : null}
-                //   className={`flex w-full items-center space-x-2 rounded-md p-1 text-left text-sm text-gray-900 hover:bg-gray-100 ${
-                //     isSelected ? "bg-gray-100 text-gray-900" : ""
-                //   }`}
+                // <ListboxItem
+                //   as={'div'}
                 //   key={commandIndex}
+                //   textValue={`${command.label}_${commandIndex}`}
+                //   description={command?.description}
+                //   startContent={<Icon name={command?.iconName} className="w-10 h-10" />}
                 //   onClick={createCommandClickHandler(groupIndex, commandIndex)}
                 // >
-                //   <div className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 bg-white">
-                //     <Icon name={command.iconName} className="w-10 h-10" />
-                //   </div>
-                //   <div className="max-w-[175px]">
-                //     <p className="font-medium">{command.label}</p>
-                //     <p className="text-xs text-gray-500">{command.description}</p>
-                //   </div>
-                // </button>
-                )
+                //   {command?.label}
+                // </ListboxItem>
+                <button
+                  key={commandIndex}
+                  ref={isSelected ? activeItem : null}
+                  className={`flex w-full items-center gap-2 p-1.5 text-left text-sm rounded-xl text-foreground dark:text-background hover:bg-divider ${isSelected ? "bg-primary-50" : ""
+                    }`}
+                  onClick={createCommandClickHandler(groupIndex, commandIndex)}
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md border border-divider bg-background dark:bg-foreground">
+                    <Icon name={command.iconName} className="w-10 h-10" />
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="font-medium text-foreground">{command.label}</p>
+                    <p className="text-xs text-gray-500">{command.description}</p>
+                  </div>
+                </button>
+              );
             })}
-          </ListboxSection>
+          </div>
         ))}
-      </Listbox>
+      </div>
     </div>
-  )
+  );
 })
 
 MenuList.displayName = 'MenuList'

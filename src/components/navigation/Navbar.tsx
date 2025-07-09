@@ -16,7 +16,7 @@ import {
   Dropdown,
   DropdownItem,
   DropdownMenu
-} from "@nextui-org/react";
+} from "@heroui/react";
 
 const Navbar = (userId: any) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

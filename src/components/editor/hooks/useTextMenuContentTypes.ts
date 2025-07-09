@@ -88,7 +88,7 @@ export const useTextMenuContentTypes = (editor: Editor) => {
       },
     ]
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editor, editor.state])
+  }, [editor, editor?.state])
 
   return options
 }

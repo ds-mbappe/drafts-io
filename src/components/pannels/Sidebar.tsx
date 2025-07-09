@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 import { useRouter, usePathname } from 'next/navigation';
 import React, { useEffect, useState, memo, useContext } from 'react';
-import { Divider, Button, Avatar, useDisclosure } from "@nextui-org/react";
+import { Divider, Button, Avatar, useDisclosure } from "@heroui/react";
 import { BookmarkIcon, BookOpenTextIcon, BookTextIcon, ChevronLeftIcon, ChevronRightIcon, CircleHelpIcon, ClockIcon, HomeIcon, LayoutListIcon, LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";

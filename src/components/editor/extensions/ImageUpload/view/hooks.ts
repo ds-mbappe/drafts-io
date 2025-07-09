@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { errorToast } from "@/actions/showToast";
 import { DragEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { Editor } from "@tiptap/react";
 
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
   const [loading, setLoading] = useState(false)
@@ -116,3 +117,51 @@ export const useDropZone = ({ uploader }: { uploader: (file: File) => void }) =>
 
   return { isDragging, draggedInside, onDragEnter, onDragLeave, onDrop }
 }
+
+export const useCanUndo = (editor: Editor | null) => {
+  const [canUndo, setCanUndo] = useState(false);
+
+  useEffect(() => {
+    if (!editor) {
+      setCanUndo(false);
+      return;
+    }
+
+    const updateCanUndo = () => {
+      setCanUndo(editor.can().undo());
+    };
+
+    updateCanUndo();
+    editor.on('transaction', updateCanUndo);
+
+    return () => {
+      editor.off('transaction', updateCanUndo);
+    };
+  }, [editor]);
+
+  return canUndo;
+};
+
+export const useCanRedo = (editor: Editor | null) => {
+  const [canUndo, setCanRedo] = useState(false);
+
+  useEffect(() => {
+    if (!editor) {
+      setCanRedo(false);
+      return;
+    }
+
+    const updateCanRedo = () => {
+      setCanRedo(editor.can().redo());
+    };
+
+    updateCanRedo();
+    editor.on('transaction', updateCanRedo);
+
+    return () => {
+      editor.off('transaction', updateCanRedo);
+    };
+  }, [editor]);
+
+  return canUndo;
+};

@@ -3,7 +3,7 @@ import prisma from "../../../../../../lib/prisma";
 
 // GET: Fetch the likes count for a specific document
 export async function GET(req, { params }) {
-  const { documentId } = params;
+  const { documentId } = await params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
 
@@ -39,7 +39,7 @@ export async function GET(req, { params }) {
 
 // POST: Add a like to the document
 export async function POST(req, { params }) {
-  const { documentId } = params;
+  const { documentId } = await params;
 
   try {
     const body = await req.json();
@@ -83,7 +83,7 @@ export async function POST(req, { params }) {
 
 // DELETE: Remove a like from the document
 export async function DELETE(req, { params }) {
-  const { documentId } = params;
+  const { documentId } = await params;
 
   try {
     const body = await req.json();
@@ -94,7 +94,7 @@ export async function DELETE(req, { params }) {
     }
 
     // Delete the like
-    const deletedLike = await prisma.like.delete({
+    await prisma.like.delete({
       where: {
         documentId_userId: {
           documentId: documentId,

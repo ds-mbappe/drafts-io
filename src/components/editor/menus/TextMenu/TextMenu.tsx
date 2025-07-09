@@ -3,7 +3,6 @@ import { useTextMenuCommands } from '../../hooks/useTextMenuCommands'
 import { useTextMenuStates } from '../../hooks/useTextMenuStates'
 import { BubbleMenu, Editor } from '@tiptap/react'
 import { memo } from 'react'
-import * as Popover from '@radix-ui/react-popover'
 import { Surface } from '@/components/ui/Surface'
 import { ColorPicker } from '@/components/pannels/ColorPicker/ColorPicker'
 import { FontFamilyPicker } from './components/FontFamilyPicker'
@@ -11,7 +10,8 @@ import { FontSizePicker } from './components/FontSizePicker'
 import { useTextMenuContentTypes } from '../../hooks/useTextMenuContentTypes'
 import { ContentTypePicker } from './components/ContentTypePicker'
 import { EditLinkPopover } from './components/EditLinkPopover'
-import { Button, Card, CardBody, Tooltip } from '@nextui-org/react'
+import { Button, Card, CardBody, Dropdown, DropdownMenu, DropdownTrigger, Tooltip, Popover, PopoverTrigger, PopoverContent } from "@heroui/react"
+import { PilcrowIcon } from 'lucide-react'
 
 // We memorize the button so each button is not rerendered every editor state change
 const MemoColorPicker = memo(ColorPicker)
@@ -27,99 +27,46 @@ export const TextMenu = ({ editor }: TextMenuProps) => {
   const states = useTextMenuStates(editor)
   const commands = useTextMenuCommands(editor)
   const blockOptions = useTextMenuContentTypes(editor)
-  const motionProps = {
-    variants: {
-      exit: {
-        opacity: 0,
-        transition: {
-          duration: 0.15,
-          ease: "easeIn",
-        }
-      },
-      enter: {
-        opacity: 1,
-        transition: {
-          duration: 0.15,
-          ease: "easeOut",
-        }
-      },
-    },
-  }
 
   return (
     <BubbleMenu
-      tippyOptions={{ popperOptions: { placement: 'top-start' }, duration: 250 }}
+      tippyOptions={{ popperOptions: { placement: 'top-start' }, duration: 150 }}
       editor={editor}
       pluginKey="textMenu"
       shouldShow={states.shouldShow}
     >
-      <Card>
-        <CardBody className="flex flex-row gap-1">
-          <MemoContentTypePicker options={blockOptions} />
+      <div className={"bubble-menu"}>
+        <MemoContentTypePicker options={blockOptions} />
 
-          <MemoFontFamilyPicker onChange={commands.onSetFont} value={states.currentFont || ''} />
+        <MemoFontFamilyPicker onChange={commands.onSetFont} value={states.currentFont || ''} />
 
-          <MemoFontSizePicker onChange={commands.onSetFontSize} value={states.currentSize || ''} />
+        <MemoFontSizePicker onChange={commands.onSetFontSize} value={states.currentSize || ''} />
 
-          <Button variant="light" size="sm" onPress={commands.onBold} color="default" isIconOnly>
-            {/* <Tooltip
-              content={"Bold"}
-              delay={0}
-              closeDelay={0}
-              motionProps={motionProps}
-            >
-            </Tooltip> */}
-              <Icon name="Bold" className="text-foreground-500" />
-          </Button>
+        <Button variant="light" size="sm" onPress={commands.onBold} color="default" isIconOnly>
+          <Icon name="Bold" className="text-foreground-500" />
+        </Button>
 
-          <Button variant="light" size="sm" onPress={commands.onItalic} color="default" isIconOnly>
-            {/* <Tooltip
-              content={"Italic"}
-              delay={0}
-              closeDelay={0}
-              motionProps={motionProps}
-            >
-            </Tooltip> */}
-              <Icon name="Italic" className="text-foreground-500" />
-          </Button>
+        <Button variant="light" size="sm" onPress={commands.onItalic} color="default" isIconOnly>
+          <Icon name="Italic" className="text-foreground-500" />
+        </Button>
 
-          <Button variant="light" size="sm" onPress={commands.onUnderline} color="default" isIconOnly>
-            {/* <Tooltip
-              content={"Underline"}
-              delay={0}
-              closeDelay={0}
-              motionProps={motionProps}
-            >
-            </Tooltip> */}
-              <Icon name="Underline" className="text-foreground-500" />
-          </Button>
+        <Button variant="light" size="sm" onPress={commands.onUnderline} color="default" isIconOnly>
+          <Icon name="Underline" className="text-foreground-500" />
+        </Button>
 
-          <Button variant="light" size="sm" onPress={commands.onStrike} color="default" isIconOnly>
-            {/* <Tooltip
-              content={"Striketrough"}
-              delay={0}
-              closeDelay={0}
-              motionProps={motionProps}
-            >
-            </Tooltip> */}
-              <Icon name="Strikethrough" className="text-foreground-500" />
-          </Button>
-          
-          <Button variant="light" size="sm" onPress={commands.onCodeBlock} isIconOnly>
-            {/* <Tooltip
-              content={"Code block"}
-              delay={0}
-              closeDelay={0}
-              motionProps={motionProps}
-            >
-            </Tooltip> */}
-              <Icon name="Code" className="text-foreground-500" />
-          </Button>
-        </CardBody>
-      </Card>
+        <Button variant="light" size="sm" onPress={commands.onStrike} color="default" isIconOnly>
+          <Icon name="Strikethrough" className="text-foreground-500" />
+        </Button>
+
+        <Button variant="light" size="sm" onPress={commands.onCode} color="default" isIconOnly>
+          <Icon name="Braces" className="text-foreground-500" />
+        </Button>
+        
+        <Button variant="light" size="sm" onPress={commands.onCodeBlock} isIconOnly>
+          <Icon name="Code" className="text-foreground-500" />
+        </Button>
+      </div>
       {/* <Toolbar.Wrapper>
-
-
         <EditLinkPopover onSetLink={commands.onLink} />
 
         <Popover.Root>

@@ -1,11 +1,11 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, DropdownSection, Button, Tooltip } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, DropdownSection, Button, Tooltip } from "@heroui/react";
 import { FileClock } from 'lucide-react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import ExtensionKit from '@/components/editor/extensions/extension-kit';
 import { watchPreviewContent } from '@tiptap-pro/extension-collaboration-history';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/react";
 
 const HistoryDropdown = memo(({ historyData, provider }: { historyData: any, provider: TiptapCollabProvider }) => {
   const motionProps = {

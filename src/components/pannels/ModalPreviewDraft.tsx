@@ -1,4 +1,4 @@
-import { Modal, ModalBody, ModalContent, ModalHeader, Image, ModalFooter, Button } from '@nextui-org/react'
+import { Modal, ModalBody, ModalContent, ModalHeader, Image, ModalFooter, Button } from "@heroui/react"
 import { Editor, EditorContent } from '@tiptap/react'
 import React from 'react'
 

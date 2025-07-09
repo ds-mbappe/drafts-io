@@ -1,10 +1,10 @@
-import { Button, Link, NextUIProvider } from "@nextui-org/react";
+import { Button, Link, HeroUIProvider } from "@heroui/react";
 import Navbar from "@/components/navigation/Navbar";
 import { SquarePenIcon } from "lucide-react";
 
 export default function Home() {
   return (
-    <NextUIProvider>
+    <HeroUIProvider>
       <main className="flex min-h-screen flex-col bg-content1">
         <Navbar />
         
@@ -42,6 +42,6 @@ export default function Home() {
           </div>
         </section> */}
       </main>
-    </NextUIProvider>
+    </HeroUIProvider>
   );
 }

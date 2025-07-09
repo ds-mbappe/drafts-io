@@ -1,12 +1,13 @@
 import { GripVertical, PlusIcon } from 'lucide-react';
 import { Editor } from '@tiptap/react'
-import DragHandle from '@tiptap-pro/extension-drag-handle-react'
+import DragHandle from '@tiptap/extension-drag-handle-react';
 import { useData } from '@/components/editor/hooks/useData';
 import useContentItemActions from '@/components/editor/hooks/useContentItemActions';
 import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/Icon';
-import { Listbox, ListboxItem } from "@nextui-org/react";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, cn, useDisclosure, Modal, ModalContent, ModalBody } from "@nextui-org/react";
+import { Listbox, ListboxItem } from "@heroui/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, cn, useDisclosure, Modal, ModalContent, ModalBody } from "@heroui/react";
+import { NodeSelection, TextSelection } from '@tiptap/pm/state';
 
 export type ContentItemMenuProps = {
   editor: Editor
@@ -39,6 +40,29 @@ const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
     actions.deleteNode();
   }
 
+  const selectCurrentNode = () => {
+    const { currentNodePos } = data;
+    const { state, view } = editor;
+
+    const transaction = state.tr.setSelection(
+      NodeSelection.create(state.doc, currentNodePos)
+    );
+
+    // if (isSameNodeSelected) {
+    //   // Deselect: switch to a regular text selection after the node
+    //   transaction = state.tr.setSelection(
+    //     TextSelection.create(state.doc, currentNodePos + 1)
+    //   );
+    // } else {
+    //   // Select the node
+    //   transaction = state.tr.setSelection(
+    //     NodeSelection.create(state.doc, currentNodePos)
+    //   );
+    // }
+
+    view.dispatch(transaction);
+  };
+
   useEffect(() => {
     if (menuOpen) {
       editor.commands.setMeta('lockDragHandle', true)
@@ -48,23 +72,20 @@ const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
   }, [editor, menuOpen])
 
   return (
+    // <DragHandle editor={editor}>
+    //   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+    //     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+    //   </svg>
+    // </DragHandle>
     <DragHandle
-      pluginKey="ContentItemMenu"
       editor={editor}
+      pluginKey="ContentItemMenu"
       onNodeChange={data.handleNodeChange}
-      tippyOptions={{
-        offset: [-2, 12],
-        zIndex: 99,
-      }}
     >
       <div className="flex items-center gap-0.5">
-        <Button isIconOnly size={"sm"} variant={"light"} onClick={actions.handleAdd}>
-          <PlusIcon height={16} width={16} />
-        </Button>
-
         <Dropdown isOpen={menuOpen} onOpenChange={setMenuOpen}>
           <DropdownTrigger>
-            <Button size={"sm"} isIconOnly variant={"light"} draggable={true} className="hidden sm:!flex">
+            <Button size={"sm"} isIconOnly variant={"light"} draggable={true} className="hidden sm:!flex" onClick={selectCurrentNode}>
               <GripVertical height={16} width={16} />
             </Button>
           </DropdownTrigger>
@@ -103,71 +124,13 @@ const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
               color="danger"
               className="text-danger"
               description="Delete the current block"
-              startContent={<Icon name="Trash2" className={cn(iconClasses, "text-danger")}/>}
+              startContent={<Icon name="Trash2" className={cn(iconClasses, "text-danger")} />}
               onClick={actions.deleteNode}
             >
               {'Delete'}
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
-
-        {/* Mobile */}
-        <Button size={"sm"} isIconOnly variant={"light"} draggable={true} onPress={onOpen} className="flex sm:!hidden">
-          <GripVertical height={16} width={16} />
-        </Button>
-
-        <Modal
-          isOpen={isOpen}
-          size="2xl"
-          placement="bottom"
-          hideCloseButton={true}
-          onOpenChange={onOpenChange}
-        >
-          <ModalContent>
-            <ModalBody>
-              <Listbox aria-label="Actions">
-                <ListboxItem
-                  key="clear_formatting"
-                  description="Remove current block formatting"
-                  startContent={<Icon name="RemoveFormatting" />}
-                  onClick={resetFormattingAndCloseModal}
-                >
-                  {'Clear formatting'}
-                </ListboxItem>
-
-                <ListboxItem
-                  key="copy_to_clipboard"
-                  description="Copy the content of the current block"
-                  startContent={<Icon name="Clipboard" />}
-                  onClick={copyToClipboardAndCloseModal}
-                >
-                  {'Copy to clipboard'}
-                </ListboxItem>
-                
-                <ListboxItem
-                  key="duplicate_block"
-                  showDivider
-                  description="Duplicate the current block"
-                  startContent={<Icon name="Copy" />}
-                  onClick={duplicateNodeAndCloseModal}
-                >
-                  {'Duplicate'}
-                </ListboxItem>
-
-                <ListboxItem
-                  key="delete_block"
-                  color="danger"
-                  className="text-danger"
-                  description="Delete the current block"
-                  startContent={<Icon name="Trash2" className={cn(iconClasses, "text-danger")}/>}
-                  onClick={deleteNodeAndCloseModal}
-                >
-                  {"Delete "}
-                </ListboxItem>
-              </Listbox>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
       </div>
     </DragHandle>
   )

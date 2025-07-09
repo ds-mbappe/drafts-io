@@ -65,7 +65,8 @@ export async function GET(req) {
             title: {
               startsWith: search,
               mode: "insensitive",
-            }
+            },
+            private: false
           }
         })
       ])

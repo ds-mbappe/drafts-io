@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import notFoundImage from '../../public/404.png'
-import { Button, Link } from '@nextui-org/react';
+import { Button, Link } from "@heroui/react";
 
 export default function NotFound() {
   return (

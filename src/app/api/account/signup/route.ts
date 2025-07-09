@@ -1,7 +1,7 @@
 import bcryptjs from "bcryptjs";
 import prisma from "../../../../../lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { sendEmail } from "@/app/_helpers/mailer";
+import { sendEmail } from "@/app/_helpers/email";
 
 export async function POST(request: NextRequest){
 // Defines an asynchronous POST request handler.

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, ModalBody, ModalContent, ModalHeader, ModalFooter, Button } from '@nextui-org/react';
+import { Modal, ModalBody, ModalContent, ModalHeader, ModalFooter, Button } from "@heroui/react";
 
 const ModalValidation = ({title, body, cancelText, validateText, validateLoading, isOpen, onOpenChange, onCancel, onValidate }: {
   title: string | undefined,

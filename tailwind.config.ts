@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss"
 
-import { nextui } from "@nextui-org/react";
+import { heroui } from "@heroui/react";
 
 const config = {
   darkMode: ["class"],
@@ -9,14 +9,14 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   safelist: ['ProseMirror'],
   prefix: "",
   plugins: [
     require('tailwindcss-animate'),
     require('@tailwindcss/typography'),
-    nextui(),
+    heroui(),
   ],
 } satisfies Config
 

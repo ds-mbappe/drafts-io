@@ -7,6 +7,7 @@ export const useTextMenuCommands = (editor: Editor) => {
   const onStrike = useCallback(() => editor.chain().focus().toggleStrike().run(), [editor])
   const onUnderline = useCallback(() => editor.chain().focus().toggleUnderline().run(), [editor])
   const onCode = useCallback(() => editor.chain().focus().toggleCode().run(), [editor])
+  const onBlockQuote = useCallback(() => editor.chain().focus().toggleBlockquote().run(), [editor])
   const onCodeBlock = useCallback(() => editor.chain().focus().toggleCodeBlock().run(), [editor])
   const onSubscript = useCallback(() => editor.chain().focus().toggleSubscript().run(), [editor])
   const onSuperscript = useCallback(() => editor.chain().focus().toggleSuperscript().run(), [editor])
@@ -27,6 +28,8 @@ export const useTextMenuCommands = (editor: Editor) => {
         .run(),
     [editor],
   )
+  const onUndo = useCallback(() => editor.chain().focus().undo().run(), [editor]);
+  const onRedo = useCallback(() => editor.chain().focus().redo().run(), [editor]);
 
   const onSetFont = useCallback(
     (font: string) => {
@@ -54,6 +57,7 @@ export const useTextMenuCommands = (editor: Editor) => {
     onStrike,
     onUnderline,
     onCode,
+    onBlockQuote,
     onCodeBlock,
     onSubscript,
     onSuperscript,
@@ -68,5 +72,7 @@ export const useTextMenuCommands = (editor: Editor) => {
     onSetFont,
     onSetFontSize,
     onLink,
+    onUndo,
+    onRedo,
   }
 }
