@@ -38,6 +38,7 @@ import ImageBlock from './ImageBlock/ImageBlock';
 import ImageUpload from './ImageUpload/ImageUpload';
 import SlashCommand from "./SlashCommand/SlashCommand";
 import emojiSuggestion from './EmojiSuggestion/Suggestion';
+import CommentHighlight from './CommentHighlight';
 
 export const ExtensionKit = () => [
   StarterKit.configure({
@@ -135,6 +136,7 @@ export const ExtensionKit = () => [
   }),
   FontSize,
   Code,
+  CommentHighlight,
 ]
 
 export default ExtensionKit

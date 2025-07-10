@@ -44,6 +44,10 @@
       @apply border-t-black/40 dark:border-t-white/40 w-full -top-[1.5em] max-w-2xl mx-auto left-0 right-0;
     }
   }
+
+  .tiptap-comment {
+    @apply bg-yellow-400 py-0.5;
+  }
 }
 
 .drag-handle {

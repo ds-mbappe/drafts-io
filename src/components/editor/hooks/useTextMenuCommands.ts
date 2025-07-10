@@ -30,7 +30,6 @@ export const useTextMenuCommands = (editor: Editor) => {
   )
   const onUndo = useCallback(() => editor.chain().focus().undo().run(), [editor]);
   const onRedo = useCallback(() => editor.chain().focus().redo().run(), [editor]);
-
   const onSetFont = useCallback(
     (font: string) => {
       if (!font || font.length === 0) {
@@ -39,8 +38,7 @@ export const useTextMenuCommands = (editor: Editor) => {
       return editor.chain().focus().setFontFamily(font).run()
     },
     [editor],
-  )
-
+  );
   const onSetFontSize = useCallback(
     (fontSize: string) => {
       if (!fontSize || fontSize.length === 0) {
@@ -50,6 +48,25 @@ export const useTextMenuCommands = (editor: Editor) => {
     },
     [editor],
   )
+  const onToggleComment = useCallback(() => {
+    const { state } = editor;
+    const { from, to } = state.selection;
+
+    const isInsideComment = editor.isActive('comment-highlight');
+    const chain = editor.chain().focus();
+
+    if (from !== to) {
+      if (isInsideComment) {
+        chain.unsetMark('comment-highlight');
+      } else {
+        chain
+          .setMark('comment-highlight', { commentId: 'tmp-id' })
+          .setTextSelection(to);
+      }
+
+      chain.run();
+    }
+  }, [editor]);
 
   return {
     onBold,
@@ -74,5 +91,6 @@ export const useTextMenuCommands = (editor: Editor) => {
     onLink,
     onUndo,
     onRedo,
+    onToggleComment,
   }
 }

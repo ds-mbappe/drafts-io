@@ -146,6 +146,10 @@ const EditorToolbar = ({ editor }: { editor: Editor | null }) => {
           <MemoButton variant="light" size="sm" onPress={commands.onAlignJustify} isIconOnly>
             <Icon name="AlignJustify" className="text-foreground-500" />
           </MemoButton>
+
+          <MemoButton variant="light" size="sm" onPress={commands.onToggleComment} isIconOnly>
+            <Icon name="MessageSquareText" className="text-foreground-500" />
+          </MemoButton>
         </>
       )}
     </Navbar>

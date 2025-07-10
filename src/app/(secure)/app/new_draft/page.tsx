@@ -8,6 +8,7 @@ import { createDocument } from '@/actions/document';
 import { errorToast, successToast } from '@/actions/showToast';
 import { NextSessionContext } from '@/contexts/SessionContext';
 import BlockEditor from '@/components/editor';
+import { Editor } from "@tiptap/react";
 
 export default function Page() {
   const EDITOR_LOCAL_STORAGE_KEY: string = 'editor-document';
@@ -62,6 +63,11 @@ export default function Page() {
         }) => {
           setDoc(updatedDoc);
           setCharacterCount(characterCount);
+        }}
+        onAddComment={(editor: Editor) => {
+          const newId = 'tmp-' + Date.now();
+
+          editor.chain().focus().replaceCommentId('tmp-id', newId);
         }}
       />
 
