@@ -1,13 +1,12 @@
-import { GripVertical, PlusIcon } from 'lucide-react';
+import { GripVertical } from 'lucide-react';
 import { Editor } from '@tiptap/react'
 import DragHandle from '@tiptap/extension-drag-handle-react';
 import { useData } from '@/components/editor/hooks/useData';
 import useContentItemActions from '@/components/editor/hooks/useContentItemActions';
 import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/Icon';
-import { Listbox, ListboxItem } from "@heroui/react";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, cn, useDisclosure, Modal, ModalContent, ModalBody } from "@heroui/react";
-import { NodeSelection, TextSelection } from '@tiptap/pm/state';
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, cn } from "@heroui/react";
+import { NodeSelection } from '@tiptap/pm/state';
 
 export type ContentItemMenuProps = {
   editor: Editor
@@ -16,29 +15,8 @@ export type ContentItemMenuProps = {
 const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
   const data = useData()
   const [menuOpen, setMenuOpen] = useState(false)
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const actions = useContentItemActions(editor, data.currentNode, data.currentNodePos)
   const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
-
-  const resetFormattingAndCloseModal = () => {
-    onOpenChange();
-    actions.resetTextFormatting();
-  }
-
-  const copyToClipboardAndCloseModal = () => {
-    onOpenChange();
-    actions.copyNodeToClipboard();
-  }
-
-  const duplicateNodeAndCloseModal = () => {
-    onOpenChange();
-    actions.duplicateNode();
-  }
-
-  const deleteNodeAndCloseModal = () => {
-    onOpenChange();
-    actions.deleteNode();
-  }
 
   const selectCurrentNode = () => {
     const { currentNodePos } = data;
@@ -72,11 +50,6 @@ const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
   }, [editor, menuOpen])
 
   return (
-    // <DragHandle editor={editor}>
-    //   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-    //     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-    //   </svg>
-    // </DragHandle>
     <DragHandle
       editor={editor}
       pluginKey="ContentItemMenu"

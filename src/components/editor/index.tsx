@@ -1,7 +1,7 @@
 "use client";
 
 import 'katex/dist/katex.min.css';
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useBlockEditor } from "./hooks/useBlockEditor";
 import { getLocalStorageWithExpiry, setLocalStorageWithExpiry } from "@/app/_helpers/storage";
 import { EditorContent } from "@tiptap/react";
@@ -10,6 +10,7 @@ import ContentItemMenu from "./menus/ContentItemMenu";
 import EditorToolbar from "./toolbars/EditorToolbar";
 import { Button, Input } from '@heroui/react';
 import { CircleArrowRight } from 'lucide-react';
+import { NextSessionContext } from '@/contexts/SessionContext';
 
 export default function BlockEditor({
   doc,
@@ -25,7 +26,9 @@ export default function BlockEditor({
   onAddComment?: Function,
 }) {
   const menuContainerRef = useRef(null);
-  // const commentInputRef = useRef<HTMLInputElement | null>(null);
+  
+  const { session } = useContext(NextSessionContext);
+  const userID = session?.user?.id
 
   const [localDoc, setLocalDoc] = useState(() => {
     const savedDoc = getLocalStorageWithExpiry('editor-document');
@@ -81,11 +84,9 @@ export default function BlockEditor({
     }
   }, [doc]);
 
-  // useEffect(() => {
-  //   if (showMenu && commentInputRef.current) {
-  //     commentInputRef.current.blur();
-  //   }
-  // }, [showMenu]);
+  const canEditDraft = useCallback(() => {
+    return localDoc?.authorId === userID && editable;
+  }, [localDoc?.authorId, editable, userID]);
 
   useEffect(() => {
     if (!editor) return;
@@ -112,16 +113,22 @@ export default function BlockEditor({
     <div className="w-full flex gap-5 mx-auto">
       <div ref={menuContainerRef} className="w-full max-w-[768px] 2xl:max-w-[1024px] mx-auto relative flex flex-col bg-background flex-1 md:rounded-lg z-[1] md:border md:border-divider overflow-hidden">
         {/* Fixed Top Bar */}
-        <EditorToolbar editor={editor} />
+        {canEditDraft() &&
+          <EditorToolbar editor={editor} />
+        }
 
         {/* Scrollable Editor */}
         <div className="pt-10 px-5 pb-5 z-10 overflow-y-auto h-[calc(100vh-85px)]">
           {editor && (
             <>
-              <ContentItemMenu editor={editor} />
-              {/* <TableRowMenu editor={editor} appendTo={menuContainerRef} /> */}
-              {/* <TableColumnMenu editor={editor} appendTo={menuContainerRef} /> */}
-              <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
+            {canEditDraft() &&
+              <>
+                <ContentItemMenu editor={editor} />
+                {/* <TableRowMenu editor={editor} appendTo={menuContainerRef} /> */}
+                {/* <TableColumnMenu editor={editor} appendTo={menuContainerRef} /> */}
+                <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
+              </>
+            }
 
               <EditorContent
                 editor={editor}
@@ -138,7 +145,6 @@ export default function BlockEditor({
           <Input
             name="comment"
             autoFocus={true}
-            // ref={commentInputRef}
             placeholder="Enter some text"
           />
 

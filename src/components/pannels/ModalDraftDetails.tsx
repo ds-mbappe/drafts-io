@@ -17,7 +17,6 @@ const ModalDraftDetails = ({ doc, isOpen, onOpenChange, onDraftUpdated }: {
     doc: doc,
     editable: false,
     autoFocus: false,
-    setSaveStatus: () => {},
     debouncedUpdates: () => {}
   });
   const { session } = useContext(NextSessionContext)

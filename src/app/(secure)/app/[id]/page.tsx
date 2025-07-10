@@ -20,12 +20,12 @@ export default function Page() {
   const { id } = params;
   const documentId = id?.toString() || '';
   const { session } = useContext(NextSessionContext);
-  const userId = session?.user?.id;
+  const userID = session?.user?.id;
 
   const MemoButton = memo(Button);
   
   const { document, mutate: mutateDoc } = useDocument(documentId);
-  const { likeCount, hasLiked, mutate } = useDocumentLikes(documentId, userId);
+  const { likeCount, hasLiked, mutate } = useDocumentLikes(documentId, userID);
 
   const [doc, setDoc] = useState(() => {
     return {
@@ -68,7 +68,7 @@ export default function Page() {
         };
       }, false);
 
-      await toggleDocumentLike(documentId, userId, hasLiked);
+      await toggleDocumentLike(documentId, userID, hasLiked);
     } catch (e) {
       errorToast("Something went wrong, please try again.");
     } finally {
@@ -120,7 +120,11 @@ export default function Page() {
     accept: {
       'image/png': ['.png', '.jpg', '.jpeg', '.gif', '.avif', '.webp']
     }
-  })
+  });
+
+  const isUserTheDraftAuthor = useCallback(() => {
+    return doc?.authorId === userID;
+  }, [doc.authorId, userID]);
 
   return (
     <div className="w-full h-full flex z-50 bg-background relative">
@@ -138,7 +142,7 @@ export default function Page() {
             </Button>
           </div>
 
-          {doc?.authorId === userId &&
+          {isUserTheDraftAuthor() &&
             <div className="flex items-center gap-1">
               <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
                 <Icon name="Eye" className="text-foreground-500" />
@@ -187,7 +191,7 @@ export default function Page() {
           </p>
 
           <Button
-            onPress={doc?.authorId === userId ? open : () => {}}
+            onPress={isUserTheDraftAuthor() ? open : () => {}}
             variant="light"
             className="h-[350px] px-0"
           >
@@ -199,10 +203,6 @@ export default function Page() {
 
               {doc?.cover &&
                 <Image src={doc?.cover} height={350} alt="cover" className="w-full border border-divider" />
-                // <div
-                //   className="w-full h-[350px] rounded-[12px] max-w-3xl flex justify-center items-center bg-cover bg-center overflow-hidden border border-divider"
-                //   style={{backgroundImage: `url(${doc?.cover})`}}
-                // />
               }
 
               {!doc?.cover &&

@@ -12,7 +12,7 @@ const Library = () => {
   const { documents, isLoading } = useLibraryDocuments(userId);
 
   return (
-    <div className="w-full h-[calc(100vh-65px)] flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto relative py-10">
+    <div className="w-full h-[calc(100vh-65px)] flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto relative py-10 px-5">
       <p className="text-sm font-normal text-foreground-500">
         {`This is the list of all the documents you have created, wheter you published them or not. You can manage them (edit, publish, delete) right from here.`}
       </p>
