@@ -12,6 +12,7 @@ import BlockEditor from '@/components/editor';
 import moment from 'moment';
 import { useDropzone } from 'react-dropzone';
 import { Icon } from '@/components/ui/Icon'
+import { Editor } from '@tiptap/react';
 // import ModalValidation from '@/components/pannels/ModalValidation';
 
 export default function Page() {
@@ -224,9 +225,13 @@ export default function Page() {
 
         <BlockEditor
           editable
-          autoFocus={false}
           doc={doc}
-          setSaveStatus={() => {}}
+          autoFocus={false}
+          onAddComment={(editor: Editor) => {
+            const newId = 'tmp-' + Date.now();
+  
+            editor.chain().focus().replaceCommentId('tmp-id', newId);
+          }}
           debouncedUpdates={handleDebouncedUpdates}
         />
       </div>

@@ -1,15 +1,13 @@
 "use client";
 
 import 'katex/dist/katex.min.css';
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useBlockEditor } from "./hooks/useBlockEditor";
 import { getLocalStorageWithExpiry, setLocalStorageWithExpiry } from "@/app/_helpers/storage";
-import { BubbleMenu, EditorContent } from "@tiptap/react";
+import { EditorContent } from "@tiptap/react";
 import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu";
 import ContentItemMenu from "./menus/ContentItemMenu";
 import EditorToolbar from "./toolbars/EditorToolbar";
-import { ShouldShowProps } from './menus/types';
-import isTextSelected from './utils/isTextSelected';
 import { Button, Input } from '@heroui/react';
 import { CircleArrowRight } from 'lucide-react';
 
@@ -17,14 +15,12 @@ export default function BlockEditor({
   doc,
   editable,
   autoFocus,
-  setSaveStatus,
   debouncedUpdates,
   onAddComment,
 }: {
   doc?: any,
   editable: boolean,
   autoFocus: boolean,
-  setSaveStatus: Function,
   debouncedUpdates: Function,
   onAddComment?: Function,
 }) {
@@ -45,7 +41,6 @@ export default function BlockEditor({
     doc: localDoc,
     editable: editable,
     autoFocus: autoFocus,
-    setSaveStatus: () => setSaveStatus(),
     debouncedUpdates: () => {
       const editorContent = editor?.getHTML();
       

@@ -7,13 +7,11 @@ export const useBlockEditor = ({
   doc,
   editable,
   autoFocus,
-  setSaveStatus,
   debouncedUpdates,
 }: {
   doc?: any,
   editable: boolean,
   autoFocus: boolean,
-  setSaveStatus: Function,
   debouncedUpdates: Function,
 }) => {
   const extensions = useMemo(() => [
@@ -22,9 +20,8 @@ export const useBlockEditor = ({
   ], []);
 
   const handleUpdate = useCallback((e: any) => {
-    setSaveStatus("Syncing...");
     debouncedUpdates(e);
-  }, [setSaveStatus, debouncedUpdates]);
+  }, [debouncedUpdates]);
 
   const editor = useEditor({
     immediatelyRender: false,
