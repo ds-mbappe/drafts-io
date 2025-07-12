@@ -67,6 +67,8 @@ model Document {
   updatedAt       DateTime @updatedAt @map(name: "updated_at")
   likes           Like[]
   likeCount       Int      @default(0)
+
+  Comment Comment[]
 }
 
 model Like {
@@ -106,6 +108,7 @@ model User {
 
   @@unique([id, avatar, firstname, lastname])
   @@map(name: "users")
+  Comment Comment[]
 }
 
 model Follows {
@@ -116,4 +119,17 @@ model Follows {
   followingId String
 
   @@unique([followerId, followingId])
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  text      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  documentId String
+
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 }
