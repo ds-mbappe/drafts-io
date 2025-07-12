@@ -18,14 +18,21 @@ export async function GET(req, { params }) {
       },
       select: {
         id: true,
-        authorAvatar: true,
-        authorFirstname: true,
-        character_count: true,
         cover: true,
         createdAt: true,
         title: true,
         topic: true,
         word_count: true,
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            avatar: true,
+            lastname: true,
+            firstname: true,
+          }
+        }
       }
     })
 

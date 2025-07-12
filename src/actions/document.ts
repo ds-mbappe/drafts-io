@@ -2,16 +2,20 @@
 
 import prisma from "../../lib/prisma"
 
-const createDocument = async (formData: {
-  title: string;
-  cover?: string | null;
-  content?: string;
-  word_count?: number;
-  character_count?: number;
-}) => {
+const createDocument = async (formData: any) => {
   try {
     const document = await prisma.document.create({
-      data: formData
+      data: formData,
+      include: {
+        author: {
+          select: {
+            id: true,
+            avatar: true,
+            lastname: true,
+            firstname: true,
+          },
+        },
+      },
     });
     
     return { success: true, document };

@@ -1,7 +1,7 @@
 "use client";
 
 import 'katex/dist/katex.min.css';
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useBlockEditor } from "./hooks/useBlockEditor";
 import { getLocalStorageWithExpiry, setLocalStorageWithExpiry } from "@/app/_helpers/storage";
 import { EditorContent } from "@tiptap/react";
@@ -101,9 +101,10 @@ export default function BlockEditor({
     }
   });
 
-  const canEditDraft = useCallback(() => {
-    return localDoc?.authorId === userID && editable;
-  }, [localDoc?.authorId, editable, userID]);
+  const isDraft = useMemo(() => (!localDoc?.id), [localDoc?.id]);
+  const canEditDraft = useMemo(() => {
+    return localDoc?.author?.id === userID && editable;
+  }, [localDoc?.author?.id, userID, editable]);
 
   useEffect(() => {
     if (editor) {
@@ -159,7 +160,7 @@ export default function BlockEditor({
     <div className="flex gap-5 mx-auto relative">
       <div ref={menuContainerRef} className="w-full max-w-[768px] 2xl:max-w-[1024px] mx-auto relative flex flex-col bg-background md:rounded-lg z-[1] md:border md:border-divider overflow-hidden">
         {/* Fixed Top Bar */}
-        {canEditDraft() &&
+        {(isDraft || canEditDraft) &&
           <EditorToolbar
             editor={editor}
             toggleCommentPopover={() => {
@@ -205,7 +206,7 @@ export default function BlockEditor({
         >
           {editor && (
             <>
-            {canEditDraft() &&
+            {(isDraft || canEditDraft) &&
               <>
                 <ContentItemMenu editor={editor} />
                 {/* <TableRowMenu editor={editor} appendTo={menuContainerRef} /> */}
@@ -224,13 +225,15 @@ export default function BlockEditor({
         </div>
       </div>
 
-      <div className="w-full max-w-[250px] flex-1 h-[600px] p-1 flex flex-col rounded-xl shadow overflow-y-auto sticky top-[100px] right-0">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
-      </div>
+      {canEditDraft &&
+        <div className="w-full max-w-[250px] flex-1 h-[600px] p-1 flex flex-col rounded-xl shadow overflow-y-auto sticky top-[100px] right-0">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
+        </div>
+      }
 
       <AnimatePresence>
         {showCommentBox && commentBoxCoords && (

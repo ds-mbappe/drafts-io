@@ -1,10 +1,13 @@
 export type DocumentCardTypeprops = {
   id: string,
   private: Boolean | null,
-  locked: Boolean | undefined
-  authorFirstname: string,
-  authorLastname: string,
-  authorAvatar: string,
+  locked: Boolean | undefined,
+  author: {
+    id?: string,
+    avatar?: string,
+    lastname?: string,
+    firstname?: string,
+  },
   createdAt: string | null,
   updatedAt: string | null,
   cover: string | undefined,

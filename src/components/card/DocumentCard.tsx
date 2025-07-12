@@ -49,13 +49,13 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
                   isBordered
                   color="default"
                   className="w-6 h-6"
-                  name={document?.authorFirstname?.split("")?.[0]?.toUpperCase()}
-                  src={document?.authorAvatar}
+                  name={document?.author?.firstname?.split("")?.[0]?.toUpperCase()}
+                  src={document?.author?.avatar}
                 />
               </div>
 
               <p className="line-clamp-1 text-sm font-medium">
-                {`${document?.authorFirstname} ${document?.authorLastname}`}
+                {`${document?.author?.firstname} ${document?.author?.lastname}`}
               </p>
             </div>
 

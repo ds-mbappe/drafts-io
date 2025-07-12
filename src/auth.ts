@@ -38,6 +38,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: user.id,
           email: user.email,
           name: user.username || user.firstname,
+          username: user.username,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          avatar: user.avatar,
+          isVerified: user.isVerified,
+          language: user.language,
+          phone: user.phone,
         }
       },
     }),

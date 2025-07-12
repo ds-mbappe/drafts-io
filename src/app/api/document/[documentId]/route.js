@@ -8,6 +8,16 @@ export async function GET(req, { params }) {
     const document = await prisma.document.findFirst({
       where: {
         id: documentId
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            avatar: true,
+            lastname: true,
+            firstname: true,
+          }
+        }
       }
     })
 
@@ -27,18 +37,15 @@ export async function PUT(req, { params }) {
         id: documentId
       },
       data: { ...documentData },
-      select: {
-        id: true,
-        content: true,
-        cover: true,
-        title: true,
-        authorFirstname: true,
-        authorLastname: true,
-        authorAvatar: true,
-        authorId: true,
-        private: true,
-        createdAt: true,
-        topic: true,
+      include: {
+        author: {
+          select: {
+            id: true,
+            avatar: true,
+            lastname: true,
+            firstname: true,
+          }
+        }
       }
     });
 

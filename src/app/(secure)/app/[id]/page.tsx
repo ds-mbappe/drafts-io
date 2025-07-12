@@ -1,6 +1,6 @@
 "use client"
 
-import React, { memo, useCallback, useContext, useState } from 'react';
+import React, { memo, useCallback, useContext, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation'
 import { Avatar, Badge, Button, Image } from '@heroui/react';
 import { toggleDocumentLike, updateDocument, useDocument, useDocumentLikes } from '@/hooks/useDocument';
@@ -33,10 +33,7 @@ export default function Page() {
       content: document?.content,
       cover: document?.cover,
       title: document?.title,
-      authorFirstname: document?.authorFirstname,
-      authorLastname: document?.authorLastname,
-      authorAvatar: document?.authorAvatar,
-      authorId: document?.authorId,
+      author: document?.author,
       private: document?.private,
       createdAt: document?.createdAt,
       topic: document?.topic,
@@ -95,7 +92,7 @@ export default function Page() {
         revalidate: false,
       }
     );
-  }, 500);
+  }, 1000);
 
   const handleDebouncedUpdates = useCallback(
     ({ updatedDoc, characterCount }: { updatedDoc: any; characterCount: any }) => {
@@ -122,9 +119,9 @@ export default function Page() {
     }
   });
 
-  const isUserTheDraftAuthor = useCallback(() => {
-    return doc?.authorId === userID;
-  }, [doc.authorId, userID]);
+  const isUserTheDraftAuthor = useMemo(() => {
+    return doc?.author?.id === userID;
+  }, [doc.author?.id, userID]);
 
   return (
     <div className="w-full h-full flex z-50 bg-background relative">
@@ -142,7 +139,7 @@ export default function Page() {
             </Button>
           </div>
 
-          {isUserTheDraftAuthor() &&
+          {isUserTheDraftAuthor &&
             <div className="flex items-center gap-1">
               <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
                 <Icon name="Eye" className="text-foreground-500" />
@@ -170,14 +167,14 @@ export default function Page() {
               as="button"
               color="primary"
               showFallback
-              name={doc?.authorFirstname?.split("")?.[0]?.toUpperCase()}
+              name={doc?.author?.firstname?.split("")?.[0]?.toUpperCase()}
               size="sm"
-              src={doc?.authorAvatar}
+              src={doc?.author?.avatar}
             />
 
             <div className="flex flex-col items-start">
               <p className="text-default-500 text-lg text-center font-semibold">
-                { `${doc?.authorFirstname} ${doc?.authorLastname}` }
+                { `${doc?.author?.firstname} ${doc?.author?.lastname}` }
               </p>
 
               <p className="text-default-500 text-sm text-center">
@@ -191,7 +188,7 @@ export default function Page() {
           </p>
 
           <Button
-            onPress={isUserTheDraftAuthor() ? open : () => {}}
+            onPress={isUserTheDraftAuthor ? open : () => {}}
             variant="light"
             className="w-full h-[350px] md:h-[450px] px-0"
           >
@@ -202,7 +199,12 @@ export default function Page() {
               <input {...getInputProps()} />
 
               {doc?.cover &&
-                <Image src={doc?.cover} height={350} alt="cover" className="w-full border border-divider" />
+                <Image
+                  src={doc?.cover}
+                  height={350}
+                  alt="cover"
+                  className="w-full border border-divider"
+                />
               }
 
               {!doc?.cover &&

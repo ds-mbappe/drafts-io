@@ -14,9 +14,9 @@ const DocumentCardInLibrary = ({ document }: { document: any }) => {
               isBordered
               color="primary"
               showFallback
-              name={document?.authorFirstname?.split("")?.[0]?.toUpperCase()}
+              name={document?.author?.firstname?.split("")?.[0]?.toUpperCase()}
               size="sm"
-              src={document?.authorAvatar}
+              src={document?.author?.avatar}
             />
           </div>
 

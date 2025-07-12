@@ -9,9 +9,7 @@ export const LatestDocumentsFallback = () => {
       <Skeleton key={i}>
         <DocumentCard document={{
           id: '0',
-          authorFirstname: '',
-          authorLastname: '',
-          authorAvatar: '',
+          author: {},
           createdAt: '',
           updatedAt: '',
           cover: '',

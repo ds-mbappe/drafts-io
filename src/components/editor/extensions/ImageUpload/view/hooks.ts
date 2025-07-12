@@ -10,18 +10,19 @@ export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) =
     async (file: File) => {
       setLoading(true)
       const timestamp = Math.round((new Date).getTime()/1000)
+      const folder = `${process.env.NODE_ENV}/images`
       const signature = cloudinary.utils.api_sign_request({
         timestamp: timestamp,
-        folder: "images",
+        folder: folder,
       }, process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET as string )
 
       try {
         const formData = new FormData()
         formData.append('file', file)
-        formData.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY as string)
+        formData.append('folder', folder)
         formData.append('signature', signature)
         formData.append('timestamp', JSON.stringify(timestamp))
-        formData.append('folder', 'images')
+        formData.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY as string)
 
         const result = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME as string}/auto/upload`, {
           method: 'POST',
