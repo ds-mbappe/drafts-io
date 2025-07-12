@@ -58,15 +58,13 @@ model Document {
   locked          Boolean  @default(false)
   character_count Int?
   word_count      Int?
-  author          User?    @relation(fields: [authorId, authorAvatar, authorFirstname, authorLastname], references: [id, avatar, firstname, lastname])
-  authorId        String?
-  authorAvatar    String?
-  authorFirstname String?
-  authorLastname  String?
   createdAt       DateTime @default(now()) @map(name: "created_at")
   updatedAt       DateTime @updatedAt @map(name: "updated_at")
   likes           Like[]
   likeCount       Int      @default(0)
+
+  author          User?    @relation(fields: [authorId], references: [id])
+  authorId        String?
 
   Comment Comment[]
 }
