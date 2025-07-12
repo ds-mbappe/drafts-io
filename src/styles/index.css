@@ -25,6 +25,10 @@
 .ProseMirror {
   @apply caret-foreground-500 outline-0;
 
+  /* .selection {
+    @apply bg-primary-100 py-0.5;
+  } */
+
   &>* {
     @apply mx-auto max-w-5xl;
   }
@@ -46,7 +50,7 @@
   }
 
   .tiptap-comment {
-    @apply bg-yellow-400 py-0.5;
+    @apply border-b-3 border-dashed border-b-lime-400 bg-yellow-400 hover:bg-yellow-300 py-0.5 transition-all;
   }
 }
 

@@ -193,7 +193,7 @@ export default function Page() {
           <Button
             onPress={isUserTheDraftAuthor() ? open : () => {}}
             variant="light"
-            className="h-[350px] px-0"
+            className="w-full h-[350px] md:h-[450px] px-0"
           >
             <div
               {...getRootProps()}
@@ -206,7 +206,7 @@ export default function Page() {
               }
 
               {!doc?.cover &&
-                <div className="w-full h-[350px] rounded-[12px] gap-1 max-w-3xl flex flex-col justify-center items-center bg-cover bg-center overflow-hidden border border-divider">
+                <div className="w-full h-[350px] md:h-[450px] rounded-[12px] gap-1 max-w-3xl flex flex-col justify-center items-center bg-cover bg-center overflow-hidden border border-divider">
                   <CloudUploadIcon
                     width={80}
                     height={80}
@@ -227,10 +227,27 @@ export default function Page() {
           editable
           doc={doc}
           autoFocus={false}
-          onAddComment={(editor: Editor) => {
+          onAddComment={(editor: Editor) => {            
             const newId = 'tmp-' + Date.now();
+
+            const { state } = editor;
+            const { from, to } = state.selection;
+
+            const isInsideComment = editor.isActive('comment-highlight');
+            const chain = editor.chain().focus();
+
+            if (from !== to) {
+              if (isInsideComment) {
+                chain.unsetMark('comment-highlight');
+              } else {
+                chain
+                  .setMark('comment-highlight', { commentId: newId })
+                  .setTextSelection(to);
+              }
+              chain.run();
+            }
   
-            editor.chain().focus().replaceCommentId('tmp-id', newId);
+            // editor.chain().focus().addComment(newId);
           }}
           debouncedUpdates={handleDebouncedUpdates}
         />
