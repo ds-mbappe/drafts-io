@@ -1,19 +1,20 @@
 import React from 'react';
 import { Modal, ModalBody, ModalContent, ModalHeader, ModalFooter, Button } from "@heroui/react";
 
-const ModalValidation = ({title, body, cancelText, validateText, validateLoading, isOpen, onOpenChange, onCancel, onValidate }: {
+const ModalValidation = ({title, body, cancelText, validateText, validateLoading, isOpen, size, onOpenChange, onCancel, onValidate }: {
   title: string | undefined,
   body: string | undefined,
   cancelText: string | undefined,
   validateText: string | undefined,
   validateLoading: boolean,
   isOpen: boolean | undefined,
+  size?: "2xl" | "xs" | "sm" | "md" | "lg" | "xl" | "3xl" | "4xl" | "5xl" | "full" | undefined,
   onOpenChange: () => void | undefined,
   onCancel: () => void,
   onValidate: () => void,
 }) => {
   return (
-    <Modal hideCloseButton scrollBehavior="inside" isOpen={isOpen} placement="center" size="2xl" onOpenChange={onOpenChange}>
+    <Modal hideCloseButton scrollBehavior="inside" isOpen={isOpen} placement="center" size={size ?? "2xl"} onOpenChange={onOpenChange}>
       <ModalContent>
         {() => (
           <>

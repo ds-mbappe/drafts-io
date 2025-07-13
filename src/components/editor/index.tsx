@@ -260,7 +260,7 @@ export default function BlockEditor({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -4 }}
             transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="w-full max-w-[250px] h-[600px] rounded-xl flex flex-col overflow-y-auto gap-2 p-1.5 sticky top-[100px] right-0 bg-transparent"
+            className="w-full max-w-[300px] h-[600px] rounded-xl flex flex-col overflow-y-auto gap-2 p-1.5 sticky top-[100px] right-0 bg-transparent"
           >
             {commentList}
           </motion.div>
