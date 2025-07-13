@@ -179,7 +179,7 @@ export default function Page() {
             />
 
             <div className="flex flex-col items-start">
-              <p className="text-default-500 text-lg text-center font-semibold">
+              <p className="text-foreground text-lg text-center font-semibold">
                 { `${doc?.author?.firstname} ${doc?.author?.lastname}` }
               </p>
 

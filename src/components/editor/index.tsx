@@ -116,8 +116,9 @@ export default function BlockEditor({
 
     const handler = () => {
       const inline = isSelectionCommentable(editor);
+      const isInsideComment = editor.isActive('comment-highlight');
 
-      setCanComment(inline);
+      setCanComment(inline && !isInsideComment);
     };
 
     editor.on('selectionUpdate', handler);
