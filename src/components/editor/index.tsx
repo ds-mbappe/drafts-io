@@ -1,7 +1,7 @@
 "use client";
 
 import 'katex/dist/katex.min.css';
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useBlockEditor } from "./hooks/useBlockEditor";
 import { getLocalStorageWithExpiry, setLocalStorageWithExpiry } from "@/app/_helpers/storage";
 import { EditorContent } from "@tiptap/react";
@@ -12,27 +12,29 @@ import { Avatar, AvatarIcon, Button, Input } from '@heroui/react';
 import { NextSessionContext } from '@/contexts/SessionContext';
 import { TextSelection } from '@tiptap/pm/state';
 import { AnimatePresence, motion } from 'framer-motion';
-import Icon from '../ui/Icon';
-import { useTextMenuCommands } from './hooks/useTextMenuCommands';
+import { isSelectionCommentable } from '@/app/_helpers/tiptap';
 
 export default function BlockEditor({
   doc,
   editable,
   autoFocus,
-  debouncedUpdates,
+  commentList,
   onAddComment,
+  debouncedUpdates,
 }: {
   doc?: any,
   editable: boolean,
   autoFocus: boolean,
-  debouncedUpdates: Function,
+  commentList?: ReactNode,
   onAddComment?: Function,
+  debouncedUpdates: Function,
 }) {
   const menuContainerRef = useRef(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
   const { session } = useContext(NextSessionContext);
-  const userID = session?.user?.id
+  const user = session?.user;
+  const userID = session?.user?.id;
 
   const [localDoc, setLocalDoc] = useState(() => {
     const savedDoc = getLocalStorageWithExpiry('editor-document');
@@ -42,8 +44,10 @@ export default function BlockEditor({
       title: 'New Document',
     };
   });
-  const [value, setValue] = useState<string>("");
+  const [canComment, setCanComment] = useState(false);
   const [showCommentBox, setShowCommentBox] = useState(false);
+  const [commentValue, setCommentValue] = useState<string>("");
+  const [showCommentList, setShowCommentList] = useState<boolean>(false);
   const [commentBoxCoords, setCommentBoxCoords] = useState<{ top: number, left: number } | null>(null);
 
   const { editor } = useBlockEditor({
@@ -106,6 +110,26 @@ export default function BlockEditor({
     return localDoc?.author?.id === userID && editable;
   }, [localDoc?.author?.id, userID, editable]);
 
+  // useEffect to determine if content can be commented
+  useEffect(() => {
+    if (!editor) return;
+
+    const handler = () => {
+      const inline = isSelectionCommentable(editor);
+
+      setCanComment(inline);
+    };
+
+    editor.on('selectionUpdate', handler);
+
+    handler();
+
+    return () => {
+      editor.off('selectionUpdate', handler);
+    };
+  }, [editor]);
+
+  // useEffect close with ESC Key
   useEffect(() => {
     if (editor) {
       const handleEsc = (e: KeyboardEvent) => {
@@ -128,12 +152,13 @@ export default function BlockEditor({
     }
   }, [editor]);
 
+  // useEffect show side comment list
   useEffect(() => {
     if (editor) {
       const handleSelectionUpdate = () => {
         const isInsideComment = editor.isActive('comment-highlight');
   
-        setShowCommentBox(isInsideComment);
+        setShowCommentList(isInsideComment);
       };
   
       editor.on('selectionUpdate', handleSelectionUpdate);
@@ -142,12 +167,14 @@ export default function BlockEditor({
     }
   }, [editor])
 
+  // useEffect focus inside comment box when popover appears
   useEffect(() => {
     if (showCommentBox && inputRef.current) {
       inputRef.current.focus();
     }
   }, [showCommentBox]);
 
+  // useEffect update localDoc values
   useEffect(() => {
     if (doc?.id) {
       setLocalDoc(doc);
@@ -163,6 +190,8 @@ export default function BlockEditor({
         {(isDraft || canEditDraft) &&
           <EditorToolbar
             editor={editor}
+            canComment={canComment}
+            showCommentButton={!isDraft}
             toggleCommentPopover={() => {
               const { from, to } = editor.state.selection
 
@@ -201,7 +230,6 @@ export default function BlockEditor({
 
         {/* Scrollable Editor */}
         <div
-          // className="pt-10 px-5 pb-5 z-10 overflow-y-auto h-[calc(100vh-85px)]"
           className={localDoc?.id ? 'pt-10 px-5 pb-5 z-10' : 'pt-10 px-5 pb-5 z-10 overflow-y-auto h-[calc(100vh-85px)]'}
         >
           {editor && (
@@ -225,15 +253,19 @@ export default function BlockEditor({
         </div>
       </div>
 
-      {canEditDraft &&
-        <div className="w-full max-w-[250px] flex-1 h-[600px] p-1 flex flex-col rounded-xl shadow overflow-y-auto sticky top-[100px] right-0">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius sem ac velit gravida, in pulvinar augue aliquam. Suspendisse molestie felis ligula. Aliquam a luctus orci. Aliquam eros magna, venenatis non purus eu, scelerisque auctor quam. Aenean eu nunc erat. Aenean fringilla metus sed massa rutrum fringilla. Aliquam id finibus neque, in blandit diam. Nulla eget augue consectetur, accumsan lectus quis, ullamcorper nunc.Hello
-        </div>
-      }
+      <AnimatePresence>
+        {canEditDraft && showCommentList &&
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: -4 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -4 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="w-full max-w-[250px] h-[600px] rounded-xl flex flex-col overflow-y-auto gap-2 p-1.5 sticky top-[100px] right-0 bg-transparent"
+          >
+            {commentList}
+          </motion.div>
+        }
+      </AnimatePresence>
 
       <AnimatePresence>
         {showCommentBox && commentBoxCoords && (
@@ -276,11 +308,12 @@ export default function BlockEditor({
             >
               <div>
                 <Avatar
+                  color="primary"
+                  src={user?.avatar}
                   classNames={{
-                    base: "w-6 h-6 bg-gradient-to-br from-[FFB457_1] to-[FF705B_1]",
-                    icon: "text-black/80",
+                    base: "w-8 h-8",
                   }}
-                  icon={<AvatarIcon />}
+                  name={user?.firstname?.split('')?.[0]}
                 />
               </div>
 
@@ -288,24 +321,24 @@ export default function BlockEditor({
                 <Input
                   height={28}
                   isClearable
-                  value={value}
+                  value={commentValue}
                   ref={inputRef}
-                  onValueChange={setValue}
+                  onValueChange={setCommentValue}
                   placeholder={'Enter a comment'}
                 />
 
                 <Button
                   color="primary"
-                  isDisabled={!value}
+                  isDisabled={!commentValue}
                   onPress={() => {
                     if (onAddComment) {
-                      onAddComment(editor)
+                      onAddComment(editor, commentValue)
 
-                      setValue('')
+                      setCommentValue('')
                     }
                   }}
                 >
-                  Comment
+                  {'Comment'}
                 </Button>
               </div>
             </motion.div>

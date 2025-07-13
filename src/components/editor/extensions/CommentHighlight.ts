@@ -5,7 +5,6 @@ declare module '@tiptap/core' {
     commentHighlight: {
       addComment: (commentId: string) => ReturnType,
       removeComment: () => ReturnType,
-      replaceCommentId: (oldId: string, newId: string) => ReturnType,
     }
   }
 }
@@ -55,32 +54,6 @@ export const CommentHighlight = Mark.create({
       },
       removeComment: () => ({ commands }) => {
         return commands.unsetMark(this.name)
-      },
-      replaceCommentId: (oldId, newId) => ({ state, view }) => {
-          const { tr, doc } = state
-
-          doc.descendants((node, pos) => {
-            if (node.isText) {
-              node.marks.forEach(mark => {
-                if (mark.type.name === 'comment-highlight' && mark.attrs.commentId === oldId && node.text) {
-                  const textLength = node.text?.length
-
-                  tr.removeMark(pos, pos + textLength, mark.type)
-                  tr.addMark(
-                    pos,
-                    pos + textLength,
-                    mark.type.create({ commentId: newId }),
-                  )
-                }
-              })
-            }
-
-            return true
-          })
-
-          view.dispatch(tr);
-
-        return true
       },
     }
   },

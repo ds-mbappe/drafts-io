@@ -12,7 +12,12 @@ import BlockEditor from '@/components/editor';
 import moment from 'moment';
 import { useDropzone } from 'react-dropzone';
 import { Icon } from '@/components/ui/Icon'
-import { Editor } from '@tiptap/react';
+import { Editor, getMarkType } from '@tiptap/react';
+import { useComments } from '@/hooks/useComments';
+import { createComment } from '@/actions/comment';
+import CommentHighlight from '@/components/editor/extensions/CommentHighlight';
+import CommentCard from '@/components/card/CommentCard';
+import { CommentCardProps } from '@/lib/types';
 // import ModalValidation from '@/components/pannels/ModalValidation';
 
 export default function Page() {
@@ -25,6 +30,7 @@ export default function Page() {
   const MemoButton = memo(Button);
   
   const { document, mutate: mutateDoc } = useDocument(documentId);
+  const { comments, mutate: mutateComments } = useComments(documentId);
   const { likeCount, hasLiked, mutate } = useDocumentLikes(documentId, userID);
 
   const [doc, setDoc] = useState(() => {
@@ -229,29 +235,49 @@ export default function Page() {
           editable
           doc={doc}
           autoFocus={false}
-          onAddComment={(editor: Editor) => {            
-            const newId = 'tmp-' + Date.now();
-
+          debouncedUpdates={handleDebouncedUpdates}
+          onAddComment={async (editor: Editor, commentValue: string) => {
             const { state } = editor;
             const { from, to } = state.selection;
+            const tmpID = `tmp-${crypto.randomUUID()}`
 
-            const isInsideComment = editor.isActive('comment-highlight');
-            const chain = editor.chain().focus();
-
-            if (from !== to) {
-              if (isInsideComment) {
-                chain.unsetMark('comment-highlight');
-              } else {
-                chain
-                  .setMark('comment-highlight', { commentId: newId })
-                  .setTextSelection(to);
+            try {
+              if (from !== to) {
+                editor.commands.addComment(tmpID)
               }
-              chain.run();
+              
+              const hasFakeMark = editor.state.doc.rangeHasMark(from, to, editor.schema.marks['comment-highlight']);
+
+              if (hasFakeMark) {
+                const { comment } = await createComment({
+                  documentId,
+                  userId: userID,
+                  text: commentValue,
+                });
+
+                editor
+                  .chain()
+                  .focus()
+                  .unsetMark('comment-highlight')
+                  .setMark('comment-highlight', { commentId: comment?.id })
+                  .run();
+              }
+            } catch (error) {
+              errorToast('Error adding comment.')
+            } finally {
+              editor.commands.setTextSelection(to)
             }
-  
-            // editor.chain().focus().addComment(newId);
           }}
-          debouncedUpdates={handleDebouncedUpdates}
+          commentList={
+            comments?.map((comment: CommentCardProps) => {
+              return (
+                <CommentCard
+                  key={comment.id}
+                  comment={comment}
+                />
+              )
+            })
+          }
         />
       </div>
 

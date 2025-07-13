@@ -15,3 +15,16 @@ export type DocumentCardTypeprops = {
   title: string,
   content: string | null,
 }
+
+export type CommentCardProps = {
+  id?: string,
+  createdAt?: string,
+  updatedAt?: string,
+  text?: string,
+  user?: {
+    id?: string,
+    avatar?: string,
+    lastname?: string,
+    firstname?: string,
+  }
+}

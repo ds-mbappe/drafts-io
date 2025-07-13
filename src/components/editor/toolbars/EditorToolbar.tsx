@@ -14,12 +14,14 @@ import FontSizePicker from '../menus/TextMenu/components/FontSizePicker'
 
 const EditorToolbar = ({
   editor,
+  canComment,
   showCommentButton,
   toggleCommentPopover,
   }: {
     editor: Editor | null,
-    toggleCommentPopover?: Function,
+    canComment?: boolean,
     showCommentButton?: boolean,
+    toggleCommentPopover?: Function,
   }) => {
   const MemoButton = memo(Button);
   const MemoColorPicker = memo(ColorPicker);
@@ -162,7 +164,7 @@ const EditorToolbar = ({
           </MemoButton>
 
           {showCommentButton &&
-            <MemoButton variant="light" size="sm" onPress={() => onToggleCommentPopover()} isIconOnly>
+            <MemoButton variant="light" size="sm" onPress={() => onToggleCommentPopover()} isIconOnly isDisabled={!canComment}>
               <Icon name="MessageSquareText" className="text-foreground-500" />
             </MemoButton>
           }
