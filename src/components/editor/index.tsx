@@ -8,7 +8,7 @@ import { EditorContent } from "@tiptap/react";
 import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu";
 import ContentItemMenu from "./menus/ContentItemMenu";
 import EditorToolbar from "./toolbars/EditorToolbar";
-import { Avatar, AvatarIcon, Button, Input } from '@heroui/react';
+import { Avatar, Button, Input } from '@heroui/react';
 import { NextSessionContext } from '@/contexts/SessionContext';
 import { TextSelection } from '@tiptap/pm/state';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -245,8 +245,9 @@ export default function BlockEditor({
 
               <EditorContent
                 editor={editor}
-                className="tiptap editableClass h-full"
                 spellCheck="false"
+                key={"page-editor"}
+                className="tiptap editableClass h-full"
               />
             </>
           )}

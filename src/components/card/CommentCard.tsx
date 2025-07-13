@@ -1,11 +1,16 @@
 import { CommentCardProps } from '@/lib/types'
-import { Avatar, Button, Link, useDisclosure } from '@heroui/react'
+import { Avatar, Button, useDisclosure } from '@heroui/react'
 import moment from 'moment'
 import React, { memo } from 'react'
 import Icon from '../ui/Icon'
 import ModalValidation from '../pannels/ModalValidation'
+import { deleteComment } from '@/actions/comment'
+import { errorToast } from '@/actions/showToast'
 
-const CommentCard = ({ comment }: { comment: CommentCardProps }) => {
+const CommentCard = ({ comment, onRemoveComment }: {
+  comment: CommentCardProps,
+  onRemoveComment?: Function,
+}) => {
   const MemoButton = memo(Button);
   const { isOpen, onOpenChange } = useDisclosure();
 
@@ -18,7 +23,21 @@ const CommentCard = ({ comment }: { comment: CommentCardProps }) => {
   }
 
   const onDeleteComment = async () => {
+    try {
+      await deleteComment(comment.id).then(() => {
 
+        if (onRemoveComment) {
+          onRemoveComment(comment);
+        }
+        // const { state } = editor;
+        // const { from, to } = state.selection;
+
+        // editor.commands.setTextSelection({ from, to });
+        // editor.commands.removeComment();
+      });
+    } catch (error) {
+      errorToast('Error while deleting comment.')
+    }
   }
 
   return (

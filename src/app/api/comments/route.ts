@@ -5,9 +5,12 @@ const commentSelect = {
   id: true,
   createdAt: true,
   updatedAt: true,
+  from: true,
+  to: true,
   text: true,
   user: {
     select: {
+      id: true,
       avatar: true,
       lastname: true,
       firstname: true,

@@ -253,6 +253,8 @@ export default function Page() {
                   documentId,
                   userId: userID,
                   text: commentValue,
+                  from: from,
+                  to: to,
                 });
 
                 editor
@@ -274,6 +276,7 @@ export default function Page() {
                 <CommentCard
                   key={comment.id}
                   comment={comment}
+                  onRemoveComment={() => {}}
                 />
               )
             })

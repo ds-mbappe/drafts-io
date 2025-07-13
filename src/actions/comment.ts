@@ -7,6 +7,8 @@ const commentSelect = {
   id: true,
   createdAt: true,
   updatedAt: true,
+  from: true,
+  to: true,
   text: true,
   user: {
     select: {
@@ -49,10 +51,14 @@ export async function createComment({
   documentId,
   userId,
   text,
+  from,
+  to,
 }: {
-  documentId: string
-  userId: string
-  text: string
+  documentId: string,
+  userId: string,
+  text: string,
+  from: number,
+  to: number,
 }) {
   try {    
     const comment = await prisma.comment.create({
@@ -60,6 +66,8 @@ export async function createComment({
         text,
         documentId,
         userId,
+        from,
+        to,
       },
       select: commentSelect,
     });
@@ -92,7 +100,7 @@ export async function updateComment({
   }
 }
 
-export async function deleteComment(id: string) {
+export async function deleteComment(id: string | undefined) {
   try {
     const comment = await prisma.comment.findUnique({ where: { id } });
 

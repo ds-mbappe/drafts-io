@@ -124,6 +124,8 @@ model Comment {
   text      String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  from      Int?
+  to        Int?
 
   document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
   documentId String
