@@ -5,7 +5,7 @@ export async function GET(req, { params }) {
   try {
     const { userId } = await params
     const search = req?.nextUrl?.searchParams.get("search")
-    
+        
     let documents = null
 
     documents = await prisma.document.findMany({
@@ -23,8 +23,6 @@ export async function GET(req, { params }) {
         title: true,
         topic: true,
         word_count: true,
-      },
-      include: {
         author: {
           select: {
             id: true,
@@ -33,7 +31,7 @@ export async function GET(req, { params }) {
             firstname: true,
           }
         }
-      }
+      },
     })
 
     return NextResponse.json({ documents }, { status: 200 });

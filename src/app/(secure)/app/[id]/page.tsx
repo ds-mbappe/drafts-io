@@ -14,7 +14,6 @@ import { useDropzone } from 'react-dropzone';
 import { Icon } from '@/components/ui/Icon'
 import { Editor } from '@tiptap/react';
 import { useComments } from '@/hooks/useComments';
-import { createComment } from '@/actions/comment';
 import CommentCard from '@/components/card/CommentCard';
 import { CommentCardProps } from '@/lib/types';
 // import ModalValidation from '@/components/pannels/ModalValidation';
@@ -243,42 +242,6 @@ export default function Page() {
           editable={isEditMode}
           displayComments={displayComments}
           debouncedUpdates={handleDebouncedUpdates}
-          onAddComment={async (editor: Editor, commentValue: string) => {
-            const { state } = editor;
-            const { from, to } = state.selection;
-            const tmpID = `tmp-${crypto.randomUUID()}`
-
-            try {
-              if (from !== to) {
-                editor.commands.addComment(tmpID)
-              }
-              
-              const hasFakeMark = editor.state.doc.rangeHasMark(from, to, editor.schema.marks['comment-highlight']);
-
-              if (hasFakeMark) {
-                const { comment } = await createComment({
-                  documentId,
-                  userId: userID,
-                  text: commentValue,
-                  from: from,
-                  to: to,
-                });
-
-                editor
-                  .chain()
-                  .focus()
-                  .unsetMark('comment-highlight')
-                  .setMark('comment-highlight', { commentId: comment?.id })
-                  .run();
-
-                await mutateComments();
-              }
-            } catch (error) {
-              errorToast('Error adding comment.')
-            } finally {
-              editor.commands.setTextSelection(to)
-            }
-          }}
           commentList={
             comments?.map((comment: CommentCardProps) => {
               return (

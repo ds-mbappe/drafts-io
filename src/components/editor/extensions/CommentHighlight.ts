@@ -3,8 +3,8 @@ import { Mark, mergeAttributes } from '@tiptap/core';
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     commentHighlight: {
-      addComment: (commentId: string) => ReturnType,
       removeComment: () => ReturnType,
+      addComment: (commentId: string) => ReturnType,
     }
   }
 }

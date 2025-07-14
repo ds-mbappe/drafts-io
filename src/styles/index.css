@@ -50,7 +50,7 @@
   }
 
   .tiptap-comment {
-    @apply border-b-3 border-dashed border-b-lime-400 bg-yellow-400 hover:bg-yellow-300 py-0.5 transition-all;
+    @apply border-b-3 border-dashed border-b-lime-400 text-foreground dark:text-background bg-warning hover:bg-warning-300 py-0.5 transition-all;
   }
 }
 

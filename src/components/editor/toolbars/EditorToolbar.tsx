@@ -14,14 +14,8 @@ import FontSizePicker from '../menus/TextMenu/components/FontSizePicker'
 
 const EditorToolbar = ({
   editor,
-  canComment,
-  showCommentButton,
-  toggleCommentPopover,
   }: {
     editor: Editor | null,
-    canComment?: boolean,
-    showCommentButton?: boolean,
-    toggleCommentPopover?: Function,
   }) => {
   const MemoButton = memo(Button);
   const MemoColorPicker = memo(ColorPicker);
@@ -34,12 +28,6 @@ const EditorToolbar = ({
   const states = useTextMenuStates(editor!);
   const commands = useTextMenuCommands(editor!);
   const blockOptions = useTextMenuContentTypes(editor!);
-
-  const onToggleCommentPopover = () => {
-    if (toggleCommentPopover) {
-      toggleCommentPopover();
-    }
-  }
 
   return (
     <Navbar
@@ -162,12 +150,6 @@ const EditorToolbar = ({
           <MemoButton variant="light" size="sm" onPress={commands.onAlignJustify} isIconOnly>
             <Icon name="AlignJustify" className="text-foreground-500" />
           </MemoButton>
-
-          {showCommentButton &&
-            <MemoButton variant="light" size="sm" onPress={() => onToggleCommentPopover()} isIconOnly isDisabled={!canComment}>
-              <Icon name="MessageSquareText" className="text-foreground-500" />
-            </MemoButton>
-          }
         </>
       )}
     </Navbar>

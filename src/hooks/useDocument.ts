@@ -110,7 +110,7 @@ const useLibraryDocuments = (userId: string | null) => {
 
   const { data, error, isLoading, mutate } = useSWR(
     shouldFetch ? ['/api/documents', userId] : null,
-    () => fetchLibraryDocuments(userId!),
+    ([, uid]) => fetchLibraryDocuments(uid),
     { revalidateOnFocus: false, suspense: true }
   );
 
