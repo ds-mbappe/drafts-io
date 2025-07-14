@@ -21,6 +21,8 @@ export type CommentCardProps = {
   createdAt?: string,
   updatedAt?: string,
   text?: string,
+  from: number,
+  to: number,
   user?: {
     id?: string,
     avatar?: string,

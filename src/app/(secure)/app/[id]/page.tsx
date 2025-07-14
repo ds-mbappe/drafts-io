@@ -1,6 +1,6 @@
 "use client"
 
-import React, { memo, useCallback, useContext, useMemo, useState } from 'react';
+import React, { memo, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useParams } from 'next/navigation'
 import { Avatar, Badge, Button, Image } from '@heroui/react';
 import { toggleDocumentLike, updateDocument, useDocument, useDocumentLikes } from '@/hooks/useDocument';
@@ -12,10 +12,9 @@ import BlockEditor from '@/components/editor';
 import moment from 'moment';
 import { useDropzone } from 'react-dropzone';
 import { Icon } from '@/components/ui/Icon'
-import { Editor, getMarkType } from '@tiptap/react';
+import { Editor } from '@tiptap/react';
 import { useComments } from '@/hooks/useComments';
 import { createComment } from '@/actions/comment';
-import CommentHighlight from '@/components/editor/extensions/CommentHighlight';
 import CommentCard from '@/components/card/CommentCard';
 import { CommentCardProps } from '@/lib/types';
 // import ModalValidation from '@/components/pannels/ModalValidation';
@@ -27,7 +26,13 @@ export default function Page() {
   const { session } = useContext(NextSessionContext);
   const userID = session?.user?.id;
 
+  const editorRef = useRef<{
+    editor: Editor | null,
+  }>(null);
+
   const MemoButton = memo(Button);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false)
+  const [displayComments, setDisplayComments] = useState<boolean>(false)
   
   const { document, mutate: mutateDoc } = useDocument(documentId);
   const { comments, mutate: mutateComments } = useComments(documentId);
@@ -135,20 +140,20 @@ export default function Page() {
         <div className="w-full h-16 flex mx-auto px-5 md:!px-20 py-2 items-center justify-between border-y border-divider sticky top-0 z-10 bg-background">
           <div className="w-full flex items-center gap-3 flex-1">
             <Badge color="danger" isInvisible={!likeCount} content={likeCount} size="md" shape="circle">
-              <Button isIconOnly size={"sm"} variant={"light"} onClick={onToggleLike}>
+              <Button isIconOnly size={"sm"} variant={"light"} onPress={onToggleLike}>
                 <HeartIcon fill={hasLiked ? "#006FEE" : "none"} strokeWidth={hasLiked ? 0 : undefined} className="text-foreground-500 transition-all duration-500" />
               </Button>
             </Badge>
 
-            <Button isIconOnly size={"sm"} variant={"light"}>
+            <Button isIconOnly size={"sm"} variant={"light"} onPress={() => setDisplayComments(!displayComments)}>
               <MessageCircleMoreIcon className="text-foreground-500" />
             </Button>
           </div>
 
           {isUserTheDraftAuthor &&
             <div className="flex items-center gap-1">
-              <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
-                <Icon name="Eye" className="text-foreground-500" />
+              <MemoButton variant="light" size="sm" onPress={() => setIsEditMode(!isEditMode)} color="default" isIconOnly>
+                <Icon name={isEditMode ? 'Eye' : 'Pencil'} className="text-foreground-500" />
               </MemoButton>
 
               <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
@@ -194,9 +199,9 @@ export default function Page() {
           </p>
 
           <Button
-            onPress={isUserTheDraftAuthor ? open : () => {}}
             variant="light"
             className="w-full h-[350px] md:h-[450px] px-0"
+            onPress={(isUserTheDraftAuthor && isEditMode) ? open : () => {}}
           >
             <div
               {...getRootProps()}
@@ -232,9 +237,11 @@ export default function Page() {
         </div>
 
         <BlockEditor
-          editable
           doc={doc}
+          ref={editorRef}
           autoFocus={false}
+          editable={isEditMode}
+          displayComments={displayComments}
           debouncedUpdates={handleDebouncedUpdates}
           onAddComment={async (editor: Editor, commentValue: string) => {
             const { state } = editor;
@@ -263,6 +270,8 @@ export default function Page() {
                   .unsetMark('comment-highlight')
                   .setMark('comment-highlight', { commentId: comment?.id })
                   .run();
+
+                await mutateComments();
               }
             } catch (error) {
               errorToast('Error adding comment.')
@@ -276,7 +285,18 @@ export default function Page() {
                 <CommentCard
                   key={comment.id}
                   comment={comment}
-                  onRemoveComment={() => {}}
+                  onRemoveComment={async (comment: CommentCardProps) => {
+                    const editor = editorRef.current?.editor;
+                    const from = comment.from;
+                    const to = comment.to;
+                    
+                    if (editor) {
+                      editor.commands.setTextSelection({ from, to });
+                      editor.commands.removeComment();
+
+                      await mutateComments();
+                    }
+                  }}
                 />
               )
             })

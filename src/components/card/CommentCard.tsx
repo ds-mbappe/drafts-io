@@ -1,17 +1,18 @@
 import { CommentCardProps } from '@/lib/types'
 import { Avatar, Button, useDisclosure } from '@heroui/react'
 import moment from 'moment'
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
 import Icon from '../ui/Icon'
 import ModalValidation from '../pannels/ModalValidation'
 import { deleteComment } from '@/actions/comment'
-import { errorToast } from '@/actions/showToast'
+import { errorToast, successToast } from '@/actions/showToast'
 
 const CommentCard = ({ comment, onRemoveComment }: {
   comment: CommentCardProps,
   onRemoveComment?: Function,
 }) => {
   const MemoButton = memo(Button);
+  const [loading, setLoading] = useState<boolean>(false)
   const { isOpen, onOpenChange } = useDisclosure();
 
   const scrollToComment = () => {
@@ -24,19 +25,20 @@ const CommentCard = ({ comment, onRemoveComment }: {
 
   const onDeleteComment = async () => {
     try {
-      await deleteComment(comment.id).then(() => {
+      setLoading(true);
 
+      await deleteComment(comment.id).then(() => {
         if (onRemoveComment) {
           onRemoveComment(comment);
         }
-        // const { state } = editor;
-        // const { from, to } = state.selection;
-
-        // editor.commands.setTextSelection({ from, to });
-        // editor.commands.removeComment();
       });
+
+      successToast('Comment deleted successfully.')
     } catch (error) {
       errorToast('Error while deleting comment.')
+    } finally {
+      onOpenChange();
+      setLoading(false);
     }
   }
 
@@ -90,7 +92,7 @@ const CommentCard = ({ comment, onRemoveComment }: {
         isOpen={isOpen}
         cancelText={"Cancel"}
         validateText={"Delete"}
-        validateLoading={false}
+        validateLoading={loading}
         title={"Delete comment"}
         body={"Are you sure you want to delete this comment ?"}
         onCancel={onOpenChange}

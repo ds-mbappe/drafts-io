@@ -1,7 +1,7 @@
 "use client";
 
 import 'katex/dist/katex.min.css';
-import React, { ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { forwardRef, ReactNode, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useBlockEditor } from "./hooks/useBlockEditor";
 import { getLocalStorageWithExpiry, setLocalStorageWithExpiry } from "@/app/_helpers/storage";
 import { EditorContent } from "@tiptap/react";
@@ -13,13 +13,15 @@ import { NextSessionContext } from '@/contexts/SessionContext';
 import { TextSelection } from '@tiptap/pm/state';
 import { AnimatePresence, motion } from 'framer-motion';
 import { isSelectionCommentable } from '@/app/_helpers/tiptap';
+import CommentBubble from '../pannels/CommentBubble';
 
-export default function BlockEditor({
+const BlockEditor = forwardRef(({
   doc,
   editable,
   autoFocus,
   commentList,
   onAddComment,
+  displayComments,
   debouncedUpdates,
 }: {
   doc?: any,
@@ -27,8 +29,9 @@ export default function BlockEditor({
   autoFocus: boolean,
   commentList?: ReactNode,
   onAddComment?: Function,
+  displayComments?: boolean,
   debouncedUpdates: Function,
-}) {
+}, ref) => {
   const menuContainerRef = useRef(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -110,7 +113,7 @@ export default function BlockEditor({
     return localDoc?.author?.id === userID && editable;
   }, [localDoc?.author?.id, userID, editable]);
 
-  // useEffect to determine if content can be commented
+  // useEffect to determine if content can be commented in edit mode
   useEffect(() => {
     if (!editor) return;
 
@@ -182,6 +185,10 @@ export default function BlockEditor({
     }
   }, [doc]);
 
+  useImperativeHandle(ref, () => ({
+    editor,
+  }));
+
   if (!editor) return
 
   return (
@@ -200,11 +207,6 @@ export default function BlockEditor({
                 const selectionCoords = editor.view.dom.getBoundingClientRect()
                 const start = editor.view.coordsAtPos(from)
                 const end = editor.view.coordsAtPos(to)
-
-                // console.log(selectionCoords)
-                // console.log(start)
-                // console.log(end)
-
                 const top = start.bottom - 60
 
                 let left;
@@ -237,10 +239,10 @@ export default function BlockEditor({
             <>
             {(isDraft || canEditDraft) &&
               <>
-                <ContentItemMenu editor={editor} />
+                {/* <ContentItemMenu editor={editor} /> */}
                 {/* <TableRowMenu editor={editor} appendTo={menuContainerRef} /> */}
                 {/* <TableColumnMenu editor={editor} appendTo={menuContainerRef} /> */}
-                <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
+                {/* <ImageBlockMenu editor={editor} appendTo={menuContainerRef} /> */}
               </>
             }
 
@@ -255,14 +257,21 @@ export default function BlockEditor({
         </div>
       </div>
 
+      <CommentBubble
+        editor={editor}
+        onComment={() => {
+          // setShowCommentBox(true);
+        }}
+      />
+
       <AnimatePresence>
-        {canEditDraft && showCommentList &&
+        {(canEditDraft && showCommentList || displayComments) &&
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: -4 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -4 }}
             transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="w-full max-w-[300px] h-[600px] rounded-xl flex flex-col overflow-y-auto gap-2 p-1.5 sticky top-[100px] right-0 bg-transparent"
+            className="w-full max-w-[300px] h-fit max-h-[600px] rounded-xl flex flex-col overflow-y-auto gap-2 p-1.5 sticky top-[100px] right-0 bg-transparent shadow"
           >
             {commentList}
           </motion.div>
@@ -337,6 +346,8 @@ export default function BlockEditor({
                       onAddComment(editor, commentValue)
 
                       setCommentValue('')
+                      setShowCommentBox(false)
+                      setCommentBoxCoords(null)
                     }
                   }}
                 >
@@ -349,4 +360,8 @@ export default function BlockEditor({
       </AnimatePresence>
     </div>
   )
-}
+})
+
+BlockEditor.displayName = 'BlockEditor'
+
+export default BlockEditor;

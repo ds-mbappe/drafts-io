@@ -26,18 +26,6 @@ const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
       NodeSelection.create(state.doc, currentNodePos)
     );
 
-    // if (isSameNodeSelected) {
-    //   // Deselect: switch to a regular text selection after the node
-    //   transaction = state.tr.setSelection(
-    //     TextSelection.create(state.doc, currentNodePos + 1)
-    //   );
-    // } else {
-    //   // Select the node
-    //   transaction = state.tr.setSelection(
-    //     NodeSelection.create(state.doc, currentNodePos)
-    //   );
-    // }
-
     view.dispatch(transaction);
   };
 
