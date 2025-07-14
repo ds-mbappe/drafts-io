@@ -110,7 +110,7 @@ const BlockEditor = forwardRef(({
 
         {/* Scrollable Editor */}
         <div
-          className={localDoc?.id ? 'pt-10 px-5 pb-5 z-10' : 'pt-10 px-5 pb-5 z-10 overflow-y-auto h-[calc(100vh-85px)]'}
+          className={localDoc?.id ? 'pt-10 px-5 pb-5 z-10' : 'pt-14 px-5 pb-5 z-10 overflow-y-auto h-[calc(100vh-85px)]'}
         >
           {editor && (
             <>

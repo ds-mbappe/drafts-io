@@ -1,4 +1,4 @@
-import { Button, Divider, Navbar, Popover, PopoverContent, PopoverTrigger } from '@heroui/react'
+import { Button, cn, Divider, Navbar, Popover, PopoverContent, PopoverTrigger } from '@heroui/react'
 import { Editor } from '@tiptap/react'
 import { Icon } from '@/components/ui/Icon'
 import React, { memo } from 'react'
@@ -14,8 +14,10 @@ import FontSizePicker from '../menus/TextMenu/components/FontSizePicker'
 
 const EditorToolbar = ({
   editor,
+  documentId,
   }: {
     editor: Editor | null,
+    documentId?: string,
   }) => {
   const MemoButton = memo(Button);
   const MemoColorPicker = memo(ColorPicker);
@@ -35,7 +37,10 @@ const EditorToolbar = ({
       height={44}
       maxWidth={"full"}
       isBlurred={false}
-      className="rounded-t-lg bottom-0 fixed top-[128px] md:top-0 md:relative h-fit"
+      className={cn(
+        "md:rounded-t-lg bottom-0 fixed md:top-0 md:relative h-fit",
+        documentId ? 'top-[128px]' : 'top-[64px]'
+      )}
       classNames={{
         wrapper: 'w-full flex justify-normal md:justify-center items-center px-1 gap-0.5 overflow-x-auto hideScrollbar'
       }}
