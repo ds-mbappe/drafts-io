@@ -137,42 +137,44 @@ const ModalDraftDetails = ({ doc, characterCount }: {
                   />
                 </div>
 
-                <Button
-                  onPress={open}
-                  variant="light"
-                  className="w-full h-[350px] md:h-[450px] px-0"
-                >
-                  <div
-                    {...getRootProps()}
-                    className="w-full flex justify-center items-center max-w-3xl mx-auto relative px-0"
+                <div>
+                  <Button
+                    onPress={open}
+                    variant="light"
+                    className="w-full h-[350px] md:h-[450px] px-0"
                   >
-                    <input {...getInputProps()} />
+                    <div
+                      {...getRootProps()}
+                      className="w-full flex justify-center items-center max-w-3xl mx-auto relative px-0"
+                    >
+                      <input {...getInputProps()} />
 
-                    {cover &&
-                      <div
-                        className="bg-cover bg-center w-full h-[350px] md:h-[450px]"
-                        style={{
-                          backgroundImage: `url(${cover})`
-                        }}
-                      />
-                    }
-
-                    {!cover &&
-                      <div className="w-full h-[350px] md:h-[450px] rounded-[12px] gap-1 max-w-3xl flex flex-col justify-center items-center bg-cover bg-center overflow-hidden border border-divider">
-                        <CloudUploadIcon
-                          width={80}
-                          height={80}
-                          className="text-foreground"
+                      {cover &&
+                        <div
+                          className="bg-cover bg-center w-full h-[350px] md:h-[450px]"
+                          style={{
+                            backgroundImage: `url(${cover})`
+                          }}
                         />
+                      }
 
-                        <p className="text-foreground text-center">
-                          <span className="underline">{ "Click to upload" }</span>
-                          { " or drag and drop" }
-                        </p>
-                      </div>
-                    }
-                  </div>
-                </Button>
+                      {!cover &&
+                        <div className="w-full h-[350px] md:h-[450px] rounded-[12px] gap-1 max-w-3xl flex flex-col justify-center items-center bg-cover bg-center overflow-hidden border border-divider">
+                          <CloudUploadIcon
+                            width={80}
+                            height={80}
+                            className="text-foreground"
+                          />
+
+                          <p className="text-foreground text-center">
+                            <span className="underline">{ "Click to upload" }</span>
+                            { " or drag and drop" }
+                          </p>
+                        </div>
+                      }
+                    </div>
+                  </Button>
+                </div>
 
                 {editor &&
                   <EditorContent
