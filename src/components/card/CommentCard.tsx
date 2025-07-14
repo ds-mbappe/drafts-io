@@ -1,16 +1,20 @@
 import { CommentCardProps } from '@/lib/types'
 import { Avatar, Button, useDisclosure } from '@heroui/react'
 import moment from 'moment'
-import React, { memo, useState } from 'react'
+import React, { memo, useContext, useState } from 'react'
 import Icon from '../ui/Icon'
 import ModalValidation from '../pannels/ModalValidation'
 import { deleteComment } from '@/actions/comment'
 import { errorToast, successToast } from '@/actions/showToast'
+import { NextSessionContext } from '@/contexts/SessionContext'
 
 const CommentCard = ({ comment, onRemoveComment }: {
   comment: CommentCardProps,
   onRemoveComment?: Function,
 }) => {
+  const { session } = useContext(NextSessionContext);
+  const userID = session?.user?.id;
+
   const MemoButton = memo(Button);
   const [loading, setLoading] = useState<boolean>(false)
   const { isOpen, onOpenChange } = useDisclosure();
@@ -44,7 +48,7 @@ const CommentCard = ({ comment, onRemoveComment }: {
 
   return (
     <>
-      <div onClick={scrollToComment} className="flex flex-col gap-2 p-2 border border-divider hover:translate-x-1.5 transition-all shadow rounded-xl cursor-pointer">
+      <div onClick={scrollToComment} className="flex flex-col gap-2 p-2 border border-divider hover:-translate-x-1.5 transition-all shadow rounded-xl cursor-pointer">
         <div className="flex items-center gap-2">
           <div>
             <Avatar
@@ -68,15 +72,17 @@ const CommentCard = ({ comment, onRemoveComment }: {
               </p>
             </div>
 
-            <div className="flex items-center gap-1">
-              <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
-                <Icon name="SquarePen" className="text-foreground-500" />
-              </MemoButton>
+            {comment.id === userID &&
+              <div className="flex items-center gap-1">
+                <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
+                  <Icon name="SquarePen" className="text-foreground-500" />
+                </MemoButton>
 
-              <MemoButton variant="light" size="sm" onPress={onOpenChange} color="default" isIconOnly>
-                <Icon name="Trash2" className="text-danger" />
-              </MemoButton>
-            </div>
+                <MemoButton variant="light" size="sm" onPress={onOpenChange} color="default" isIconOnly>
+                  <Icon name="Trash2" className="text-danger" />
+                </MemoButton>
+              </div>
+            }
           </div>
         </div>
 

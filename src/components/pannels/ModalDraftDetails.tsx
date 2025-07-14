@@ -149,11 +149,11 @@ const ModalDraftDetails = ({ doc, characterCount }: {
                     <input {...getInputProps()} />
 
                     {cover &&
-                      <Image
-                        src={cover}
-                        height={350}
-                        alt="cover"
-                        className="w-full border border-divider"
+                      <div
+                        className="bg-cover bg-center w-full h-[350px] md:h-[450px]"
+                        style={{
+                          backgroundImage: `url(${cover})`
+                        }}
                       />
                     }
 

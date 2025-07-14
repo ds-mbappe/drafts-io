@@ -8,8 +8,14 @@ export async function POST(request: NextRequest){
   try {
     const reqBody = await request.json()
 
-    // Parses the request body to extract username, email, and password.
-    const { username, email, password } = reqBody
+    // Parses the request body to extract username, firstname, lastname, email, and password.
+    const {
+      email,
+      username,
+      password,
+      firstname,
+      lastname,
+    } = reqBody
 
     // Checks if a user with the provided email already exists. 
     const user = await prisma.user.findFirst({
@@ -30,8 +36,10 @@ export async function POST(request: NextRequest){
     // Saves the new user to the database.
     const savedUser = await prisma.user.create({
       data: {
-        username,
         email,
+        username,
+        firstname,
+        lastname,
         password: hashedPassword
       }
     })

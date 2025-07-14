@@ -11,7 +11,8 @@ export async function GET(req, { params }) {
     if (search) {
       documents = await prisma.document.findMany({
         where: {
-          title: search
+          title: search,
+          private: false,
         }
       })
     } else {
@@ -22,6 +23,22 @@ export async function GET(req, { params }) {
         },
         where: {
           private: false
+        },
+        select: {
+          id: true,
+          author: {
+            select: {
+              id: true,
+              avatar: true,
+              lastname: true,
+              firstname: true,
+            }
+          },
+          cover: true,
+          title: true,
+          topic: true,
+          createdAt: true,
+          updatedAt: true,
         }
       })
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { Editor } from '@tiptap/react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -8,6 +8,7 @@ import { BaseUser } from '@/lib/types';
 import { errorToast } from '@/actions/showToast';
 import { createComment } from '@/actions/comment';
 import { useComments } from '@/hooks/useComments';
+import Icon from '../ui/Icon';
 
 const CommentBubble = ({
   user,
@@ -18,6 +19,8 @@ const CommentBubble = ({
   editor: Editor,
   documentId: string,
 }) => {
+  const MemoButton = memo(Button);
+  
   const coords = useSelectionBubble(editor);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -139,14 +142,19 @@ const CommentBubble = ({
                   onValueChange={setCommentValue}
                   placeholder="Enter a comment"
                 />
-                <Button
+
+                <MemoButton
+                  size="sm"
+                  radius="full"
+                  isIconOnly
+                  variant="solid"
                   color="primary"
                   isLoading={commentLoading}
                   isDisabled={!commentValue}
                   onPress={onComment}
                 >
-                  Comment
-                </Button>
+                  <Icon name="ArrowUp" />
+                </MemoButton>
               </div>
             </>
           ) : (

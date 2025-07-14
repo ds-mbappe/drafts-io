@@ -3,7 +3,7 @@
 import 'katex/dist/katex.min.css';
 import Link from 'next/link';
 import React, { Suspense } from 'react';
-import { SquarePenIcon } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import DocumentCard from '@/components/card/DocumentCard';
 import { Button, Tabs, Tab } from "@heroui/react";
 import { useLatestDocuments } from '@/hooks/useDocument';
@@ -34,13 +34,16 @@ export default function App() {
                   }
                 </div> :
                 <p className="text-sm font-normal text-foreground-500">
-                  {`You are currently not following anybody. Start following people to see their posts`}
+                  {`There are no public drafts for the moment, come back later !`}
                 </p>
               }
             </Suspense>
           </Tab>
 
           <Tab key="for_you" title={`Following`} className="flex flex-col gap-4">
+            <p className="text-sm font-normal text-foreground-500">
+              {`You are currently not following anybody. Start following people to see their published drafts`}
+            </p>
           </Tab>
         </Tabs>
       </div>
@@ -49,8 +52,8 @@ export default function App() {
         as={Link}
         color="primary"
         href="/app/new_draft"
-        startContent={<SquarePenIcon />}
-        className="fixed bottom-10 right-10 z-[99]"
+        startContent={<PlusIcon />}
+        className="fixed bottom-10 right-10 z-[99] hover:scale-110"
       >
         {'New draft'}
       </Button>

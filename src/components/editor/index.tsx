@@ -101,8 +101,8 @@ const BlockEditor = forwardRef(({
   if (!editor) return
 
   return (
-    <div className="flex gap-5 mx-auto relative">
-      <div ref={menuContainerRef} className="w-full max-w-[768px] 2xl:max-w-[1024px] mx-auto relative flex flex-col bg-background md:rounded-lg z-[1] md:border md:border-divider overflow-hidden">
+    <div className="w-full flex gap-5 relative justify-center">
+      <div ref={menuContainerRef} className="w-full max-w-[768px] 2xl:max-w-[1024px] relative flex flex-col bg-background md:rounded-lg z-[1] md:border md:border-divider overflow-hidden">
         {/* Fixed Top Bar */}
         {(isDraft || canEditDraft) &&
           <EditorToolbar editor={editor} />

@@ -2,12 +2,12 @@
 
 import React, { memo, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useParams } from 'next/navigation'
-import { Avatar, Badge, Button, Image } from '@heroui/react';
+import { Avatar, Badge, Button, cn, Image, useDisclosure } from '@heroui/react';
 import { toggleDocumentLike, updateDocument, useDocument, useDocumentLikes } from '@/hooks/useDocument';
 import { CloudUploadIcon, HeartIcon, MessageCircleMoreIcon } from 'lucide-react';
 import { NextSessionContext } from '@/contexts/SessionContext';
 import { useDebouncedCallback } from 'use-debounce';
-import { errorToast } from '@/actions/showToast';
+import { errorToast, successToast } from '@/actions/showToast';
 import BlockEditor from '@/components/editor';
 import moment from 'moment';
 import { useDropzone } from 'react-dropzone';
@@ -16,7 +16,7 @@ import { Editor } from '@tiptap/react';
 import { useComments } from '@/hooks/useComments';
 import CommentCard from '@/components/card/CommentCard';
 import { CommentCardProps } from '@/lib/types';
-// import ModalValidation from '@/components/pannels/ModalValidation';
+import ModalValidation from '@/components/pannels/ModalValidation';
 
 export default function Page() {
   const params = useParams();
@@ -29,9 +29,12 @@ export default function Page() {
     editor: Editor | null,
   }>(null);
 
+  const { isOpen, onOpenChange } = useDisclosure();
+
   const MemoButton = memo(Button);
-  const [isEditMode, setIsEditMode] = useState<boolean>(false)
-  const [displayComments, setDisplayComments] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [displayComments, setDisplayComments] = useState<boolean>(false);
   
   const { document, mutate: mutateDoc } = useDocument(documentId);
   const { comments, mutate: mutateComments } = useComments(documentId);
@@ -64,6 +67,29 @@ export default function Page() {
       })
     }
   }, []);
+
+  const onPublishDraft = async () => {
+    setLoading(true);
+    await mutateDoc(
+      async (currentData: any) => {
+        const formData = {
+          private: false,
+        }
+
+        await updateDocument(documentId, formData);
+
+        return { ...currentData, private: false };
+      },
+      {
+        optimisticData: { ...document, private: false },
+        rollbackOnError: true,
+        revalidate: false,
+      }
+    );
+    setLoading(false);
+    successToast('Draft published, it is now visible in the discovery tab.')
+    onOpenChange();
+  }
 
   const onToggleLike = useDebouncedCallback(async () => {
     try {
@@ -134,7 +160,7 @@ export default function Page() {
   }, [doc.author?.id, userID]);
 
   return (
-    <div className="w-full h-full flex z-50 bg-background relative">
+    <div className="w-full h-full flex flex-col z-50 bg-background relative">
       <div className="w-full flex flex-col gap-5 pb-10">
         <div className="w-full h-16 flex mx-auto px-5 md:!px-20 py-2 items-center justify-between border-y border-divider sticky top-0 z-10 bg-background">
           <div className="w-full flex items-center gap-3 flex-1">
@@ -149,28 +175,35 @@ export default function Page() {
             </Button>
           </div>
 
-          {isUserTheDraftAuthor &&
-            <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1">
+            {isUserTheDraftAuthor &&
               <MemoButton variant="light" size="sm" onPress={() => setIsEditMode(!isEditMode)} color="default" isIconOnly>
                 <Icon name={isEditMode ? 'Eye' : 'Pencil'} className="text-foreground-500" />
               </MemoButton>
+            }
 
-              <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
-                <Icon name="Bookmark" className="text-foreground-500" />
-              </MemoButton>
+            <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
+              <Icon name="Bookmark" className="text-foreground-500" />
+            </MemoButton>
 
-              <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
-                <Icon name="Share" className="text-foreground-500" />
-              </MemoButton>
+            <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
+              <Icon name="Share" className="text-foreground-500" />
+            </MemoButton>
 
+            {isUserTheDraftAuthor &&
               <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
                 <Icon name="Trash2" className="text-danger" />
               </MemoButton>
-            </div>
-          }
+            }
+          </div>
         </div>
 
-        <div className="w-full flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto px-4 md:px-0">
+        <div
+          className={cn(
+            isEditMode ? 'pt-11 md:pt-0' : '',
+            "w-full flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto px-4 md:px-0",
+          )}
+        >
           <div className="w-full flex items-center gap-3 mx-auto">
             <Avatar
               isBordered
@@ -209,11 +242,11 @@ export default function Page() {
               <input {...getInputProps()} />
 
               {doc?.cover &&
-                <Image
-                  src={doc?.cover}
-                  height={350}
-                  alt="cover"
-                  className="w-full border border-divider"
+                <div
+                  className="bg-cover bg-center w-full h-[350px] md:h-[450px]"
+                  style={{
+                    backgroundImage: `url(${doc?.cover})`
+                  }}
                 />
               }
 
@@ -267,17 +300,29 @@ export default function Page() {
         />
       </div>
 
-      {/* <ModalValidation
-        title={"Delete draft"}
-        body={"Are you sure you want to delete this draft ? If you choose to proceed, other users will no longer be able to access it"}
-        cancelText={"Cancel"}
-        validateText={"Delete"}
+      {document?.private &&
+        <MemoButton
+          color="primary"
+          title="Publish draft"
+          className="fixed bottom-10 right-10 z-50"
+          onPress={onOpenChange}
+        >
+          {"Publish"}
+        </MemoButton>
+      }
+
+      <ModalValidation
+        size="xs"
         isOpen={isOpen}
-        validateLoading={false}
-        onOpenChange={onOpenChange}
+        cancelText={"Cancel"}
+        validateText={"Publish"}
+        title={"Publish draft"}
+        validateLoading={loading}
+        body={"Are you sure you want to publish this draft ? By doing so, everyone will be able to read its content."}
         onCancel={onOpenChange}
-        onValidate={onDelete}
-      /> */}
+        onOpenChange={onOpenChange}
+        onValidate={onPublishDraft}
+      />
     </div>
   )
 }

@@ -24,7 +24,7 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
 
   return (
     <Link href={`/app/${document?.id}`}>
-      <Card shadow="none" className="border border-divider cursor-pointer hover:bg-foreground-100 active:scale-[0.95] !rounded-large">
+      <Card shadow="none" className="border border-divider cursor-pointer hover:bg-foreground-100 hover:scale-[1.05] active:scale-100 !rounded-large">
         <CardBody className="flex flex-row gap-4">
           {document?.cover ?
             <div className="hidden sm:!flex border border-divider rounded-large">
@@ -47,7 +47,7 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
               <div>
                 <Avatar
                   isBordered
-                  color="default"
+                  color="primary"
                   className="w-6 h-6"
                   name={document?.author?.firstname?.split("")?.[0]?.toUpperCase()}
                   src={document?.author?.avatar}
@@ -80,9 +80,9 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
             <div className="flex items-center justify-between">
               {/* Crated at */}
               <div className="flex items-center gap-1">
-                <CalendarIcon className="text-foreground-500 w-5 h-5" />
+                <CalendarIcon className="text-foreground-500 w-4 h-4" />
 
-                <p className="text-foreground-500 text-sm">
+                <p className="text-foreground-500 text-xs">
                   {moment(document?.createdAt).format('DD MMM YYYY')}
                 </p>
               </div>

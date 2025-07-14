@@ -68,6 +68,7 @@ const updateDocument = async (documentId: String, formData?: Object) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ formData }),
   });
+  
   if (!res.ok) throw new Error('Failed to update document');
 
   return res.json();

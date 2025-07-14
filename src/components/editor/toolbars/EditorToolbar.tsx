@@ -35,7 +35,7 @@ const EditorToolbar = ({
       height={44}
       maxWidth={"full"}
       isBlurred={false}
-      className="rounded-t-lg bottom-0"
+      className="rounded-t-lg bottom-0 fixed top-[128px] md:top-0 md:relative h-fit"
       classNames={{
         wrapper: 'w-full flex justify-normal md:justify-center items-center px-1 gap-0.5 overflow-x-auto hideScrollbar'
       }}

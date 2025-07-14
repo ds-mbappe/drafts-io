@@ -1,10 +1,12 @@
 "use client"
 
-import { Spinner } from "@heroui/react";
+import { Button, Spinner } from "@heroui/react";
 import React, { useContext } from 'react';
 import { useLibraryDocuments } from '@/hooks/useDocument';
 import { NextSessionContext } from '@/contexts/SessionContext';
 import DocumentCardInLibrary from '@/components/card/DocumentCardInLibrary';
+import Link from "next/link";
+import { PlusIcon } from "lucide-react";
 
 const Library = () => {
   const { session } = useContext(NextSessionContext);
@@ -12,9 +14,10 @@ const Library = () => {
   const { documents, isLoading } = useLibraryDocuments(userId);
 
   return (
+
     <div className="w-full h-[calc(100vh-65px)] flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto relative py-10 px-5">
       <p className="text-sm font-normal text-foreground-500">
-        {`This is the list of all the documents you have created, wheter you published them or not. You can manage them (edit, publish, delete) right from here.`}
+        {`This is the list of all the drafts you have created, wheter you published them or not. You can manage them (edit, publish, delete) right from here.`}
       </p>
 
       {isLoading ?
@@ -31,11 +34,21 @@ const Library = () => {
               }
             </div> :
             <p className="text-sm font-normal text-foreground-500">
-              {`You have not created a document yet, start by clicking the button at the bottom right of your screen.`}
+              {`You have not created a draft yet, start by clicking the button at the bottom right of your screen.`}
             </p>
           }
         </>
       }
+
+      <Button
+        as={Link}
+        color="primary"
+        href="/app/new_draft"
+        startContent={<PlusIcon />}
+        className="fixed bottom-10 right-10 z-[99] hover:scale-110"
+      >
+        {'New draft'}
+      </Button>
     </div>
   )
 }

@@ -12,7 +12,7 @@
 
 .editableClass {
   .ProseMirror {
-    @apply z-0 pl-5 pb-14
+    @apply z-0 pl-5
   }
 }
 

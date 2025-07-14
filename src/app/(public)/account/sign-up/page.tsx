@@ -14,8 +14,10 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [user, setUser] = useState({
-    username: "",
     email: "",
+    username: "",
+    firstname: "",
+    lastname: "",
     password: "",
   })
 
@@ -62,7 +64,8 @@ export default function SignInPage() {
     if (response?.ok) {
       router.push(`/account/sign-in?email=${user?.email}`);
     } else {
-      errorToast("An error occured, please try again !");
+      const { error } = await response.json()
+      errorToast(error);
     }
     setLoading(false)
   }
@@ -128,6 +131,24 @@ export default function SignInPage() {
               variant="bordered"
               autoComplete="new-password"
               onChange={(e) => setUser({...user, email: e.target.value})}
+            />
+
+            <Input
+              isRequired
+              type="text"
+              label={"Firstname"}
+              variant="bordered"
+              autoComplete="new-password"
+              onChange={(e) => setUser({...user, firstname: e.target.value})}
+            />
+
+            <Input
+              isRequired
+              type="text"
+              label={"Lastname"}
+              variant="bordered"
+              autoComplete="new-password"
+              onChange={(e) => setUser({...user, lastname: e.target.value})}
             />
 
             <Input
