@@ -45,7 +45,7 @@ const Library = () => {
         color="primary"
         href="/app/new_draft"
         startContent={<PlusIcon />}
-        className="fixed bottom-10 right-10 z-[99] hover:scale-110"
+        className="fixed bottom-10 right-10 z-20 hover:scale-110"
       >
         {'New draft'}
       </Button>

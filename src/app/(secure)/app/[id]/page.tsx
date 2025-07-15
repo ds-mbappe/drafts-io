@@ -58,33 +58,38 @@ export default function Page() {
     const file = acceptedFiles?.[0];
 
     if (file) {
-      const localUrl = URL.createObjectURL(file);
+      try {
+        const localUrl = URL.createObjectURL(file);
+        const uploadedFileUrl = await uploadFileToCloudinary(file);
+  
+        setDoc((prev: any) => {
+          return {
+            ...prev,
+            cover: localUrl,
+          }
+        })
+  
+        await mutateDoc(
+          async (currentData: any) => {
+          const formData = {
+            cover: uploadedFileUrl,
+          }
+  
+            await updateDocument(documentId, formData);
+    
+            return { ...currentData, cover: uploadedFileUrl };
+          },
+          {
+            optimisticData: { ...document, cover: localUrl },
+            rollbackOnError: true,
+            revalidate: false,
+          }
+        );
 
-      const uploadedFileUrl = await uploadFileToCloudinary(file);
-
-      setDoc((prev: any) => {
-        return {
-          ...prev,
-          cover: localUrl,
-        }
-      })
-
-      await mutateDoc(
-        async (currentData: any) => {
-        const formData = {
-          cover: uploadedFileUrl,
-        }
-
-          await updateDocument(documentId, formData);
-
-          return { ...currentData, cover: uploadedFileUrl };
-        },
-        {
-          optimisticData: { ...document, cover: localUrl },
-          rollbackOnError: true,
-          revalidate: false,
-        }
-      );
+        successToast('Draft cover updated !');
+      } catch (error) {
+        errorToast('There was an error while updating your draft cover, please try again.');
+      }
     }
   }, []);
 
@@ -324,7 +329,7 @@ export default function Page() {
         <MemoButton
           color="primary"
           title="Publish draft"
-          className="fixed bottom-10 right-10 z-50"
+          className="fixed bottom-10 right-10 z-20"
           onPress={onOpenChange}
         >
           {"Publish"}
