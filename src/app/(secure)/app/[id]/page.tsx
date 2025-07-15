@@ -2,7 +2,7 @@
 
 import React, { memo, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useParams } from 'next/navigation'
-import { Avatar, Badge, Button, cn, Image, useDisclosure } from '@heroui/react';
+import { Avatar, Badge, Button, cn, useDisclosure } from '@heroui/react';
 import { toggleDocumentLike, updateDocument, useDocument, useDocumentLikes } from '@/hooks/useDocument';
 import { CloudUploadIcon, HeartIcon, MessageCircleMoreIcon } from 'lucide-react';
 import { NextSessionContext } from '@/contexts/SessionContext';
@@ -17,6 +17,7 @@ import { useComments } from '@/hooks/useComments';
 import CommentCard from '@/components/card/CommentCard';
 import { CommentCardProps } from '@/lib/types';
 import ModalValidation from '@/components/pannels/ModalValidation';
+import { uploadFileToCloudinary } from '@/app/_helpers/cloudinary';
 
 export default function Page() {
   const params = useParams();
@@ -59,12 +60,31 @@ export default function Page() {
     if (file) {
       const localUrl = URL.createObjectURL(file);
 
+      const uploadedFileUrl = await uploadFileToCloudinary(file);
+
       setDoc((prev: any) => {
         return {
           ...prev,
           cover: localUrl,
         }
       })
+
+      await mutateDoc(
+        async (currentData: any) => {
+        const formData = {
+          cover: uploadedFileUrl,
+        }
+
+          await updateDocument(documentId, formData);
+
+          return { ...currentData, cover: uploadedFileUrl };
+        },
+        {
+          optimisticData: { ...document, cover: localUrl },
+          rollbackOnError: true,
+          revalidate: false,
+        }
+      );
     }
   }, []);
 
