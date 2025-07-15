@@ -105,11 +105,14 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
 
       if (result?.ok) {
         const data = await result.json()
-        await update({ ...session?.user, avatar: data?.url })
+
+        console.log(data)
+
+        await update({ ...session?.user, avatar: data?.secure_url })
 
         const formData = {
           id: session?.user?.id,
-          avatar: data?.url
+          avatar: data?.secure_url
         }
 
         const response = await fetch(`/api/user/${session?.user?.id}`, {
@@ -119,7 +122,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
         })
 
         if (response?.ok) {
-          setEditUser({ ...editUser, avatar: data?.url })
+          setEditUser({ ...editUser, avatar: data?.secure_url })
 
           successToast("Successfully updated avatar!");
         } else {

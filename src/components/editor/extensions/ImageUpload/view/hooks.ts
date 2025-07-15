@@ -29,7 +29,8 @@ export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) =
           body: formData,
         })
         const data = await result.json()
-        onUpload(data?.url)
+        
+        onUpload(data?.secure_url)
       } catch (errPayload: any) {
         errorToast(errPayload?.response?.data?.error || 'Something went wrong');
       }
