@@ -72,7 +72,7 @@ const CommentCard = ({ comment, onRemoveComment }: {
               </p>
             </div>
 
-            {comment.id === userID &&
+            {comment?.user?.id === userID &&
               <div className="flex items-center gap-1">
                 <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
                   <Icon name="SquarePen" className="text-foreground-500" />
