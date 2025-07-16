@@ -2,9 +2,9 @@
 
 import React, { memo, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useParams } from 'next/navigation'
-import { Avatar, Badge, Button, cn, useDisclosure } from '@heroui/react';
+import { Avatar, Badge, Button, useDisclosure } from '@heroui/react';
 import { toggleDocumentLike, updateDocument, useDocument, useDocumentLikes } from '@/hooks/useDocument';
-import { CloudUploadIcon, HeartIcon, MessageCircleMoreIcon } from 'lucide-react';
+import { CloudUploadIcon, HeartIcon } from 'lucide-react';
 import { NextSessionContext } from '@/contexts/SessionContext';
 import { useDebouncedCallback } from 'use-debounce';
 import { errorToast, successToast } from '@/actions/showToast';
@@ -13,11 +13,9 @@ import moment from 'moment';
 import { useDropzone } from 'react-dropzone';
 import { Icon } from '@/components/ui/Icon'
 import { Editor } from '@tiptap/react';
-import { useComments } from '@/hooks/useComments';
-import CommentCard from '@/components/card/CommentCard';
-import { CommentCardProps } from '@/lib/types';
 import ModalValidation from '@/components/pannels/ModalValidation';
 import { uploadFileToCloudinary } from '@/app/_helpers/cloudinary';
+import DrawerComments from '@/components/pannels/DrawerComments';
 
 export default function Page() {
   const params = useParams();
@@ -31,14 +29,13 @@ export default function Page() {
   }>(null);
 
   const { isOpen, onOpenChange } = useDisclosure();
+  const { isOpen: isOpenComments, onOpenChange: onOpenChangeComments } = useDisclosure();
 
   const MemoButton = memo(Button);
   const [loading, setLoading] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [displayComments, setDisplayComments] = useState<boolean>(false);
   
   const { document, mutate: mutateDoc } = useDocument(documentId);
-  const { comments, mutate: mutateComments } = useComments(documentId);
   const { likeCount, hasLiked, mutate } = useDocumentLikes(documentId, userID);
 
   const [doc, setDoc] = useState(() => {
@@ -195,8 +192,8 @@ export default function Page() {
               </Button>
             </Badge>
 
-            <Button isIconOnly size={"sm"} variant={"light"} onPress={() => setDisplayComments(!displayComments)}>
-              <MessageCircleMoreIcon className="text-foreground-500" />
+            <Button isIconOnly size={"sm"} variant={"light"} onPress={onOpenChangeComments}>
+              <Icon name="MessageCircleMore" className={isOpenComments ? 'text-primary-500' : "text-foreground-500"} />
             </Button>
           </div>
 
@@ -223,7 +220,7 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="w-full flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto px-4 md:px-0">
+        <div  className="w-full flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto px-4 md:px-0">
           <div className="w-full flex items-center gap-3 mx-auto">
             <Avatar
               isBordered
@@ -293,30 +290,14 @@ export default function Page() {
           ref={editorRef}
           autoFocus={false}
           editable={isEditMode}
-          displayComments={displayComments}
           debouncedUpdates={handleDebouncedUpdates}
-          commentList={
-            comments?.map((comment: CommentCardProps) => {
-              return (
-                <CommentCard
-                  key={comment.id}
-                  comment={comment}
-                  onRemoveComment={async (comment: CommentCardProps) => {
-                    const editor = editorRef.current?.editor;
-                    const from = comment.from;
-                    const to = comment.to;
-                    
-                    if (editor) {
-                      editor.commands.setTextSelection({ from, to });
-                      editor.commands.removeComment();
+        />
 
-                      await mutateComments();
-                    }
-                  }}
-                />
-              )
-            })
-          }
+        <DrawerComments
+          editorRef={editorRef}
+          documentId={documentId}
+          isOpen={isOpenComments}
+          onOpenChange={onOpenChangeComments}
         />
       </div>
 

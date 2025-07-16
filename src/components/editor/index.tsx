@@ -1,28 +1,23 @@
 "use client";
 
 import 'katex/dist/katex.min.css';
-import React, { forwardRef, ReactNode, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import React, { forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useBlockEditor } from "./hooks/useBlockEditor";
 import { getLocalStorageWithExpiry, setLocalStorageWithExpiry } from "@/app/_helpers/storage";
 import { EditorContent } from "@tiptap/react";
 import EditorToolbar from "./toolbars/EditorToolbar";
 import { NextSessionContext } from '@/contexts/SessionContext';
-import { AnimatePresence, motion } from 'framer-motion';
 import CommentBubble from '../pannels/CommentBubble';
 
 const BlockEditor = forwardRef(({
   doc,
   editable,
   autoFocus,
-  commentList,
-  displayComments,
   debouncedUpdates,
 }: {
   doc?: any,
   editable: boolean,
   autoFocus: boolean,
-  commentList?: ReactNode,
-  displayComments?: boolean,
   debouncedUpdates: Function,
 }, ref) => {
   const menuContainerRef = useRef(null);
@@ -39,7 +34,6 @@ const BlockEditor = forwardRef(({
       title: 'New Document',
     };
   });
-  const [showCommentList, setShowCommentList] = useState<boolean>(false);
 
   const { editor } = useBlockEditor({
     doc: localDoc,
@@ -144,20 +138,6 @@ const BlockEditor = forwardRef(({
           }}
         />
       }
-
-      <AnimatePresence>
-        {(canEditDraft && showCommentList || displayComments) &&
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -4 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -4 }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="w-full max-w-[300px] h-fit max-h-[600px] rounded-xl flex flex-col overflow-y-auto gap-2 p-1.5 sticky top-[100px] right-0 bg-transparent shadow"
-          >
-            {commentList}
-          </motion.div>
-        }
-      </AnimatePresence>
     </div>
   )
 })
