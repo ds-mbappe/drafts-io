@@ -116,6 +116,10 @@
   background-color: transparent;
 }
 
+input, textarea, select {
+  font-size: 16px !important;
+}
+
 /* Change cursor */
 /* * {
   cursor: url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 96 104" xmlns="http://www.w3.org/2000/svg"><path style="fill: black" d="M0.86065 0.697766L95.7812 51.5907L50.3553 59.6832L34.4976 103.014L0.86065 0.697766Z" /></svg>'), default !important;
