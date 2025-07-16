@@ -106,8 +106,6 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
       if (result?.ok) {
         const data = await result.json()
 
-        console.log(data)
-
         await update({ ...session?.user, avatar: data?.secure_url })
 
         const formData = {
