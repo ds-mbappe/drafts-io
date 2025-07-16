@@ -5,7 +5,7 @@ import { SquarePenIcon } from "lucide-react";
 export default function Home() {
   return (
     <HeroUIProvider>
-      <main className="flex min-h-screen flex-col bg-content1">
+      <main className="flex h-[100dvh] flex-col bg-content1">
         <Navbar />
         
         <section className="bg-content1">

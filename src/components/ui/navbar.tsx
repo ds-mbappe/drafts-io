@@ -195,8 +195,8 @@ const NavbarApp = ({ user }: { user: any }) => {
 
               <DropdownMenu aria-label="Profile Actions" variant="flat">
                 <DropdownItem key="email" className="h-14 gap-2" textValue={`signed_in_as`}>
-                  <p className="font-semibold">{'Signed in as'}</p>
-                  <p className="font-semibold">{user?.email}</p>
+                  <p>{'Signed in as'}</p>
+                  <p className="font-semibold">{`${user?.firstname} ${user?.lastname}`}</p>
                 </DropdownItem>
 
                 <DropdownItem

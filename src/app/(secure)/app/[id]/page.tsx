@@ -223,12 +223,7 @@ export default function Page() {
           </div>
         </div>
 
-        <div
-          className={cn(
-            isEditMode ? 'pt-11 md:pt-0' : '',
-            "w-full flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto px-4 md:px-0",
-          )}
-        >
+        <div className="w-full flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto px-4 md:px-0">
           <div className="w-full flex items-center gap-3 mx-auto">
             <Avatar
               isBordered
@@ -257,7 +252,7 @@ export default function Page() {
 
           <Button
             variant="light"
-            className="w-full h-[350px] md:h-[450px] px-0"
+            className="w-full h-[350px] md:h-[450px] px-0 border border-divider"
             onPress={(isUserTheDraftAuthor && isEditMode) ? open : () => {}}
           >
             <div

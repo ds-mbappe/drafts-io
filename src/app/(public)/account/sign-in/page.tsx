@@ -71,23 +71,23 @@ export default function SignInPage() {
     setLoading(false);
   }
 
-  // useEffect(() => {
-  //   const getUrlParams = () => {
-  //     const email = searchParams.get('email');
+  useEffect(() => {
+    const getUrlParams = () => {
+      const email = searchParams.get('email');
 
-  //     if (email) {
-  //       setUser({...user, email: email})
+      if (email) {
+        setUser({...user, email: email})
 
-  //       successToast(`You may now sign in with the email <b>${email}</b> and your password.<br/>Don't forget to verify your account later !`);
-  //     }
-  //   }
+        successToast(`You may now sign in with the email <b>${email}</b> and your password.<br/>Don't forget to verify your account later !`);
+      }
+    }
 
-  //   getUrlParams();
-  // }, [])
+    getUrlParams();
+  }, [])
 
   return (
-    <main className="flex h-[100dvh] flex-col items-center justify-center gap-5">
-      <div className="w-[350px] sm:w-full max-w-[400px] flex flex-col p-6 gap-6 bg-content1 border border-divider rounded-2xl">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-5 px-5">
+      <div className="w-full max-w-[400px] flex flex-col p-6 gap-6 bg-content1 border border-divider rounded-2xl">
         <div className="flex flex-col gap-6">
           {/* Sign in intro */}
           <div className="flex flex-col gap-1">
