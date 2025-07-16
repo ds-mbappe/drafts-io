@@ -60,9 +60,9 @@ export default function SignInPage() {
       email: user?.email,
       password: user?.password,
       redirect: false,
-    })
+    });
 
-    if (response?.ok) {
+    if (!response?.error) {
       router.push("/app");
     } else {
       errorToast("Incorrect credentials, please try again !");
