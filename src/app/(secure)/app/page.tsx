@@ -14,7 +14,7 @@ export default function App() {
   const { documents } = useLatestDocuments()
 
   return (
-    <div className="w-full h-[calc(100vh-65px)] flex flex-col overflow-y-auto relative">
+    <div className="w-full h-[calc(100dvh-65px)] flex flex-col overflow-y-auto relative">
       <div className="w-full max-w-[768px] 2xl:max-w-[1024px] mx-auto relative flex cursor-text flex-col z-[1] flex-1 px-5 2xl:!px-0 pt-10 pb-5">
         <Tabs
           key="tabs"

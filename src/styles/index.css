@@ -1,3 +1,8 @@
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
 .hideScroll {
   ::-webkit-scrollbar {
     display: none;
