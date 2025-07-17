@@ -54,8 +54,8 @@ export function CustomDrawer({
 
   const isVertical = placement === "top" || placement === "bottom";
   const style = isVertical
-    ? { height: `${heightPercent * 100}vh` }
-    : { width: `${heightPercent * 100}vw` };
+    ? { height: '450px' }
+    : { width: '400px' };
 
   const content = (
     <AnimatePresence>

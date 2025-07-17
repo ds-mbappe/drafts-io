@@ -2,9 +2,9 @@ import React from 'react';
 import moment from 'moment';
 import Link from 'next/link';
 import { DocumentCardTypeprops } from '@/lib/types';
-import { Avatar, Card, CardBody, CardFooter, CardHeader, Image } from "@heroui/react";
+import { Avatar, Card, CardBody, CardHeader, Image } from "@heroui/react";
 
-const DocumentCardInLibrary = ({ document }: { document: any }) => {
+const DocumentCardInLibrary = ({ document }: { document: DocumentCardTypeprops }) => {
   return (
     <Link href={`/app/${document?.id}`}>
       <Card className="w-[200PX] h-[200PX] md:w-[300px] md:h-[300px] border border-divider hover:scale-105 transition-all">

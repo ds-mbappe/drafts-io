@@ -212,7 +212,7 @@ const NavbarApp = ({ user }: { user: any }) => {
                   startContent={<BookTextIcon />}
                   onPress={goToMyLibrary}
                 >
-                  {'Library'}
+                  {'My Library'}
                 </DropdownItem>
 
                 <DropdownItem

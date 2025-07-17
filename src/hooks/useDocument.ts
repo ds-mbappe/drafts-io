@@ -74,6 +74,17 @@ const updateDocument = async (documentId: String, formData?: Object) => {
   return res.json();
 }
 
+const deleteDocument = async (documentId: String) => {
+  const res = await fetch(`/api/document/${documentId}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+  
+  if (!res.ok) throw new Error('Failed to delete document');
+
+  return res.json();
+}
+
 const useDocument = (documentId: string | null) => {
   const shouldFetch = !!documentId;
 
@@ -146,4 +157,5 @@ export {
   useLibraryDocuments,
   useDocumentLikes,
   toggleDocumentLike,
+  deleteDocument,
 }

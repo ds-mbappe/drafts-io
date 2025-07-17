@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react'
+import React, { memo, useCallback, useContext, useState } from 'react'
 import { Modal, ModalBody, ModalContent, ModalHeader, ModalFooter, Button, Input, Image, useDisclosure } from "@heroui/react"
 import { errorToast, infoToast, successToast } from '@/actions/showToast';
 import { CloudUploadIcon } from 'lucide-react';
@@ -82,7 +82,7 @@ const ModalDraftDetails = ({ doc, characterCount }: {
     if (response?.success) {
       clearLocalStorageKey(EDITOR_LOCAL_STORAGE_KEY);
 
-      successToast("Document successfully created !");
+      successToast("Draft successfully created !");
 
       router.push(`/app/${documentID}`);
     } else {

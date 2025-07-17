@@ -2,16 +2,15 @@
 
 import React, { memo, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useParams } from 'next/navigation'
-import { Avatar, Badge, Button, useDisclosure } from '@heroui/react';
+import { Avatar, Button, useDisclosure } from '@heroui/react';
 import { toggleDocumentLike, updateDocument, useDocument, useDocumentLikes } from '@/hooks/useDocument';
-import { CloudUploadIcon, HeartIcon } from 'lucide-react';
+import { CloudUploadIcon } from 'lucide-react';
 import { NextSessionContext } from '@/contexts/SessionContext';
 import { useDebouncedCallback } from 'use-debounce';
 import { errorToast, successToast } from '@/actions/showToast';
 import BlockEditor from '@/components/editor';
 import moment from 'moment';
 import { useDropzone } from 'react-dropzone';
-import { Icon } from '@/components/ui/Icon'
 import { Editor } from '@tiptap/react';
 import ModalValidation from '@/components/pannels/ModalValidation';
 import { uploadFileToCloudinary } from '@/app/_helpers/cloudinary';
@@ -22,6 +21,7 @@ import { useComments } from '@/hooks/useComments';
 import CommentCard from '@/components/card/CommentCard';
 import { CommentCardProps } from '@/lib/types';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
+import DraftToolbar from '@/components/toolbar/DraftToolbar';
 
 export default function Page() {
   const params = useParams();
@@ -194,41 +194,17 @@ export default function Page() {
   return (
     <div className="w-full h-full flex flex-col z-50 bg-background relative">
       <div className="w-full flex flex-col gap-5 pb-10">
-        <div className="w-full h-16 flex mx-auto px-5 md:!px-20 py-2 items-center justify-between border-y border-divider sticky top-0 z-10 bg-background">
-          <div className="w-full flex items-center gap-3 flex-1">
-            <Badge color="danger" isInvisible={!likeCount} content={likeCount} size="md" shape="circle">
-              <Button isIconOnly size={"sm"} variant={"light"} onPress={onToggleLike}>
-                <HeartIcon fill={hasLiked ? "#006FEE" : "none"} strokeWidth={hasLiked ? 0 : undefined} className="text-foreground-500 transition-all duration-500" />
-              </Button>
-            </Badge>
-
-            <Button isIconOnly size={"sm"} variant={"light"} onPress={() => setDrawerOpened(!drawerOpened)}>
-              <Icon name="MessageCircleMore" className={drawerOpened ? 'text-primary-500' : "text-foreground-500"} />
-            </Button>
-          </div>
-
-          <div className="flex items-center gap-1">
-            {isUserTheDraftAuthor &&
-              <MemoButton variant="light" size="sm" onPress={() => setIsEditMode(!isEditMode)} color="default" isIconOnly>
-                <Icon name={isEditMode ? 'Eye' : 'Pencil'} className="text-foreground-500" />
-              </MemoButton>
-            }
-
-            <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
-              <Icon name="Bookmark" className="text-foreground-500" />
-            </MemoButton>
-
-            <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
-              <Icon name="Share" className="text-foreground-500" />
-            </MemoButton>
-
-            {isUserTheDraftAuthor &&
-              <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
-                <Icon name="Trash2" className="text-danger" />
-              </MemoButton>
-            }
-          </div>
-        </div>
+        <DraftToolbar
+          hasLiked={hasLiked}
+          likeCount={likeCount}
+          documentId={documentId}
+          isEditMode={isEditMode}
+          drawerOpened={drawerOpened}
+          onToggleLike={onToggleLike}
+          isUserTheDraftAuthor={isUserTheDraftAuthor}
+          setIsEditMode={() => setIsEditMode(!isEditMode)}
+          setDrawerOpened={() => setDrawerOpened(!drawerOpened)}
+        />
 
         <div  className="w-full flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto px-4 md:px-0">
           <div className="w-full flex items-center gap-3 mx-auto">

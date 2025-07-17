@@ -1,11 +1,10 @@
-import { Button, Link, HeroUIProvider } from "@heroui/react";
 import Navbar from "@/components/navigation/Navbar";
-import { SquarePenIcon } from "lucide-react";
+import { Button, Link, HeroUIProvider } from "@heroui/react";
 
 export default function Home() {
   return (
     <HeroUIProvider>
-      <main className="flex h-[100dvh] flex-col bg-content1">
+      <main className="flex flex-col bg-content1">
         <Navbar />
         
         <section className="bg-content1">

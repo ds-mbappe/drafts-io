@@ -11,13 +11,13 @@ import ClientOnly from "./ClientOnly";
 
 export const metadata: Metadata = {
   title: "Drafts App",
-  description: "Unleash your creativity with our powerful rich text editor. Effortlessly craft, share, and explore captivating documents. Make your content public to inspire and connect with a global audience. Discover a world where your ideas reach everyone, everywhere.",
+  description: "Unleash your creativity with our powerful rich text editor. Effortlessly craft, share, and explore captivating drafts. Make your content public to inspire and connect with a global audience. Discover a world where your ideas reach everyone, everywhere.",
   applicationName: "Drafts App",
   referrer: "origin-when-cross-origin",
   authors: [{ name: "Daniel Stéphane" }],
   creator: "Daniel Stéphane",
   publisher: "Daniel Stéphane",
-  keywords: ["Document", "Text Editor", "Creative"],
+  keywords: ["Document", "Text Editor", "Creative", "Draft"],
   robots: {
     index: true,
     googleBot: {

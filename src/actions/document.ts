@@ -33,13 +33,4 @@ const getDocument = async (documentId: String) => {
   return res;
 }
 
-const deleteDocument = async (documentId: String) => {
-  const res = await fetch(`/api/document/${documentId}`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-  })
-
-  return res;
-}
-
-export { createDocument, getDocument, deleteDocument }
+export { createDocument, getDocument }
