@@ -71,7 +71,7 @@ export default function SignInPage() {
   }
 
   return (
-    <main className="flex h-[100dvh] flex-col items-center justify-center gap-5">
+    <main className="flex min-h-[100dvh] flex-col items-center justify-center gap-5 overflow-y-auto">
       <div className="w-[350px] sm:w-full max-w-[400px] flex flex-col p-6 gap-6 bg-content1 border border-divider rounded-2xl">
         <div className="flex flex-col gap-6">
           {/* Sign up intro */}

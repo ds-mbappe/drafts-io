@@ -12,11 +12,13 @@ import { search } from "@/actions/globalSearch";
 import { useDebouncedCallback } from "use-debounce";
 import UserItemInList from "./UserItemInList";
 import DocumentItemInList from "./DocumentItemInList";
+import { useMobile } from "@/hooks/useMobile";
 
 const NavbarApp = ({ user }: { user: any }) => {
   const router = useRouter();
   const pathname = usePathname()
   const { theme, setTheme } = useTheme();
+
   const [mounted, setMounted] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -24,6 +26,7 @@ const NavbarApp = ({ user }: { user: any }) => {
   const [searchResults, setSearchResults] = useState<any>({});
   const [isRotatingDark, setIsRotatingDark] = useState(false);
   const [isRotatingLight, setIsRotatingLight] = useState(false);
+
   const { isOpen: isOpenSearch, onOpenChange: onOpenChangeSearch } = useDisclosure();
   const { isOpen: isOpenProfile, onOpenChange: onOpenChangeProfile } = useDisclosure();
 
@@ -249,7 +252,14 @@ const NavbarApp = ({ user }: { user: any }) => {
         dialogOpen={isOpenProfile}
       />
 
-      <Modal placement="center" size="xl" hideCloseButton isOpen={isOpenSearch} scrollBehavior="inside" onOpenChange={onOpenChangeSearch}>
+      <Modal
+        size="xl"
+        hideCloseButton
+        placement="center"
+        isOpen={isOpenSearch}
+        scrollBehavior="inside"
+        onOpenChange={onOpenChangeSearch}
+      >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-3 p-3">
             <Input

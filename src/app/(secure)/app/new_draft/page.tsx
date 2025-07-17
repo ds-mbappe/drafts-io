@@ -12,7 +12,7 @@ export default function Page() {
   });
 
   return (
-    <div className="w-full h-[calc(100dvh-65px)] flex md:py-10 z-50 bg-background relative">
+    <div className="w-full flex flex-col h-[calc(100dvh-65px)] md:py-10 z-50 bg-background relative">
       <BlockEditor
         editable
         autoFocus

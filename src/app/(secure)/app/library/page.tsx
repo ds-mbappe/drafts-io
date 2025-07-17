@@ -15,7 +15,7 @@ const Library = () => {
 
   return (
 
-    <div className="w-full h-[calc(100dvh-65px)] flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto relative py-10 px-5">
+    <div className="w-full flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto relative py-10 px-5">
       <p className="text-sm font-normal text-foreground-500">
         {`This is the list of all the drafts you have created, wheter you published them or not. You can manage them (edit, publish, delete) right from here.`}
       </p>
@@ -26,7 +26,7 @@ const Library = () => {
         </div>:
         <>
           { documents?.length ?
-            <div className="w-full flex flex-wrap gap-5 pb-10">
+            <div className="w-full grid grid-cols-2 gap-5 pb-10">
               {
                 documents?.map((document: any, index: number) => {
                   return <DocumentCardInLibrary key={index} document={document} />

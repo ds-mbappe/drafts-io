@@ -8,6 +8,7 @@ import { EditorContent } from "@tiptap/react";
 import EditorToolbar from "./toolbars/EditorToolbar";
 import { NextSessionContext } from '@/contexts/SessionContext';
 import CommentBubble from '../pannels/CommentBubble';
+import { cn } from '@heroui/theme';
 
 const BlockEditor = forwardRef(({
   doc,
@@ -95,8 +96,14 @@ const BlockEditor = forwardRef(({
   if (!editor) return
 
   return (
-    <div className="w-full flex gap-5 relative justify-center">
-      <div ref={menuContainerRef} className="w-full max-w-[768px] 2xl:max-w-[1024px] relative flex flex-col bg-background md:rounded-lg z-[1] md:border md:border-divider overflow-hidden">
+    <div className={cn("w-full flex gap-5 relative justify-center", isDraft ? "h-full" : "")}>
+      <div
+        ref={menuContainerRef}
+        className={cn(
+          "w-full max-w-[768px] 2xl:max-w-[1024px] relative flex flex-col bg-background md:rounded-lg z-[1] md:border md:border-divider",
+          isDraft ? "overflow-y-auto" : "overflow-hidden"
+        )}
+      >
         {/* Fixed Top Bar */}
         {(isDraft || canEditDraft) &&
           <EditorToolbar editor={editor} />

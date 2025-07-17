@@ -10,6 +10,7 @@ import { createDocument } from '@/actions/document';
 import { clearLocalStorageKey } from '@/app/_helpers/storage';
 import { uploadFileToCloudinary } from '@/app/_helpers/cloudinary';
 import { useRouter } from 'next/navigation';
+import { useMobile } from '@/hooks/useMobile';
 
 const ModalDraftDetails = ({ doc, characterCount }: {
   doc?: any,
@@ -29,6 +30,7 @@ const ModalDraftDetails = ({ doc, characterCount }: {
     autoFocus: false,
     debouncedUpdates: () => {}
   });
+  const isLargeScreen = useMobile();
   const { isOpen, onOpenChange } = useDisclosure();
   const { session } = useContext(NextSessionContext)
   const user = session?.user
@@ -117,7 +119,14 @@ const ModalDraftDetails = ({ doc, characterCount }: {
         {"Create Draft"}
       </MemoButton>
 
-      <Modal hideCloseButton scrollBehavior="inside" isOpen={isOpen} placement="center" size="3xl" onOpenChange={onOpenChange}>
+      <Modal
+        hideCloseButton
+        isOpen={isOpen}
+        placement="center"
+        scrollBehavior="inside"
+        size={isLargeScreen ? "3xl" : "full"}
+        onOpenChange={onOpenChange}
+      >
         <ModalContent>
           {(onCloseCreateDraft) => (
             <>

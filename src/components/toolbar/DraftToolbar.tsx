@@ -53,7 +53,7 @@ const DraftToolbar = ({
   }
 
   return (
-    <div className="w-full h-16 flex mx-auto px-6 py-2 items-center justify-between border-y border-divider sticky top-0 z-10 bg-background">
+    <div className="w-full h-16 flex mx-auto px-6 py-2 items-center justify-between border-y border-divider fixed top-[65px] z-[2] bg-content1">
       <div className="w-full flex items-center gap-3 flex-1">
         <Badge color="danger" isInvisible={!likeCount} content={likeCount} size="md" shape="circle">
           <Button isIconOnly size={"sm"} variant={"light"} onPress={onToggleLike}>

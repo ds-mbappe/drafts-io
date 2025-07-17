@@ -192,21 +192,21 @@ export default function Page() {
   }, [doc.author?.id, userID]);
 
   return (
-    <div className="w-full h-full flex flex-col z-50 bg-background relative">
-      <div className="w-full flex flex-col gap-5 pb-10">
-        <DraftToolbar
-          hasLiked={hasLiked}
-          likeCount={likeCount}
-          documentId={documentId}
-          isEditMode={isEditMode}
-          drawerOpened={drawerOpened}
-          onToggleLike={onToggleLike}
-          isUserTheDraftAuthor={isUserTheDraftAuthor}
-          setIsEditMode={() => setIsEditMode(!isEditMode)}
-          setDrawerOpened={() => setDrawerOpened(!drawerOpened)}
-        />
+    <div className="w-full flex flex-col bg-background relative overflow-y-auto">
+      <DraftToolbar
+        hasLiked={hasLiked}
+        likeCount={likeCount}
+        documentId={documentId}
+        isEditMode={isEditMode}
+        drawerOpened={drawerOpened}
+        onToggleLike={onToggleLike}
+        isUserTheDraftAuthor={isUserTheDraftAuthor}
+        setIsEditMode={() => setIsEditMode(!isEditMode)}
+        setDrawerOpened={() => setDrawerOpened(!drawerOpened)}
+      />
 
-        <div  className="w-full flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto px-4 md:px-0">
+      <div className="w-full flex flex-col flex-1 gap-5 pb-10">
+        <div  className="w-full flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto px-4 pt-[84px] md:px-0">
           <div className="w-full flex items-center gap-3 mx-auto">
             <Avatar
               isBordered
