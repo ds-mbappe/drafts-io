@@ -15,7 +15,13 @@ import { Icon } from '@/components/ui/Icon'
 import { Editor } from '@tiptap/react';
 import ModalValidation from '@/components/pannels/ModalValidation';
 import { uploadFileToCloudinary } from '@/app/_helpers/cloudinary';
-import DrawerComments from '@/components/pannels/DrawerComments';
+// import DrawerComments from '@/components/pannels/DrawerComments';
+import { CustomDrawer } from '@/components/pannels/CustomDrawer';
+import { useMobile } from '@/hooks/useMobile';
+import { useComments } from '@/hooks/useComments';
+import CommentCard from '@/components/card/CommentCard';
+import { CommentCardProps } from '@/lib/types';
+import { useEscapeKey } from '@/hooks/useEscapeKey';
 
 export default function Page() {
   const params = useParams();
@@ -28,15 +34,19 @@ export default function Page() {
     editor: Editor | null,
   }>(null);
 
+  const isLargeScreen = useMobile();
   const { isOpen, onOpenChange } = useDisclosure();
-  const { isOpen: isOpenComments, onOpenChange: onOpenChangeComments } = useDisclosure();
 
   const MemoButton = memo(Button);
+  const [drawerOpened, setDrawerOpened] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   
   const { document, mutate: mutateDoc } = useDocument(documentId);
   const { likeCount, hasLiked, mutate } = useDocumentLikes(documentId, userID);
+  const { comments, mutate: mutateComments } = useComments(documentId);
+
+  useEscapeKey(() => setDrawerOpened(false)), drawerOpened;
 
   const [doc, setDoc] = useState(() => {
     return {
@@ -192,8 +202,8 @@ export default function Page() {
               </Button>
             </Badge>
 
-            <Button isIconOnly size={"sm"} variant={"light"} onPress={onOpenChangeComments}>
-              <Icon name="MessageCircleMore" className={isOpenComments ? 'text-primary-500' : "text-foreground-500"} />
+            <Button isIconOnly size={"sm"} variant={"light"} onPress={() => setDrawerOpened(!drawerOpened)}>
+              <Icon name="MessageCircleMore" className={drawerOpened ? 'text-primary-500' : "text-foreground-500"} />
             </Button>
           </div>
 
@@ -293,12 +303,45 @@ export default function Page() {
           debouncedUpdates={handleDebouncedUpdates}
         />
 
-        <DrawerComments
+        <CustomDrawer
+          open={drawerOpened}
+          title={`Comments (${comments?.length || 0})`}
+          placement={isLargeScreen ? "right" : "bottom" }
+          heightPercent={isLargeScreen ? 0.30 : 0.5}
+          onClose={() => setDrawerOpened(false)}
+        >
+          <div className="w-full flex flex-col flex-1 gap-2 p-4">
+            {
+              comments?.map((comment: CommentCardProps) => {
+                return (
+                  <CommentCard
+                    key={comment.id}
+                    comment={comment}
+                    onRemoveComment={async (comment: CommentCardProps) => {
+                      const editor = editorRef.current?.editor;
+                      const from = comment.from;
+                      const to = comment.to;
+                      
+                      if (editorRef) {
+                        editor?.commands.setTextSelection({ from, to });
+                        editor?.commands.removeComment();
+  
+                        await mutateComments();
+                      }
+                    }}
+                  />
+                )
+              })
+            }
+          </div>
+        </CustomDrawer>
+
+        {/* <DrawerComments
           editorRef={editorRef}
           documentId={documentId}
           isOpen={isOpenComments}
           onOpenChange={onOpenChangeComments}
-        />
+        /> */}
       </div>
 
       {document?.private &&
