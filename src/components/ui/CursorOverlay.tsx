@@ -50,7 +50,7 @@ const CursorOverlay = ({ provider, containerRef }: { provider: WebsocketProvider
           pointerEvents: 'none',
           zIndex: 9999,
           transform: 'translate(-2px, -2px)',
-          transition: 'all 0.1s ease-out',
+          // transition: 'all 0.1s ease-out',
         }}
       >
         <svg
@@ -90,48 +90,13 @@ const CursorOverlay = ({ provider, containerRef }: { provider: WebsocketProvider
     );
   };
 
-  // const useUserCursors = (provider: WebsocketProvider | null) => {
-  //   const [cursors, setCursors] = useState<any[]>([]);
-
-  //   useEffect(() => {
-  //     if (!provider?.awareness) return;
-
-  //     const updateCursors = () => {
-  //       const states = Array.from(provider.awareness.getStates().entries()).filter((state) => Object.keys(state).length > 0);
-  //       const remoteCursors = states
-  //         .filter(([clientId, state]) => {
-  //           return clientId !== provider.awareness.clientID && 
-  //                 state.user && 
-  //                 state.user.mouseX !== undefined && 
-  //                 state.user.mouseY !== undefined;
-  //         })
-  //         .map(([clientId, state]) => ({
-  //           clientId,
-  //           user: state.user,
-  //         }));
-
-  //       setCursors(remoteCursors);
-  //     };
-
-  //     // Listen for awareness changes
-  //     provider.awareness.on('change', updateCursors);
-  //     updateCursors(); // Initial update
-
-  //     return () => {
-  //       provider.awareness.off('change', updateCursors);
-  //     };
-  //   }, [provider]);
-
-  //   return cursors;
-  // };
-
   const [cursors, setCursors] = useState<any[]>([]);
 
   useEffect(() => {
     if (!provider?.awareness) return;
 
     const updateCursors = () => {
-      const states = Array.from(provider.awareness.getStates().entries());
+      const states = Array.from(provider.awareness.getStates().entries()).filter((state) => Object.keys(state).length > 0);
       const remoteCursors = states
         .filter(([clientId, state]) => {
           return clientId !== provider.awareness.clientID && 

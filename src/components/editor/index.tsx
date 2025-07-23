@@ -46,22 +46,22 @@ const BlockEditor = forwardRef(({
   });
   const [provider, setProvider] = useState<WebsocketProvider | null>(null)
 
-  // const getRelativePosition = (event: MouseEvent, containerRef: HTMLElement | null) => {
-  //   if (!containerRef) {
-  //     return { x: event.clientX, y: event.clientY };
-  //   }
+  const getRelativePosition = (event: MouseEvent, containerRef: HTMLElement | null) => {
+    if (!containerRef) {
+      return { x: event.clientX, y: event.clientY };
+    }
 
-  //   const rect = containerRef.getBoundingClientRect();
+    const rect = containerRef.getBoundingClientRect();
     
-  //   return {
-  //     x: event.clientX - rect.left + containerRef.scrollLeft,
-  //     y: event.clientY - rect.top + containerRef.scrollTop,
-  //     containerWidth: rect.width,
-  //     containerHeight: rect.height,
-  //     scrollLeft: containerRef.scrollLeft,
-  //     scrollTop: containerRef.scrollTop
-  //   };
-  // };
+    return {
+      x: event.clientX - rect.left + containerRef.scrollLeft,
+      y: event.clientY - rect.top + containerRef.scrollTop,
+      containerWidth: rect.width,
+      containerHeight: rect.height,
+      scrollLeft: containerRef.scrollLeft,
+      scrollTop: containerRef.scrollTop
+    };
+  };
 
   const { editor } = useBlockEditor({
     provider,
@@ -203,28 +203,34 @@ const BlockEditor = forwardRef(({
       const container = containerRef.current;
 
       if (container) {
-        const rect = container?.getBoundingClientRect();
-        // const relativePos = getRelativePosition(event, containerRef.current);
+        // const rect = container?.getBoundingClientRect();
+        const relativePos = getRelativePosition(event, containerRef.current);
   
-        const relativeX = event.clientX - rect.left + container?.scrollLeft;
-        const relativeY = event.clientY - rect.top + container?.scrollTop;
+        // const relativeX = event.clientX - rect.left + container?.scrollLeft;
+        // const relativeY = event.clientY - rect.top + container?.scrollTop;
   
-        if (event.clientX >= rect.left && 
-          event.clientX <= rect.right && 
-          event.clientY >= rect.top && 
-          event.clientY <= rect.bottom) {
-            provider?.awareness.setLocalStateField('user', {
-              name: `${user.firstname} ${user.lastname}`,
-              color: userColor,
-              relativeX: relativeX,
-              relativeY: relativeY,
-              containerWidth: rect.width,
-              containerHeight: rect.height,
-              scrollLeft: container?.scrollLeft,
-              scrollTop: container?.scrollTop,
-            }
-          );
+        provider?.awareness.setLocalStateField('user', {
+          name: `${user.firstname} ${user.lastname}`,
+          color: userColor,
+          // relativeX: relativeX,
+          // relativeY: relativeY,
+          // containerWidth: rect.width,
+          // containerHeight: rect.height,
+          // scrollLeft: container?.scrollLeft,
+          // scrollTop: container?.scrollTop,
+          relativeX: relativePos.x,
+          relativeY: relativePos.y,
+          containerWidth: relativePos.containerWidth,
+          containerHeight: relativePos.containerHeight,
+          scrollLeft: relativePos?.scrollLeft,
+          scrollTop: relativePos?.scrollTop,
         }
+      );
+        // if (event.clientX >= rect.left && 
+        //   event.clientX <= rect.right && 
+        //   event.clientY >= rect.top && 
+        //   event.clientY <= rect.bottom) {
+        // }
       }
     }
 
