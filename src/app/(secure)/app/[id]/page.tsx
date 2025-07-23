@@ -33,6 +33,7 @@ export default function Page() {
   const editorRef = useRef<{
     editor: Editor | null,
   }>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const isLargeScreen = useMobile();
   const { isOpen, onOpenChange } = useDisclosure();
@@ -205,7 +206,7 @@ export default function Page() {
         setDrawerOpened={() => setDrawerOpened(!drawerOpened)}
       />
 
-      <div className="w-full flex flex-col flex-1 gap-5 pb-10">
+      <div ref={containerRef} className="w-full flex flex-col flex-1 gap-5 pb-10 relative">
         <div  className="w-full flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto px-4 pt-[84px] md:px-0">
           <div className="w-full flex items-center gap-3 mx-auto">
             <Avatar
@@ -276,6 +277,7 @@ export default function Page() {
           ref={editorRef}
           autoFocus={false}
           editable={isEditMode}
+          containerRef={containerRef}
           debouncedUpdates={handleDebouncedUpdates}
         />
 
