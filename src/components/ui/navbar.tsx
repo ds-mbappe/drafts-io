@@ -6,7 +6,7 @@ import { signOut } from "next-auth/react";
 import ProfileModal from "../pannels/ProfileModal";
 import { usePathname, useRouter } from "next/navigation";
 import { MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CircleUserRoundIcon, HomeIcon, BookTextIcon, SearchIcon, InfoIcon } from 'lucide-react';
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, useDisclosure, Input, Kbd, Modal, ModalBody, ModalContent, ModalHeader, Divider } from "@heroui/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, useDisclosure, Input, Kbd, Modal, ModalBody, ModalContent, ModalHeader, Divider, PressEvent } from "@heroui/react";
 import { motion } from "framer-motion";
 import { search } from "@/actions/globalSearch";
 import { useDebouncedCallback } from "use-debounce";
@@ -63,6 +63,11 @@ const NavbarApp = ({ user }: { user: any }) => {
   const closeModalAndClearResults = () => {
     setSearchText("")
     setSearchResults({})
+    onOpenChangeSearch()
+  }
+
+  const openSearchModal = (e: any) => {
+    e.preventDefault()
     onOpenChangeSearch()
   }
 
@@ -125,7 +130,7 @@ const NavbarApp = ({ user }: { user: any }) => {
         </NavbarBrand>
 
         <NavbarContent justify="end">
-          <Button isIconOnly radius="full" variant={"light"} className="md:hidden" onPress={onOpenChangeSearch}>
+          <Button isIconOnly radius="full" variant={"light"} className="md:hidden" onPress={openSearchModal}>
             { <SearchIcon /> }
           </Button>
 

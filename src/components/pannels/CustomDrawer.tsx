@@ -66,7 +66,7 @@ export function CustomDrawer({
 
           {/* Drawer panel */}
           <motion.div
-            className={`fixed flex flex-col z-50 bg-background shadow-xl overflow-hidden ${placementStyles[placement]} ${
+            className={`fixed flex flex-col z-50 bg-content1 shadow-xl overflow-hidden ${placementStyles[placement]} ${
               radiusClasses[placement]
             }`}
             style={{

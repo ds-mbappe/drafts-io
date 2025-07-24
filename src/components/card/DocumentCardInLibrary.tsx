@@ -7,7 +7,7 @@ import { Avatar, Card, CardBody, CardHeader, Image } from "@heroui/react";
 const DocumentCardInLibrary = ({ document }: { document: DocumentCardTypeprops }) => {
   return (
     <Link href={`/app/${document?.id}`}>
-      <Card className="w-full max-w-[200px] h-[200px] md:max-w-[300px] md:h-[300px] border border-divider hover:scale-105 transition-all">
+      <Card className="w-full h-[200px] md:h-[300px] border border-divider hover:scale-105 transition-all">
         <CardHeader className="flex items-center gap-4">
           <div>
             <Avatar
@@ -34,9 +34,10 @@ const DocumentCardInLibrary = ({ document }: { document: DocumentCardTypeprops }
                 alt="Document cover"
                 className="object-cover h-full"
                 src={document?.cover}
-                width={270}
+                // width={270}
                 classNames={{
-                  wrapper: 'h-full'
+                  wrapper: 'w-full !max-w-full h-full',
+                  img: "w-full"
                 }}
               />
             }

@@ -174,7 +174,7 @@ const MenuList = React.forwardRef((props: MenuListProps, ref) => {
                     }`}
                   onClick={createCommandClickHandler(groupIndex, commandIndex)}
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-md border border-divider bg-background dark:bg-foreground">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md border border-divider bg-content1 dark:bg-foreground">
                     <Icon name={command.iconName} className="w-10 h-10" />
                   </div>
                   <div className="flex flex-col">

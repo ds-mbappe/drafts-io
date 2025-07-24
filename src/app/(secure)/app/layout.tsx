@@ -27,7 +27,7 @@ export default function AppLayout(props: { children: React.ReactNode }) {
       <div className="w-full min-h-[100dvh] flex flex-col flex-1 relative bg-content1">
         <NavbarApp user={session?.user} />
 
-        <div className="w-full min-h-[calc(100dvh-65px)] flex flex-col overflow-y-auto">    
+        <div className="w-full max-w-3xl min-h-[calc(100dvh-65px)] mx-auto flex flex-col overflow-y-auto">    
           {props.children}
         </div>
       </div>

@@ -35,14 +35,14 @@ const EditorToolbar = ({
     <Navbar
       isBordered
       height={44}
-      maxWidth={"full"}
+      maxWidth={"2xl"}
       isBlurred={false}
       // className={cn(
       //   "md:rounded-t-lg bottom-0 fixed md:top-0 md:relative h-fit",
       //   documentId ? 'top-[128px]' : 'top-[64px]'
       // )}
       classNames={{
-        wrapper: 'w-full flex justify-normal md:justify-center items-center px-1 gap-0.5 overflow-x-auto hideScrollbar'
+        wrapper: cn("w-full flex justify-normal md:justify-center items-center px-1 gap-0.5 overflow-x-auto hideScrollbar bg-content1", documentId ? "fixed bottom-0" : "")
       }}
     >
       {editor && (

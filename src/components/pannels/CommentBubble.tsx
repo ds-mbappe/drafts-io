@@ -115,7 +115,7 @@ const CommentBubble = ({
           exit={{ opacity: 0, scale: 0.95, y: -4 }}
           initial={{ opacity: 0, scale: 0.95, y: -4 }}
           transition={{ duration: 0.25, ease: 'easeInOut' }}
-          className="bg-background border border-divider shadow rounded-lg flex items-center gap-1.5 px-3 py-1.5"
+          className="bg-content1 border border-divider shadow rounded-lg flex items-center gap-1.5 px-3 py-1.5"
           style={{
             position: 'absolute',
             top: coords.top + window.scrollY - 48,

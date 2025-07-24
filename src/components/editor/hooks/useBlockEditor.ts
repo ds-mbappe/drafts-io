@@ -1,7 +1,7 @@
 import { useEditor } from '@tiptap/react';
 import History from '@tiptap/extension-history';
 import { ExtensionKit } from '../extensions/extension-kit';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { WebsocketProvider } from "y-websocket"
 import * as Y from "yjs"
 import Collaboration from "@tiptap/extension-collaboration"
@@ -21,6 +21,8 @@ export const useBlockEditor = ({
   debouncedUpdates: Function
   provider?: WebsocketProvider | null
 }) => {
+  const lastContentRef = useRef('');
+
   // Build extensions after provider is ready
   const extensions = useMemo(() => {
     if (!provider) return [...ExtensionKit()]
@@ -51,12 +53,22 @@ export const useBlockEditor = ({
     onCreate: ({ editor }) => {
       if (doc?.content) {
         editor.commands.setContent(doc.content)
+
+        lastContentRef.current = editor.getHTML();
       }
     },
     onUpdate: ({ editor }) => {
+      const currentContent = editor.getHTML();
+
+      if (currentContent === lastContentRef.current) {
+        return;
+      }
+
+      lastContentRef.current = currentContent;
+
       const updatedDoc = {
         ...doc,
-        content: editor.getHTML(),
+        content: currentContent,
         updatedAt: new Date().toISOString(),
       }
       debouncedUpdates({
@@ -65,6 +77,14 @@ export const useBlockEditor = ({
       })
     },
   })
+
+  useEffect(() => {
+    if (editor) {
+      lastContentRef.current = editor.getHTML()
+
+      editor.setEditable(editable)
+    }
+  }, [editor, editable])
 
   const characterCount = editor?.storage.characterCount || {
     characters: () => 0,

@@ -2,7 +2,7 @@
 
 import React, { memo, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useParams } from 'next/navigation'
-import { Avatar, Button, useDisclosure } from '@heroui/react';
+import { Avatar, Button, cn, useDisclosure } from '@heroui/react';
 import { toggleDocumentLike, updateDocument, useDocument, useDocumentLikes } from '@/hooks/useDocument';
 import { CloudUploadIcon } from 'lucide-react';
 import { NextSessionContext } from '@/contexts/SessionContext';
@@ -193,24 +193,26 @@ export default function Page() {
   }, [doc.author?.id, userID]);
 
   return (
-    <div className="w-full flex flex-col bg-background relative overflow-y-auto">
-      <DraftToolbar
-        hasLiked={hasLiked}
-        likeCount={likeCount}
-        documentId={documentId}
-        isEditMode={isEditMode}
-        drawerOpened={drawerOpened}
-        onToggleLike={onToggleLike}
-        isUserTheDraftAuthor={isUserTheDraftAuthor}
-        setIsEditMode={() => setIsEditMode(!isEditMode)}
-        setDrawerOpened={() => setDrawerOpened(!drawerOpened)}
-      />
+    <div className="w-full flex flex-col bg-content1 relative overflow-visible">
+      <div className="sticky top-0 z-10">
+        <DraftToolbar
+          hasLiked={hasLiked}
+          likeCount={likeCount}
+          documentId={documentId}
+          isEditMode={isEditMode}
+          drawerOpened={drawerOpened}
+          onToggleLike={onToggleLike}
+          isUserTheDraftAuthor={isUserTheDraftAuthor}
+          setIsEditMode={() => setIsEditMode(!isEditMode)}
+          setDrawerOpened={() => setDrawerOpened(!drawerOpened)}
+        />
+      </div>
 
-      <div ref={containerRef} className="w-full flex flex-col flex-1 gap-5 pb-10 relative">
-        <div  className="w-full flex flex-col gap-5 max-w-[768px] 2xl:max-w-[1024px] mx-auto px-4 pt-[84px] md:px-0">
+      <div ref={containerRef} className={cn("w-full flex flex-col flex-1 gap-5 relative", isEditMode ? "pb-[84px]" : "pb-10")}>
+        <div className="w-full flex flex-col gap-5 mx-auto px-4 pt-10 md:px-0">
           <div className="w-full flex items-center gap-3 mx-auto">
             <Avatar
-              isBordered
+              // isBordered
               as="button"
               color="primary"
               showFallback
@@ -236,12 +238,12 @@ export default function Page() {
 
           <Button
             variant="light"
-            className="w-full h-[350px] md:h-[450px] px-0 border border-divider"
+            className={cn("w-full h-[350px] md:h-[450px] px-0 border border-divider", isEditMode ? "cursor-pointer" : "cursor-default")}
             onPress={(isUserTheDraftAuthor && isEditMode) ? open : () => {}}
           >
             <div
               {...getRootProps()}
-              className="w-full flex justify-center items-center max-w-3xl mx-auto relative px-0"
+              className="w-full flex justify-center items-center mx-auto relative px-0"
             >
               <input {...getInputProps()} />
 
@@ -255,7 +257,7 @@ export default function Page() {
               }
 
               {!doc?.cover &&
-                <div className="w-full h-[350px] md:h-[450px] rounded-[12px] gap-1 max-w-3xl flex flex-col justify-center items-center bg-cover bg-center overflow-hidden border border-divider">
+                <div className="w-full h-[350px] md:h-[450px] rounded-[12px] gap-1 flex flex-col justify-center items-center bg-cover bg-center overflow-hidden border border-divider">
                   <CloudUploadIcon
                     width={80}
                     height={80}

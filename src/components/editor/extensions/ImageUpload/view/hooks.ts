@@ -122,7 +122,7 @@ export const useDropZone = ({ uploader }: { uploader: (file: File) => void }) =>
 
 export const useCanUndo = (editor: Editor | null) => {
   const [canUndo, setCanUndo] = useState(false);
-
+  
   useEffect(() => {
     if (!editor) {
       setCanUndo(false);
@@ -130,7 +130,13 @@ export const useCanUndo = (editor: Editor | null) => {
     }
 
     const updateCanUndo = () => {
-      setCanUndo(editor.can().undo());
+      // Check if the undo method exists before calling it
+      const canChain = editor.can();
+      if (canChain && typeof canChain.undo === 'function') {
+        setCanUndo(canChain.undo());
+      } else {
+        setCanUndo(false);
+      }
     };
 
     updateCanUndo();
@@ -154,7 +160,13 @@ export const useCanRedo = (editor: Editor | null) => {
     }
 
     const updateCanRedo = () => {
-      setCanRedo(editor.can().redo());
+      // Check if the redo method exists before calling it
+      const canChain = editor.can();
+      if (canChain && typeof canChain.redo === 'function') {
+        setCanRedo(canChain.redo());
+      } else {
+        setCanRedo(false);
+      }
     };
 
     updateCanRedo();

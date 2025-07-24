@@ -133,7 +133,7 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
 
   return (
     <NodeViewWrapper data-drag-handle>
-      <div className={"flex flex-col gap-2 my-2 rounded bg-background overflow-hidden"}>
+      <div className={"flex flex-col gap-2 my-2 rounded bg-content1 overflow-hidden"}>
         <Textarea
           id="ai-input"
           ref={inputRef}

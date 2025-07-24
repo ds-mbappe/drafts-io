@@ -77,7 +77,7 @@ html, body {
 }
 
 .bubble-menu {
-  @apply w-full bg-background rounded-xl shadow flex items-center p-1 gap-0.5
+  @apply w-full bg-content1 rounded-xl shadow flex items-center p-1 gap-0.5
 }
 
 .tippy-box {
