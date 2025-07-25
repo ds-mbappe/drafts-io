@@ -115,14 +115,6 @@ const NavbarApp = ({ user }: { user: any }) => {
     }
   }, [searchText])
 
-  // useEffect(() => {
-  //   setMounted(true)
-  // }, [])
-
-  // if (!mounted) {
-  //   return null
-  // }
-
   return (
     <>
       <Navbar isBordered maxWidth={"full"} className="bg-content1">

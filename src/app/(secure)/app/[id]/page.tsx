@@ -22,6 +22,7 @@ import CommentCard from '@/components/card/CommentCard';
 import { CommentCardProps } from '@/lib/types';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
 import DraftToolbar from '@/components/toolbar/DraftToolbar';
+import ScrollToTop from '@/components/ui/ScrollToTop';
 
 export default function Page() {
   const params = useParams();
@@ -209,7 +210,7 @@ export default function Page() {
       </div>
 
       <div ref={containerRef} className={cn("w-full flex flex-col flex-1 gap-5 relative", isEditMode ? "pb-[84px]" : "pb-10")}>
-        <div className="w-full flex flex-col gap-5 mx-auto px-4 pt-10 md:px-0">
+        <div className="w-full flex flex-col gap-5 mx-auto p-4 md:px-0">
           <div className="w-full flex items-center gap-3 mx-auto">
             <Avatar
               size="sm"
@@ -330,7 +331,7 @@ export default function Page() {
         <MemoButton
           color="primary"
           title="Publish draft"
-          className="fixed bottom-10 right-10 z-20"
+          className="fixed bottom-5 right-5 z-20"
           onPress={onOpenChange}
         >
           {"Publish"}

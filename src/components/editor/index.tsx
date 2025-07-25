@@ -12,7 +12,6 @@ import { cn } from '@heroui/theme';
 import * as Y from "yjs"
 import { WebsocketProvider } from 'y-websocket';
 import { getRandomHexColor } from '@/lib/utils';
-import CursorOverlay from '../ui/CursorOverlay';
 
 const BlockEditor = forwardRef(({
   doc,
@@ -311,7 +310,7 @@ const BlockEditor = forwardRef(({
                 editor={editor}
                 spellCheck="false"
                 key={"page-editor"}
-                className="tiptap editableClass h-full"
+                className={cn("tiptap h-full", (!localDoc?.id || editable) && "editableClass")}
               />
             </>
           )}
