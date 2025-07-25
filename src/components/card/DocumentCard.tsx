@@ -42,14 +42,16 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
 
           <div className="flex flex-1 flex-col gap-2">
             {/* User */}
-            <div className="flex gap-3 items-center">
+            <div className="flex gap-3 items-start">
               <div>
                 <Avatar
-                  isBordered
                   color="primary"
                   className="w-6 h-6"
-                  name={document?.author?.firstname?.split("")?.[0]?.toUpperCase()}
+                  classNames={{
+                    base: "border"
+                  }}
                   src={document?.author?.avatar}
+                  name={document?.author?.firstname?.split("")?.[0]?.toUpperCase()}
                 />
               </div>
 

@@ -212,13 +212,15 @@ export default function Page() {
         <div className="w-full flex flex-col gap-5 mx-auto px-4 pt-10 md:px-0">
           <div className="w-full flex items-center gap-3 mx-auto">
             <Avatar
-              // isBordered
-              as="button"
-              color="primary"
-              showFallback
-              name={doc?.author?.firstname?.split("")?.[0]?.toUpperCase()}
               size="sm"
+              as="button"
+              showFallback
+              color="primary"
+              classNames={{
+                base: "border"
+              }}
               src={doc?.author?.avatar}
+              name={doc?.author?.firstname?.split("")?.[0]?.toUpperCase()}
             />
 
             <div className="flex flex-col items-start">

@@ -37,3 +37,13 @@ export type BaseUser = {
   firstname: string,
   lastname: string,
 }
+
+export type EditUser = {
+  firstname?: string,
+  lastname?: string,
+  email?: string,
+  phone?: string,
+  avatar?: string,
+  followers?: number,
+  following?: number,
+}

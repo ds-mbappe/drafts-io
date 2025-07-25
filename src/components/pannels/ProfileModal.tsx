@@ -7,6 +7,7 @@ import { errorToast, successToast } from '@/actions/showToast';
 import { Avatar, Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
 import { useDebouncedCallback } from 'use-debounce';
 import { NextSessionContext } from '@/contexts/SessionContext';
+import { EditUser } from '@/lib/types';
 
 const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
   changeDialogOpenState: (isOpen: boolean) => void | undefined,
@@ -14,7 +15,6 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
 }) => {
   const [editPersonalInfo, setEditPersonalInfo] = useState(false);
   const { update } = useSession();
-  const nextSession = useContext(NextSessionContext)
   const { session, setSession } = useContext(NextSessionContext)
   const [loading, setLoading] = useState(false);
   const [isPictureLoading, setPictureLoading] = useState(false);
@@ -22,7 +22,7 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
     followers: 0,
     following: 0,
   })
-  const [editUser, setEditUser] = useState<any>({
+  const [editUser, setEditUser] = useState<EditUser>({
     firstname: "",
     lastname: "",
     email: "",
@@ -37,10 +37,10 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
 
     let formData = {
       id: session?.user?.id,
-      firstname: editUser?.firstname,
-      lastname: editUser?.lastname,
-      email: editUser?.email,
-      phone: editUser?.phone
+      firstname: editUser.firstname,
+      lastname: editUser.lastname,
+      email: editUser.email,
+      phone: editUser.phone
     }
 
     const response = await fetch(`/api/user/${session?.user?.id}`, {
@@ -166,23 +166,23 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
               <div className="w-full flex items-center gap-4">
                 {/* Avatar + Edit */}
                 <div className="w-[60px] h-[60px] flex relative">
-                  <Avatar
-                    src={editUser?.avatar}
-                    showFallback
-                    name={editUser?.firsname?.split('')?.[0]}
-                    className="w-[60px] h-[60px] text-large"
-                  />
-
                   <Button
-                    variant="solid"
-                    radius="full"
-                    size="sm"
-                    isLoading={isPictureLoading}
                     isIconOnly
-                    className="absolute bottom-0 -right-2"
+                    radius="full"
+                    isLoading={isPictureLoading}
+                    className="w-[60px] h-[60px]"
+                    title="Click to change your profile picture"
                     onPress={onOpenPicker}
                   >
-                    <PencilIcon size={16} className="text-foreground-500" />
+                    <Avatar
+                      showFallback
+                      classNames={{
+                        base: "border"
+                      }}
+                      src={editUser.avatar}
+                      name={editUser.firstname?.split('')?.[0]}
+                      className="w-[60px] h-[60px] text-large"
+                    />
                   </Button>
 
                   <input
@@ -209,12 +209,12 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
               {/* Following & Followers */}
               <div className="flex items-center gap-5">
                 <div className="flex items-center gap-2">
-                  <p className="text font-medium">{editUser?.followers}</p>
+                  <p className="text font-medium">{editUser.followers}</p>
                   <p className="text-sm font-medium text-foreground-500">{`Followers`}</p>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <p className="text font-medium">{editUser?.following}</p>
+                  <p className="text font-medium">{editUser.following}</p>
                   <p className="text-sm font-medium text-foreground-500">{`Following`}</p>
                 </div>
               </div>
@@ -245,16 +245,16 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
                 {/* Firstname */}
                 <div className="flex flex-col gap-1">
                   <p className="text-sm font-normal text-foreground-500">
-                    {'First Name'}
+                    {'Firstname'}
                   </p>
 
                   <Input
-                    variant='bordered'
                     id="firstname"
-                    isDisabled={!editPersonalInfo}
-                    autoComplete="new-password"
+                    variant='bordered'
                     placeholder="Firstname"
-                    value={editUser?.firstname}
+                    autoComplete="new-password"
+                    value={editUser.firstname ?? undefined}
+                    isDisabled={!editPersonalInfo}
                     onValueChange={(value) => setEditUser({ ...editUser, firstname: value })}
                   />
                 </div>
@@ -262,16 +262,16 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
                 {/* Lastname */}
                 <div className="flex flex-col gap-1">
                   <p className="text-sm font-normal text-foreground-500">
-                    {'Last Name'}
+                    {'Lastname'}
                   </p>
 
                   <Input
-                    variant='bordered'
                     id="lastname"
-                    isDisabled={!editPersonalInfo}
-                    autoComplete="new-password"
+                    variant='bordered'
                     placeholder="Lastname"
-                    value={editUser?.lastname}
+                    value={editUser.lastname ?? undefined}
+                    autoComplete="new-password"
+                    isDisabled={!editPersonalInfo}
                     onValueChange={(value) => setEditUser({ ...editUser, lastname: value })}
                   />
                 </div>
@@ -283,14 +283,14 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
                   </p>
 
                   <Input
-                    variant='bordered'
                     id="email"
-                    type="email"
                     isDisabled
-                    autoComplete="new-password"
+                    type="email"
+                    variant='bordered'
                     placeholder="Email"
-                    value={editUser?.email}
-                  // onValueChange={(value) => setEditUser({...editUser, email: value})}
+                    value={editUser.email ?? undefined}
+                    autoComplete="new-password"
+                    // onValueChange={(value) => setEditUser({...editUser, email: value})}
                   />
                 </div>
 
@@ -301,12 +301,12 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
                   </p>
 
                   <Input
-                    variant='bordered'
                     id="phone"
-                    isDisabled={!editPersonalInfo}
-                    autoComplete="new-password"
+                    variant='bordered'
+                    value={editUser.phone ?? undefined}
                     placeholder="Phone number"
-                    value={editUser?.phone}
+                    autoComplete="new-password"
+                    isDisabled={!editPersonalInfo}
                     onValueChange={(value) => setEditUser({ ...editUser, phone: value })}
                   />
                 </div>

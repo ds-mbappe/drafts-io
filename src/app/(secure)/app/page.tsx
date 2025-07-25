@@ -15,7 +15,7 @@ export default function App() {
 
   return (
     <div className="w-full flex flex-col overflow-y-auto relative">
-      <div className="w-full mx-auto relative flex cursor-text flex-col z-[1] flex-1 px-5 2xl:!px-0 pt-10 pb-5">
+      <div className="w-full mx-auto relative flex cursor-text flex-col z-[1] flex-1 px-4 pt-10 pb-5">
         <Tabs
           key="tabs"
           color="primary"

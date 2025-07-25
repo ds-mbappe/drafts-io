@@ -5,9 +5,8 @@ import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
 import ProfileModal from "../pannels/ProfileModal";
 import { usePathname, useRouter } from "next/navigation";
-import { MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CircleUserRoundIcon, HomeIcon, BookTextIcon, SearchIcon, InfoIcon } from 'lucide-react';
+import { MoonIcon, SunIcon, SettingsIcon, CircleHelpIcon, LogOutIcon, CircleUserRoundIcon, HomeIcon, BookTextIcon, SearchIcon, InfoIcon, LaptopIcon } from 'lucide-react';
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Dropdown, DropdownTrigger, Avatar, DropdownMenu, DropdownItem, useDisclosure, Input, Kbd, Modal, ModalBody, ModalContent, ModalHeader, Divider, PressEvent } from "@heroui/react";
-import { motion } from "framer-motion";
 import { search } from "@/actions/globalSearch";
 import { useDebouncedCallback } from "use-debounce";
 import UserItemInList from "./UserItemInList";
@@ -17,15 +16,13 @@ import { useMobile } from "@/hooks/useMobile";
 const NavbarApp = ({ user }: { user: any }) => {
   const router = useRouter();
   const pathname = usePathname()
+  const isLargeScreen = useMobile();
   const { theme, setTheme } = useTheme();
 
-  const [mounted, setMounted] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [isUsername, setIsUsername] = useState(false);
   const [searchResults, setSearchResults] = useState<any>({});
-  const [isRotatingDark, setIsRotatingDark] = useState(false);
-  const [isRotatingLight, setIsRotatingLight] = useState(false);
 
   const { isOpen: isOpenSearch, onOpenChange: onOpenChangeSearch } = useDisclosure();
   const { isOpen: isOpenProfile, onOpenChange: onOpenChangeProfile } = useDisclosure();
@@ -36,13 +33,13 @@ const NavbarApp = ({ user }: { user: any }) => {
     });
   }
 
-  const switchTheme = (value: string) => {    
-    if (value === 'dark' && (theme === 'light' || theme === 'system')) {
-      setIsRotatingDark(!isRotatingDark)
+  const switchTheme = (value: string) => {  
+    if (value === 'dark' && theme !== 'dark') {
       setTheme('dark')
-    } else if (value === 'light' && (theme === 'dark' || theme === 'system')) {
-      setIsRotatingLight(!isRotatingLight)
+    } else if (value === 'light' && theme !== 'light') {
       setTheme('light')
+    } else if (value === 'system' && theme !== 'system') {
+      setTheme('system')
     }
   }
 
@@ -66,11 +63,6 @@ const NavbarApp = ({ user }: { user: any }) => {
     onOpenChangeSearch()
   }
 
-  const openSearchModal = (e: any) => {
-    e.preventDefault()
-    onOpenChangeSearch()
-  }
-
   const searchFunction = useDebouncedCallback(async (value: string) => {
     if (value) {
       const res = await search(value)
@@ -84,10 +76,24 @@ const NavbarApp = ({ user }: { user: any }) => {
     }
     setIsTyping(false)
   }, 300)
+
+  const activeThemeIcon = () => {
+    switch (theme) {
+      case 'light':
+        return <SunIcon />
+      case 'dark':
+        return <MoonIcon />
+      case 'system':
+        return <LaptopIcon />
+      default:
+        break;
+    }
+  }
   
   useEffect(() => {
     const handleKeyEvent = (e: KeyboardEvent): void => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
         onOpenChangeSearch()
       }
     }
@@ -109,37 +115,32 @@ const NavbarApp = ({ user }: { user: any }) => {
     }
   }, [searchText])
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  // useEffect(() => {
+  //   setMounted(true)
+  // }, [])
 
-  if (!mounted) {
-    return null
-  }
+  // if (!mounted) {
+  //   return null
+  // }
 
   return (
     <>
       <Navbar isBordered maxWidth={"full"} className="bg-content1">
         <NavbarBrand className="flex gap-2">
           {/* Home button */}
-          {pathname !== '/app' &&
-            <Button isIconOnly size={"sm"} variant={"light"} onPress={goToHome}>
-              { <HomeIcon /> }
-            </Button>
-          }
+          <Button isIconOnly size={"sm"} variant={"light"} onPress={goToHome}>
+            { <HomeIcon /> }
+          </Button>
         </NavbarBrand>
 
-        <NavbarContent justify="end">
-          <Button isIconOnly radius="full" variant={"light"} className="md:hidden" onPress={openSearchModal}>
-            { <SearchIcon /> }
-          </Button>
+        {/* Nav Links */}
+        {/* <NavbarContent justify="center">
+          Hellooooo
+        </NavbarContent> */}
 
-          <Button
-            radius="full"
-            variant="flat"
-            className="hidden md:flex"
-            onPress={onOpenChangeSearch}
-          >
+        <NavbarContent justify="end">
+          <Button isIconOnly={!isLargeScreen} radius="full" variant={isLargeScreen ? "flat" : "light"} onPress={onOpenChangeSearch}>
+            {isLargeScreen ?
               <div className="flex justify-between w-[250px]">
                 <div className="flex items-center gap-1">
                   <SearchIcon />
@@ -148,115 +149,121 @@ const NavbarApp = ({ user }: { user: any }) => {
 
                 <Kbd keys={["command"]}>K</Kbd>
               </div>
+              : <SearchIcon /> 
+            }
           </Button>
 
-          <NavbarItem>
-            <Dropdown placement="bottom-end" closeOnSelect={false}>
-              <DropdownTrigger>
-                <Button id="trigger-theme" isIconOnly variant="light" color="default" radius="full">
-                  {theme === 'light' ? <SunIcon /> : <MoonIcon />}
-                </Button>
-              </DropdownTrigger>
+          {/* Theme Switcher */}
+          <Dropdown placement="bottom-end" closeOnSelect={false}>
+            <DropdownTrigger>
+              <Button id="trigger-theme" isIconOnly variant="light" color="default" radius="full">
+                {activeThemeIcon()}
+              </Button>
+            </DropdownTrigger>
 
-              <DropdownMenu aria-label="Theme switcher" variant="flat">
-                <DropdownItem
-                  key="light_theme"
-                  startContent={
-                    <motion.div animate={{ rotate: isRotatingLight ? 360 : 0 }} transition={{ ease: 'easeInOut', duration: 0.75 }}>
-                      <SunIcon />
-                    </motion.div>
-                  }
-                  onPress={() => switchTheme('light')}
-                >
-                  {'Light'}
-                </DropdownItem>
+            <DropdownMenu aria-label="Theme switcher" variant="flat">
+              <DropdownItem
+                key="light_theme"
+                startContent={
+                  <SunIcon />
+                }
+                onPress={() => switchTheme('light')}
+              >
+                {'Light'}
+              </DropdownItem>
 
-                <DropdownItem
-                  key="dark_theme"
-                  startContent={
-                    <motion.div animate={{ rotate: isRotatingDark ? 360 : 0 }} transition={{ ease: 'easeInOut', duration: 0.75 }}>
-                      <MoonIcon />
-                    </motion.div>
-                  }
-                  onPress={() => switchTheme('dark')}
-                >
-                  {'Dark'}
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </NavbarItem>
+              <DropdownItem
+                key="dark_theme"
+                startContent={
+                  <MoonIcon />
+                }
+                onPress={() => switchTheme('dark')}
+              >
+                {'Dark'}
+              </DropdownItem>
+
+              <DropdownItem
+                key="system_theme"
+                startContent={
+                  <LaptopIcon />
+                }
+                onPress={() => switchTheme('system')}
+              >
+                {'System'}
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
 
           {/* Avatar */}
-          <NavbarItem>
-            <Dropdown placement="bottom-end">
-              <DropdownTrigger>
-                <Avatar
-                  isBordered
-                  as="button"
-                  color="primary"
-                  showFallback
-                  name={user?.email?.split("")?.[0]?.toUpperCase()}
-                  size="sm"
-                  src={user?.avatar}
-                />
-              </DropdownTrigger>
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              <Avatar
+                isBordered
+                as="button"
+                color="primary"
+                showFallback
+                name={user?.email?.split("")?.[0]?.toUpperCase()}
+                size="sm"
+                src={user?.avatar}
+              />
+            </DropdownTrigger>
 
-              <DropdownMenu aria-label="Profile Actions" variant="flat">
-                <DropdownItem key="email" className="h-14 gap-2" textValue={`signed_in_as`}>
-                  <p>{'Signed in as'}</p>
-                  <p className="font-semibold">{`${user?.firstname} ${user?.lastname}`}</p>
-                </DropdownItem>
+            <DropdownMenu aria-label="Profile Actions" variant="flat">
+              <DropdownItem key="email" className="h-14 gap-2" textValue={`signed_in_as`}>
+                <p>{'Signed in as'}</p>
+                <p className="font-semibold">{`${user?.firstname} ${user?.lastname}`}</p>
+              </DropdownItem>
 
-                <DropdownItem
-                  key="profile"
-                  startContent={<CircleUserRoundIcon />}
-                  onPress={onOpenChangeProfile}
-                >
-                  {'Profile'}
-                </DropdownItem>
+              <DropdownItem
+                key="profile"
+                startContent={<CircleUserRoundIcon />}
+                onPress={onOpenChangeProfile}
+              >
+                {'Profile'}
+              </DropdownItem>
 
-                <DropdownItem
-                  key="library"
-                  startContent={<BookTextIcon />}
-                  onPress={goToMyLibrary}
-                >
-                  {'My Library'}
-                </DropdownItem>
+              <DropdownItem
+                key="library"
+                startContent={<BookTextIcon />}
+                onPress={goToMyLibrary}
+              >
+                {'My Library'}
+              </DropdownItem>
 
-                <DropdownItem
-                  key="settings"
-                  startContent={<SettingsIcon />}
-                >
-                  {'Settings'}
-                </DropdownItem>
+              <DropdownItem
+                key="settings"
+                startContent={<SettingsIcon />}
+              >
+                {'Settings'}
+              </DropdownItem>
 
-                <DropdownItem
-                  key="help_and_feedback"
-                  startContent={<CircleHelpIcon />}
-                >
-                  {'Help & Feedback'}
-                </DropdownItem>
+              <DropdownItem
+                key="help_and_feedback"
+                startContent={<CircleHelpIcon />}
+              >
+                {'Help & Feedback'}
+              </DropdownItem>
 
-                <DropdownItem
-                  key="logout"
-                  className="text-danger"
-                  color="danger"
-                  onPress={onLogout}
-                  startContent={<LogOutIcon />}
-                >
-                  {'Log Out'}
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </NavbarItem>
+              <DropdownItem
+                key="logout"
+                className="text-danger"
+                color="danger"
+                onPress={onLogout}
+                startContent={<LogOutIcon />}
+              >
+                {'Log Out'}
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </NavbarContent>
       </Navbar>
 
       <ProfileModal
-        changeDialogOpenState={onOpenChangeProfile}
         dialogOpen={isOpenProfile}
+        changeDialogOpenState={onOpenChangeProfile}
       />
 
+      {/* Search Modal */}
       <Modal
         size="xl"
         hideCloseButton
@@ -269,8 +276,11 @@ const NavbarApp = ({ user }: { user: any }) => {
           <ModalHeader className="flex flex-col gap-3 p-3">
             <Input
               value={searchText}
+              autoFocus={true}
               startContent={<SearchIcon />}
-              classNames={{ input: isUsername ? '!text-primary' : '' }}
+              classNames={{
+                input: isUsername ? '!text-primary' : '',
+              }}
               placeholder="Search"
               variant="flat"
               isClearable

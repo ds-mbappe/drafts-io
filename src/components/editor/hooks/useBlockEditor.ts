@@ -86,6 +86,12 @@ export const useBlockEditor = ({
     }
   }, [editor, editable])
 
+  useEffect(() => {
+    if (editor && !editable && doc?.content) {
+      editor.commands.setContent(doc.content)
+    }
+  }, [editor, editable, doc?.content])
+
   const characterCount = editor?.storage.characterCount || {
     characters: () => 0,
     words: () => 0,
