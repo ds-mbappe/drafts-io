@@ -14,7 +14,6 @@ import { useDropzone } from 'react-dropzone';
 import { Editor } from '@tiptap/react';
 import ModalValidation from '@/components/pannels/ModalValidation';
 import { uploadFileToCloudinary } from '@/app/_helpers/cloudinary';
-// import DrawerComments from '@/components/pannels/DrawerComments';
 import { CustomDrawer } from '@/components/pannels/CustomDrawer';
 import { useMobile } from '@/hooks/useMobile';
 import { useComments } from '@/hooks/useComments';
@@ -22,7 +21,6 @@ import CommentCard from '@/components/card/CommentCard';
 import { CommentCardProps } from '@/lib/types';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
 import DraftToolbar from '@/components/toolbar/DraftToolbar';
-import ScrollToTop from '@/components/ui/ScrollToTop';
 
 export default function Page() {
   const params = useParams();
@@ -318,13 +316,6 @@ export default function Page() {
             }
           </div>
         </CustomDrawer>
-
-        {/* <DrawerComments
-          editorRef={editorRef}
-          documentId={documentId}
-          isOpen={isOpenComments}
-          onOpenChange={onOpenChangeComments}
-        /> */}
       </div>
 
       {document?.private &&

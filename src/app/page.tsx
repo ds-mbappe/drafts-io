@@ -1,33 +1,25 @@
-import Navbar from "@/components/navigation/Navbar";
-import { Button, Link, HeroUIProvider } from "@heroui/react";
+import Footer from "@/components/ui/Footer";
+import HomeCategory from "@/components/ui/HomeCategory";
+import HomeFeatured from "@/components/ui/HomeFeatured";
+import HomeHero from "@/components/ui/HomeHero";
+import NavbarApp from "@/components/ui/NavbarApp";
+import { HeroUIProvider } from "@heroui/react";
 
 export default function Home() {
   return (
     <HeroUIProvider>
-      <main className="flex flex-col bg-content1">
-        <Navbar />
+      <main className="flex flex-col overflow-y-auto">
+        <NavbarApp />
         
-        <section className="bg-content1">
-          <div className="w-full h-[calc(100dvh-65px)] flex flex-col container max-w-[675px] mx-auto px-4 gap-10 text-center justify-center items-center">
-            <h1 className="text-4xl font-bold">
-              {'Share Your adventures with the World !'}
-            </h1>
+        <div className="w-full h-[calc(100dvh-65px)] flex flex-col">
+          <HomeHero />
 
-            <p className="text-xl text-foreground-500">
-              {'Create, publish, and discover amazing content from writers around the globe.'}
-            </p>
+          <HomeFeatured />
 
-            <Button
-              as={Link}
-              color="default"
-              href="/app"
-              size="lg"
-              variant="faded"
-            >
-              {'Start writing'}
-            </Button>
-          </div>
-        </section>
+          <HomeCategory />
+
+          <Footer />
+        </div>
       </main>
     </HeroUIProvider>
   );

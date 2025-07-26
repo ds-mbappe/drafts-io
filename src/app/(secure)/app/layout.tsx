@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { NextSessionContext } from "@/contexts/SessionContext";
-import NavbarApp from "@/components/ui/navbar";
+import NavbarApp from "@/components/ui/NavbarApp";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 
 export default function AppLayout(props: { children: React.ReactNode }) {

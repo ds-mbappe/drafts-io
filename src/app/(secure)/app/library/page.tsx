@@ -6,7 +6,7 @@ import { useLibraryDocuments } from '@/hooks/useDocument';
 import { NextSessionContext } from '@/contexts/SessionContext';
 import DocumentCardInLibrary from '@/components/card/DocumentCardInLibrary';
 import Link from "next/link";
-import { PlusIcon } from "lucide-react";
+import { PenToolIcon } from "lucide-react";
 
 const Library = () => {
   const { session } = useContext(NextSessionContext);
@@ -44,7 +44,7 @@ const Library = () => {
         as={Link}
         color="primary"
         href="/app/new_draft"
-        startContent={<PlusIcon />}
+        startContent={<PenToolIcon />}
         className="fixed bottom-5 right-5 z-20 hover:scale-110"
       >
         {'New draft'}

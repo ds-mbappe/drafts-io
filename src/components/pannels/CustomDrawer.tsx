@@ -19,8 +19,8 @@ interface CustomDrawerProps {
 const placementStyles = {
   top: "top-0 left-0 w-full",
   bottom: "bottom-0 left-0 w-full",
-  left: "left-0 tbottom-0 h-[calc(100dvh-128px)]",
-  right: "right-0 bottom-0 h-[calc(100dvh-128px)]",
+  left: "left-0 tbottom-0 h-[calc(100dvh-65px)]",
+  right: "right-0 bottom-0 h-[calc(100dvh-65px)]",
 };
 
 const radiusClasses = {

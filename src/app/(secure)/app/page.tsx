@@ -3,7 +3,7 @@
 import 'katex/dist/katex.min.css';
 import Link from 'next/link';
 import React, { Suspense } from 'react';
-import { PlusIcon } from 'lucide-react';
+import { PenToolIcon } from 'lucide-react';
 import DocumentCard from '@/components/card/DocumentCard';
 import { Button, Tabs, Tab } from "@heroui/react";
 import { useLatestDocuments } from '@/hooks/useDocument';
@@ -51,7 +51,7 @@ export default function App() {
         as={Link}
         color="primary"
         href="/app/new_draft"
-        startContent={<PlusIcon />}
+        startContent={<PenToolIcon />}
         className="fixed bottom-5 right-5 z-20 hover:scale-110"
       >
         {'New draft'}

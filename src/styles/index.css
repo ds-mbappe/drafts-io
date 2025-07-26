@@ -4,6 +4,11 @@ html, body {
   overscroll-behavior: none;
 }
 
+input:-webkit-autofill {
+  -webkit-text-fill-color: hsl(var(--heroui-background)) !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
 .hideScroll {
   ::-webkit-scrollbar {
     display: none;

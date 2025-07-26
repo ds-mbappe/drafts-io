@@ -33,6 +33,7 @@ export type CommentCardProps = {
 
 export type BaseUser = {
   id: string,
+  email?: string,
   avatar: string,
   firstname: string,
   lastname: string,
