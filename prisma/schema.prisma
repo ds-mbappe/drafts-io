@@ -53,6 +53,7 @@ model Document {
   title           String
   cover           String?
   topic           String?
+  intro           String?
   content         String?  @default("")
   private         Boolean  @default(true)
   locked          Boolean  @default(false)
@@ -61,7 +62,6 @@ model Document {
   createdAt       DateTime @default(now()) @map(name: "created_at")
   updatedAt       DateTime @updatedAt @map(name: "updated_at")
   likes           Like[]
-  likeCount       Int      @default(0)
 
   author          User?    @relation(fields: [authorId], references: [id])
   authorId        String?
