@@ -84,8 +84,8 @@ export async function updateComment({
   id,
   text,
 }: {
-  id: string
-  text: string
+  id: string | undefined,
+  text: string | undefined,
 }) {
   try {
     const updatedComment = await prisma.comment.update({

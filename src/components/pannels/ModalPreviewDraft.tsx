@@ -24,7 +24,7 @@ const ModalPreviewDraft = ({ doc, isOpen, previewEditor, onOpenChange }: {
                     isBlurred
                     height={350}
                     src={doc?.cover}
-                    alt="Draft Cover Image"
+                    alt="Story Cover Image"
                   />
                 </div>
               }

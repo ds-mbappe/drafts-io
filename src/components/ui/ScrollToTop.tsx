@@ -57,7 +57,7 @@ const ScrollToTop = ({ classes }: { classes?: string }) => {
         variant="shadow"
         color="primary"
         aria-label="Scroll to top"
-        className={cn("fixed z-50 shadow", classes ? classes : "bottom-16 right-5")}
+        className={cn("fixed z-50 shadow", classes ? classes : "bottom-[68px] right-5")}
         onPress={scrollToTop}
       >
         <ChevronUp className="h-5 w-5" />

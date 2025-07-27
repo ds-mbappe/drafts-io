@@ -53,8 +53,8 @@ const HomeFeatured = () => {
 
       <Button
         as={Link}
-        href="/"
         size="lg"
+        href="/app"
         radius="sm"
         color="default"
         variant="bordered"

@@ -17,7 +17,7 @@ const Library = () => {
 
     <div className="w-full flex flex-col gap-5 mx-auto relative py-10 px-5">
       <p className="text-sm font-normal text-foreground-500">
-        {`This is the list of all the drafts you have created, wheter you published them or not. You can manage them (edit, publish, delete) right from here.`}
+        {`This is the list of all the stories you have created, wheter you published them or not. You can manage them (edit, publish, delete) right from here.`}
       </p>
 
       {isLoading ?
@@ -26,7 +26,7 @@ const Library = () => {
         </div>:
         <>
           { documents?.length ?
-            <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-5 pb-10">
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-5">
               {
                 documents?.map((document: any, index: number) => {
                   return <DocumentCardInLibrary key={index} document={document} />
@@ -34,7 +34,7 @@ const Library = () => {
               }
             </div> :
             <p className="text-sm font-normal text-foreground-500">
-              {`You have not created a draft yet, start by clicking the button at the bottom right of your screen.`}
+              {`You have not created a story yet, start by clicking the button at the bottom right of your screen.`}
             </p>
           }
         </>
@@ -47,7 +47,7 @@ const Library = () => {
         startContent={<PenToolIcon />}
         className="fixed bottom-5 right-5 z-20 hover:scale-110"
       >
-        {'New draft'}
+        {'New story'}
       </Button>
     </div>
   )

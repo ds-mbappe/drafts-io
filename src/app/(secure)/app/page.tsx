@@ -2,16 +2,20 @@
 
 import 'katex/dist/katex.min.css';
 import Link from 'next/link';
-import React, { Suspense } from 'react';
+import React, { Suspense, useContext } from 'react';
 import { PenToolIcon } from 'lucide-react';
 import DocumentCard from '@/components/card/DocumentCard';
 import { Button, Tabs, Tab } from "@heroui/react";
 import { useLatestDocuments } from '@/hooks/useDocument';
 import { LatestDocumentsFallback } from '@/components/suspense/LatestDocumentsFallback';
 import { DocumentCardTypeprops } from '@/lib/types';
+import { NextSessionContext } from '@/contexts/SessionContext';
 
 export default function App() {
-  const { documents } = useLatestDocuments()
+  const { session } = useContext(NextSessionContext);
+  const userId = session?.user?.id;
+
+  const { documents } = useLatestDocuments(userId);
 
   return (
     <div className="w-full flex flex-col overflow-y-auto relative">
@@ -25,7 +29,7 @@ export default function App() {
           <Tab key="latest" title={`Discover`} className="w-full flex flex-col gap-4">
             <Suspense fallback={<LatestDocumentsFallback />}>
               {documents?.length ?
-                <div className="w-full flex flex-col gap-4 md:!grid md:!grid-cols-2">
+                <div className="w-full grid grid-cols-1 gap-4">
                   {
                     documents?.map((document: DocumentCardTypeprops, index: number) => {
                       return <DocumentCard key={index} document={document} />
@@ -33,7 +37,7 @@ export default function App() {
                   }
                 </div> :
                 <p className="text-sm font-normal text-foreground-500">
-                  {`There are no public drafts for the moment, come back later !`}
+                  {`There are no public stories for the moment, come back later !`}
                 </p>
               }
             </Suspense>
@@ -41,7 +45,7 @@ export default function App() {
 
           <Tab key="for_you" title={`Following`} className="flex flex-col gap-4">
             <p className="text-sm font-normal text-foreground-500">
-              {`You are currently not following anybody. Start following people to see their published drafts`}
+              {`You are currently not following anybody. Start following people to see their published stories`}
             </p>
           </Tab>
         </Tabs>
@@ -54,7 +58,7 @@ export default function App() {
         startContent={<PenToolIcon />}
         className="fixed bottom-5 right-5 z-20 hover:scale-110"
       >
-        {'New draft'}
+        {'New story'}
       </Button>
     </div>
   )

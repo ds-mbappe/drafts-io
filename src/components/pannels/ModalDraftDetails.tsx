@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useContext, useState } from 'react'
-import { Modal, ModalBody, ModalContent, ModalHeader, ModalFooter, Button, Input, Image, useDisclosure } from "@heroui/react"
+import { Modal, ModalBody, ModalContent, ModalHeader, ModalFooter, Button, Input, useDisclosure, Textarea, Select, SelectItem } from "@heroui/react"
 import { errorToast, infoToast, successToast } from '@/actions/showToast';
 import { CloudUploadIcon } from 'lucide-react';
 import { NextSessionContext } from '@/contexts/SessionContext';
@@ -11,6 +11,7 @@ import { clearLocalStorageKey } from '@/app/_helpers/storage';
 import { uploadFileToCloudinary } from '@/app/_helpers/cloudinary';
 import { useRouter } from 'next/navigation';
 import { useMobile } from '@/hooks/useMobile';
+import { useDebouncedCallback } from 'use-debounce';
 
 const ModalDraftDetails = ({ doc, characterCount }: {
   doc?: any,
@@ -39,6 +40,12 @@ const ModalDraftDetails = ({ doc, characterCount }: {
   const [cover, setCover] = useState<string>('');
   const [coverFile, setCoverFile] = useState<File | undefined>();
   const [titleValue, setTitleValue] = useState<string>('');
+  const [intro, setIntro] = useState<string>('');
+  const [topic, setTopic] = useState<string>('');
+
+  const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setTopic(e.target.value);
+  };
   
   const onDrop = useCallback(async(acceptedFiles: any) => {
     const file = acceptedFiles?.[0];
@@ -50,6 +57,15 @@ const ModalDraftDetails = ({ doc, characterCount }: {
       setCoverFile(file)
     }  
   }, [])
+
+  const categories = [
+    { value: 'technology', title: 'Technology' },
+    { value: 'lifestyle', title: 'Lifestyle' },
+    { value: 'business', title: 'Business' },
+    { value: 'design', title: 'Design' },
+    { value: 'innovation', title: 'Innovation' },
+    { value: 'education', title: 'Education' },
+  ]
 
   const { getRootProps, getInputProps, open } = useDropzone({
     maxFiles: 1,
@@ -64,16 +80,18 @@ const ModalDraftDetails = ({ doc, characterCount }: {
     }
   });
 
-  const onCreateDocument = async () => {
+  const onCreateDocument = useDebouncedCallback(async () => {
     setLoading(true)
 
     const uploadedFileUrl = await uploadFileToCloudinary(coverFile);
 
     const formData = {
+      intro: intro,
+      topic: topic,
       title: titleValue,
       authorId: user?.id,
-      cover: uploadedFileUrl ?? null,
       content: doc?.content,
+      cover: uploadedFileUrl ?? null,
       word_count: characterCount?.words(),
       character_count: characterCount?.characters(),
     }
@@ -84,7 +102,7 @@ const ModalDraftDetails = ({ doc, characterCount }: {
     if (response?.success) {
       clearLocalStorageKey(EDITOR_LOCAL_STORAGE_KEY);
 
-      successToast("Draft successfully created !");
+      successToast("Story successfully created !");
 
       router.push(`/app/${documentID}`);
     } else {
@@ -92,16 +110,40 @@ const ModalDraftDetails = ({ doc, characterCount }: {
     }
 
     setLoading(false)
-  }
+  }, 300)
 
   const isTitleInvalid = () => {
     return !titleValue
   }
 
+  const isIntroInvalid = () => {
+    return !intro
+  }
+
+  const isTopicInvalid = () => {
+    return !topic
+  }
+
+  const closeAndResetModal = () => {
+    onOpenChange();
+    setTitleValue('');
+    setIntro('');
+    setTopic('');
+  }
+
   const onSaveDraftDetails = () => {
     if (isTitleInvalid()) {
-      infoToast("Please fill the Draft title !");
+      infoToast("Please fill the Story title !");
+      return;
+    }
 
+    if (isIntroInvalid()) {
+      infoToast("Please fill an intro !");
+      return;
+    }
+
+    if (isTopicInvalid()) {
+      infoToast("Please choose a topic !");
       return;
     }
 
@@ -116,7 +158,7 @@ const ModalDraftDetails = ({ doc, characterCount }: {
         className="fixed bottom-5 right-5 z-50"
         onPress={onOpenChange}
       >
-        {"Create Draft"}
+        {"Create Story"}
       </MemoButton>
 
       <Modal
@@ -131,20 +173,46 @@ const ModalDraftDetails = ({ doc, characterCount }: {
           {(onCloseCreateDraft) => (
             <>
               <ModalHeader>
-                {"Draft details"}
+                {"Story details"}
               </ModalHeader>
 
-              <ModalBody className="w-full flex flex-col gap-5 mx-auto px-5 md:px-10">
-                <div className="flex gap-1 justify-between items-start">
-                  <Input
-                    isClearable
-                    value={titleValue}
-                    variant="bordered"
-                    label="Draft title"
-                    onValueChange={setTitleValue}
-                    errorMessage={"Enter at lest one character !"}
-                  />
-                </div>
+              <ModalBody className="w-full flex flex-col gap-5 mx-auto px-5">
+                <Input
+                  isRequired
+                  isClearable
+                  value={titleValue}
+                  variant="bordered"
+                  label="Story title"
+                  onValueChange={setTitleValue}
+                  errorMessage={"Enter at lest one character !"}
+                />
+
+                <Select
+                  isRequired
+                  label="Category"
+                  variant="bordered"
+                  selectedKeys={[topic]}
+                  showScrollIndicators={false}
+                  onChange={handleSelectionChange}
+                  placeholder="Select a category"
+                  errorMessage={"Please select a category !"}
+                >
+                  {categories.map((category) => (
+                    <SelectItem key={category.value}>
+                      {category.title}
+                    </SelectItem>
+                  ))}
+                </Select>
+
+                <Textarea
+                  isRequired
+                  isClearable
+                  value={intro}
+                  variant="bordered"
+                  label="Intro"
+                  onValueChange={setIntro}
+                  placeholder="A small description text describing what the Story is about"
+                />
 
                 <div>
                   <Button
@@ -198,7 +266,7 @@ const ModalDraftDetails = ({ doc, characterCount }: {
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={onCloseCreateDraft}
+                  onPress={closeAndResetModal}
                 >
                   {'Cancel'}
                 </Button>

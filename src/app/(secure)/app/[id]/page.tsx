@@ -2,7 +2,7 @@
 
 import React, { memo, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useParams } from 'next/navigation'
-import { Avatar, Button, cn, useDisclosure } from '@heroui/react';
+import { Avatar, Button, Chip, cn, useDisclosure } from '@heroui/react';
 import { toggleDocumentLike, updateDocument, useDocument, useDocumentLikes } from '@/hooks/useDocument';
 import { CloudUploadIcon } from 'lucide-react';
 import { NextSessionContext } from '@/contexts/SessionContext';
@@ -18,9 +18,10 @@ import { CustomDrawer } from '@/components/pannels/CustomDrawer';
 import { useMobile } from '@/hooks/useMobile';
 import { useComments } from '@/hooks/useComments';
 import CommentCard from '@/components/card/CommentCard';
-import { CommentCardProps } from '@/lib/types';
+import { CharacterCount, CommentCardProps, DocumentCardTypeprops } from '@/lib/types';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
 import DraftToolbar from '@/components/toolbar/DraftToolbar';
+import { updateComment } from '@/actions/comment';
 
 export default function Page() {
   const params = useParams();
@@ -48,16 +49,22 @@ export default function Page() {
 
   useEscapeKey(() => setDrawerOpened(false)), drawerOpened;
 
-  const [doc, setDoc] = useState(() => {
+  const [doc, setDoc] = useState<DocumentCardTypeprops>(() => {
     return {
       id: document?.id,
       content: document?.content,
       cover: document?.cover,
       title: document?.title,
+      intro: document?.intro,
       author: document?.author,
       private: document?.private,
       createdAt: document?.createdAt,
       topic: document?.topic,
+      locked: document?.locked,
+      updatedAt: document?.updatedAt,
+      word_count: document?.word_count,
+      hasLiked: document?.hasLiked,
+      _count: document?._count,
     };
   });
 
@@ -69,7 +76,7 @@ export default function Page() {
         const localUrl = URL.createObjectURL(file);
         const uploadedFileUrl = await uploadFileToCloudinary(file);
   
-        setDoc((prev: any) => {
+        setDoc((prev: DocumentCardTypeprops) => {
           return {
             ...prev,
             cover: localUrl,
@@ -77,25 +84,30 @@ export default function Page() {
         })
   
         await mutateDoc(
-          async (currentData: any) => {
-          const formData = {
+          async (currentData?: DocumentCardTypeprops) => {
+            if (currentData) {
+              const formData = {
             cover: uploadedFileUrl,
-          }
-  
-            await updateDocument(documentId, formData);
-    
-            return { ...currentData, cover: uploadedFileUrl };
+              }
+      
+              await updateDocument(documentId, formData);
+      
+              return { ...currentData, private: false };
+            }
           },
           {
-            optimisticData: { ...document, cover: localUrl },
+            optimisticData: {
+              ...(document as DocumentCardTypeprops),
+              cover: localUrl
+            },
             rollbackOnError: true,
             revalidate: false,
           }
         );
 
-        successToast('Draft cover updated !');
+        successToast('Story cover updated !');
       } catch (error) {
-        errorToast('There was an error while updating your draft cover, please try again.');
+        errorToast('There was an error while updating your story cover, please try again.');
       }
     }
   }, []);
@@ -103,23 +115,28 @@ export default function Page() {
   const onPublishDraft = async () => {
     setLoading(true);
     await mutateDoc(
-      async (currentData: any) => {
-        const formData = {
-          private: false,
+      async (currentData?: DocumentCardTypeprops) => {
+        if (currentData) {
+          const formData = {
+            private: false,
+          }
+  
+          await updateDocument(documentId, formData);
+  
+          return { ...currentData, private: false };
         }
-
-        await updateDocument(documentId, formData);
-
-        return { ...currentData, private: false };
       },
       {
-        optimisticData: { ...document, private: false },
+        optimisticData: {
+          ...(document as DocumentCardTypeprops),
+          private: false
+        },
         rollbackOnError: true,
         revalidate: false,
       }
     );
     setLoading(false);
-    successToast('Draft published, it is now visible in the discovery tab.')
+    successToast('Story published, it is now visible in the discovery tab.')
     onOpenChange();
   }
 
@@ -141,7 +158,7 @@ export default function Page() {
     }
   }, 300);
 
-  const onDebouncedUpdates = useDebouncedCallback(async (updatedContent: string, characterCount: any) => {
+  const onDebouncedUpdates = useDebouncedCallback(async (updatedContent: string | null | undefined, characterCount: CharacterCount) => {
     await mutateDoc(
       async (currentData: any) => {
         const formData = {
@@ -155,7 +172,10 @@ export default function Page() {
         return { ...currentData, content: updatedContent };
       },
       {
-        optimisticData: { ...document, content: updatedContent },
+        optimisticData: {
+          ...(document as DocumentCardTypeprops),
+          content: updatedContent
+        },
         rollbackOnError: true,
         revalidate: false,
       }
@@ -163,9 +183,9 @@ export default function Page() {
   }, 1000);
 
   const handleDebouncedUpdates = useCallback(
-    ({ updatedDoc, characterCount }: { updatedDoc: any; characterCount: any }) => {
-      setDoc((oldValue: any) => ({
-        ...oldValue,
+    ({ updatedDoc, characterCount }: { updatedDoc: DocumentCardTypeprops; characterCount: CharacterCount }) => {
+      setDoc((oldValue: DocumentCardTypeprops) => ({
+        ...(oldValue),
         content: updatedDoc?.content
       }));
 
@@ -223,19 +243,29 @@ export default function Page() {
             />
 
             <div className="flex flex-col items-start">
-              <p className="text-foreground text-lg text-center font-semibold">
+              <p className="text-foreground text-lg font-semibold">
                 { `${doc?.author?.firstname} ${doc?.author?.lastname}` }
               </p>
 
-              <p className="text-default-500 text-sm text-center">
+              <p className="text-default-500 text-sm">
                 { moment(doc?.createdAt).format("MMMM D, YYYY, h:mm a") }
               </p>
             </div>
           </div>
 
-          <p className="text-3xl font-semibold text-foreground">
-            { doc?.title }
-          </p>
+          <Chip variant="flat" color='primary' size={isLargeScreen ? "md" : "sm"}>
+            {document?.topic || 'No topic'}
+          </Chip>
+
+          <div className="flex flex-col gap-2">
+            <p className="text-3xl font-semibold text-foreground">
+              { doc?.title }
+            </p>
+
+            <p className="text-default-500">
+              { doc?.intro }
+            </p>
+          </div>
 
           <Button
             variant="light"
@@ -298,6 +328,13 @@ export default function Page() {
                   <CommentCard
                     key={comment.id}
                     comment={comment}
+                    onUpdateCommentText={async (commentText) => {
+                      await updateComment({
+                        id: comment.id,
+                        text: commentText
+                      });
+                      await mutateComments();
+                    }}
                     onRemoveComment={async (comment: CommentCardProps) => {
                       const editor = editorRef.current?.editor;
                       const from = comment.from;
@@ -321,7 +358,7 @@ export default function Page() {
       {document?.private &&
         <MemoButton
           color="primary"
-          title="Publish draft"
+          title="Publish story"
           className="fixed bottom-5 right-5 z-20"
           onPress={onOpenChange}
         >
@@ -330,13 +367,13 @@ export default function Page() {
       }
 
       <ModalValidation
-        size="xs"
+        size="xl"
         isOpen={isOpen}
         cancelText={"Cancel"}
         validateText={"Publish"}
-        title={"Publish draft"}
+        title={"Publish story"}
         validateLoading={loading}
-        body={"Are you sure you want to publish this draft ? By doing so, everyone will be able to read its content."}
+        body={"Are you sure you want to publish this story ? By doing so, everyone will be able to read its content."}
         onCancel={onOpenChange}
         onOpenChange={onOpenChange}
         onValidate={onPublishDraft}

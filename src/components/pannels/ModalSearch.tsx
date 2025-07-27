@@ -5,6 +5,7 @@ import DocumentItemInList from '../ui/DocumentItemInList'
 import UserItemInList from '../ui/UserItemInList'
 import { search } from '@/actions/globalSearch'
 import { useDebouncedCallback } from 'use-debounce'
+import { useRouter } from 'next/navigation'
 
 const ModalSearch = ({
   isOpenSearch,
@@ -18,6 +19,12 @@ const ModalSearch = ({
   const [isUsername, setIsUsername] = useState(false);
   const [searchResults, setSearchResults] = useState<any>({});
 
+  const router = useRouter();
+
+  const navigateToSearch = (query: string) => {
+    router.push(`/app/search?query=${query}`)
+  }
+
   const updateSearch = (value: string) => {
     setIsTyping(true)
     setSearchText(value)
@@ -28,6 +35,12 @@ const ModalSearch = ({
     setSearchText("")
     setSearchResults({})
     onOpenChangeSearch()
+  }
+
+  const goToSearch = (e: React.KeyboardEvent<HTMLInputElement> | KeyboardEvent) => {
+    if (e.key === "Enter") {
+      navigateToSearch(searchText)
+    }
   }
 
   const searchFunction = useDebouncedCallback(async (value: string) => {
@@ -87,6 +100,7 @@ const ModalSearch = ({
             classNames={{
               input: isUsername ? '!text-primary' : '',
             }}
+            onKeyUp={(e: React.KeyboardEvent<HTMLInputElement> | KeyboardEvent) => goToSearch(e)}
             placeholder="Search"
             variant="flat"
             isClearable

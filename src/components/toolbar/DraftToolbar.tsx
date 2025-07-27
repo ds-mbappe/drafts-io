@@ -40,9 +40,9 @@ const DraftToolbar = ({
 
     try {
       await deleteDocument(documentId).then(() => {
-        successToast('Draft deleted.');
+        successToast('Story deleted.');
 
-        router.push('/app/library');
+        router.back();
       })
     } catch (error) {
       errorToast(`Error deleting document, ${error}`)

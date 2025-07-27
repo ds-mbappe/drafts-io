@@ -1,23 +1,27 @@
 import { CommentCardProps } from '@/lib/types'
-import { Avatar, Button, useDisclosure } from '@heroui/react'
+import { Avatar, Button, Textarea, useDisclosure } from '@heroui/react'
 import moment from 'moment'
-import React, { memo, useContext, useState } from 'react'
+import React, { memo, useContext, useEffect, useState } from 'react'
 import Icon from '../ui/Icon'
 import ModalValidation from '../pannels/ModalValidation'
 import { deleteComment } from '@/actions/comment'
 import { errorToast, successToast } from '@/actions/showToast'
 import { NextSessionContext } from '@/contexts/SessionContext'
+import { useDebouncedCallback } from 'use-debounce'
 
-const CommentCard = ({ comment, onRemoveComment }: {
+const CommentCard = ({ comment, onRemoveComment, onUpdateCommentText }: {
   comment: CommentCardProps,
   onRemoveComment?: Function,
+  onUpdateCommentText: (text: string | undefined) => void,
 }) => {
   const { session } = useContext(NextSessionContext);
   const userID = session?.user?.id;
 
   const MemoButton = memo(Button);
-  const [loading, setLoading] = useState<boolean>(false)
   const { isOpen, onOpenChange } = useDisclosure();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [commentText, setCommentText] = useState<string | undefined>('');
 
   const scrollToComment = () => {
     const commentElement = document.querySelector(`[data-comment-id="${comment.id}"]`);
@@ -26,6 +30,26 @@ const CommentCard = ({ comment, onRemoveComment }: {
       commentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
+
+  const resetComment = () => {
+    setIsEditing(false);
+    setCommentText(comment.text);
+  };
+
+  const updateComment = useDebouncedCallback(async () => {
+    try {
+      setLoading(true);
+
+      onUpdateCommentText(commentText);
+
+      successToast('Comment updated successfully.')
+    } catch (error) {
+      errorToast('Error while updating comment.')
+    } finally {
+      setLoading(false);
+      setIsEditing(false);
+    }
+  }, 300);
 
   const onDeleteComment = async () => {
     try {
@@ -45,6 +69,13 @@ const CommentCard = ({ comment, onRemoveComment }: {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (comment) {
+      setCommentText(comment.text)
+    }
+  }, [comment])
+  
 
   return (
     <>
@@ -74,27 +105,49 @@ const CommentCard = ({ comment, onRemoveComment }: {
 
             {comment?.user?.id === userID &&
               <div className="flex items-center gap-1">
-                <MemoButton variant="light" size="sm" onPress={() => {}} color="default" isIconOnly>
-                  <Icon name="SquarePen" className="text-foreground-500" />
-                </MemoButton>
+                {isEditing ?
+                  <MemoButton variant="light" size="sm" onPress={resetComment} color="danger" isIconOnly>
+                    <Icon name={"X"} className="text-foreground-500" />
+                  </MemoButton> :
+                  <MemoButton variant="light" size="sm" onPress={() => setIsEditing(true)} color="default" isIconOnly>
+                    <Icon name={"SquarePen"} className="text-foreground-500" />
+                  </MemoButton>
+                }
 
-                <MemoButton variant="light" size="sm" onPress={onOpenChange} color="default" isIconOnly>
-                  <Icon name="Trash2" className="text-danger" />
-                </MemoButton>
+                {isEditing ?
+                  <MemoButton variant="light" size="sm" onPress={updateComment} color="primary" isIconOnly isDisabled={!commentText}>
+                    <Icon name={"Check"} className="text-foreground-500" />
+                  </MemoButton> :
+                  <MemoButton variant="light" size="sm" onPress={onOpenChange} color="default" isIconOnly>
+                    <Icon name="Trash2" className="text-danger" />
+                  </MemoButton>
+                }
               </div>
             }
           </div>
         </div>
 
         <div>
-          <p className="text-default-500 text-sm break-words">
-            {comment.text}
-          </p>
+          {isEditing ?
+            <Textarea
+              isRequired
+              isClearable
+              variant="bordered"
+              value={commentText}
+              isReadOnly={loading}
+              validationBehavior="aria"
+              onValueChange={setCommentText}
+              errorMessage="Please enter a text"
+            /> :
+            <p className="text-default-500 text-sm break-words">
+              {commentText}
+            </p>
+          }
         </div>
       </div>
 
       <ModalValidation
-        size="xs"
+        size="md"
         isOpen={isOpen}
         cancelText={"Cancel"}
         validateText={"Delete"}

@@ -37,7 +37,7 @@ const DocumentItemInList = ({ id, title, updatedAt, loading, onCloseModal }: {
 
             <div className="w-full flex flex-col items-start">
               <p className="font-semibold text-sm">{`${title}`}</p>
-              <p className="font-semibold text-sm text-foreground-500">{`Updated at ${moment(updatedAt).format('MMM DD, YYYY')}`}</p>
+              <p className="text-sm text-foreground-500">{`Updated at ${moment(updatedAt).format('MMM DD, YYYY')}`}</p>
             </div>
           </div>
         </Button>

@@ -5,6 +5,7 @@ export async function GET(req, { params }) {
   try {
     // const { search } = params
     const search = req?.nextUrl?.searchParams.get("search")
+    const userId = req?.nextUrl?.searchParams.get("userId");
     
     let documents = null
 
@@ -37,11 +38,34 @@ export async function GET(req, { params }) {
           cover: true,
           title: true,
           topic: true,
+          intro: true,
+          content: true,
           createdAt: true,
           updatedAt: true,
+          word_count: true,
+          _count: {
+            select: {
+              Comment: true,
+              likes: true,
+            }
+          }
         }
       })
     }
+    const likedDocs = await prisma.like.findMany({
+      where: {
+        userId: userId,
+        documentId: { in: documents.map(d => d.id) }
+      },
+      select: { documentId: true }
+    });
+    const likedSet = new Set(likedDocs.map(d => d.documentId));
+
+    documents = documents.map(doc => ({
+      ...doc,
+      hasLiked: likedSet.has(doc.id),
+      commentCount: doc._count.Comment
+    }));
 
     return NextResponse.json({ documents }, { status: 200 });
   } catch (error) {

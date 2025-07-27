@@ -11,7 +11,8 @@ const NavbarCenterContent = ({
   const route = usePathname();
 
   const navbarItems = [
-    { key: 'home', label: 'Home', href: "/app" },
+    { key: 'home', label: 'Home', href: "/" },
+    { key: 'stories', label: 'Stories', href: "/app" },
     { key: 'categories', label: 'Categories', href: "#" },
     { key: 'about', label: 'About us', href: "#" },
     { key: 'contact', label: 'Contact', href: "#" },

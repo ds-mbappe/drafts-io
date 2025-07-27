@@ -40,13 +40,13 @@ export async function GET(req) {
             OR: [
               {
                 firstname: {
-                  startsWith: search,
+                  contains: search,
                   mode: "insensitive",
                 },
               },
               {
                 lastname: {
-                  startsWith: search,
+                  contains: search,
                   mode: "insensitive",
                 },
               }
@@ -63,7 +63,7 @@ export async function GET(req) {
           },
           where: {
             title: {
-              startsWith: search,
+              contains: search,
               mode: "insensitive",
             },
             private: false

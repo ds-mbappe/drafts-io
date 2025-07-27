@@ -15,7 +15,7 @@ const HomeCategory = () => {
     <div className="w-full max-w-[1536px] justify-center items-center flex flex-col gap-8 lg:gap-16 mx-auto px-3 lg:px-10 py-10 lg:py-14">
       <div className="flex flex-col gap-3">
         <h3 className="text-[36px] font-serif font-bold text-foreground text-center">
-          {'Featured Stories'}
+          {'Explore by Category'}
         </h3>
 
         <p className="text-lg text-foreground-500 max-w-2xl text-center">

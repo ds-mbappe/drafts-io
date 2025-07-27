@@ -2,6 +2,7 @@ import { toast } from "sonner"
 
 const successToast = (text: string) => {
   toast.success(``, {
+    position: "top-right",
     description: text,
     duration: 3000,
     action: {
@@ -13,6 +14,7 @@ const successToast = (text: string) => {
 
 const infoToast = (text: string) => {
   toast.info(``, {
+    position: "top-right",
     description: text,
     duration: 3000,
     action: {
@@ -24,6 +26,7 @@ const infoToast = (text: string) => {
 
 const errorToast = (text: string) => {
   toast.error(`Error`, {
+    position: "top-right",
     description: text,
     duration: 3000,
     action: {

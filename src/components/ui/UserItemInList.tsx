@@ -33,7 +33,7 @@ const UserItemInList = ({ avatar, username, firstname, lastname, loading }: {
 
           <div className="flex flex-col items-start">
             <p className="font-semibold text-sm">{`${firstname} ${lastname}`}</p>
-            <p className="font-semibold text-sm text-foreground-500">@{username}</p>
+            <p className="text-sm text-foreground-500">@{username}</p>
           </div>
         </div>
       </Button>

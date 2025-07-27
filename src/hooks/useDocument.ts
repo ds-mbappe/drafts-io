@@ -1,3 +1,4 @@
+import { DocumentCardTypeprops } from '@/lib/types';
 import useSWR, { mutate } from 'swr';
 
 const fetchDocument = async (documentID: string) => {
@@ -13,8 +14,8 @@ const fetchDocument = async (documentID: string) => {
   return data.document;
 }
 
-const fetchLatestDocuments = async () => {
-  const res = await fetch(`/api/documents`, {
+const fetchLatestDocuments = async (url: string) => {
+  const res = await fetch(url, {
     method: 'GET',
     headers: { "Content-Type": "application/json" },
   })
@@ -26,8 +27,8 @@ const fetchLatestDocuments = async () => {
   return data.documents;
 }
 
-const fetchLibraryDocuments = async (userID: string) => {
-  const res = await fetch(`/api/documents/${userID}/library`, {
+const fetchLibraryDocuments = async (url: string) => {
+  const res = await fetch(url, {
     method: 'GET',
     headers: { "content-type": "application/json" },
   });
@@ -88,7 +89,7 @@ const deleteDocument = async (documentId: String) => {
 const useDocument = (documentId: string | null) => {
   const shouldFetch = !!documentId;
 
-  const { data, error, isLoading, mutate } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR<DocumentCardTypeprops>(
     shouldFetch ? ['/api/document', documentId] : null,
     () => fetchDocument(documentId!),
     { revalidateOnFocus: false, suspense: true }
@@ -102,10 +103,12 @@ const useDocument = (documentId: string | null) => {
   };
 }
 
-const useLatestDocuments = () => {
+const useLatestDocuments = (userId: string) => {
+  const shouldFetch = !!userId;
+
   const { data, error, isLoading, mutate } = useSWR(
-    '/api/documents',
-    () => fetchLatestDocuments(),
+    shouldFetch ? `/api/documents?userId=${userId}` : null,
+    fetchLatestDocuments,
     { revalidateOnFocus: false, suspense: true }
   );
 
@@ -121,8 +124,8 @@ const useLibraryDocuments = (userId: string | null) => {
   const shouldFetch = !!userId;
 
   const { data, error, isLoading, mutate } = useSWR(
-    shouldFetch ? ['/api/documents', userId] : null,
-    ([, uid]) => fetchLibraryDocuments(uid),
+    shouldFetch ? `/api/documents?userId=${userId}/library` : null,
+    fetchLibraryDocuments,
     { revalidateOnFocus: false, suspense: true }
   );
 
