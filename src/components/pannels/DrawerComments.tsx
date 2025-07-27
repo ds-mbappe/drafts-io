@@ -66,22 +66,23 @@ const DrawerComments = ({ isOpen, editorRef, size, documentId, onOpenChange }: {
               {
                 comments?.map((comment: CommentCardProps) => {
                   return (
-                    <CommentCard
-                      key={comment.id}
-                      comment={comment}
-                      onRemoveComment={async (comment: CommentCardProps) => {
-                        const editor = editorRef.current?.editor;
-                        const from = comment.from;
-                        const to = comment.to;
+                    <></>
+                    // <CommentCard
+                    //   key={comment.id}
+                    //   comment={comment}
+                    //   onRemoveComment={async (comment: CommentCardProps) => {
+                    //     const editor = editorRef.current?.editor;
+                    //     const from = comment.from;
+                    //     const to = comment.to;
                         
-                        if (editorRef) {
-                          editor?.commands.setTextSelection({ from, to });
-                          editor?.commands.removeComment();
+                    //     if (editorRef) {
+                    //       editor?.commands.setTextSelection({ from, to });
+                    //       editor?.commands.removeComment();
     
-                          await mutateComments();
-                        }
-                      }}
-                    />
+                    //       await mutateComments();
+                    //     }
+                    //   }}
+                    // />
                   )
                 })
               }
