@@ -27,8 +27,8 @@ const fetchLatestDocuments = async (url: string) => {
   return data.documents;
 }
 
-const fetchLibraryDocuments = async (url: string) => {
-  const res = await fetch(url, {
+const fetchLibraryDocuments = async (userID: string) => {
+  const res = await fetch(`/api/documents/${userID}/library`, {
     method: 'GET',
     headers: { "content-type": "application/json" },
   });
@@ -124,8 +124,8 @@ const useLibraryDocuments = (userId: string | null) => {
   const shouldFetch = !!userId;
 
   const { data, error, isLoading, mutate } = useSWR(
-    shouldFetch ? `/api/documents?userId=${userId}/library` : null,
-    fetchLibraryDocuments,
+    shouldFetch ? ['/api/documents', userId] : null,
+    ([, uid]) => fetchLibraryDocuments(uid),
     { revalidateOnFocus: false, suspense: true }
   );
 

@@ -155,7 +155,7 @@ const ModalDraftDetails = ({ doc, characterCount }: {
       <MemoButton
         color="primary"
         title="Save draft"
-        className="fixed bottom-5 right-5 z-50"
+        className="fixed bottom-16 right-5 z-50"
         onPress={onOpenChange}
       >
         {"Create Story"}

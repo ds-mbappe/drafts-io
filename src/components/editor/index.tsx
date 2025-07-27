@@ -284,17 +284,12 @@ const BlockEditor = forwardRef(({
     <div className={cn("w-full flex gap-5 relative justify-center", isDraft ? "h-full" : "")}>
       <div
         className={cn(
-          "w-full relative flex flex-col bg-content1 md:rounded-lg z-[1] md:border md:border-divider",
+          "w-full relative flex flex-col bg-content1 md:rounded-lg z-[1] md:border md:border-divider overflow-hidden",
           isDraft ? "overflow-y-auto" : "overflow-hidden"
         )}
       >
-        {/* Fixed Top Bar */}
-        {(isDraft || canEditDraft) &&
-          <EditorToolbar editor={editor} documentId={localDoc?.id} />
-        }
-
         {/* Scrollable Editor */}
-        <div className={cn("h-full pt-14 px-5 pb-5 z-10 relative", isDraft ? "overflow-y-auto" : "")}>
+        <div className={cn("h-full p-5 z-10 relative", isDraft ? "overflow-y-auto" : "")}>
           {editor && (
             <>
               {(isDraft || canEditDraft) &&

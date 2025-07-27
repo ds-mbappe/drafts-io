@@ -22,6 +22,7 @@ import { CharacterCount, CommentCardProps, DocumentCardTypeprops } from '@/lib/t
 import { useEscapeKey } from '@/hooks/useEscapeKey';
 import DraftToolbar from '@/components/toolbar/DraftToolbar';
 import { updateComment } from '@/actions/comment';
+import EditorToolbar from '@/components/editor/toolbars/EditorToolbar';
 
 export default function Page() {
   const params = useParams();
@@ -210,6 +211,9 @@ export default function Page() {
   const isUserTheDraftAuthor = useMemo(() => {
     return doc?.author?.id === userID;
   }, [doc.author?.id, userID]);
+  const canEditDraft = useMemo(() => {
+    return document?.author?.id === userID && isEditMode;
+  }, [document?.author?.id, isEditMode, userID]);
 
   return (
     <div className="w-full flex flex-col bg-content1 relative overflow-visible">
@@ -226,6 +230,11 @@ export default function Page() {
           setDrawerOpened={() => setDrawerOpened(!drawerOpened)}
         />
       </div>
+
+      {/* Fixed EditToolbar Top Bar */}
+      {canEditDraft && editorRef.current?.editor &&
+        <EditorToolbar editor={editorRef.current?.editor} documentId={documentId} />
+      }
 
       <div ref={containerRef} className={cn("w-full flex flex-col flex-1 gap-5 relative", isEditMode ? "pb-[84px]" : "pb-10")}>
         <div className="w-full flex flex-col gap-5 mx-auto p-4 md:px-0">
