@@ -1,0 +1,27 @@
+// apps/frontend/tsconfig.json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "noEmit": true,
+    // Add any app-specific overrides here
+    "paths": {
+      "@/*": ["./src/*"],
+      "@shared/*": ["../../packages/shared/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

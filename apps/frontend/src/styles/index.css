@@ -1,0 +1,147 @@
+html, body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+input:-webkit-autofill {
+  @apply !fill-background;
+  /* -webkit-text-fill-color: hsl(var(--heroui-background)) !important; */
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+.hideScroll {
+  ::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
+  }
+
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.editableClass {
+  .ProseMirror {
+    @apply z-0 pl-5 pb-5
+  }
+}
+
+.readOnlyClass {
+  .ProseMirror {
+    @apply z-0 pb-5
+  }
+}
+
+.ProseMirror {
+  @apply caret-foreground-500 outline-0;
+
+  /* .selection {
+    @apply bg-primary-100 py-0.5;
+  } */
+
+  &>* {
+    @apply mx-auto max-w-5xl;
+  }
+
+  &>.react-renderer {
+    @apply first:mt-0 last:mb-0;
+  }
+
+  &.resize-cursor {
+    @apply cursor-col-resize;
+  }
+
+  .ProseMirror-gapcursor {
+    @apply relative w-full max-w-2xl mx-auto;
+
+    &:after {
+      @apply border-t-black/40 dark:border-t-white/40 w-full -top-[1.5em] max-w-2xl mx-auto left-0 right-0;
+    }
+  }
+
+  .tiptap-comment {
+    @apply border-b-3 border-dashed border-b-lime-400 text-foreground dark:text-background bg-warning hover:bg-warning-300 py-0.5 transition-all;
+  }
+}
+
+.drag-handle {
+  align-items: center;
+  /* background: #f0f0f0; */
+  border-radius: .25rem;
+  /* border: 1px solid rgba(0, 0, 0, 0.1); */
+  cursor: grab;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  width: 1.5rem;
+}
+
+.ProseMirror-selectednode {
+  @apply bg-primary-50 rounded;
+}
+
+.bubble-menu {
+  @apply w-full bg-content1 rounded-xl shadow flex items-center p-1 gap-0.5
+}
+
+.tippy-box {
+  background-color: transparent !important;
+}
+
+[data-theme='slash-command'] {
+  width: 1000vw;
+}
+
+*::-webkit-scrollbar {
+  background-color: transparent;
+  width: 5px;
+}
+
+/* background of the scrollbar except button or resizer */
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* scrollbar itself */
+*::-webkit-scrollbar-thumb {
+  background-color: gray;
+}
+
+/* set button(top and bottom of the scrollbar) */
+*::-webkit-scrollbar-button {
+  display: none;
+}
+
+.hideScrollbar::-webkit-scrollbar {
+  background-color: transparent;
+  width: 0px;
+  height: 0px;
+}
+
+.hideScrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.hideScrollbar::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+input, textarea, select {
+  font-size: 16px !important;
+}
+
+/* Change cursor */
+/* * {
+  cursor: url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 96 104" xmlns="http://www.w3.org/2000/svg"><path style="fill: black" d="M0.86065 0.697766L95.7812 51.5907L50.3553 59.6832L34.4976 103.014L0.86065 0.697766Z" /></svg>'), default !important;
+} */
+
+@import './partials/animations.css';
+@import './partials/blocks.css';
+@import './partials/code.css';
+@import './partials/collab.css';
+@import './partials/lists.css';
+@import './partials/placeholder.css';
+@import './partials/table.css';
+@import './partials/typography.css';
