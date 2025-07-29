@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-import prisma from "../../../../../lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@shared/prisma/client";
 
-export async function GET(req, { params }) {
+export async function GET(req: NextRequest, { params } : { params: { documentId: string } }) {
   const { documentId } = await params
 
   try {
@@ -27,7 +27,7 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PUT(req, { params }) {
+export async function PUT(req: NextRequest, { params } : { params: { documentId: string } }) {
   try {
     const { documentId } = await params;
     const body = await req.json();
@@ -55,7 +55,7 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req: NextRequest, { params } : { params: { documentId: string } }) {
   try {
     const { documentId } = await params;
     const updatedDocument = await prisma.document.delete({

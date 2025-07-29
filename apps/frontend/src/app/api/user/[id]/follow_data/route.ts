@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from '@shared/prisma/client'
 
-export async function GET(req, { params }) {
+export async function GET(req: NextRequest, { params } : { params: { id: string } }) {
   const { id } = await params
 
   try {

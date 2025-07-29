@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '../../../../lib/prisma'
+import { prisma } from "@shared/prisma/client";
 
 const commentSelect = {
   id: true,

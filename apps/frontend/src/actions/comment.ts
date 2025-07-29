@@ -1,6 +1,6 @@
 'use server'
 
-import prisma from '../../lib/prisma'
+import { prisma } from "@shared/prisma/client";
 import { revalidatePath } from 'next/cache'
 
 const commentSelect = {

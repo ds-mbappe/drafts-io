@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-import prisma from '../../../../lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@shared/prisma/client";
 
-export async function GET(req) {
+export async function GET(req: NextRequest) {
   try {
     const search = req?.nextUrl?.searchParams.get("text")
 

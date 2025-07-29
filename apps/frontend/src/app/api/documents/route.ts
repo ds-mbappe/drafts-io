@@ -1,20 +1,47 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from '@shared/prisma/client'
 
-export async function GET(req, { params }) {
+export async function GET(req: NextRequest, { params } : { params: {} }) {
   try {
     // const { search } = params
     const search = req?.nextUrl?.searchParams.get("search")
-    const userId = req?.nextUrl?.searchParams.get("userId");
+    const userId: string | undefined = req?.nextUrl?.searchParams.get("userId") ?? undefined;
     
     let documents = null
+
+    const select = {
+      id: true,
+      author: {
+        select: {
+          id: true,
+          avatar: true,
+          lastname: true,
+          firstname: true,
+        }
+      },
+      cover: true,
+      title: true,
+      topic: true,
+      intro: true,
+      content: true,
+      createdAt: true,
+      updatedAt: true,
+      word_count: true,
+      _count: {
+        select: {
+          Comment: true,
+          likes: true,
+        }
+      }
+    }
 
     if (search) {
       documents = await prisma.document.findMany({
         where: {
           title: search,
           private: false,
-        }
+        },
+        select: select
       })
     } else {
       documents = await prisma.document.findMany({
@@ -25,31 +52,7 @@ export async function GET(req, { params }) {
         where: {
           private: false
         },
-        select: {
-          id: true,
-          author: {
-            select: {
-              id: true,
-              avatar: true,
-              lastname: true,
-              firstname: true,
-            }
-          },
-          cover: true,
-          title: true,
-          topic: true,
-          intro: true,
-          content: true,
-          createdAt: true,
-          updatedAt: true,
-          word_count: true,
-          _count: {
-            select: {
-              Comment: true,
-              likes: true,
-            }
-          }
-        }
+        select: select
       })
     }
     const likedDocs = await prisma.like.findMany({
@@ -89,7 +92,7 @@ export async function GET(req, { params }) {
 //   }
 // }
 
-export async function PUT(req) {
+export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
     const documentData = body.formData

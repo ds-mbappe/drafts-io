@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
-import prisma from "../../../../../../lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@shared/prisma/client";
+import { getErrorMessage } from "@/lib/utils";
 
 // GET: Fetch the likes count for a specific document
-export async function GET(req, { params }) {
+export async function GET(req: NextRequest, { params } : { params: { documentId: string } }) {
   const { documentId } = await params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
@@ -33,12 +34,12 @@ export async function GET(req, { params }) {
 
     return NextResponse.json({ likeCount: likeCount, hasLiked }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: "Failed to fetch like count.", error: error.message }, { status: 500 });
+    return NextResponse.json({ message: "Failed to fetch like count.", error: getErrorMessage(error) }, { status: 500 });
   }
 }
 
 // POST: Add a like to the document
-export async function POST(req, { params }) {
+export async function POST(req: NextRequest, { params } : { params: { documentId: string } }) {
   const { documentId } = await params;
 
   try {
@@ -77,12 +78,12 @@ export async function POST(req, { params }) {
     return NextResponse.json({ message: "Document liked successfully!", like, likeCount }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Failed to like the document.", error: error.message }, { status: 500 });
+      { message: "Failed to like the document.", error: getErrorMessage(error) }, { status: 500 });
   }
 }
 
 // DELETE: Remove a like from the document
-export async function DELETE(req, { params }) {
+export async function DELETE(req: NextRequest, { params } : { params: { documentId: string } }) {
   const { documentId } = await params;
 
   try {
@@ -110,6 +111,6 @@ export async function DELETE(req, { params }) {
 
     return NextResponse.json({ message: "Document disliked successfully!", likeCount }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: "Failed to unlike the document.", error: error.message }, { status: 500 });
+    return NextResponse.json({ message: "Failed to unlike the document.", error: getErrorMessage(error) }, { status: 500 });
   }
 }

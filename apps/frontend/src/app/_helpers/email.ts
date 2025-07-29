@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
-import prisma from "../../../lib/prisma";
+import { prisma } from "@shared/prisma/client";
 
-export const sendEmail = async({ email, emailType, userId }:any) =>{
+export const sendEmail = async({ email, emailType, userId }: any) =>{
   const verifyEmail = (token: String) => {
     return `<p>Click <a href="${process.env.NEXTAUTH_URL}/account/verify-email?token=${token}">here</a> to Verify your email.`
   }

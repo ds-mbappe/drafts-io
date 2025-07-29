@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-import prisma from '../../../../../lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@shared/prisma/client";
 
-export async function GET(req, { params }) {
+export async function GET(req: NextRequest, { params } : { params: { id: string } }) {
   const { id } = params
 
   try {
@@ -17,7 +17,7 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PUT(req) {
+export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
     const userData = body.formData

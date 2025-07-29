@@ -1,7 +1,7 @@
 import { sendEmail } from "@/app/_helpers/email";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import prisma from "../../../../../lib/prisma";
+import { prisma } from "@shared/prisma/client";
 
 export async function POST(request: NextRequest) {
   try {

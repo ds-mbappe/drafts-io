@@ -1,5 +1,5 @@
 import bcryptjs from "bcryptjs";
-import prisma from "../../../../../lib/prisma";
+import { prisma } from "@shared/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/app/_helpers/email";
 

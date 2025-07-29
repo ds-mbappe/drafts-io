@@ -13,3 +13,8 @@ export function estimateReadTimeString(wordCount: number, wordsPerMinute = 200) 
   const minutes = Math.ceil(wordCount / wordsPerMinute);
   return minutes <= 1 ? '1 min read' : `${minutes} min read`;
 }
+
+export function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
