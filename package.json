@@ -2,17 +2,13 @@
   "name": "drafts-io",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/*"
   ],
   "scripts": {
     "dev:front": "pnpm --filter frontend dev",
-    "dev:back": "pnpm --filter backend start:dev"
+    "dev:back": "pnpm --filter backend build && pnpm --filter backend start:dev",
+    "setup": "pnpm install && pnpm build:back"
   },
   "dependencies": {
-    "@prisma/client": "^6.13.0"
-  },
-  "devDependencies": {
-    "prisma": "^6.13.0"
   }
 }

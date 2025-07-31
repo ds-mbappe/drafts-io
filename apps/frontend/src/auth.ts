@@ -1,10 +1,8 @@
-import bcryptjs from "bcryptjs";
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google"
 import Github from "next-auth/providers/github"
 import Facebook from "next-auth/providers/facebook"
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from '@shared/prisma/client'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -15,37 +13,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null
         }
 
-        const user = await prisma.user.findFirst({
-          where: {
-            email: credentials.email,
-          },
-        })
+        const res = await fetch('http://localhost:3001/auth/signin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(credentials),
+        });
 
-        if (!user || !user.password) {
-          return null
+        const data = await res.json();
+
+        if (res.ok && data.access_token) {
+          return {
+            id: data.user.id,
+            name: data.user.firstname,
+            email: data.user.email,
+            token: data.access_token,
+            user: data.user,
+          };
         }
 
-        const isValidPassword = await bcryptjs.compare(
-          credentials.password.toString(),
-          user.password
-        )
-
-        if (!isValidPassword) {
-          return null
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.username || user.firstname,
-          username: user.username,
-          firstname: user.firstname,
-          lastname: user.lastname,
-          avatar: user.avatar,
-          isVerified: user.isVerified,
-          language: user.language,
-          phone: user.phone,
-        }
+        return null;
       },
     }),
   ],
@@ -57,14 +43,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "jwt"
   },
   callbacks: {
-    jwt: async ({ token, trigger, user, session }) => {
+    jwt: async ({ token, trigger, user, session }: any) => {
       if (trigger === "update") {
         token.user = { ...session }
       }
-      user && (token.user = user)
+      if (user) {
+        token.accessToken = user.token;
+        token.user = user.user;
+      }
       return token
     },
     session: async ({ session, token }: { session: any, token: any }) => {
+      session.accessToken = token.accessToken;
       session.user = token.user;
       return session;
     },

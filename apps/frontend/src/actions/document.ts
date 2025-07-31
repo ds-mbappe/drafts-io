@@ -1,6 +1,6 @@
 "use server"
 
-import { prisma } from "@shared/prisma/client";
+import { prisma } from "../../../backend/prisma/client";
 
 const createDocument = async (formData: any) => {
   try {

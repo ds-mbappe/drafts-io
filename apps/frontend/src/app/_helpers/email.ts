@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
-import { prisma } from "@shared/prisma/client";
+import { prisma } from "../../../backend/prisma/client";
 
 export const sendEmail = async({ email, emailType, userId }: any) =>{
   const verifyEmail = (token: String) => {

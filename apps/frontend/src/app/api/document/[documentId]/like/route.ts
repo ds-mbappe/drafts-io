@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@shared/prisma/client";
+import { prisma } from "../../../backend/prisma/client";
 import { getErrorMessage } from "@/lib/utils";
 
 // GET: Fetch the likes count for a specific document

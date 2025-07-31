@@ -5,11 +5,11 @@
     "target": "ES2021",
     "lib": ["ES2021"],
     "outDir": "./dist",
-    "rootDir": "./src",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": "./",
@@ -24,9 +24,6 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "noEmit": false,
-    "paths": {
-      "@shared/*": ["../../packages/shared/*"]
-    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

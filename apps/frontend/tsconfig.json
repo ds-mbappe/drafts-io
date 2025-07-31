@@ -7,7 +7,6 @@
     // Add any app-specific overrides here
     "paths": {
       "@/*": ["./src/*"],
-      "@shared/*": ["../../packages/shared/*"]
     },
     "plugins": [
       {

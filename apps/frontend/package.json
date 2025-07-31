@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "vercel-build": "prisma generate --schema=./apps/packages/shared/prisma/schema.prisma && next build",
+    "vercel-build": "next build",
     "prisma:generate": "prisma generate",
     "lint": "next lint"
   },
