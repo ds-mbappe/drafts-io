@@ -6,7 +6,7 @@ import { cn, Listbox, ListboxItem } from "@heroui/react"
 import Icon from '@/components/ui/Icon'
 
 export const TableRowMenu = React.memo(({ editor, appendTo }: MenuProps): JSX.Element => {
-  const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
+  const iconClasses = "text-xl text-default-500 pointer-events-none shrink-0";
 
   const shouldShow = useCallback(
     ({ view, state, from }: ShouldShowProps) => {

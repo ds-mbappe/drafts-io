@@ -6,20 +6,36 @@ import React, { Suspense, useContext } from 'react';
 import { PenToolIcon } from 'lucide-react';
 import DocumentCard from '@/components/card/DocumentCard';
 import { Button, Tabs, Tab } from "@heroui/react";
-import { useLatestDocuments } from '@/hooks/useDocument';
+import { useLatestDrafts } from '@/hooks/useDocument';
 import { LatestDocumentsFallback } from '@/components/suspense/LatestDocumentsFallback';
 import { DocumentCardTypeprops } from '@/lib/types';
 import { NextSessionContext } from '@/contexts/SessionContext';
 
-export default function App() {
+const DiscoverContent = () => {
   const { session } = useContext(NextSessionContext);
-  const userId = session?.user?.id;
+  const token = session?.accessToken;
+  
+  const { drafts, isLoading } = useLatestDrafts(token);
 
-  const { documents } = useLatestDocuments(userId);
+  if (isLoading || drafts === undefined) {
+    return null;
+  }
+  
+  return drafts?.length ? (
+    <div className="w-full grid grid-cols-1 gap-4">
+      {drafts.map((draft: DocumentCardTypeprops) => (
+        <DocumentCard key={draft.id} document={draft} />
+      ))}
+    </div>
+  ) : (
+    <p>No stories available</p>
+  );
+};
 
+export default function App() {
   return (
     <div className="w-full flex flex-col overflow-y-auto relative">
-      <div className="w-full mx-auto relative flex cursor-text flex-col z-[1] flex-1 px-4 pt-10 pb-5">
+      <div className="w-full mx-auto relative flex cursor-text flex-col z-1 flex-1 px-4 pt-10 pb-5">
         <Tabs
           key="tabs"
           color="primary"
@@ -28,24 +44,13 @@ export default function App() {
         >
           <Tab key="latest" title={`Discover`} className="w-full flex flex-col gap-4">
             <Suspense fallback={<LatestDocumentsFallback />}>
-              {documents?.length ?
-                <div className="w-full grid grid-cols-1 gap-4">
-                  {
-                    documents?.map((document: DocumentCardTypeprops, index: number) => {
-                      return <DocumentCard key={index} document={document} />
-                    })
-                  }
-                </div> :
-                <p className="text-sm font-normal text-foreground-500">
-                  {`There are no public stories for the moment, come back later !`}
-                </p>
-              }
+              <DiscoverContent />
             </Suspense>
           </Tab>
 
           <Tab key="for_you" title={`Following`} className="flex flex-col gap-4">
             <p className="text-sm font-normal text-foreground-500">
-              {`You are currently not following anybody. Start following people to see their published stories`}
+              {`You are currently not following anybody. Start following people to see their published drafts`}
             </p>
           </Tab>
         </Tabs>

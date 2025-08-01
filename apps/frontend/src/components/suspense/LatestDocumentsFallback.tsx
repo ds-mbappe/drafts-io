@@ -6,7 +6,7 @@ export const LatestDocumentsFallback = () => {
 
   for (let i = 0; i < 8; i++) {
     elements.push(
-      <Skeleton key={i}>
+      <Skeleton key={i} className="rounded-xl">
         <DocumentCard document={{
           id: '0',
           author: {
@@ -26,7 +26,7 @@ export const LatestDocumentsFallback = () => {
     );
   }
   return (
-    <div className="w-full flex flex-col gap-4 md:!grid md:!grid-cols-2">
+    <div className="w-full flex flex-col gap-4">
       {elements}
     </div>
   )

@@ -24,7 +24,7 @@ const HomeFeaturedItem = ({
             priority
             src={heroImage}
             alt="Featured image"
-            className="w-full h-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full aspect-16/10 object-cover transition-transform duration-500 group-hover:scale-110"
           />
 
           <div className="h-full absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -42,7 +42,7 @@ const HomeFeaturedItem = ({
           </h4>
 
           <div className="flex flex-col gap-6">
-            <p className="text-foreground-500 !leading-relaxed line-clamp-3">
+            <p className="text-foreground-500 leading-relaxed! line-clamp-3">
               {item?.description}
             </p>
 

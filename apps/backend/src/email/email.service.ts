@@ -16,21 +16,22 @@ export class EmailService {
     email,
     userId,
     emailType,
+    token,
   }: {
     email: string;
     userId: string;
     emailType: EmailType;
+    token: string;
   }) {
     try {
-      const hashedToken = await bcrypt.hash(userId, 10);
       const now = new Date();
-      const expiry = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour
+      const expiry = new Date(now.getTime() + 60 * 60 * 1000);
 
       if (emailType === 'VERIFY') {
         await prisma.user.update({
           where: { id: userId },
           data: {
-            verifyToken: hashedToken,
+            verifyToken: token,
             verifyTokenExpiry: expiry,
           },
         });
@@ -38,7 +39,7 @@ export class EmailService {
         await prisma.user.update({
           where: { id: userId },
           data: {
-            forgotPasswordToken: hashedToken,
+            forgotPasswordToken: token,
             forgotPasswordTokenExpiry: expiry,
           },
         });
@@ -60,8 +61,8 @@ export class EmailService {
           emailType === 'VERIFY' ? 'Verify your email' : 'Reset your password',
         html:
           emailType === 'VERIFY'
-            ? verifyEmailTemplate(hashedToken)
-            : resetPasswordTemplate(hashedToken, email),
+            ? verifyEmailTemplate(token)
+            : resetPasswordTemplate(token, email),
       };
 
       const response: unknown = await transport.sendMail(mailOptions);

@@ -40,7 +40,7 @@ const Footer = () => {
               {'Drafts'}
             </h4>
 
-            <p className="text-background dark:text-foreground !leading-relaxed">
+            <p className="text-background dark:text-foreground leading-relaxed!">
               {'Empowering minds through exceptional storytelling and thought-provoking content. Join our community of readers and writers.'}
             </p>
 

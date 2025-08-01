@@ -25,7 +25,7 @@ export default function AppLayout(props: { children: React.ReactNode }) {
 
   return (
     <NextSessionContext.Provider value={contextValue}>
-      <div className="w-full min-h-[100dvh] flex flex-col flex-1 relative bg-content1">
+      <div className="w-full min-h-dvh flex flex-col flex-1 relative bg-content1">
         <NavbarApp user={session?.user} />
 
         <div id="main_container" className="w-full h-[calc(100dvh-65px)] overflow-y-auto">

@@ -13,7 +13,6 @@ import ProfileModal from '../pannels/ProfileModal';
 const NavbarEndContent = ({ user }: { user?: BaseUser }) => {
   const router = useRouter();
   const route = usePathname();
-  const isLargeScreen = useMobile();
   const { theme, setTheme } = useTheme();
   const { isOpen: isOpenSearch, onOpenChange: onOpenChangeSearch } = useDisclosure();
   const { isOpen: isOpenProfile, onOpenChange: onOpenChangeProfile } = useDisclosure();

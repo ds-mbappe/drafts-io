@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { SignUpDto } from './dto/signup.dto';
@@ -12,6 +13,7 @@ import { prisma } from 'prisma/client';
 import { User } from '@prisma/client';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { EmailService } from 'src/email/email.service';
+import { JwtPayload } from 'src/types';
 
 @Injectable()
 export class AuthService {
@@ -78,7 +80,7 @@ export class AuthService {
       });
 
       if (!user) {
-        throw new BadRequestException('User does not exist');
+        throw new NotFoundException('User does not exist');
       }
 
       const pwMatches = await bcrypt.compare(dto.password, user.password);
@@ -125,21 +127,65 @@ export class AuthService {
     }
   }
 
-  async resetPassword(dto: ResetPasswordDto) {
+  async refreshToken(refreshToken: string) {
     try {
-      const user = await prisma.user.findFirst({
-        omit: {
-          verifyToken: false,
-          forgotPasswordToken: false,
+      const payload: JwtPayload = await this.jwtService.verifyAsync(
+        refreshToken,
+        {
+          secret: process.env.JWT_REFRESH_SECRET,
         },
-        where: {
-          email: dto.email,
+      );
+
+      const accessToken = await this.jwtService.signAsync(
+        { sub: payload.sub, email: payload.email },
+        { secret: process.env.JWT_SECRET, expiresIn: '15m' },
+      );
+
+      return { access_token: accessToken };
+    } catch (e) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  async sendResetPasswordEmail(email: string) {
+    try {
+      const user = await prisma.user.findUnique({ where: { email } });
+
+      if (!user) throw new NotFoundException('User not found');
+
+      const token = await this.generateResetToken(user.id);
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          forgotPasswordToken: token,
+          forgotPasswordTokenExpiry: new Date(Date.now() + 1000 * 60 * 60),
         },
       });
 
-      if (!user) {
-        throw new BadRequestException('User not found.');
+      await this.emailService.sendEmail({
+        email: user.email,
+        userId: user.id,
+        emailType: 'RESET',
+        token,
+      });
+
+      return { message: 'Reset email sent.' };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new InternalServerErrorException(error.message);
       }
+      throw new InternalServerErrorException('An unexpected error occurred');
+    }
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { email: dto.email },
+      });
+
+      if (!user) throw new NotFoundException('User not found');
 
       if (dto.token) {
         const isTokenValid = dto.token === user.forgotPasswordToken;
@@ -159,27 +205,17 @@ export class AuthService {
             },
           });
 
-          return { message: 'Pasword reset successfully.' };
+          return { message: 'Password reset successfully.' };
         } else {
           throw new BadRequestException('The provided token is invalid.');
         }
       }
 
-      await prisma.user.update({
-        where: {
-          id: user?.id,
-        },
-        data: {
-          forgotPasswordToken: user?.verifyToken,
-          forgotPasswordTokenExpiry: new Date(),
-        },
-      });
-
-      await this.emailService.sendEmail({
-        email: user.email,
-        userId: user.id,
-        emailType: 'RESET',
-      });
+      // await this.emailService.sendEmail({
+      //   email: user.email,
+      //   userId: user.id,
+      //   emailType: 'RESET',
+      // });
 
       return { message: 'Reset password email sent successfully' };
     } catch (error: unknown) {
@@ -193,9 +229,15 @@ export class AuthService {
   private async signToken(userId: string, email: string, user?: User) {
     try {
       const payload = { sub: userId, email };
+
       const token = await this.jwtService.signAsync(payload, {
         secret: process.env.JWT_SECRET,
         expiresIn: '15m',
+      });
+
+      const refreshToken = await this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: '7d',
       });
 
       const {
@@ -207,12 +249,26 @@ export class AuthService {
         ...rest
       } = user;
 
-      return { access_token: token, user: rest };
+      return {
+        user: rest,
+        access_token: token,
+        refresh_token: refreshToken,
+      };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new InternalServerErrorException(error.message);
       }
       throw new InternalServerErrorException('An unexpected error occurred');
     }
+  }
+
+  private async generateResetToken(userId: string): Promise<string> {
+    const payload = { sub: userId, purpose: 'reset_password' };
+    const token = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: '1h',
+    });
+
+    return token;
   }
 }

@@ -23,6 +23,16 @@ export class AuthController {
     return this.authService.verifyEmail(token);
   }
 
+  @Post('refresh_token')
+  refresh(@Body('refresh_token') refreshToken: string) {
+    return this.authService.refreshToken(refreshToken);
+  }
+
+  @Post('request_reset_password')
+  requestResetPassword(@Body() body: { email: string }) {
+    return this.authService.sendResetPasswordEmail(body.email);
+  }
+
   @Post('reset_password')
   resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto);

@@ -29,16 +29,15 @@ export default function ResetPass() {
         password: user?.password,
         token: token
       }
-
-      const response = await fetch("/api/account/reset_password", {
+      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/reset_password`
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       });
 
       if (response?.ok) {
-        successToast("You can now sign in with your new password !");
-        router.push(`/account/sign-in`);
+        router.push(`/account/sign-in?email=${user?.email}`);
       } else {
         errorToast("An error occured, please try again !");
       }
@@ -52,7 +51,8 @@ export default function ResetPass() {
     setLoading(true);
     try {
       const data = { email: user?.email }
-      const response = await fetch("/api/account/reset_password", {
+      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/request_reset_password`
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
@@ -60,6 +60,8 @@ export default function ResetPass() {
 
       if (response?.ok) {
         successToast("We just sent you an email, follow the instructions to reset your password !");
+
+        router.push('/account/sign-in');
       } else {
         errorToast("An error occured, please try again !");
       }
@@ -83,7 +85,7 @@ export default function ResetPass() {
   }, [token])
 
   return (
-    <main className="flex min-h-[100dvh] flex-col items-center justify-center gap-5 overflow-y-auto">
+    <main className="flex min-h-dvh flex-col items-center justify-center gap-5 overflow-y-auto">
       <div className="w-[350px] sm:w-full max-w-[400px] flex flex-col p-6 gap-6 bg-content1 border border-divider rounded-2xl">
         {/* Texts */}
         <div className="flex flex-col gap-1">
@@ -119,7 +121,7 @@ export default function ResetPass() {
                 variant="bordered"
                 autoComplete="new-password"
                 endContent={user?.password ?
-                  <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                  <button className="focus:outline-hidden" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
                     {isVisible ? (
                       <EyeOffIcon className="text-2xl pointer-events-none" />
                     ) : (

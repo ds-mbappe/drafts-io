@@ -6,7 +6,7 @@ import { cn, Listbox, ListboxItem } from "@heroui/react"
 import Icon from '@/components/ui/Icon'
 
 export const TableColumnMenu = React.memo(({ editor, appendTo }: MenuProps): JSX.Element => {
-  const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
+  const iconClasses = "text-xl text-default-500 pointer-events-none shrink-0";
 
   const shouldShow = useCallback(
     ({ view, state, from }: ShouldShowProps) => {
@@ -48,7 +48,7 @@ export const TableColumnMenu = React.memo(({ editor, appendTo }: MenuProps): JSX
       }}
       shouldShow={shouldShow}
     >
-      <div className="w-full z-[9999] max-w-[260px] border-small p-1 rounded-xl border-default-200 bg-content1 dark:border-default-100">
+      <div className="w-full z-9999 max-w-[260px] border-small p-1 rounded-xl border-default-200 bg-content1 dark:border-default-100">
         <Listbox variant="bordered" aria-label="Actions-table-column-menu" className="bg-content1">
           <ListboxItem
             key="add_before"

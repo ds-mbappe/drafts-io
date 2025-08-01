@@ -32,7 +32,7 @@ const DocumentCardInLibrary = ({ document }: { document: DocumentCardTypeprops }
         <Divider></Divider>
         
         <CardBody className="py-2">
-          <div className={cn("w-full !rounded-xl overflow-hidden h-full", document.cover ? "" : "bg-divider")}>
+          <div className={cn("w-full rounded-xl! overflow-hidden h-full", document.cover ? "" : "bg-divider")}>
             {document?.cover &&
               <Image
                 alt="Document cover"
@@ -40,14 +40,14 @@ const DocumentCardInLibrary = ({ document }: { document: DocumentCardTypeprops }
                 className="object-cover h-full"
                 // width={270}
                 classNames={{
-                  wrapper: 'w-full !max-w-full h-full',
+                  wrapper: 'w-full max-w-full! h-full',
                   img: "w-full"
                 }}
               />
             }
           </div>
         </CardBody>
-        {/* <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+        {/* <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%-8px)] shadow-small ml-1 z-10">
           <p className="text-tiny text-white/80">{document?.}</p>
         </CardFooter> */}
       </Card>

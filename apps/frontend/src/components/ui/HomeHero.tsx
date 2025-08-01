@@ -13,7 +13,7 @@ const HomeHero = () => {
           {'Welcome to Drafts'}
         </Chip>
 
-        <h2 className="text-3xl sm:text-4xl xl:text-[60px] font-serif font-bold text-foreground !leading-tight text-center xl:text-start">
+        <h2 className="text-3xl sm:text-4xl xl:text-[60px] font-serif font-bold text-foreground leading-tight! text-center xl:text-start">
           {'Stories that'}
           {/* {bg-text-gradient bg-clip-text text-transparent} */}
           <span className="">

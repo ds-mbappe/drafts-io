@@ -17,7 +17,7 @@ const Library = () => {
 
     <div className="w-full flex flex-col gap-5 mx-auto relative py-10 px-5">
       <p className="text-sm font-normal text-foreground-500">
-        {`This is the list of all the stories you have created, wheter you published them or not. You can manage them (edit, publish, delete) right from here.`}
+        {`This is the list of all the drafts you have created, wheter you published them or not. You can manage them (edit, publish, delete) right from here.`}
       </p>
 
       {isLoading ?

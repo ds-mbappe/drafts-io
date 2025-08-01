@@ -31,7 +31,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
   return (
     <html lang="en">
-      <body className="min-h-[100dvh] overflow-x-hidden bg-content1">
+      <body className="min-h-dvh overflow-x-hidden bg-content1">
         <HeroUIProvider>
           <ClientOnly>
             <NextThemesProvider attribute="class" enableSystem defaultTheme="system">

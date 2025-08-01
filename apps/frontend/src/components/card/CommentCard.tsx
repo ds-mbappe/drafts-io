@@ -79,7 +79,7 @@ const CommentCard = ({ comment, onRemoveComment, onUpdateCommentText }: {
 
   return (
     <>
-      <div onClick={scrollToComment} className="flex flex-col gap-2 p-2 border border-divider md:hover:-translate-x-1.5 transition-all shadow rounded-xl cursor-pointer">
+      <div onClick={scrollToComment} className="flex flex-col gap-2 p-2 border border-divider md:hover:-translate-x-1.5 transition-all shadow-sm rounded-xl cursor-pointer">
         <div className="flex items-center gap-2">
           <div>
             <Avatar

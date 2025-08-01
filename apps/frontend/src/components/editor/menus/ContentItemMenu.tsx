@@ -16,7 +16,7 @@ const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
   const data = useData()
   const [menuOpen, setMenuOpen] = useState(false)
   const actions = useContentItemActions(editor, data.currentNode, data.currentNodePos)
-  const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
+  const iconClasses = "text-xl text-default-500 pointer-events-none shrink-0";
 
   const selectCurrentNode = () => {
     const { currentNodePos } = data;
@@ -46,7 +46,7 @@ const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
       <div className="flex items-center gap-0.5">
         <Dropdown isOpen={menuOpen} onOpenChange={setMenuOpen}>
           <DropdownTrigger>
-            <Button size={"sm"} isIconOnly variant={"light"} draggable={true} className="hidden sm:!flex" onClick={selectCurrentNode}>
+            <Button size={"sm"} isIconOnly variant={"light"} draggable={true} className="hidden sm:flex!" onClick={selectCurrentNode}>
               <GripVertical height={16} width={16} />
             </Button>
           </DropdownTrigger>

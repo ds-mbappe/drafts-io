@@ -16,7 +16,7 @@ export const ImageUploader = ({ onUpload }: { onUpload: (url: string) => void })
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8 rounded-lg min-h-[10rem]">
+      <div className="flex items-center justify-center p-8 rounded-lg min-h-40">
         <Spinner size="lg" color="secondary" />
       </div>
     )

@@ -20,9 +20,9 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
   const { isOpen: isOpenProfile, onOpenChange } = useDisclosure();
 
   const windowClassName = cn(
-    'absolute h-screen left-0 top-0 xl:relative z-[2] w-0 duration-300 transition-all',
+    'absolute h-screen left-0 top-0 xl:relative z-2 w-0 duration-300 transition-all',
     !isOpen && 'border-r-transparent',
-    isOpen && 'w-[350px] xl:!static border-r border-r-divider',
+    isOpen && 'w-[350px] xl:static! border-r border-r-divider',
   )
 
   const onLogout = () => {
@@ -52,7 +52,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
   }
 
   return (
-    <div className={`${windowClassName} h-full bg-content1 flex flex-col overflow-visible gap-8 xl:!relative hideScroll !z-50`}>
+    <div className={`${windowClassName} h-full bg-content1 flex flex-col overflow-visible gap-8 xl:relative! hideScroll z-50!`}>
       <div className={`${windowClassName} ${isOpen ? 'opacity-100 px-4' : 'opacity-0 px-0'} h-full bg-content1 flex flex-col overflow-x-hidden overflow-y-auto py-8 gap-5 relative`}>
         {/* Profile */}
         <div className="w-full flex items-center gap-2.5 p-2.5 rounded-[12px] border border-divider cursor-pointer transition-all hover:bg-foreground-100 active:scale-[0.95]" onClick={onOpenChange}>
@@ -85,7 +85,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         <div className="flex flex-col gap-2">
           {/* Home button */}
           <Link href="/app">
-            <div className={cn('w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]', pathname === '/app' && '!text-foreground !bg-foreground-100')}>
+            <div className={cn('w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]', pathname === '/app' && 'text-foreground! bg-foreground-100!')}>
               <HomeIcon size={20} />
               <p className="font-semibold">{'Home'}</p>
             </div>
@@ -156,7 +156,7 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         color="primary"
         isIconOnly
         title={isOpen ? 'Close sidebar (Alt + S)' : 'Open sidebar (Alt + S)'}
-        className={cn(!isOpen && 'hover:scale-[1.15] hover:translate-x-[20px] transition-all duration-400', 'z-[20] absolute top-1/2 -translate-y-1/2 -right-[20px]')}
+        className={cn(!isOpen && 'hover:scale-[1.15] hover:translate-x-[20px] transition-all duration-400', 'z-20 absolute top-1/2 -translate-y-1/2 -right-[20px]')}
         onPress={onClose}
       >
         {isOpen ? <ChevronLeftIcon size={28} /> : <ChevronRightIcon size={28} />}

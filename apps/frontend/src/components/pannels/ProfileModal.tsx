@@ -2,7 +2,7 @@ import { PencilIcon } from 'lucide-react';
 import { useSession } from "next-auth/react";
 import { v2 as cloudinary } from "cloudinary";
 import React, { useContext, useEffect, useState } from 'react';
-import { getFollowData } from '@/actions/getFollowData';
+// import { getFollowData } from '@/actions/getFollowData';
 import { errorToast, successToast } from '@/actions/showToast';
 import { Avatar, Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
 import { useDebouncedCallback } from 'use-debounce';
@@ -135,16 +135,16 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
 
   // Set follow data
   const setFollowData = async () => {
-    const data = await getFollowData(session?.user?.id);
-    setFollow({
-      followers: data?.followers_count,
-      following: data?.following_count,
-    })
-    setEditUser((prev: any) => ({
-      ...prev,
-      followers: data?.followers_count,
-      following: data?.following_count,
-    }))
+    // const data = await getFollowData(session?.user?.id);
+    // setFollow({
+    //   followers: data?.followers_count,
+    //   following: data?.following_count,
+    // })
+    // setEditUser((prev: any) => ({
+    //   ...prev,
+    //   followers: data?.followers_count,
+    //   following: data?.following_count,
+    // }))
   }
 
   // Use states

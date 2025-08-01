@@ -81,7 +81,7 @@ const EmojiList = forwardRef((props: EmojiListProps, ref) => {
   }
 
   return (
-    <div className="overflow-y-auto max-w-[18rem] max-h-[18rem] p-2 bg-white rounded-lg border border-muted">
+    <div className="overflow-y-auto max-w-[18rem] max-h-72 p-2 bg-white rounded-lg border border-muted">
       {props.items.map((item: any, index: number) => (
         <div
           className={`flex justify-start items-center gap-1 p-1 hover:bg-muted cursor-pointer rounded-md ${index === selectedIndex ? 'bg-muted' : ''}`}

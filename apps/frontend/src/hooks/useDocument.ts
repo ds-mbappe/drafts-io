@@ -1,5 +1,7 @@
+'use client'
+
 import { DocumentCardTypeprops } from '@/lib/types';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 
 const fetchDocument = async (documentID: string) => {
   const res = await fetch(`/api/document/${documentID}`, {
@@ -14,17 +16,17 @@ const fetchDocument = async (documentID: string) => {
   return data.document;
 }
 
-const fetchLatestDocuments = async (url: string) => {
+const fetchLatestDrafts = async (url: string, token: string) => {
   const res = await fetch(url, {
     method: 'GET',
-    headers: { "Content-Type": "application/json" },
+    headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
   })
 
   if (!res.ok) throw new Error('Failed to fetch user documents')
 
   const data = await res.json()
 
-  return data.documents;
+  return data.drafts;
 }
 
 const fetchLibraryDocuments = async (userID: string) => {
@@ -92,7 +94,7 @@ const useDocument = (documentId: string | null) => {
   const { data, error, isLoading, mutate } = useSWR<DocumentCardTypeprops>(
     shouldFetch ? ['/api/document', documentId] : null,
     () => fetchDocument(documentId!),
-    { revalidateOnFocus: false, suspense: true }
+    { revalidateOnFocus: false }
   );
 
   return {
@@ -103,17 +105,16 @@ const useDocument = (documentId: string | null) => {
   };
 }
 
-const useLatestDocuments = (userId: string) => {
-  const shouldFetch = !!userId;
-
+const useLatestDrafts = (token: string) => {
+  const shouldFetch = !!token;
   const { data, error, isLoading, mutate } = useSWR(
-    shouldFetch ? `/api/documents?userId=${userId}` : null,
-    fetchLatestDocuments,
+    shouldFetch ? ['drafts', token] : null,
+    () => fetchLatestDrafts(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts`, token),
     { revalidateOnFocus: false, suspense: true }
   );
 
   return {
-    documents: data,
+    drafts: data,
     isLoading,
     error,
     mutate,
@@ -126,7 +127,7 @@ const useLibraryDocuments = (userId: string | null) => {
   const { data, error, isLoading, mutate } = useSWR(
     shouldFetch ? ['/api/documents', userId] : null,
     ([, uid]) => fetchLibraryDocuments(uid),
-    { revalidateOnFocus: false, suspense: true }
+    { revalidateOnFocus: false }
   );
 
   return {
@@ -156,7 +157,7 @@ const useDocumentLikes = (documentId: string, userId: string) => {
 export {
   useDocument,
   updateDocument,
-  useLatestDocuments,
+  useLatestDrafts,
   useLibraryDocuments,
   useDocumentLikes,
   toggleDocumentLike,

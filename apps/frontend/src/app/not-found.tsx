@@ -4,7 +4,7 @@ import { Button, Link } from "@heroui/react";
 
 export default function NotFound() {
   return (
-    <main className="flex w-full h-[100dvh] flex-col items-center justify-center gap-2 p-5">
+    <main className="flex w-full h-dvh flex-col items-center justify-center gap-2 p-5">
       <Image
         src={notFoundImage}
         width={300}

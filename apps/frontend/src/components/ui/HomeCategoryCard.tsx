@@ -16,7 +16,7 @@ const HomeCategoryCard = ({
         }}
       >
         <CardBody className="flex-row gap-4 p-6">
-          <div className="w-fit h-fit p-3 rounded-lg bg-background shadow-sm">
+          <div className="w-fit h-fit p-3 rounded-lg bg-background shadow-xs">
             <Icon name={item?.icon} className={item?.iconClass} />
           </div>
 
@@ -26,7 +26,7 @@ const HomeCategoryCard = ({
             </h4>
 
             <div className="flex flex-col gap-3">
-              <p className="text-foreground-500 !leading-relaxed line-clamp-3">
+              <p className="text-foreground-500 leading-relaxed! line-clamp-3">
                 {item?.description}
               </p>
 

@@ -284,7 +284,7 @@ const BlockEditor = forwardRef(({
     <div className={cn("w-full flex gap-5 relative justify-center", isDraft ? "h-full" : "")}>
       <div
         className={cn(
-          "w-full relative flex flex-col bg-content1 md:rounded-lg z-[1] md:border md:border-divider overflow-hidden",
+          "w-full relative flex flex-col bg-content1 md:rounded-lg z-1 md:border md:border-divider overflow-hidden",
           isDraft ? "overflow-y-auto" : "overflow-hidden"
         )}
       >

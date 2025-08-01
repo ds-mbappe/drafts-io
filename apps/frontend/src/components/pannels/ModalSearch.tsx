@@ -98,13 +98,13 @@ const ModalSearch = ({
             autoFocus={true}
             startContent={<SearchIcon />}
             classNames={{
-              input: isUsername ? '!text-primary' : '',
+              input: isUsername ? 'text-primary!' : '',
             }}
             onKeyUp={(e: React.KeyboardEvent<HTMLInputElement> | KeyboardEvent) => goToSearch(e)}
             placeholder="Search"
             variant="flat"
             isClearable
-            className="!bg-transparent"
+            className="bg-transparent!"
             onValueChange={updateSearch}
           />
 

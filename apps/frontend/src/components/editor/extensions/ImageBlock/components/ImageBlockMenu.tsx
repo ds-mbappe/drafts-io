@@ -98,7 +98,7 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
         sticky: 'popper',
       }}
     >
-      <div className="w-full flex items-center gap-2 rounded-[12px] border border-divider shadow p-2">
+      <div className="w-full flex items-center gap-2 rounded-[12px] border border-divider shadow-sm p-2">
         <Tooltip
           content={"Align left"}
           delay={0}

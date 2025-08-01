@@ -10,7 +10,7 @@ export type DocumentCardTypeprops = {
   },
   createdAt?: string | null,
   updatedAt?: string | null,
-  cover: string | undefined,
+  cover?: string | undefined,
   topic?: string,
   title?: string,
   content?: string | null,

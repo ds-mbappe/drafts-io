@@ -17,7 +17,7 @@ const ModalPreviewDraft = ({ doc, isOpen, previewEditor, onOpenChange }: {
               {"Preview of "} {doc?.title}
             </ModalHeader>
 
-            <ModalBody className="w-full flex flex-col gap-8 !px-4 !py-0 overflow-y-auto">
+            <ModalBody className="w-full flex flex-col gap-8 px-4! py-0! overflow-y-auto">
               {doc?.cover &&
                 <div className="w-full mx-auto flex justify-center pt-8">                    
                   <Image

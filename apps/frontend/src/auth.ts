@@ -3,6 +3,16 @@ import Google from "next-auth/providers/google"
 import Github from "next-auth/providers/github"
 import Facebook from "next-auth/providers/facebook"
 import CredentialsProvider from "next-auth/providers/credentials";
+import { jwtDecode } from "jwt-decode";
+
+function isTokenExpired(token: string) {
+  try {
+    const decoded: any = jwtDecode(token);
+    return Date.now() >= decoded.exp * 1000;
+  } catch {
+    return true;
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -13,7 +23,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null
         }
 
-        const res = await fetch('http://localhost:3001/auth/signin', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/signin`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(credentials),
@@ -27,6 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             name: data.user.firstname,
             email: data.user.email,
             token: data.access_token,
+            refreshToken: data.refresh_token,
             user: data.user,
           };
         }
@@ -49,8 +60,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       if (user) {
         token.accessToken = user.token;
+        token.refreshToken = user.refreshToken;
         token.user = user.user;
       }
+
+      if (isTokenExpired(token.accessToken)) {
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/refresh_token`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: token.refreshToken }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            token.accessToken = data.access_token;
+          } else {
+            throw new Error('Refresh failed');
+          }
+        } catch (err) {
+          console.error('Token refresh failed', err);
+          token.accessToken = null;
+          token.refreshToken = null;
+          token.user = null;
+        }
+      }
+
       return token
     },
     session: async ({ session, token }: { session: any, token: any }) => {

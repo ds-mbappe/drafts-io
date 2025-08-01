@@ -52,7 +52,7 @@ export const LinkEditorPanel = ({ onSetLink, initialOpenInNewTab, initialUrl }: 
           
           <input
             type="url"
-            className="flex-1 bg-transparent outline-none min-w-[12rem] text-black text-sm dark:text-white"
+            className="flex-1 bg-transparent outline-hidden min-w-48 text-black text-sm dark:text-white"
             placeholder="Enter URL"
             value={state.url}
             onChange={state.onChange}

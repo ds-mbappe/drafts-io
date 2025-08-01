@@ -1,8 +1,7 @@
-import React, { useMemo } from 'react';
-import moment from 'moment';
+import React from 'react';
 import Link from "next/link";
 import { DocumentCardTypeprops } from '@/lib/types';
-import { BookmarkIcon, CalendarIcon, CircleHelpIcon, HeartIcon, MessageCircleIcon } from 'lucide-react';
+import { BookmarkIcon, CircleHelpIcon, HeartIcon, MessageCircleIcon } from 'lucide-react';
 import { Avatar, Button, Card, CardBody, Chip, Image } from "@heroui/react";
 import { estimateReadTimeString } from '@/lib/utils';
 import { useMobile } from '@/hooks/useMobile';
@@ -29,11 +28,11 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
   }
 
   return (
-    <Link href={`/app/${document.id}`}>
-      <Card shadow="none" className="border border-divider cursor-pointer hover:bg-foreground-100 hover:scale-[1.02] active:scale-100 !rounded-large">
+    <Link href={`/app/drafts/${document.id}`}>
+      <Card shadow="none" className="border border-divider cursor-pointer hover:bg-foreground-100 hover:scale-[1.02] active:scale-100 rounded-large!">
         <CardBody className="flex flex-row gap-4">
           {document.cover ?
-            <div className="hidden sm:!flex border border-divider rounded-large">
+            <div className="hidden sm:flex! border border-divider rounded-large">
               <Image
                 width={146}
                 height={146}
@@ -41,7 +40,7 @@ const DocumentCard = ({ document }: { document: DocumentCardTypeprops }) => {
                 alt={`${document.title}_cover`}
               />
             </div> :
-            <div className="w-[140px] h-[142px] bg-divider justify-center items-center hidden sm:!flex border border-divider rounded-large">
+            <div className="w-[140px] h-[142px] bg-divider justify-center items-center hidden sm:flex! border border-divider rounded-large">
               <CircleHelpIcon size={50} />
             </div>
           }
