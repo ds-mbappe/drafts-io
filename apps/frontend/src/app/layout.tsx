@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Daniel Stéphane" }],
   creator: "Daniel Stéphane",
   publisher: "Daniel Stéphane",
-  keywords: ["Document", "Text Editor", "Creative", "Story"],
+  keywords: ["Draft", "Document", "Text Editor", "Creative", "Story"],
   robots: {
     index: true,
     googleBot: {

@@ -14,7 +14,7 @@
     "@auth/prisma-adapter": "^2.8.0",
     "@floating-ui/react-dom": "^2.1.4",
     "@heroui/popover": "^2.3.22",
-    "@heroui/react": "2.7.11",
+    "@heroui/react": "2.8.2",
     "@heroui/system": "^2.4.18",
     "@heroui/theme": "^2.4.17",
     "@hocuspocus/provider": "^2.11.3",

@@ -11,7 +11,7 @@ const NavbarApp = ({ user }: { user?: any }) => {
   const route = usePathname();
 
   return (
-    <Navbar isBordered maxWidth={"full"} className="bg-content1" classNames={{wrapper: 'px-3'}}>
+    <Navbar isBlurred maxWidth={"full"} classNames={{wrapper: 'px-3'}}>
       <NavbarBrand className="flex gap-2">
         <Button
           href="/"

@@ -12,7 +12,7 @@ const HomeCategoryCard = ({
     <Link href="/">
       <Card
         classNames={{
-          base: "cursor-pointer flex flex-col transition-all duration-300 grou hover:bg-foreground-100 hover:-translate-y-1 hover:shadow-lg lg:col-span-1 lg:row-span-1 border dark:border-0"
+          base: "cursor-pointer flex flex-col transition-all duration-300 group-hover:bg-foreground-100 hover:-translate-y-1 hover:shadow-lg lg:col-span-1 lg:row-span-1 border dark:border-0"
         }}
       >
         <CardBody className="flex-row gap-4 p-6">

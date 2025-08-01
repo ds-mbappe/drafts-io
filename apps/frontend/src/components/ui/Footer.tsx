@@ -96,11 +96,6 @@ const Footer = () => {
                 name="email"
                 variant="bordered"
                 placeholder="Enter your email"
-                classNames={{
-                  // input: 'text-background dark:text-foreground',
-                  // base: 'data-[focus-within=true]:border-background data-[focus-within=true]:ring-1 data-[focus-within=true]:rounded-lg data-[focus-within=true]:ring-background',
-                  // inputWrapper: 'px-3 py-2 flex caret-background h-10 border text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-background dark:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm bg-primary-foreground/10 border-primary-foreground/20 text-primary-background placeholder:text-primary-background/60'
-                }}
                 errorMessage="Please enter a valid email"
               />
 
