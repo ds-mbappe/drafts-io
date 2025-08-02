@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@heroui/theme'
 import { HTMLProps, forwardRef } from 'react'
 
 export type SurfaceProps = HTMLProps<HTMLDivElement> & {

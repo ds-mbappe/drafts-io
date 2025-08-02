@@ -1,8 +1,11 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
-  HttpException,
-  HttpStatus,
+  Param,
+  Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -10,6 +13,7 @@ import { DraftsService } from './drafts.service';
 import { JwtGuard } from 'src/auth/jwt.guard';
 import { User } from 'src/auth/auth.decorator';
 import { JwtPayload } from 'src/types';
+import { UpdateDraftDto } from './dto/update-draft.dto';
 
 @Controller('drafts')
 @UseGuards(JwtGuard)
@@ -18,16 +22,34 @@ export class DraftsController {
 
   @Get()
   async getDrafts(@Query('search') search?: string, @User() user?: JwtPayload) {
-    try {
-      const drafts = await this.draftsService.getDrafts(search, user.sub);
-      return { drafts };
-    } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        'Error retrieving drafts',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return this.draftsService.getDrafts(search, user.sub);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string, @User() user?: JwtPayload) {
+    return this.draftsService.findOneDraft(id, user.sub);
+  }
+
+  @Post(':documentId/toggle_like')
+  toggleLike(
+    @Param('documentId') documentId: string,
+    @User() user: JwtPayload,
+  ) {
+    return this.draftsService.toggleLike(documentId, user.sub);
+  }
+
+  @Put(':id')
+  async updateDraft(
+    @Param('id') documentId: string,
+    @Body() updateData: UpdateDraftDto,
+    @User() user?: JwtPayload,
+  ) {
+    return this.draftsService.updateDraft(documentId, updateData, user.sub);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.draftsService.deleteDraft(id);
   }
 
   // @Post()
@@ -40,18 +62,8 @@ export class DraftsController {
   //   return this.draftsService.findAll();
   // }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.draftsService.findOne(+id);
-  // }
-
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateDraftDto: UpdateDraftDto) {
   //   return this.draftsService.update(+id, updateDraftDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.draftsService.remove(+id);
   // }
 }

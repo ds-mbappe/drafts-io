@@ -13,9 +13,9 @@ const NavbarCenterContent = ({
   const navbarItems = [
     { key: 'home', label: 'Home', href: "/" },
     { key: 'drafts', label: 'Drafts', href: "/app" },
-    { key: 'categories', label: 'Categories', href: "#" },
-    { key: 'about', label: 'About us', href: "#" },
-    { key: 'contact', label: 'Contact', href: "#" },
+    // { key: 'categories', label: 'Categories', href: "#" },
+    // { key: 'about', label: 'About us', href: "#" },
+    // { key: 'contact', label: 'Contact', href: "#" },
   ];
 
   return (

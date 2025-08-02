@@ -1,7 +1,7 @@
-import { Button } from '@/components/ui/ButtonTip'
 import { Icon } from '@/components/ui/Icon'
 import { Surface } from '@/components/ui/Surface'
 import { Toggle } from '@/components/ui/Toggle'
+import { Button } from '@heroui/react'
 import { useState, useCallback, useMemo } from 'react'
 
 export type LinkEditorPanelProps = {
@@ -58,7 +58,7 @@ export const LinkEditorPanel = ({ onSetLink, initialOpenInNewTab, initialUrl }: 
             onChange={state.onChange}
           />
         </label>
-        <Button variant="primary" buttonSize="small" type="submit" disabled={!state.isValidUrl}>
+        <Button variant="solid" type="submit" isDisabled={!state.isValidUrl}>
           Set Link
         </Button>
       </form>

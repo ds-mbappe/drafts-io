@@ -1,6 +1,5 @@
-import { cn } from '@/lib/utils';
 import { ChangeEvent, useCallback } from 'react';
-import { Spinner, Button } from "@heroui/react";
+import { Spinner, Button, cn } from "@heroui/react";
 import { ImageIcon, UploadIcon } from 'lucide-react';
 import { useDropZone, useFileUpload, useUploader } from './hooks';
 

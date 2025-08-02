@@ -1,10 +1,10 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@heroui/theme'
 import { useCallback } from 'react'
 
 export type ToggleProps = {
   active?: boolean
-  onChange: (active: boolean) => void
   size?: 'small' | 'large'
+  onChange: (active: boolean) => void
 }
 
 export const Toggle = ({ onChange, active = false, size = 'large' }: ToggleProps) => {

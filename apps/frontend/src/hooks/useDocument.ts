@@ -3,17 +3,17 @@
 import { DocumentCardTypeprops } from '@/lib/types';
 import useSWR from 'swr';
 
-const fetchDocument = async (documentID: string) => {
-  const res = await fetch(`/api/document/${documentID}`, {
+const fetchDraft = async (url: string, token: string) => {
+  const res = await fetch(url, {
     method: 'GET',
-    headers: { "content-type": "application/json" },
+    headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
   });
 
-  if (!res.ok) throw new Error('Failed to fetch document')
+  if (!res.ok) throw new Error('Failed to fetch draft.')
 
   const data = await res.json()
 
-  return data.document;
+  return data;
 }
 
 const fetchLatestDrafts = async (url: string, token: string) => {
@@ -22,11 +22,11 @@ const fetchLatestDrafts = async (url: string, token: string) => {
     headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
   })
 
-  if (!res.ok) throw new Error('Failed to fetch user documents')
+  if (!res.ok) throw new Error('Failed to fetch latest drafts.')
 
   const data = await res.json()
 
-  return data.drafts;
+  return data;
 }
 
 const fetchLibraryDocuments = async (userID: string) => {
@@ -42,33 +42,21 @@ const fetchLibraryDocuments = async (userID: string) => {
   return data.documents;
 }
 
-const fetchDocumentLikes = async (documentId: string, userId: string) => {
-  const res = await fetch(`/api/document/${documentId}/like?userId=${userId}`, {
-    method: 'GET',
-    headers: { "content-type": "application/json" },
+const toggleDocumentLike = async (documentId: string, token: string) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts/${documentId}/toggle_like`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
   });
 
-  if (!res.ok) throw new Error("Failed to fetch document likes");
+  if (!res.ok) throw new Error("Toggle like failed.");
 
   return res.json();
 };
 
-const toggleDocumentLike = async (documentId: string, userId: string, hasLiked: boolean) => {
-  const res = await fetch(`/api/document/${documentId}/like`, {
-    method: hasLiked ? 'DELETE' : 'POST',
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId }),
-  });
-
-  if (!res.ok) throw new Error("Toggle like failed");
-
-  return res.json();
-};
-
-const updateDocument = async (documentId: String, formData?: Object) => {
-  const res = await fetch(`/api/document/${documentId}`, {
+const updateDocument = async (documentId: String, token: string, formData?: Object) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts/${documentId}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({ formData }),
   });
   
@@ -77,10 +65,10 @@ const updateDocument = async (documentId: String, formData?: Object) => {
   return res.json();
 }
 
-const deleteDocument = async (documentId: String) => {
-  const res = await fetch(`/api/document/${documentId}`, {
+const deleteDraft = async (documentId: String, token: string) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts/${documentId}`, {
     method: "DELETE",
-    headers: { "Content-Type": "application/json" },
+    headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
   });
   
   if (!res.ok) throw new Error('Failed to delete document');
@@ -88,12 +76,12 @@ const deleteDocument = async (documentId: String) => {
   return res.json();
 }
 
-const useDocument = (documentId: string | null) => {
-  const shouldFetch = !!documentId;
+const useDocument = (documentId: string | null, token: string) => {
+  const shouldFetch = !!documentId && token;
 
   const { data, error, isLoading, mutate } = useSWR<DocumentCardTypeprops>(
-    shouldFetch ? ['/api/document', documentId] : null,
-    () => fetchDocument(documentId!),
+    shouldFetch ? ['draft', documentId, token] : null,
+    () => fetchDraft(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts/${documentId}`, token),
     { revalidateOnFocus: false }
   );
 
@@ -138,28 +126,11 @@ const useLibraryDocuments = (userId: string | null) => {
   };
 }
 
-const useDocumentLikes = (documentId: string, userId: string) => {
-  const { data, error, isLoading, mutate } = useSWR(
-    userId ? [`/api/document/${documentId}/like`, userId] : null,
-    () => fetchDocumentLikes(documentId, userId),
-    { revalidateOnFocus: false }
-  );
-
-  return {
-    likeCount: data?.likeCount ?? 0,
-    hasLiked: data?.hasLiked ?? false,
-    isLoading,
-    error,
-    mutate
-  };
-}
-
 export {
   useDocument,
   updateDocument,
   useLatestDrafts,
   useLibraryDocuments,
-  useDocumentLikes,
   toggleDocumentLike,
-  deleteDocument,
+  deleteDraft,
 }

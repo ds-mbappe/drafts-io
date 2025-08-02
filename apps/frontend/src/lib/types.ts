@@ -1,3 +1,6 @@
+import { DefaultSession } from "next-auth";
+import { JWT } from "next-auth/jwt"
+
 export type DocumentCardTypeprops = {
   id?: string,
   private?: Boolean | null,
@@ -59,4 +62,30 @@ export type EditUser = {
 export type CharacterCount = {
   words: () => number,
   characters: () => number
+}
+
+declare module "next-auth" {
+  interface Session {
+    accessToken?: string
+    refreshToken?: string
+    user: {
+      refreshToken?: string
+    } & DefaultSession["user"]
+  }
+
+  interface User {
+    id: string
+    refreshToken?: string
+    accessToken?: string
+    name?: string | null
+    email?: string | null
+    image?: string | null
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    accessToken?: string
+    refreshToken?: string
+  }
 }

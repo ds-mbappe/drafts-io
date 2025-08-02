@@ -1,11 +1,12 @@
 import { Badge, Button, useDisclosure } from '@heroui/react'
 import { HeartIcon } from 'lucide-react'
-import React, { memo, useState } from 'react'
+import React, { memo, useContext, useState } from 'react'
 import Icon from '../ui/Icon'
 import ModalValidation from '../pannels/ModalValidation'
 import { errorToast, successToast } from '@/actions/showToast'
 import { useRouter } from 'next/navigation'
-import { deleteDocument } from '@/hooks/useDocument'
+import { deleteDraft } from '@/hooks/useDocument'
+import { NextSessionContext } from '@/contexts/SessionContext'
 
 const DraftToolbar = ({
   likeCount,
@@ -18,8 +19,8 @@ const DraftToolbar = ({
   setIsEditMode,
   setDrawerOpened,
 }: {
-  likeCount: number,
-  hasLiked: boolean,
+  likeCount?: number,
+  hasLiked?: boolean,
   documentId: string,
   isEditMode: boolean,
   drawerOpened: boolean,
@@ -31,15 +32,17 @@ const DraftToolbar = ({
   const MemoButton = memo(Button);
 
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
   const { isOpen, onOpenChange } = useDisclosure();
+  const { session } = useContext(NextSessionContext);
+  const token = session?.accessToken;
+
+  const [loading, setLoading] = useState(false);
 
   const onDeleteDraft = async () => {
     setLoading(true);
 
     try {
-      await deleteDocument(documentId).then(() => {
+      await deleteDraft(documentId, token).then(() => {
         successToast('Story deleted.');
 
         router.back();
@@ -53,7 +56,7 @@ const DraftToolbar = ({
   }
 
   return (
-    <div className="w-full h-16 flex mx-auto px-6 py-2 items-center justify-between border-b border-divider z-2 bg-content1">
+    <div className="w-full h-16 flex mx-auto px-4 md:px-0 py-2 items-center justify-between border-b border-divider z-2 bg-content1">
       <div className="w-full flex items-center gap-3 flex-1">
         <Badge color="danger" isInvisible={!likeCount} content={likeCount} size="md" shape="circle">
           <Button isIconOnly size={"sm"} variant={"light"} onPress={onToggleLike}>
@@ -89,7 +92,7 @@ const DraftToolbar = ({
       </div>
 
       <ModalValidation
-        size="xs"
+        size="xl"
         isOpen={isOpen}
         cancelText={"Cancel"}
         title={"Delete draft"}

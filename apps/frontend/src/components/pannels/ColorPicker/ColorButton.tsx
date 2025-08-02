@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@heroui/theme'
 import { memo, useCallback } from 'react'
 
 export type ColorButtonProps = {

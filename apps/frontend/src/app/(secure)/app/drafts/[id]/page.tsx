@@ -1,9 +1,9 @@
 "use client"
 
-import React, { memo, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'next/navigation'
 import { Avatar, Button, Chip, cn, useDisclosure } from '@heroui/react';
-import { toggleDocumentLike, updateDocument, useDocument, useDocumentLikes } from '@/hooks/useDocument';
+import { toggleDocumentLike, updateDocument, useDocument } from '@/hooks/useDocument';
 import { CloudUploadIcon } from 'lucide-react';
 import { NextSessionContext } from '@/contexts/SessionContext';
 import { useDebouncedCallback } from 'use-debounce';
@@ -23,6 +23,7 @@ import { useEscapeKey } from '@/hooks/useEscapeKey';
 import DraftToolbar from '@/components/toolbar/DraftToolbar';
 import { updateComment } from '@/actions/comment';
 import EditorToolbar from '@/components/editor/toolbars/EditorToolbar';
+import DraftDetails from '@/components/draft/DraftDetails';
 
 export default function Page() {
   const params = useParams();
@@ -30,13 +31,13 @@ export default function Page() {
   const documentId = id?.toString() || '';
   const { session } = useContext(NextSessionContext);
   const userID = session?.user?.id;
+  const token = session?.accessToken;
 
   const editorRef = useRef<{
     editor: Editor | null,
   }>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const isLargeScreen = useMobile();
   const { isOpen, onOpenChange } = useDisclosure();
 
   const MemoButton = memo(Button);
@@ -44,9 +45,8 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   
-  const { document, mutate: mutateDoc } = useDocument(documentId);
-  const { likeCount, hasLiked, mutate } = useDocumentLikes(documentId, userID);
-  const { comments, mutate: mutateComments } = useComments(documentId);
+  const { document, mutate: mutateDoc } = useDocument(documentId, token);
+  // const { comments, mutate: mutateComments } = useComments(documentId);
 
   useEscapeKey(() => setDrawerOpened(false)), drawerOpened;
 
@@ -69,50 +69,6 @@ export default function Page() {
     };
   });
 
-  const onDrop = useCallback(async(acceptedFiles: any) => {
-    const file = acceptedFiles?.[0];
-
-    if (file) {
-      try {
-        const localUrl = URL.createObjectURL(file);
-        const uploadedFileUrl = await uploadFileToCloudinary(file);
-  
-        setDoc((prev: DocumentCardTypeprops) => {
-          return {
-            ...prev,
-            cover: localUrl,
-          }
-        })
-  
-        await mutateDoc(
-          async (currentData?: DocumentCardTypeprops) => {
-            if (currentData) {
-              const formData = {
-            cover: uploadedFileUrl,
-              }
-      
-              await updateDocument(documentId, formData);
-      
-              return { ...currentData, private: false };
-            }
-          },
-          {
-            optimisticData: {
-              ...(document as DocumentCardTypeprops),
-              cover: localUrl
-            },
-            rollbackOnError: true,
-            revalidate: false,
-          }
-        );
-
-        successToast('Story cover updated !');
-      } catch (error) {
-        errorToast('There was an error while updating your story cover, please try again.');
-      }
-    }
-  }, []);
-
   const onPublishDraft = async () => {
     setLoading(true);
     await mutateDoc(
@@ -122,7 +78,7 @@ export default function Page() {
             private: false,
           }
   
-          await updateDocument(documentId, formData);
+          await updateDocument(documentId, token, formData);
   
           return { ...currentData, private: false };
         }
@@ -143,19 +99,24 @@ export default function Page() {
 
   const onToggleLike = useDebouncedCallback(async () => {
     try {
-      await mutate((prev: any) => {
-        return {
-          ...prev,
-          likeCount: hasLiked ? prev.likeCount - 1 : prev.likeCount + 1,
-          hasLiked: !hasLiked
-        };
-      }, false);
+      await mutateDoc(
+        (prev: DocumentCardTypeprops | undefined) => {
+          const prevLikeCount = prev?._count?.likes ?? 0;
 
-      await toggleDocumentLike(documentId, userID, hasLiked);
+          return {
+            ...prev,
+            _count: {
+              likes: document?.hasLiked ? prevLikeCount - 1 : prevLikeCount + 1,
+            }
+          };
+        },
+      );
+
+      await toggleDocumentLike(documentId, token);
     } catch (e) {
       errorToast("Something went wrong, please try again.");
     } finally {
-      mutate()
+      mutateDoc()
     }
   }, 300);
 
@@ -168,7 +129,7 @@ export default function Page() {
           character_count: characterCount?.characters(),
         }
 
-        await updateDocument(documentId, formData);
+        await updateDocument(documentId, token, formData);
 
         return { ...currentData, content: updatedContent };
       },
@@ -195,19 +156,6 @@ export default function Page() {
     [onDebouncedUpdates]
   );
 
-  const { getRootProps, getInputProps, open } = useDropzone({
-    maxFiles: 1,
-    noClick: true,
-    noKeyboard: true,
-    onDrop,
-    onDropRejected() {
-      errorToast(`File format not supported, accepted formats are ".png, .jpg, .jpeg, .gif, .avif, .webp"`)
-    },
-    accept: {
-      'image/png': ['.png', '.jpg', '.jpeg', '.gif', '.avif', '.webp']
-    }
-  });
-
   const isUserTheDraftAuthor = useMemo(() => {
     return doc?.author?.id === userID;
   }, [doc.author?.id, userID]);
@@ -215,12 +163,20 @@ export default function Page() {
     return document?.author?.id === userID && isEditMode;
   }, [document?.author?.id, isEditMode, userID]);
 
+  useEffect(() => {
+    if (document?.id) {
+      setDoc(document)
+    }
+  }, [document])
+
+  if (!document) return <>Loading...</>
+
   return (
     <div className="w-full flex flex-col bg-content1 relative overflow-visible">
-      <div className="sticky top-0 z-10">
+      <div className="">
         <DraftToolbar
-          hasLiked={hasLiked}
-          likeCount={likeCount}
+          hasLiked={document?.hasLiked}
+          likeCount={document?._count?.likes}
           documentId={documentId}
           isEditMode={isEditMode}
           drawerOpened={drawerOpened}
@@ -236,94 +192,19 @@ export default function Page() {
         <EditorToolbar editor={editorRef.current?.editor} documentId={documentId} />
       }
 
-      <div ref={containerRef} className={cn("w-full flex flex-col flex-1 gap-5 relative", isEditMode ? "pb-[84px]" : "pb-10")}>
-        <div className="w-full flex flex-col gap-5 mx-auto p-4 md:px-0">
-          <div className="w-full flex items-center gap-3 mx-auto">
-            <Avatar
-              size="sm"
-              as="button"
-              showFallback
-              color="primary"
-              classNames={{
-                base: "border"
-              }}
-              src={doc?.author?.avatar}
-              name={doc?.author?.firstname?.split("")?.[0]?.toUpperCase()}
-            />
+      <div ref={containerRef} className="w-full flex flex-col flex-1 gap-5 relative pb-16">
+        <DraftDetails draft={document} />
 
-            <div className="flex flex-col items-start">
-              <p className="text-foreground text-lg font-semibold">
-                { `${doc?.author?.firstname} ${doc?.author?.lastname}` }
-              </p>
-
-              <p className="text-default-500 text-sm">
-                { moment(doc?.createdAt).format("MMMM D, YYYY, h:mm a") }
-              </p>
-            </div>
-          </div>
-
-          <Chip variant="flat" color='primary' size={isLargeScreen ? "md" : "sm"}>
-            {document?.topic || 'No topic'}
-          </Chip>
-
-          <div className="flex flex-col gap-2">
-            <p className="text-3xl font-semibold text-foreground">
-              { doc?.title }
-            </p>
-
-            <p className="text-default-500">
-              { doc?.intro }
-            </p>
-          </div>
-
-          <Button
-            variant="light"
-            className={cn("w-full h-[350px] md:h-[450px] px-0 border border-divider", isEditMode ? "cursor-pointer" : "cursor-default")}
-            onPress={(isUserTheDraftAuthor && isEditMode) ? open : () => {}}
-          >
-            <div
-              {...getRootProps()}
-              className="w-full flex justify-center items-center mx-auto relative px-0"
-            >
-              <input {...getInputProps()} />
-
-              {doc?.cover &&
-                <div
-                  className="bg-cover bg-center w-full h-[350px] md:h-[450px]"
-                  style={{
-                    backgroundImage: `url(${doc?.cover})`
-                  }}
-                />
-              }
-
-              {!doc?.cover &&
-                <div className="w-full h-[350px] md:h-[450px] rounded-[12px] gap-1 flex flex-col justify-center items-center bg-cover bg-center overflow-hidden border border-divider">
-                  <CloudUploadIcon
-                    width={80}
-                    height={80}
-                    className="text-foreground"
-                  />
-
-                  <p className="text-foreground text-center">
-                    <span className="underline">{ "Click to upload" }</span>
-                    { " or drag and drop" }
-                  </p>
-                </div>
-              }
-            </div>
-          </Button>
-        </div>
-
-        <BlockEditor
+        {/* <BlockEditor
           doc={doc}
           ref={editorRef}
           autoFocus={false}
           editable={isEditMode}
           containerRef={containerRef}
           debouncedUpdates={handleDebouncedUpdates}
-        />
+        /> */}
 
-        <CustomDrawer
+        {/* <CustomDrawer
           open={drawerOpened}
           title={`Comments (${comments?.length || 0})`}
           placement={isLargeScreen ? "right" : "bottom" }
@@ -361,7 +242,7 @@ export default function Page() {
               })
             }
           </div>
-        </CustomDrawer>
+        </CustomDrawer> */}
       </div>
 
       {document?.private &&

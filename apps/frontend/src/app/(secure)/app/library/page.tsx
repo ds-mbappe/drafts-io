@@ -4,7 +4,7 @@ import { Button, Spinner } from "@heroui/react";
 import React, { useContext } from 'react';
 import { useLibraryDocuments } from '@/hooks/useDocument';
 import { NextSessionContext } from '@/contexts/SessionContext';
-import DocumentCardInLibrary from '@/components/card/DocumentCardInLibrary';
+import DraftCardInLibrary from '@/components/card/DraftCardInLibrary';
 import Link from "next/link";
 import { PenToolIcon } from "lucide-react";
 
@@ -29,7 +29,7 @@ const Library = () => {
             <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-5">
               {
                 documents?.map((document: any, index: number) => {
-                  return <DocumentCardInLibrary key={index} document={document} />
+                  return <DraftCardInLibrary key={index} draft={document} />
                 })
               }
             </div> :

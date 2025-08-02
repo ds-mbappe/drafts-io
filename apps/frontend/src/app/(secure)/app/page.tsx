@@ -4,12 +4,12 @@ import 'katex/dist/katex.min.css';
 import Link from 'next/link';
 import React, { Suspense, useContext } from 'react';
 import { PenToolIcon } from 'lucide-react';
-import DocumentCard from '@/components/card/DocumentCard';
 import { Button, Tabs, Tab } from "@heroui/react";
 import { useLatestDrafts } from '@/hooks/useDocument';
 import { LatestDocumentsFallback } from '@/components/suspense/LatestDocumentsFallback';
 import { DocumentCardTypeprops } from '@/lib/types';
 import { NextSessionContext } from '@/contexts/SessionContext';
+import DraftCardInLibrary from '@/components/card/DraftCardInLibrary';
 
 const DiscoverContent = () => {
   const { session } = useContext(NextSessionContext);
@@ -22,9 +22,9 @@ const DiscoverContent = () => {
   }
   
   return drafts?.length ? (
-    <div className="w-full grid grid-cols-1 gap-4">
+    <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
       {drafts.map((draft: DocumentCardTypeprops) => (
-        <DocumentCard key={draft.id} document={draft} />
+        <DraftCardInLibrary key={draft.id} draft={draft} />
       ))}
     </div>
   ) : (

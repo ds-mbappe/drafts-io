@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@heroui/react'
 import { icons } from 'lucide-react'
 import { memo } from 'react'
 

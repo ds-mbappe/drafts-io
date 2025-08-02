@@ -1,7 +1,7 @@
-import { cn } from '@/lib/utils';
 import { Node } from '@tiptap/pm/model';
 import { useCallback, useRef } from 'react';
 import { Editor, NodeViewWrapper } from '@tiptap/react';
+import { cn } from '@heroui/theme';
 
 interface ImageBlockViewProps {
   editor: Editor
