@@ -173,7 +173,7 @@ export default function Page() {
 
   return (
     <div className="w-full flex flex-col bg-content1 relative overflow-visible">
-      <div className="">
+      <div className="sticky top-0 z-10">
         <DraftToolbar
           hasLiked={document?.hasLiked}
           likeCount={document?._count?.likes}
