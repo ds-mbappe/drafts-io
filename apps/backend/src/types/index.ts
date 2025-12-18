@@ -4,3 +4,9 @@ export interface JwtPayload {
   iat?: number;
   exp?: number;
 }
+
+export type UploadProgressCallback = (progress: {
+  uploadedBytes: number;
+  totalBytes: number;
+  percentage: number;
+}) => void;

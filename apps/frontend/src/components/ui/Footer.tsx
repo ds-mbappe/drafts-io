@@ -1,3 +1,5 @@
+"use client"
+
 import { Button, Divider, Input } from '@heroui/react'
 import Link from 'next/link'
 import React from 'react'

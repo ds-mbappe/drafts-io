@@ -1,3 +1,5 @@
+"use client"
+
 import { Card, Chip, cn } from '@heroui/react'
 import Image from 'next/image'
 import React from 'react'

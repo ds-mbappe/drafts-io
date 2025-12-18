@@ -6,7 +6,7 @@ import { useDropZone, useFileUpload, useUploader } from './hooks';
 export const ImageUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
   const { loading, uploadFile } = useUploader({ onUpload })
   const { handleUploadClick, ref } = useFileUpload()
-  const { draggedInside, onDrop, onDragEnter, onDragLeave } = useDropZone({ uploader: uploadFile })
+  const { draggedInside, onDrop, onDragEnter, onDragLeave } = useDropZone({ uploader: () => {} })
 
   const onFileChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => (e.target.files ? uploadFile(e.target.files[0]) : null),

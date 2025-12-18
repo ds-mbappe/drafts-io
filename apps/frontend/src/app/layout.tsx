@@ -32,17 +32,15 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en">
       <body className="min-h-dvh overflow-x-hidden bg-content1">
-        <HeroUIProvider>
-          <ClientOnly>
-            <NextThemesProvider attribute="class" enableSystem defaultTheme="system">
-              <SessionProvider session={session}>
-                <Alert />
-                {children}
-                <Toaster richColors />
-              </SessionProvider>
-            </NextThemesProvider>
-          </ClientOnly>
-        </HeroUIProvider>
+        <ClientOnly>
+          <NextThemesProvider attribute="class" enableSystem defaultTheme="system">
+            <SessionProvider session={session}>
+              <Alert />
+              {children}
+              <Toaster richColors />
+            </SessionProvider>
+          </NextThemesProvider>
+        </ClientOnly>
       </body>
     </html>
   );

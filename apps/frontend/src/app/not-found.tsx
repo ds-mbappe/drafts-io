@@ -1,3 +1,5 @@
+"use client"
+
 import Image from 'next/image'
 import notFoundImage from '../../public/404.png'
 import { Button, Link } from "@heroui/react";

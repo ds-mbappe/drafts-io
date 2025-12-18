@@ -168,7 +168,7 @@ export default function SignInPage() {
                 {"Forgot your password ?"}
               </p>
 
-              <Link href="/account/reset-pass">
+              <Link href="/account/reset-password">
                 <p className="font-medium hover:text-primary transition-all text-sm">
                   {"Click here"}
                 </p>

@@ -1,4 +1,3 @@
-import { PencilIcon } from 'lucide-react';
 import { useSession } from "next-auth/react";
 import { v2 as cloudinary } from "cloudinary";
 import React, { useContext, useEffect, useState } from 'react';

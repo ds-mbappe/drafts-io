@@ -26,12 +26,12 @@ export class DraftsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @User() user?: JwtPayload) {
+  async findOne(@Param('id') id: string, @User() user?: JwtPayload) {
     return this.draftsService.findOneDraft(id, user.sub);
   }
 
   @Post(':documentId/toggle_like')
-  toggleLike(
+  async toggleLike(
     @Param('documentId') documentId: string,
     @User() user: JwtPayload,
   ) {
@@ -48,7 +48,7 @@ export class DraftsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.draftsService.deleteDraft(id);
   }
 

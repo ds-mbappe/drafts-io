@@ -1,11 +1,12 @@
-import { Modal, ModalContent, ModalHeader, Divider, ModalBody, useDisclosure, Input } from '@heroui/react'
+import { Modal, ModalContent, ModalHeader, Divider, ModalBody, Input } from '@heroui/react'
 import { SearchIcon, InfoIcon } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import DocumentItemInList from '../ui/DocumentItemInList'
 import UserItemInList from '../ui/UserItemInList'
 import { search } from '@/actions/globalSearch'
 import { useDebouncedCallback } from 'use-debounce'
 import { useRouter } from 'next/navigation'
+import { NextSessionContext } from '@/contexts/SessionContext'
 
 const ModalSearch = ({
   isOpenSearch,
@@ -18,8 +19,11 @@ const ModalSearch = ({
   const [searchText, setSearchText] = useState("");
   const [isUsername, setIsUsername] = useState(false);
   const [searchResults, setSearchResults] = useState<any>({});
-
+  
   const router = useRouter();
+  const { session } = useContext(NextSessionContext);
+
+  const token = session?.accessToken;
 
   const navigateToSearch = (query: string) => {
     router.push(`/app/search?query=${query}`)
@@ -44,8 +48,8 @@ const ModalSearch = ({
   }
 
   const searchFunction = useDebouncedCallback(async (value: string) => {
-    if (value) {
-      const res = await search(value)
+    if (value.trim()) {
+      const res = await search(value, token)
 
       if (res.ok) {
         const data = await res.json()

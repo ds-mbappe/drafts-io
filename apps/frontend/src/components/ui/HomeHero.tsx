@@ -1,3 +1,5 @@
+"use client"
+
 import { Button, Chip } from '@heroui/react'
 import { ArrowRightIcon, SparklesIcon } from 'lucide-react'
 import Link from 'next/link'

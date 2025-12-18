@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
-import * as bcrypt from 'bcryptjs';
 import { prisma } from 'prisma/client';
 import { resetPasswordTemplate } from './templates/reset-password';
 import { verifyEmailTemplate } from './templates/verify-email';

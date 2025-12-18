@@ -1,36 +1,25 @@
-import { v2 as cloudinary } from "cloudinary";
-import { errorToast } from "@/actions/showToast";
 import { DragEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Editor } from "@tiptap/react";
+import { errorToast } from '@/actions/showToast';
 
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
-  const [loading, setLoading] = useState(false)
-
+  const [loading, setLoading] = useState(false);
+  
   const uploadFile = useCallback(
     async (file: File) => {
-      setLoading(true)
-      const timestamp = Math.round((new Date).getTime()/1000)
-      const folder = `${process.env.NODE_ENV}/images`
-      const signature = cloudinary.utils.api_sign_request({
-        timestamp: timestamp,
-        folder: folder,
-      }, process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET as string )
+      setLoading(true);
 
       try {
         const formData = new FormData()
         formData.append('file', file)
-        formData.append('folder', folder)
-        formData.append('signature', signature)
-        formData.append('timestamp', JSON.stringify(timestamp))
-        formData.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY as string)
 
-        const result = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME as string}/auto/upload`, {
+        const result = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload`, {
           method: 'POST',
           body: formData,
         })
-        const data = await result.json()
+        const data = await result.json();
         
-        onUpload(data?.secure_url)
+        onUpload(data?.url)
       } catch (errPayload: any) {
         errorToast(errPayload?.response?.data?.error || 'Something went wrong');
       }

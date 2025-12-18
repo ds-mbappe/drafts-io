@@ -1,13 +1,13 @@
 "use client"
 
-import { cn } from '@/lib/utils';
+import { cn } from '@heroui/react';
 import { useRouter, usePathname } from 'next/navigation';
 import React, { useEffect, useState, memo, useContext } from 'react';
 import { Divider, Button, Avatar, useDisclosure } from "@heroui/react";
 import { BookmarkIcon, BookOpenTextIcon, BookTextIcon, ChevronLeftIcon, ChevronRightIcon, CircleHelpIcon, ClockIcon, HomeIcon, LayoutListIcon, LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import ProfileModal from "./ProfileModal";
+// import ProfileModal from "./ProfileModal";
 import { useTheme } from "next-themes";
 import { NextSessionContext } from '@/contexts/SessionContext';
 
@@ -145,10 +145,10 @@ const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => vo
         </div>
       </div>
 
-      <ProfileModal
+      {/* <ProfileModal
         changeDialogOpenState={onOpenChange}
         dialogOpen={isOpenProfile}
-      />
+      /> */}
 
       <Button
         variant={isOpen ? 'solid' : 'flat'}
