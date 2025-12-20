@@ -1,33 +1,8 @@
 'use client'
 
-import { DocumentCardTypeprops } from '@/lib/types';
 import useSWR from 'swr';
-
-const fetchDraft = async (url: string, token: string) => {
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
-  });
-
-  if (!res.ok) throw new Error('Failed to fetch draft.')
-
-  const data = await res.json()
-
-  return data;
-}
-
-const fetchLatestDrafts = async (url: string, token: string) => {
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
-  })
-
-  if (!res.ok) throw new Error('Failed to fetch latest drafts.')
-
-  const data = await res.json()
-
-  return data;
-}
+import { DraftProps } from '@/lib/types';
+import { useAuthFetcher } from './useAuthFetcher';
 
 const fetchLibraryDocuments = async (userID: string) => {
   const res = await fetch(`/api/documents/${userID}/library`, {
@@ -76,28 +51,46 @@ const deleteDraft = async (documentId: String, token: string) => {
   return res.json();
 }
 
-const useDocument = (documentId: string | null, token: string) => {
-  const shouldFetch = !!documentId && token;
+const useGetDraft = (documentId: string | null) => {
+  const { fetcher, token } = useAuthFetcher();
 
-  const { data, error, isLoading, mutate } = useSWR<DocumentCardTypeprops>(
-    shouldFetch ? ['draft', documentId, token] : null,
-    () => fetchDraft(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts/${documentId}`, token),
+  const { data, error, isLoading, mutate } = useSWR<DraftProps>(
+    token ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts/${documentId}` : null,
+    fetcher,
     { revalidateOnFocus: false }
   );
 
   return {
-    document: data,
+    draft: data,
     isLoading,
     error,
     mutate,
   };
 }
 
-const useLatestDrafts = (token: string) => {
-  const shouldFetch = !!token;
-  const { data, error, isLoading, mutate } = useSWR(
-    shouldFetch ? ['drafts', token] : null,
-    () => fetchLatestDrafts(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts`, token),
+const useFeedDiscoverDrafts = () => {
+  const { fetcher, token } = useAuthFetcher();
+
+  const { data, error, isLoading, mutate } = useSWR<DraftProps[]>(
+    token ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts` : null,
+    fetcher,
+    { revalidateOnFocus: false, suspense: true }
+  );
+
+  return {
+    drafts: data,
+    isLoading,
+    error,
+    mutate,
+  };
+}
+
+const useFeedFollowingDrafts = () => {
+  const { fetcher, token } = useAuthFetcher();
+
+  const { data, error, isLoading, mutate } = useSWR<DraftProps[]>(
+    token ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts/following` : null,
+    fetcher,
     { revalidateOnFocus: false, suspense: true }
   );
 
@@ -127,9 +120,10 @@ const useLibraryDocuments = (userId: string | null) => {
 }
 
 export {
-  useDocument,
+  useGetDraft,
   updateDocument,
-  useLatestDrafts,
+  useFeedDiscoverDrafts,
+  useFeedFollowingDrafts,
   useLibraryDocuments,
   toggleDocumentLike,
   deleteDraft,

@@ -1,14 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { prisma } from 'prisma/client';
+import { PrismaService } from 'prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class GlobalSearchService {
-  constructor() {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async search(text?: string) {
     try {
       if (text?.startsWith('@')) {
-        const users = await prisma.user.findMany({
+        const users = await this.prisma.user.findMany({
           take: 10,
           select: {
             avatar: true,
@@ -19,7 +20,7 @@ export class GlobalSearchService {
           where: {
             username: {
               startsWith: text?.split('@')[1],
-              mode: 'insensitive',
+              mode: Prisma.QueryMode.insensitive,
             },
           },
         });
@@ -27,7 +28,7 @@ export class GlobalSearchService {
         return { users };
       } else {
         const [users, documents] = await Promise.all([
-          prisma.user.findMany({
+          this.prisma.user.findMany({
             take: 10,
             select: {
               avatar: true,
@@ -40,20 +41,20 @@ export class GlobalSearchService {
                 {
                   firstname: {
                     contains: text,
-                    mode: 'insensitive',
+                    mode: Prisma.QueryMode.insensitive,
                   },
                 },
                 {
                   lastname: {
                     contains: text,
-                    mode: 'insensitive',
+                    mode: Prisma.QueryMode.insensitive,
                   },
                 },
               ],
             },
           }),
 
-          prisma.document.findMany({
+          this.prisma.document.findMany({
             take: 10,
             select: {
               id: true,
@@ -63,7 +64,7 @@ export class GlobalSearchService {
             where: {
               title: {
                 contains: text,
-                mode: 'insensitive',
+                mode: Prisma.QueryMode.insensitive,
               },
               private: false,
             },

@@ -61,13 +61,18 @@ model Document {
   word_count      Int?
   createdAt       DateTime @default(now()) @map(name: "created_at")
   updatedAt       DateTime @updatedAt @map(name: "updated_at")
-  likes           Like[]
 
   author          User?    @relation(fields: [authorId], references: [id])
   authorId        String?
 
-  Comment Comment[]
+  likes           Like[]
+  Comment         Comment[]
+
+  @@index([private, createdAt])
+  @@index([authorId, createdAt])
+  @@index([title])
 }
+
 
 model Like {
   id         String   @id @default(cuid())

@@ -5,7 +5,7 @@ import Icon from '../ui/Icon'
 import ModalValidation from '../pannels/ModalValidation'
 import { errorToast, successToast } from '@/actions/showToast'
 import { useRouter } from 'next/navigation'
-import { deleteDraft } from '@/hooks/useDocument'
+import { deleteDraft } from '@/hooks/useDraft'
 import { NextSessionContext } from '@/contexts/SessionContext'
 
 const DraftToolbar = ({

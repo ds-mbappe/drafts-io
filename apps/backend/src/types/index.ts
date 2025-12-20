@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+
 export interface JwtPayload {
   sub: string;
   email: string;
@@ -10,3 +12,33 @@ export type UploadProgressCallback = (progress: {
   totalBytes: number;
   percentage: number;
 }) => void;
+
+export type DraftDetail = Prisma.DocumentGetPayload<{
+  select: {
+    id: true;
+    cover: true;
+    title: true;
+    topic: true;
+    intro: true;
+    content: true;
+    createdAt: true;
+    updatedAt: true;
+    word_count: true;
+    authorId: true;
+    private: true;
+    author: {
+      select: {
+        id: true;
+        avatar: true;
+        firstname: true;
+        lastname: true;
+      };
+    };
+    _count: {
+      select: {
+        Comment: true;
+        likes: true;
+      };
+    };
+  };
+}>;

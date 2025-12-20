@@ -1,5 +1,5 @@
 import { useMobile } from '@/hooks/useMobile'
-import { DocumentCardTypeprops } from '@/lib/types'
+import { DraftProps } from '@/lib/types'
 import { Avatar, Chip } from '@heroui/react'
 import { CloudUploadIcon } from 'lucide-react'
 import moment from 'moment'
@@ -8,7 +8,7 @@ import React from 'react'
 const DraftDetails = ({
   draft
 }: {
-  draft: DocumentCardTypeprops
+  draft: DraftProps
 }) => {
   const isLargeScreen = useMobile();
 

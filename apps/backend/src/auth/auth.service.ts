@@ -9,22 +9,23 @@ import { SignUpDto } from './dto/signup.dto';
 import { SignInDto } from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { prisma } from 'prisma/client';
 import { User } from '@prisma/client';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { EmailService } from 'src/email/email.service';
 import { JwtPayload } from 'src/types';
+import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private emailService: EmailService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async signUp(dto: SignUpDto) {
     try {
-      const user = await prisma.user.findFirst({
+      const user = await this.prisma.user.findFirst({
         where: {
           email: dto.email,
         },
@@ -37,7 +38,7 @@ export class AuthService {
       }
 
       const hashedPassword = await bcrypt.hash(dto.password, 10);
-      const savedUser = await prisma.user.create({
+      const savedUser = await this.prisma.user.create({
         data: {
           email: dto.email,
           password: hashedPassword,
@@ -73,7 +74,7 @@ export class AuthService {
 
   async signIn(dto: SignInDto) {
     try {
-      const user = await prisma.user.findFirst({
+      const user = await this.prisma.user.findFirst({
         where: {
           email: dto.email,
         },
@@ -97,7 +98,7 @@ export class AuthService {
 
   async verifyEmail(token: string) {
     try {
-      const user = await prisma.user.findFirst({
+      const user = await this.prisma.user.findFirst({
         where: {
           verifyToken: token,
         },
@@ -107,7 +108,7 @@ export class AuthService {
         throw new BadRequestException('Invalid token');
       }
 
-      await prisma.user.update({
+      await this.prisma.user.update({
         where: {
           id: user?.id,
         },
@@ -149,13 +150,13 @@ export class AuthService {
 
   async sendResetPasswordEmail(email: string) {
     try {
-      const user = await prisma.user.findUnique({ where: { email } });
+      const user = await this.prisma.user.findUnique({ where: { email } });
 
       if (!user) throw new NotFoundException('User not found');
 
       const token = await this.generateResetToken(user.id);
 
-      await prisma.user.update({
+      await this.prisma.user.update({
         where: { id: user.id },
         data: {
           forgotPasswordToken: token,
@@ -181,7 +182,7 @@ export class AuthService {
 
   async resetPassword(dto: ResetPasswordDto) {
     try {
-      const user = await prisma.user.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: { email: dto.email },
       });
 
@@ -194,7 +195,7 @@ export class AuthService {
           const salt = await bcrypt.genSalt(10);
           const hashedPassword = await bcrypt.hash(dto.password, salt);
 
-          await prisma.user.update({
+          await this.prisma.user.update({
             where: {
               id: user?.id,
             },

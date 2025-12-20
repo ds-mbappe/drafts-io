@@ -1,16 +1,10 @@
 import { DefaultSession } from "next-auth";
-import { JWT } from "next-auth/jwt"
 
-export type DocumentCardTypeprops = {
+export type DraftProps = {
   id?: string,
   private?: Boolean | null,
   locked?: Boolean | undefined,
-  author?: {
-    id: string,
-    avatar?: string,
-    lastname?: string,
-    firstname?: string,
-  },
+  author?: BaseUser,
   createdAt?: string | null,
   updatedAt?: string | null,
   cover?: string | undefined,
@@ -42,11 +36,14 @@ export type CommentCardProps = {
 }
 
 export type BaseUser = {
-  id: string,
+  id?: string,
   email?: string,
-  avatar: string,
-  firstname: string,
-  lastname: string,
+  avatar?: string,
+  firstname?: string,
+  lastname?: string,
+  phone?: string,
+  followers?: number,
+  following?: number,
 }
 
 export type EditUser = {
@@ -83,9 +80,9 @@ declare module "next-auth" {
   }
 }
 
-declare module "next-auth/jwt" {
-  interface JWT {
-    accessToken?: string
-    refreshToken?: string
-  }
-}
+// declare module "next-auth/jwt" {
+//   interface JWT {
+//     accessToken?: string
+//     refreshToken?: string
+//   }
+// }

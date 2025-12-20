@@ -1,15 +1,15 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
-import { prisma } from 'prisma/client';
 import { resetPasswordTemplate } from './templates/reset-password';
 import { verifyEmailTemplate } from './templates/verify-email';
 import { Transporter } from 'nodemailer';
+import { PrismaService } from 'prisma/prisma.service';
 
 type EmailType = 'VERIFY' | 'RESET';
 
 @Injectable()
 export class EmailService {
-  constructor() {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async sendEmail({
     email,
@@ -27,7 +27,7 @@ export class EmailService {
       const expiry = new Date(now.getTime() + 60 * 60 * 1000);
 
       if (emailType === 'VERIFY') {
-        await prisma.user.update({
+        await this.prisma.user.update({
           where: { id: userId },
           data: {
             verifyToken: token,
@@ -35,7 +35,7 @@ export class EmailService {
           },
         });
       } else if (emailType === 'RESET') {
-        await prisma.user.update({
+        await this.prisma.user.update({
           where: { id: userId },
           data: {
             forgotPasswordToken: token,

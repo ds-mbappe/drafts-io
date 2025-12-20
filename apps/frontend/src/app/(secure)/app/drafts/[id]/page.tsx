@@ -3,7 +3,7 @@
 import React, { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'next/navigation'
 import { Avatar, Button, Chip, cn, useDisclosure } from '@heroui/react';
-import { toggleDocumentLike, updateDocument, useDocument } from '@/hooks/useDocument';
+import { toggleDocumentLike, updateDocument } from '@/hooks/useDraft';
 import { CloudUploadIcon } from 'lucide-react';
 import { NextSessionContext } from '@/contexts/SessionContext';
 import { useDebouncedCallback } from 'use-debounce';
@@ -18,7 +18,7 @@ import { CustomDrawer } from '@/components/pannels/CustomDrawer';
 import { useMobile } from '@/hooks/useMobile';
 import { useComments } from '@/hooks/useComments';
 import CommentCard from '@/components/card/CommentCard';
-import { CharacterCount, CommentCardProps, DocumentCardTypeprops } from '@/lib/types';
+import { CharacterCount, CommentCardProps, DraftProps } from '@/lib/types';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
 import DraftToolbar from '@/components/toolbar/DraftToolbar';
 import { updateComment } from '@/actions/comment';
@@ -45,12 +45,12 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   
-  const { document, mutate: mutateDoc } = useDocument(documentId, token);
+  const { document, mutate: mutateDoc } = useGetDraft(documentId, token);
   // const { comments, mutate: mutateComments } = useComments(documentId);
 
   useEscapeKey(() => setDrawerOpened(false)), drawerOpened;
 
-  const [doc, setDoc] = useState<DocumentCardTypeprops>(() => {
+  const [doc, setDoc] = useState<DraftProps>(() => {
     return {
       id: document?.id,
       content: document?.content,
@@ -72,7 +72,7 @@ export default function Page() {
   const onPublishDraft = async () => {
     setLoading(true);
     await mutateDoc(
-      async (currentData?: DocumentCardTypeprops) => {
+      async (currentData?: DraftProps) => {
         if (currentData) {
           const formData = {
             private: false,
@@ -85,7 +85,7 @@ export default function Page() {
       },
       {
         optimisticData: {
-          ...(document as DocumentCardTypeprops),
+          ...(document as DraftProps),
           private: false
         },
         rollbackOnError: true,
@@ -100,7 +100,7 @@ export default function Page() {
   const onToggleLike = useDebouncedCallback(async () => {
     try {
       await mutateDoc(
-        (prev: DocumentCardTypeprops | undefined) => {
+        (prev: DraftProps | undefined) => {
           const prevLikeCount = prev?._count?.likes ?? 0;
 
           return {
@@ -135,7 +135,7 @@ export default function Page() {
       },
       {
         optimisticData: {
-          ...(document as DocumentCardTypeprops),
+          ...(document as DraftProps),
           content: updatedContent
         },
         rollbackOnError: true,
@@ -145,8 +145,8 @@ export default function Page() {
   }, 1000);
 
   const handleDebouncedUpdates = useCallback(
-    ({ updatedDoc, characterCount }: { updatedDoc: DocumentCardTypeprops; characterCount: CharacterCount }) => {
-      setDoc((oldValue: DocumentCardTypeprops) => ({
+    ({ updatedDoc, characterCount }: { updatedDoc: DraftProps; characterCount: CharacterCount }) => {
+      setDoc((oldValue: DraftProps) => ({
         ...(oldValue),
         content: updatedDoc?.content
       }));

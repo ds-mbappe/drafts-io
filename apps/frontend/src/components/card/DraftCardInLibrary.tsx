@@ -1,12 +1,12 @@
 import React from 'react';
 import moment from 'moment';
 import Link from 'next/link';
-import { DocumentCardTypeprops } from '@/lib/types';
+import { DraftProps } from '@/lib/types';
 import { Avatar, Button, Card, CardBody, Chip, Image } from '@heroui/react';
 import { estimateReadTimeString } from '@/lib/utils';
 import { ClockIcon, HeartIcon } from 'lucide-react';
 
-const DraftCardInLibrary = ({ draft }: { draft: DocumentCardTypeprops }) => {
+const DraftCardInLibrary = ({ draft }: { draft: DraftProps }) => {
   const onToggleLike = (e: any) => {
     e.preventDefault();
   }

@@ -1,7 +1,7 @@
 import { Skeleton } from "@heroui/react";
 import DraftCardInLibrary from "../card/DraftCardInLibrary";
 
-export const LatestDocumentsFallback = () => {
+export const FeedDraftsFallback = () => {
   const elements = [];
 
   for (let i = 0; i < 8; i++) {

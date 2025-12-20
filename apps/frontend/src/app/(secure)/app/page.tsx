@@ -2,37 +2,17 @@
 
 import 'katex/dist/katex.min.css';
 import Link from 'next/link';
-import React, { Suspense, useContext } from 'react';
+import React, { Suspense } from 'react';
 import { PenToolIcon } from 'lucide-react';
 import { Button, Tabs, Tab } from "@heroui/react";
-import { useLatestDrafts } from '@/hooks/useDocument';
-import { LatestDocumentsFallback } from '@/components/suspense/LatestDocumentsFallback';
-import { DocumentCardTypeprops } from '@/lib/types';
-import { NextSessionContext } from '@/contexts/SessionContext';
-import DraftCardInLibrary from '@/components/card/DraftCardInLibrary';
-
-const DiscoverContent = () => {
-  const { session } = useContext(NextSessionContext);
-  const token = session?.accessToken;
-  
-  const { drafts, isLoading } = useLatestDrafts(token);
-
-  if (isLoading || drafts === undefined) {
-    return null;
-  }
-  
-  return drafts?.length ? (
-    <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
-      {drafts.map((draft: DocumentCardTypeprops) => (
-        <DraftCardInLibrary key={draft.id} draft={draft} />
-      ))}
-    </div>
-  ) : (
-    <p>No stories available</p>
-  );
-};
+import FeedCards from '@/components/feed/FeedCards';
+import { FeedDraftsFallback } from '@/components/suspense/FeedDraftsFallback';
+import { useFeedDiscoverDrafts, useFeedFollowingDrafts } from '@/hooks/useDraft';
 
 export default function App() {
+  const { drafts: discoverDrafts, isLoading: isLoadingDiscover } = useFeedDiscoverDrafts();
+  const { drafts: followingDrafts, isLoading: isLoadingFollowing } = useFeedFollowingDrafts();
+
   return (
     <div className="w-full flex flex-col overflow-y-auto relative">
       <div className="w-full mx-auto relative flex cursor-text flex-col z-1 flex-1 px-4 pt-10 pb-5">
@@ -43,15 +23,23 @@ export default function App() {
           aria-label="Tabs"
         >
           <Tab key="latest" title={`Discover`} className="w-full flex flex-col gap-4">
-            <Suspense fallback={<LatestDocumentsFallback />}>
-              <DiscoverContent />
+            <Suspense fallback={<FeedDraftsFallback />}>
+              <FeedCards
+                drafts={discoverDrafts}
+                isLoading={isLoadingDiscover}
+                emptyStateTitle="No drafts available."
+              />
             </Suspense>
           </Tab>
 
           <Tab key="for_you" title={`Following`} className="flex flex-col gap-4">
-            <p className="text-sm font-normal text-foreground-500">
-              {`You are currently not following anybody. Start following people to see their published drafts`}
-            </p>
+            <Suspense fallback={<FeedDraftsFallback />}>
+              <FeedCards
+                drafts={followingDrafts}
+                isLoading={isLoadingFollowing}
+                emptyStateTitle="You are currently not following anybody. Start following people to see their published drafts."
+              />
+            </Suspense>
           </Tab>
         </Tabs>
       </div>
@@ -60,10 +48,10 @@ export default function App() {
         as={Link}
         color="primary"
         href="/app/new_draft"
-        startContent={<PenToolIcon />}
+        startContent={<PenToolIcon size={20} />}
         className="fixed bottom-5 right-5 z-20 hover:scale-110"
       >
-        {'New story'}
+        {'New Draft'}
       </Button>
     </div>
   )

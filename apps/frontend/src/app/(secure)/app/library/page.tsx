@@ -2,7 +2,7 @@
 
 import { Button, Spinner } from "@heroui/react";
 import React, { useContext } from 'react';
-import { useLibraryDocuments } from '@/hooks/useDocument';
+import { useLibraryDocuments } from '@/hooks/useGetDraft';
 import { NextSessionContext } from '@/contexts/SessionContext';
 import DraftCardInLibrary from '@/components/card/DraftCardInLibrary';
 import Link from "next/link";

@@ -1,24 +1,139 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { prisma } from 'prisma/client';
 import { UpdateDraftDto } from './dto/update-draft.dto';
-import type { Document } from '@prisma/client';
+import { PrismaService } from 'prisma/prisma.service';
+import { Prisma } from '@prisma/client';
+import { PaginationDto } from 'src/dto/main.dto';
+import { draftListSelect, draftDetailSelect } from './drafts.select';
+import { DraftDetail } from 'src/types';
+
+const defaultPagination: PaginationDto = {
+  take: 10,
+  cursor: null,
+};
+
+const buildPagination = (dto?: PaginationDto) => ({
+  take: (dto?.take ?? 10) + 1,
+  ...(dto?.cursor && {
+    skip: 1,
+    cursor: { id: dto.cursor },
+  }),
+});
 
 @Injectable()
 export class DraftsService {
-  constructor() {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async getDrafts(search?: string, userId?: string) {
-    try {
-      const select = {
-        id: true,
-        author: {
-          select: {
-            id: true,
-            avatar: true,
-            lastname: true,
-            firstname: true,
+  async getDrafts(
+    search?: string,
+    userId?: string,
+    pagination?: PaginationDto,
+  ) {
+    const where: Prisma.DocumentWhereInput = {
+      private: false,
+      ...(search && {
+        title: {
+          contains: search,
+          mode: Prisma.QueryMode.insensitive,
+        },
+      }),
+    };
+
+    const page = pagination ?? defaultPagination;
+
+    const docs = await this.prisma.document.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      ...buildPagination(page),
+      select: draftListSelect,
+    });
+
+    const hasMore = docs.length > page.take;
+    const items = hasMore ? docs.slice(0, -1) : docs;
+
+    return {
+      items: await this.attachLikes(items, userId),
+      nextCursor: hasMore ? items[items.length - 1].id : null,
+    };
+  }
+
+  async getDraftsOfPeopleIFollow(
+    userId: string,
+    search?: string,
+    pagination?: PaginationDto,
+  ) {
+    const where: Prisma.DocumentWhereInput = {
+      private: false,
+      author: {
+        followers: {
+          some: {
+            followerId: userId,
           },
         },
+      },
+      ...(search && {
+        title: {
+          contains: search,
+          mode: Prisma.QueryMode.insensitive,
+        },
+      }),
+    };
+
+    const page = pagination ?? defaultPagination;
+
+    const docs = await this.prisma.document.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      ...buildPagination(page),
+      select: draftListSelect,
+    });
+
+    const hasMore = docs.length > page.take;
+    const items = hasMore ? docs.slice(0, -1) : docs;
+
+    return {
+      items: await this.attachLikes(items, userId),
+      nextCursor: hasMore ? items[items.length - 1].id : null,
+    };
+  }
+
+  async getMyLibrary(
+    userId: string,
+    search?: string,
+    pagination?: PaginationDto,
+  ) {
+    const where: Prisma.DocumentWhereInput = {
+      authorId: userId,
+      ...(search && {
+        title: {
+          contains: search,
+          mode: Prisma.QueryMode.insensitive,
+        },
+      }),
+    };
+
+    const page = pagination ?? defaultPagination;
+
+    const docs = await this.prisma.document.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      ...buildPagination(page),
+      select: draftListSelect,
+    });
+
+    const hasMore = docs.length > page.take;
+    const items = hasMore ? docs.slice(0, -1) : docs;
+
+    return {
+      items: await this.attachLikes(items, userId),
+      nextCursor: hasMore ? items[items.length - 1].id : null,
+    };
+  }
+
+  async findOneDraft(id: string, userId?: string) {
+    const doc: DraftDetail | null = await this.prisma.document.findUnique({
+      where: { id },
+      select: {
+        id: true,
         cover: true,
         title: true,
         topic: true,
@@ -27,216 +142,147 @@ export class DraftsService {
         createdAt: true,
         updatedAt: true,
         word_count: true,
-        private: false,
-        locked: false,
-        character_count: false,
-        authorId: false,
+        authorId: true,
+        private: true,
+        author: {
+          select: {
+            id: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
+          },
+        },
         _count: {
           select: {
             Comment: true,
             likes: true,
           },
         },
-      };
+      },
+    });
 
-      let documents: Document[] = [];
-
-      if (search) {
-        documents = await prisma.document.findMany({
-          where: {
-            title: search,
-            private: false,
-          },
-          select: select,
-        });
-      } else {
-        documents = await prisma.document.findMany({
-          take: 10,
-          orderBy: {
-            createdAt: 'desc',
-          },
-          where: {
-            private: false,
-          },
-          select: select,
-        });
-      }
-
-      const likedDocs = await prisma.like.findMany({
-        where: {
-          userId,
-          documentId: { in: documents.map((d) => d.id) },
-        },
-        select: { documentId: true },
-      });
-
-      const likedSet = new Set(likedDocs.map((d) => d.documentId));
-
-      return documents.map((doc) => ({
-        ...doc,
-        hasLiked: likedSet.has(doc.id),
-      }));
-    } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        'Error retrieving drafts',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    if (!doc) {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
+
+    if (doc.private && doc.authorId !== userId) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+
+    const [withLike] = await this.attachLikes([doc], userId);
+
+    return withLike;
   }
 
-  async findOneDraft(id: string, userId?: string) {
-    try {
-      const document = await prisma.document.findFirst({
-        where: {
-          id: id,
-        },
-        include: {
-          author: {
-            select: {
-              id: true,
-              avatar: true,
-              lastname: true,
-              firstname: true,
-            },
-          },
-          _count: {
-            select: {
-              Comment: true,
-              likes: true,
-            },
-          },
-        },
-      });
+  async updateDraft(documentId: string, dto: UpdateDraftDto, userId: string) {
+    const doc = await this.prisma.document.findUnique({
+      where: { id: documentId },
+      select: { authorId: true },
+    });
 
-      const likedDocs = await prisma.like.findMany({
-        where: {
-          userId,
-          documentId: id,
-        },
-        select: { documentId: true },
-      });
-
-      const likedSet = new Set(likedDocs.map((d) => d.documentId));
-
-      return { ...document, hasLiked: likedSet.has(document.id) };
-    } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        'Error retrieving draft',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    if (!doc || doc.authorId !== userId) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
-  }
 
-  async updateDraft(documentId: string, dto: UpdateDraftDto, userId?: string) {
-    try {
-      const updatedDocument = await prisma.document.update({
-        where: {
-          id: documentId,
-        },
-        data: { ...dto },
-        include: {
-          author: {
-            select: {
-              id: true,
-              avatar: true,
-              lastname: true,
-              firstname: true,
-            },
+    const updated = await this.prisma.document.update({
+      where: { id: documentId },
+      data: dto,
+      select: {
+        id: true,
+        cover: true,
+        title: true,
+        topic: true,
+        intro: true,
+        content: true,
+        createdAt: true,
+        updatedAt: true,
+        word_count: true,
+        authorId: true,
+        private: true,
+        author: {
+          select: {
+            id: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
           },
-          _count: {
-            select: {
-              Comment: true,
-              likes: true,
-            },
+        },
+        _count: {
+          select: {
+            Comment: true,
+            likes: true,
           },
         },
-      });
+      },
+    });
 
-      const likedDocs = await prisma.like.findMany({
-        where: {
-          userId,
-          documentId: documentId,
-        },
-        select: { documentId: true },
-      });
-
-      const likedSet = new Set(likedDocs.map((d) => d.documentId));
-
-      return { ...updatedDocument, hasLiked: likedSet.has(updatedDocument.id) };
-    } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        'Error updating draft',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return (await this.attachLikes([updated], userId))[0];
   }
 
   async toggleLike(documentId: string, userId: string) {
-    try {
-      // Check if the user has already liked the document
-      const existingLike = await prisma.like.findFirst({
+    return this.prisma.$transaction(async (tx) => {
+      const existing = await tx.like.findUnique({
         where: {
-          documentId: documentId,
-          userId: userId,
+          documentId_userId: { documentId, userId },
         },
       });
 
-      if (existingLike) {
-        // Unlike: Remove the existing like
-        await prisma.like.delete({
+      if (existing) {
+        await tx.like.delete({
           where: {
-            documentId_userId: {
-              documentId: documentId,
-              userId: userId,
-            },
+            documentId_userId: { documentId, userId },
           },
         });
-
-        return {
-          liked: false,
-          message: 'Document disliked successfully!',
-        };
-      } else {
-        // Like: Create a new like
-        await prisma.like.create({
-          data: {
-            documentId: documentId,
-            userId: userId,
-          },
-        });
-
-        return {
-          liked: true,
-          message: 'Document liked successfully!',
-        };
+        return { liked: false };
       }
-    } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        'Error toggling like on the draft',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+
+      await tx.like.create({
+        data: { documentId, userId },
+      });
+
+      return { liked: true };
+    });
   }
 
   async deleteDraft(id: string) {
     try {
-      await prisma.document.delete({
+      await this.prisma.document.delete({
         where: {
           id: id,
         },
       });
 
-      return { mesage: 'Draft deleted successfully.' };
+      return { message: 'Draft deleted successfully.' };
     } catch (error) {
       console.error(error);
       throw new HttpException(
-        'Error retrieving draft',
+        'Error deleting draft',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  private async attachLikes<T extends { id: string }>(
+    docs: T[],
+    userId?: string,
+  ): Promise<(T & { hasLiked: boolean })[]> {
+    if (!userId || docs.length === 0) {
+      return docs.map((d) => ({ ...d, hasLiked: false }));
+    }
+
+    const likes = await this.prisma.like.findMany({
+      where: {
+        userId,
+        documentId: { in: docs.map((d) => d.id) },
+      },
+      select: { documentId: true },
+    });
+
+    const likedSet = new Set(likes.map((l) => l.documentId));
+
+    return docs.map((d) => ({
+      ...d,
+      hasLiked: likedSet.has(d.id),
+    }));
   }
 }

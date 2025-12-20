@@ -25,6 +25,14 @@ export class DraftsController {
     return this.draftsService.getDrafts(search, user.sub);
   }
 
+  @Get('/following')
+  async getDraftsOfPeopleIFollow(
+    @Query('search') search?: string,
+    @User() user?: JwtPayload,
+  ) {
+    return this.draftsService.getDraftsOfPeopleIFollow(search, user.sub);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string, @User() user?: JwtPayload) {
     return this.draftsService.findOneDraft(id, user.sub);
