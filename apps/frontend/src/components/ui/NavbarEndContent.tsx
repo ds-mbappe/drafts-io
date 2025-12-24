@@ -8,7 +8,7 @@ import { useTheme } from 'next-themes';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useMemo } from 'react'
 import ModalSearch from '../pannels/ModalSearch';
-// import ProfileModal from '../pannels/ProfileModal';
+import ProfileModal from '../pannels/ProfileModal';
 
 const NavbarEndContent = ({ user }: { user?: BaseUser }) => {
   const router = useRouter();
@@ -159,10 +159,10 @@ const NavbarEndContent = ({ user }: { user?: BaseUser }) => {
 
       {!isHomePage &&
         <>
-          {/* <ProfileModal
+          <ProfileModal
             dialogOpen={isOpenProfile}
             changeDialogOpenState={onOpenChangeProfile}
-          /> */}
+          />
           
           <ModalSearch
             isOpenSearch={isOpenSearch}

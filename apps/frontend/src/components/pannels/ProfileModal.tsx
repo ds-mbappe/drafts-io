@@ -1,5 +1,4 @@
 import { useSession } from "next-auth/react";
-import { v2 as cloudinary } from "cloudinary";
 import React, { useContext, useEffect, useState } from 'react';
 // import { getFollowData } from '@/actions/getFollowData';
 import { errorToast, successToast } from '@/actions/showToast';
@@ -83,19 +82,8 @@ const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
     setPictureLoading(true)
     const file = e.target?.files?.[0]
     if (file) {
-      const timestamp = Math.round((new Date).getTime() / 1000)
-      const folder = `${process.env.NODE_ENV}/profile_pictures`
-      const signature = cloudinary.utils.api_sign_request({
-        timestamp: timestamp,
-        folder: folder,
-      }, process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET as string)
-
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('folder', folder)
-      formData.append('signature', signature)
-      formData.append('timestamp', JSON.stringify(timestamp))
-      formData.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY as string)
 
       const result = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME as string}/auto/upload`, {
         method: 'POST',
