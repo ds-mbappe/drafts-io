@@ -48,7 +48,7 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Document {
+model Draft {
   id              String   @id @default(cuid())
   title           String
   cover           String?
@@ -62,8 +62,8 @@ model Document {
   createdAt       DateTime @default(now()) @map(name: "created_at")
   updatedAt       DateTime @updatedAt @map(name: "updated_at")
 
-  author          User?    @relation(fields: [authorId], references: [id])
-  authorId        String?
+  author          User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId        String
 
   likes           Like[]
   Comment         Comment[]
@@ -79,7 +79,7 @@ model Like {
   documentId String
   userId     String
   createdAt  DateTime @default(now())
-  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  document   Draft @relation(fields: [documentId], references: [id], onDelete: Cascade)
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([documentId, userId])
@@ -100,7 +100,7 @@ model User {
   forgotPasswordToken       String?
   verifyTokenExpiry         DateTime?
   forgotPasswordTokenExpiry DateTime?
-  documents                 Document[]
+  documents                 Draft[]
   createdAt                 DateTime   @default(now()) @map(name: "created_at")
   updatedAt                 DateTime   @updatedAt @map(name: "updated_at")
   followers                 Follows[]  @relation("following")
@@ -132,7 +132,7 @@ model Comment {
   from      Int?
   to        Int?
 
-  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  document   Draft @relation(fields: [documentId], references: [id], onDelete: Cascade)
   documentId String
 
   user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
