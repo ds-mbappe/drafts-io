@@ -1,0 +1,247 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "confirm": "Confirmar",
+    "back": "Voltar",
+    "close": "Fechar",
+    "loading": "Carregando…",
+    "error": "Algo deu errado, tente novamente.",
+    "retry": "Tentar novamente",
+    "search": "Buscar",
+    "noResults": "Nenhum resultado encontrado."
+  },
+  "nav": {
+    "feed": "Feed",
+    "discover": "Descobrir",
+    "library": "Minha biblioteca",
+    "write": "Escrever",
+    "notifications": "Notificações",
+    "profile": "Perfil",
+    "search": "Pesquisar"
+  },
+  "auth": {
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "signUp": "Cadastrar",
+    "email": "Endereço de e-mail",
+    "password": "Senha",
+    "forgotPassword": "Esqueceu a senha?",
+    "continueWithGoogle": "Continuar com Google",
+    "continueWithGithub": "Continuar com GitHub",
+    "orContinueWith": "ou continuar com",
+    "noAccount": "Não tem uma conta?",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "invalidCredentials": "E-mail ou senha inválidos.",
+    "emailRequired": "O endereço de e-mail é obrigatório.",
+    "passwordRequired": "A senha é obrigatória."
+  },
+  "feed": {
+    "trendingTitle": "Em alta",
+    "discoverTitle": "Descobrir",
+    "followingTitle": "Seguindo",
+    "searchPlaceholder": "Buscar drafts…",
+    "noDraftsAvailable": "Nenhum draft disponível.",
+    "notFollowingAnybody": "Você ainda não segue ninguém.",
+    "noSearchResults": "Nenhum draft corresponde à sua busca.",
+    "noDiscoverDrafts": "Nenhum draft disponível ainda.",
+    "seeAll": "Ver tudo",
+    "trendingDescription": "Os drafts mais lidos e curtidos nos últimos 30 dias.",
+    "noTrendingDrafts": "Nenhuma tendência ainda."
+  },
+  "library": {
+    "title": "Minha biblioteca",
+    "description": "Todos os seus drafts, publicados ou não.",
+    "searchPlaceholder": "Buscar seus drafts…",
+    "noResults": "Nenhum draft corresponde à sua busca.",
+    "noDrafts": "Você ainda não criou nenhum draft.",
+    "newDraft": "Novo draft"
+  },
+  "saved": {
+    "title": "Salvos",
+    "description": "Os drafts que você marcou aparecerão aqui.",
+    "noDrafts": "Você ainda não marcou nenhum draft.",
+    "noResults": "Nenhum draft salvo corresponde à sua busca."
+  },
+  "profile": {
+    "followers": "Seguidores",
+    "following": "Seguindo",
+    "drafts": "Drafts",
+    "likes": "Curtidas",
+    "editProfile": "Editar perfil",
+    "follow": "Seguir",
+    "unfollow": "Deixar de seguir",
+    "followedToast": "Seguindo!",
+    "unfollowedToast": "Deixou de seguir com sucesso.",
+    "followErrorToast": "Não foi possível atualizar o status de seguimento.",
+    "published": "Publicado",
+    "noDrafts": "Ainda sem drafts.",
+    "noPublished": "Ainda sem drafts publicados."
+  },
+  "settings": {
+    "title": "Configurações",
+    "profile": {
+      "title": "Perfil",
+      "firstName": "Nome",
+      "lastName": "Sobrenome",
+      "username": "Nome de usuário",
+      "checkingAvailability": "Verificando disponibilidade…",
+      "usernameAvailable": "Nome de usuário disponível.",
+      "usernameTaken": "Nome de usuário já está em uso.",
+      "saveChanges": "Salvar alterações",
+      "profileUpdated": "Perfil atualizado.",
+      "failedToUpdateProfile": "Falha ao atualizar o perfil.",
+      "avatarUpdated": "Avatar atualizado.",
+      "failedToUpdateAvatar": "Falha ao atualizar o avatar.",
+      "photoPermissionTitle": "Acesso às fotos necessário",
+      "photoPermissionDesc": "Por favor, permita o acesso à sua biblioteca de fotos nas Configurações."
+    },
+    "security": {
+      "title": "Segurança",
+      "email": "Endereço de e-mail",
+      "password": "Senha"
+    },
+    "language": {
+      "title": "Idioma",
+      "description": "Escolha o idioma usado no aplicativo."
+    },
+    "appearance": {
+      "title": "Aparência",
+      "lightMode": "Claro",
+      "darkMode": "Escuro",
+      "systemMode": "Sistema"
+    },
+    "dangerZone": {
+      "title": "Zona de perigo",
+      "deactivateOrDelete": "Desativar ou excluir conta"
+    },
+    "account": "Conta",
+    "preferences": "Preferências",
+    "changeEmail": "Alterar e-mail",
+    "changePassword": "Alterar senha",
+    "signOut": "Sair",
+    "signingOut": "Saindo…",
+    "deleteAccount": "Excluir conta",
+    "email": {
+      "title": "Alterar e-mail",
+      "currentEmail": "E-mail atual",
+      "newEmail": "Novo e-mail",
+      "sendCode": "Enviar código de confirmação",
+      "codeSentTo": "Um código de 6 dígitos foi enviado para",
+      "confirmCode": "Código de confirmação",
+      "useDifferentEmail": "Usar um e-mail diferente",
+      "updated": "E-mail atualizado",
+      "updatedDesc": "Seu e-mail foi alterado para {{email}}."
+    },
+    "password": {
+      "title": "Alterar senha",
+      "currentPassword": "Senha atual",
+      "newPassword": "Nova senha",
+      "confirmPassword": "Confirmar nova senha",
+      "sendCode": "Enviar código de confirmação",
+      "confirmCode": "Código de confirmação",
+      "goBack": "Voltar",
+      "updated": "Senha atualizada",
+      "updatedDesc": "Sua senha foi alterada com sucesso.",
+      "noMatch": "As senhas não coincidem.",
+      "tooShort": "A senha deve ter pelo menos 8 caracteres."
+    },
+    "delete": {
+      "title": "Gerenciar conta",
+      "chooseDesc": "Escolha o que deseja fazer com sua conta.",
+      "deactivateLabel": "Desativar",
+      "deactivateCardDesc": "Desative sua conta temporariamente. Você pode reativá-la a qualquer momento fazendo login novamente.",
+      "deactivateButton": "Desativar conta",
+      "deactivateAlertTitle": "Desativar conta",
+      "deactivateAlertMessage": "Sua conta será desativada. Você pode reativá-la fazendo login novamente.",
+      "deactivateAlertButton": "Desativar",
+      "deletePermanentLabel": "Excluir permanentemente",
+      "deleteCardDesc": "Exclua permanentemente sua conta e todos os seus dados. Isso não pode ser desfeito.",
+      "warningTitle": "Isso não pode ser desfeito",
+      "warningDesc": "Excluir sua conta removerá permanentemente todos os seus drafts, comentários, seguidores e dados pessoais dos nossos servidores.",
+      "confirmPhrase": "excluir minha conta",
+      "confirmLabel": "Digite \"excluir minha conta\" para confirmar",
+      "deleteButton": "Excluir minha conta",
+      "alertTitle": "Excluir conta",
+      "alertMessage": "Esta ação é permanente. Todos os seus drafts, seguidores e dados serão excluídos. Não há como desfazer.",
+      "alertButton": "Excluir para sempre"
+    },
+    "notifPrefs": {
+      "title": "Notificações",
+      "newFollower": "Novo seguidor",
+      "newFollowerDesc": "Quando alguém te segue",
+      "newComment": "Novo comentário",
+      "newCommentDesc": "Quando alguém comenta seu draft",
+      "draftLiked": "Draft curtido",
+      "draftLikedDesc": "Quando alguém curte seu draft"
+    }
+  },
+  "notifications": {
+    "title": "Notificações",
+    "markAllRead": "Marcar tudo como lido",
+    "deleteAll": "Excluir tudo",
+    "noNotifications": "Nenhuma notificação ainda",
+    "noNotificationsDescription": "Quando alguém te seguir, curtir ou comentar seus drafts, você verá aqui.",
+    "follow": "{{actor}} começou a te seguir.",
+    "like": "{{actor}} curtiu seu draft «{{title}}».",
+    "comment": "{{actor}} comentou seu draft «{{title}}».",
+    "unreadCount": "{{count}} não lido(s)",
+    "deleteAllConfirm": "Excluir todas as notificações? Esta ação não pode ser desfeita.",
+    "deleteOne": "Excluir notificação",
+    "deleteOneConfirm": "Remover esta notificação?",
+    "allRead": "Todas as notificações marcadas como lidas."
+  },
+  "draft": {
+    "publish": "Publicar",
+    "publishConfirm": "Tem certeza de que deseja publicar este draft? Todos poderão lê-lo.",
+    "published": "Draft publicado.",
+    "like": "Curtir",
+    "bookmark": "Salvar",
+    "removeBookmark": "Remover marcador",
+    "comments": "Comentários",
+    "bookmarkedToast": "Draft adicionado à sua lista de leitura.",
+    "unbookmarkedToast": "Draft removido da sua lista de leitura.",
+    "likedToast": "Draft curtido.",
+    "dislikedToast": "Curtida removida.",
+    "deleteDraft": "Excluir draft",
+    "deleteConfirm": "Tem certeza de que deseja excluir este draft? Esta ação é permanente.",
+    "deletedToast": "Draft excluído.",
+    "errorToast": "Algo deu errado, tente novamente."
+  },
+  "newDraft": {
+    "heading": "Novo draft",
+    "titleLabel": "Título",
+    "titlePlaceholder": "Digite um título",
+    "introLabel": "Introdução",
+    "introPlaceholder": "Uma breve descrição do seu draft",
+    "topicsLabel": "Tópicos",
+    "topicPlaceholder": "ex. tecnologia",
+    "coverLabel": "Imagem de capa",
+    "createDraft": "Criar draft",
+    "draftCreated": "Draft criado!",
+    "failedToCreate": "Falha ao criar o draft, tente novamente.",
+    "createTopic": "Criar \"{{topic}}\""
+  },
+  "comments": {
+    "addComment": "Adicionar comentário",
+    "addCommentPlaceholder": "Adicione um comentário…",
+    "noCommentsYet": "Nenhum comentário ainda.",
+    "comment": "Comentar",
+    "failedToSave": "Falha ao salvar comentário.",
+    "failedToUpdate": "Falha ao atualizar comentário.",
+    "commentAdded": "Comentário adicionado."
+  },
+  "card": {
+    "liked": "Curtido!",
+    "unliked": "Descurtido",
+    "bookmarked": "Salvo!",
+    "unbookmarked": "Removido dos salvos"
+  },
+  "search": {
+    "placeholder": "Pesquisar rascunhos…",
+    "idle": "Pesquise rascunhos e tópicos…"
+  }
+}

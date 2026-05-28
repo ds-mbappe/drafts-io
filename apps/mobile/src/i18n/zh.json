@@ -1,0 +1,247 @@
+{
+  "common": {
+    "ok": "确定",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "confirm": "确认",
+    "back": "返回",
+    "close": "关闭",
+    "loading": "加载中…",
+    "error": "出现错误，请重试。",
+    "retry": "重试",
+    "search": "搜索",
+    "noResults": "未找到结果。"
+  },
+  "nav": {
+    "feed": "动态",
+    "discover": "发现",
+    "library": "我的库",
+    "write": "写作",
+    "notifications": "通知",
+    "profile": "个人资料",
+    "search": "搜索"
+  },
+  "auth": {
+    "signIn": "登录",
+    "signOut": "退出登录",
+    "signUp": "注册",
+    "email": "电子邮件地址",
+    "password": "密码",
+    "forgotPassword": "忘记密码？",
+    "continueWithGoogle": "使用 Google 继续",
+    "continueWithGithub": "使用 GitHub 继续",
+    "orContinueWith": "或使用以下方式继续",
+    "noAccount": "没有账户？",
+    "alreadyHaveAccount": "已有账户？",
+    "invalidCredentials": "电子邮件或密码无效。",
+    "emailRequired": "电子邮件地址为必填项。",
+    "passwordRequired": "密码为必填项。"
+  },
+  "feed": {
+    "trendingTitle": "热门",
+    "discoverTitle": "发现",
+    "followingTitle": "关注",
+    "searchPlaceholder": "搜索Draft…",
+    "noDraftsAvailable": "暂无可用Draft。",
+    "notFollowingAnybody": "您还没有关注任何人。",
+    "noSearchResults": "没有与您搜索匹配的Draft。",
+    "noDiscoverDrafts": "暂时没有可用Draft。",
+    "seeAll": "查看全部",
+    "trendingDescription": "过去30天内阅读和点赞最多的Draft。",
+    "noTrendingDrafts": "暂时没有热门内容。"
+  },
+  "library": {
+    "title": "我的库",
+    "description": "您的所有Draft，无论是否已发布。",
+    "searchPlaceholder": "搜索您的Draft…",
+    "noResults": "没有与您搜索匹配的Draft。",
+    "noDrafts": "您还没有创建Draft。",
+    "newDraft": "新建Draft"
+  },
+  "saved": {
+    "title": "已保存",
+    "description": "您收藏的Draft将显示在这里。",
+    "noDrafts": "您还没有收藏任何Draft。",
+    "noResults": "没有与您搜索匹配的已保存Draft。"
+  },
+  "profile": {
+    "followers": "粉丝",
+    "following": "关注",
+    "drafts": "Draft",
+    "likes": "点赞",
+    "editProfile": "编辑个人资料",
+    "follow": "关注",
+    "unfollow": "取消关注",
+    "followedToast": "已关注！",
+    "unfollowedToast": "已成功取消关注。",
+    "followErrorToast": "无法更新关注状态。",
+    "published": "已发布",
+    "noDrafts": "暂无Draft。",
+    "noPublished": "暂无已发布的Draft。"
+  },
+  "settings": {
+    "title": "设置",
+    "profile": {
+      "title": "个人资料",
+      "firstName": "名",
+      "lastName": "姓",
+      "username": "用户名",
+      "checkingAvailability": "正在检查可用性…",
+      "usernameAvailable": "用户名可用。",
+      "usernameTaken": "用户名已被使用。",
+      "saveChanges": "保存更改",
+      "profileUpdated": "个人资料已更新。",
+      "failedToUpdateProfile": "个人资料更新失败。",
+      "avatarUpdated": "头像已更新。",
+      "failedToUpdateAvatar": "头像更新失败。",
+      "photoPermissionTitle": "需要照片访问权限",
+      "photoPermissionDesc": "请在设置中允许访问您的照片库。"
+    },
+    "security": {
+      "title": "安全",
+      "email": "电子邮件地址",
+      "password": "密码"
+    },
+    "language": {
+      "title": "语言",
+      "description": "选择应用使用的语言。"
+    },
+    "appearance": {
+      "title": "外观",
+      "lightMode": "浅色",
+      "darkMode": "深色",
+      "systemMode": "系统"
+    },
+    "dangerZone": {
+      "title": "危险区域",
+      "deactivateOrDelete": "停用或删除账户"
+    },
+    "account": "账户",
+    "preferences": "偏好设置",
+    "changeEmail": "修改邮箱",
+    "changePassword": "修改密码",
+    "signOut": "退出登录",
+    "signingOut": "正在退出…",
+    "deleteAccount": "删除账户",
+    "email": {
+      "title": "修改邮箱",
+      "currentEmail": "当前邮箱",
+      "newEmail": "新邮箱",
+      "sendCode": "发送确认码",
+      "codeSentTo": "已向以下地址发送6位验证码",
+      "confirmCode": "确认码",
+      "useDifferentEmail": "使用其他邮箱",
+      "updated": "邮箱已更新",
+      "updatedDesc": "您的邮箱已更改为 {{email}}。"
+    },
+    "password": {
+      "title": "修改密码",
+      "currentPassword": "当前密码",
+      "newPassword": "新密码",
+      "confirmPassword": "确认新密码",
+      "sendCode": "发送确认码",
+      "confirmCode": "确认码",
+      "goBack": "返回",
+      "updated": "密码已更新",
+      "updatedDesc": "您的密码已成功更改。",
+      "noMatch": "两次密码不一致。",
+      "tooShort": "密码至少需要8个字符。"
+    },
+    "delete": {
+      "title": "管理账户",
+      "chooseDesc": "选择您想对账户执行的操作。",
+      "deactivateLabel": "停用",
+      "deactivateCardDesc": "暂时停用您的账户。您可以随时重新登录来恢复账户。",
+      "deactivateButton": "停用账户",
+      "deactivateAlertTitle": "停用账户",
+      "deactivateAlertMessage": "您的账户将被停用。您可以重新登录来恢复账户。",
+      "deactivateAlertButton": "停用",
+      "deletePermanentLabel": "永久删除",
+      "deleteCardDesc": "永久删除您的账户和所有数据。此操作无法撤销。",
+      "warningTitle": "此操作无法撤销",
+      "warningDesc": "删除账户将永久从我们的服务器中删除您的所有Draft、评论、粉丝和个人数据。",
+      "confirmPhrase": "删除我的账户",
+      "confirmLabel": "输入\"删除我的账户\"以确认",
+      "deleteButton": "删除我的账户",
+      "alertTitle": "删除账户",
+      "alertMessage": "此操作是永久性的。您的所有Draft、粉丝和数据将被删除，无法撤销。",
+      "alertButton": "永久删除"
+    },
+    "notifPrefs": {
+      "title": "通知",
+      "newFollower": "新粉丝",
+      "newFollowerDesc": "当有人关注您时",
+      "newComment": "新评论",
+      "newCommentDesc": "当有人评论您的Draft时",
+      "draftLiked": "Draft被点赞",
+      "draftLikedDesc": "当有人点赞您的Draft时"
+    }
+  },
+  "notifications": {
+    "title": "通知",
+    "markAllRead": "全部标为已读",
+    "deleteAll": "删除全部",
+    "noNotifications": "暂无通知",
+    "noNotificationsDescription": "当有人关注您、点赞或评论您的Draft时，将显示在这里。",
+    "follow": "{{actor}} 开始关注您。",
+    "like": "{{actor}} 点赞了您的Draft「{{title}}」。",
+    "comment": "{{actor}} 评论了您的Draft「{{title}}」。",
+    "unreadCount": "{{count}} 条未读",
+    "deleteAllConfirm": "删除所有通知？此操作无法撤销。",
+    "deleteOne": "删除通知",
+    "deleteOneConfirm": "删除此通知？",
+    "allRead": "所有通知已标记为已读。"
+  },
+  "draft": {
+    "publish": "发布",
+    "publishConfirm": "您确定要发布这篇Draft吗？所有人都将能够阅读它。",
+    "published": "Draft已发布。",
+    "like": "点赞",
+    "bookmark": "收藏",
+    "removeBookmark": "取消收藏",
+    "comments": "评论",
+    "bookmarkedToast": "Draft已添加到阅读列表。",
+    "unbookmarkedToast": "Draft已从阅读列表中移除。",
+    "likedToast": "已点赞Draft。",
+    "dislikedToast": "已取消点赞。",
+    "deleteDraft": "删除Draft",
+    "deleteConfirm": "您确定要删除这篇Draft吗？此操作不可撤销。",
+    "deletedToast": "Draft已删除。",
+    "errorToast": "出现错误，请重试。"
+  },
+  "newDraft": {
+    "heading": "新建Draft",
+    "titleLabel": "标题",
+    "titlePlaceholder": "输入标题",
+    "introLabel": "简介",
+    "introPlaceholder": "Draft的简短描述",
+    "topicsLabel": "话题",
+    "topicPlaceholder": "例如：科技",
+    "coverLabel": "封面图片",
+    "createDraft": "创建Draft",
+    "draftCreated": "Draft已创建！",
+    "failedToCreate": "Draft创建失败，请重试。",
+    "createTopic": "创建\"{{topic}}\""
+  },
+  "comments": {
+    "addComment": "添加评论",
+    "addCommentPlaceholder": "添加评论…",
+    "noCommentsYet": "暂无评论。",
+    "comment": "评论",
+    "failedToSave": "评论保存失败。",
+    "failedToUpdate": "评论更新失败。",
+    "commentAdded": "评论已添加。"
+  },
+  "card": {
+    "liked": "已点赞！",
+    "unliked": "已取消点赞",
+    "bookmarked": "已收藏！",
+    "unbookmarked": "已取消收藏"
+  },
+  "search": {
+    "placeholder": "搜索草稿…",
+    "idle": "搜索文章和主题…"
+  }
+}

@@ -1,0 +1,247 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "back": "Back",
+    "close": "Close",
+    "loading": "Loading…",
+    "error": "Something went wrong, please try again.",
+    "retry": "Retry",
+    "search": "Search",
+    "noResults": "No results found."
+  },
+  "nav": {
+    "feed": "Feed",
+    "discover": "Discover",
+    "library": "My Library",
+    "write": "Write",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "search": "Search"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "signUp": "Sign up",
+    "email": "Email address",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithGithub": "Continue with GitHub",
+    "orContinueWith": "or continue with",
+    "noAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "invalidCredentials": "Invalid email or password.",
+    "emailRequired": "Email address is required.",
+    "passwordRequired": "Password is required."
+  },
+  "feed": {
+    "trendingTitle": "Trending",
+    "discoverTitle": "Discover",
+    "followingTitle": "Following",
+    "searchPlaceholder": "Search drafts…",
+    "noDraftsAvailable": "No drafts available.",
+    "notFollowingAnybody": "You are not following anybody yet.",
+    "noSearchResults": "No drafts match your search.",
+    "noDiscoverDrafts": "No drafts available yet.",
+    "seeAll": "See all",
+    "trendingDescription": "Most read and liked drafts over the last 30 days.",
+    "noTrendingDrafts": "No trending drafts yet."
+  },
+  "library": {
+    "title": "My Library",
+    "description": "All your drafts, published or not.",
+    "searchPlaceholder": "Search your drafts…",
+    "noResults": "No drafts match your search.",
+    "noDrafts": "You have not created a draft yet.",
+    "newDraft": "New Draft"
+  },
+  "saved": {
+    "title": "Saved",
+    "description": "Drafts you have bookmarked will appear here.",
+    "noDrafts": "You have not bookmarked any drafts yet.",
+    "noResults": "No saved drafts match your search."
+  },
+  "profile": {
+    "followers": "Followers",
+    "following": "Following",
+    "drafts": "Drafts",
+    "likes": "Likes",
+    "editProfile": "Edit profile",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "followedToast": "Following!",
+    "unfollowedToast": "Unfollowed successfully.",
+    "followErrorToast": "Could not update follow status.",
+    "published": "Published",
+    "noDrafts": "No drafts yet.",
+    "noPublished": "No published drafts yet."
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": {
+      "title": "Profile",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "username": "Username",
+      "checkingAvailability": "Checking availability…",
+      "usernameAvailable": "Username is available.",
+      "usernameTaken": "Username is already taken.",
+      "saveChanges": "Save changes",
+      "profileUpdated": "Profile updated.",
+      "failedToUpdateProfile": "Failed to update profile.",
+      "avatarUpdated": "Avatar updated.",
+      "failedToUpdateAvatar": "Failed to update avatar.",
+      "photoPermissionTitle": "Photo access required",
+      "photoPermissionDesc": "Please allow access to your photo library in Settings."
+    },
+    "security": {
+      "title": "Security",
+      "email": "Email address",
+      "password": "Password"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Choose the language used across the app."
+    },
+    "appearance": {
+      "title": "Appearance",
+      "lightMode": "Light",
+      "darkMode": "Dark",
+      "systemMode": "System"
+    },
+    "dangerZone": {
+      "title": "Danger zone",
+      "deactivateOrDelete": "Deactivate or delete account"
+    },
+    "account": "Account",
+    "preferences": "Preferences",
+    "changeEmail": "Change email",
+    "changePassword": "Change password",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "deleteAccount": "Delete account",
+    "email": {
+      "title": "Change email",
+      "currentEmail": "Current email",
+      "newEmail": "New email",
+      "sendCode": "Send confirmation code",
+      "codeSentTo": "A 6-digit code was sent to",
+      "confirmCode": "Confirmation code",
+      "useDifferentEmail": "Use a different email",
+      "updated": "Email updated",
+      "updatedDesc": "Your email has been changed to {{email}}."
+    },
+    "password": {
+      "title": "Change password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "sendCode": "Send confirmation code",
+      "confirmCode": "Confirmation code",
+      "goBack": "Go back",
+      "updated": "Password updated",
+      "updatedDesc": "Your password has been changed successfully.",
+      "noMatch": "Passwords do not match.",
+      "tooShort": "Password must be at least 8 characters."
+    },
+    "delete": {
+      "title": "Manage account",
+      "chooseDesc": "Choose what you want to do with your account.",
+      "deactivateLabel": "Deactivate",
+      "deactivateCardDesc": "Temporarily disable your account. You can reactivate it at any time by signing back in.",
+      "deactivateButton": "Deactivate account",
+      "deactivateAlertTitle": "Deactivate account",
+      "deactivateAlertMessage": "Your account will be disabled. You can reactivate it by signing back in.",
+      "deactivateAlertButton": "Deactivate",
+      "deletePermanentLabel": "Delete permanently",
+      "deleteCardDesc": "Permanently delete your account and all your data. This cannot be undone.",
+      "warningTitle": "This cannot be undone",
+      "warningDesc": "Deleting your account will permanently remove all your drafts, comments, followers, and personal data from our servers.",
+      "confirmPhrase": "delete my account",
+      "confirmLabel": "Type \"delete my account\" to confirm",
+      "deleteButton": "Delete my account",
+      "alertTitle": "Delete account",
+      "alertMessage": "This action is permanent. All your drafts, followers, and data will be deleted. There is no undo.",
+      "alertButton": "Delete forever"
+    },
+    "notifPrefs": {
+      "title": "Notifications",
+      "newFollower": "New follower",
+      "newFollowerDesc": "When someone follows you",
+      "newComment": "New comment",
+      "newCommentDesc": "When someone comments on your draft",
+      "draftLiked": "Draft liked",
+      "draftLikedDesc": "When someone likes your draft"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "deleteAll": "Delete all",
+    "noNotifications": "No notifications yet",
+    "noNotificationsDescription": "When someone follows you, likes or comments on your drafts, you'll see it here.",
+    "follow": "{{actor}} started following you.",
+    "like": "{{actor}} liked your draft \"{{title}}\".",
+    "comment": "{{actor}} commented on your draft \"{{title}}\".",
+    "unreadCount": "{{count}} unread",
+    "deleteAllConfirm": "Delete all notifications? This cannot be undone.",
+    "deleteOne": "Delete notification",
+    "deleteOneConfirm": "Remove this notification?",
+    "allRead": "All notifications marked as read."
+  },
+  "draft": {
+    "publish": "Publish",
+    "publishConfirm": "Are you sure you want to publish this draft? Everyone will be able to read it.",
+    "published": "Draft published.",
+    "like": "Like",
+    "bookmark": "Bookmark",
+    "removeBookmark": "Remove bookmark",
+    "comments": "Comments",
+    "bookmarkedToast": "Draft saved to your reading list.",
+    "unbookmarkedToast": "Draft removed from your reading list.",
+    "likedToast": "Draft liked.",
+    "dislikedToast": "Draft disliked.",
+    "deleteDraft": "Delete draft",
+    "deleteConfirm": "Are you sure you want to delete this draft? This action is permanent.",
+    "deletedToast": "Draft deleted.",
+    "errorToast": "Something went wrong, please try again."
+  },
+  "newDraft": {
+    "heading": "New Draft",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Enter a title",
+    "introLabel": "Intro",
+    "introPlaceholder": "A short description of what the draft is about",
+    "topicsLabel": "Topics",
+    "topicPlaceholder": "e.g. technology",
+    "coverLabel": "Cover image",
+    "createDraft": "Create draft",
+    "draftCreated": "Draft created!",
+    "failedToCreate": "Failed to create draft, please try again.",
+    "createTopic": "Create \"{{topic}}\""
+  },
+  "comments": {
+    "addComment": "Add comment",
+    "addCommentPlaceholder": "Add a comment…",
+    "noCommentsYet": "No comments yet.",
+    "comment": "Comment",
+    "failedToSave": "Failed to save comment.",
+    "failedToUpdate": "Failed to update comment.",
+    "commentAdded": "Comment added."
+  },
+  "card": {
+    "liked": "Liked!",
+    "unliked": "Unliked",
+    "bookmarked": "Saved!",
+    "unbookmarked": "Removed from saved"
+  },
+  "search": {
+    "placeholder": "Search drafts…",
+    "idle": "Search for drafts, topics…"
+  }
+}

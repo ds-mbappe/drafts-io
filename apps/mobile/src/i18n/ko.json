@@ -1,0 +1,247 @@
+{
+  "common": {
+    "ok": "확인",
+    "cancel": "취소",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "편집",
+    "confirm": "확인",
+    "back": "뒤로",
+    "close": "닫기",
+    "loading": "로딩 중…",
+    "error": "문제가 발생했습니다. 다시 시도해 주세요.",
+    "retry": "다시 시도",
+    "search": "검색",
+    "noResults": "결과를 찾을 수 없습니다."
+  },
+  "nav": {
+    "feed": "피드",
+    "discover": "탐색",
+    "library": "내 라이브러리",
+    "write": "쓰기",
+    "notifications": "알림",
+    "profile": "프로필",
+    "search": "검색"
+  },
+  "auth": {
+    "signIn": "로그인",
+    "signOut": "로그아웃",
+    "signUp": "회원가입",
+    "email": "이메일 주소",
+    "password": "비밀번호",
+    "forgotPassword": "비밀번호를 잊으셨나요?",
+    "continueWithGoogle": "Google로 계속",
+    "continueWithGithub": "GitHub로 계속",
+    "orContinueWith": "또는 다음으로 계속",
+    "noAccount": "계정이 없으신가요?",
+    "alreadyHaveAccount": "이미 계정이 있으신가요?",
+    "invalidCredentials": "이메일 또는 비밀번호가 올바르지 않습니다.",
+    "emailRequired": "이메일 주소는 필수입니다.",
+    "passwordRequired": "비밀번호는 필수입니다."
+  },
+  "feed": {
+    "trendingTitle": "트렌딩",
+    "discoverTitle": "탐색",
+    "followingTitle": "팔로잉",
+    "searchPlaceholder": "Draft 검색…",
+    "noDraftsAvailable": "사용 가능한 Draft이 없습니다.",
+    "notFollowingAnybody": "아직 아무도 팔로우하지 않았습니다.",
+    "noSearchResults": "검색과 일치하는 Draft이 없습니다.",
+    "noDiscoverDrafts": "아직 사용 가능한 Draft이 없습니다.",
+    "seeAll": "모두 보기",
+    "trendingDescription": "지난 30일 동안 가장 많이 읽히고 좋아요를 받은 Draft.",
+    "noTrendingDrafts": "아직 트렌딩 Draft이 없습니다."
+  },
+  "library": {
+    "title": "내 라이브러리",
+    "description": "게시 여부에 관계없이 모든 Draft.",
+    "searchPlaceholder": "내 Draft 검색…",
+    "noResults": "검색과 일치하는 Draft이 없습니다.",
+    "noDrafts": "아직 Draft을 작성하지 않았습니다.",
+    "newDraft": "새 Draft"
+  },
+  "saved": {
+    "title": "저장됨",
+    "description": "북마크한 Draft이 여기에 표시됩니다.",
+    "noDrafts": "아직 북마크한 Draft이 없습니다.",
+    "noResults": "검색과 일치하는 저장된 Draft이 없습니다."
+  },
+  "profile": {
+    "followers": "팔로워",
+    "following": "팔로잉",
+    "drafts": "Draft",
+    "likes": "좋아요",
+    "editProfile": "프로필 편집",
+    "follow": "팔로우",
+    "unfollow": "팔로우 취소",
+    "followedToast": "팔로우했습니다!",
+    "unfollowedToast": "팔로우가 취소되었습니다.",
+    "followErrorToast": "팔로우 상태를 업데이트할 수 없습니다.",
+    "published": "게시됨",
+    "noDrafts": "아직 Draft이 없습니다.",
+    "noPublished": "아직 게시된 Draft이 없습니다."
+  },
+  "settings": {
+    "title": "설정",
+    "profile": {
+      "title": "프로필",
+      "firstName": "이름",
+      "lastName": "성",
+      "username": "사용자 이름",
+      "checkingAvailability": "사용 가능 여부 확인 중…",
+      "usernameAvailable": "사용 가능한 사용자 이름입니다.",
+      "usernameTaken": "이미 사용 중인 사용자 이름입니다.",
+      "saveChanges": "변경사항 저장",
+      "profileUpdated": "프로필이 업데이트되었습니다.",
+      "failedToUpdateProfile": "프로필 업데이트에 실패했습니다.",
+      "avatarUpdated": "아바타가 업데이트되었습니다.",
+      "failedToUpdateAvatar": "아바타 업데이트에 실패했습니다.",
+      "photoPermissionTitle": "사진 접근 권한이 필요합니다",
+      "photoPermissionDesc": "설정에서 사진 라이브러리 접근을 허용해 주세요."
+    },
+    "security": {
+      "title": "보안",
+      "email": "이메일 주소",
+      "password": "비밀번호"
+    },
+    "language": {
+      "title": "언어",
+      "description": "앱에서 사용할 언어를 선택하세요."
+    },
+    "appearance": {
+      "title": "외관",
+      "lightMode": "라이트",
+      "darkMode": "다크",
+      "systemMode": "시스템"
+    },
+    "dangerZone": {
+      "title": "위험 구역",
+      "deactivateOrDelete": "계정 비활성화 또는 삭제"
+    },
+    "account": "계정",
+    "preferences": "환경설정",
+    "changeEmail": "이메일 변경",
+    "changePassword": "비밀번호 변경",
+    "signOut": "로그아웃",
+    "signingOut": "로그아웃 중…",
+    "deleteAccount": "계정 삭제",
+    "email": {
+      "title": "이메일 변경",
+      "currentEmail": "현재 이메일",
+      "newEmail": "새 이메일",
+      "sendCode": "확인 코드 전송",
+      "codeSentTo": "6자리 코드가 전송되었습니다",
+      "confirmCode": "확인 코드",
+      "useDifferentEmail": "다른 이메일 사용",
+      "updated": "이메일이 업데이트되었습니다",
+      "updatedDesc": "이메일이 {{email}}로 변경되었습니다."
+    },
+    "password": {
+      "title": "비밀번호 변경",
+      "currentPassword": "현재 비밀번호",
+      "newPassword": "새 비밀번호",
+      "confirmPassword": "새 비밀번호 확인",
+      "sendCode": "확인 코드 전송",
+      "confirmCode": "확인 코드",
+      "goBack": "뒤로",
+      "updated": "비밀번호가 업데이트되었습니다",
+      "updatedDesc": "비밀번호가 성공적으로 변경되었습니다.",
+      "noMatch": "비밀번호가 일치하지 않습니다.",
+      "tooShort": "비밀번호는 최소 8자 이상이어야 합니다."
+    },
+    "delete": {
+      "title": "계정 관리",
+      "chooseDesc": "계정에 대해 원하는 작업을 선택하세요.",
+      "deactivateLabel": "비활성화",
+      "deactivateCardDesc": "계정을 일시적으로 비활성화합니다. 언제든지 다시 로그인하여 재활성화할 수 있습니다.",
+      "deactivateButton": "계정 비활성화",
+      "deactivateAlertTitle": "계정 비활성화",
+      "deactivateAlertMessage": "계정이 비활성화됩니다. 다시 로그인하면 재활성화할 수 있습니다.",
+      "deactivateAlertButton": "비활성화",
+      "deletePermanentLabel": "영구 삭제",
+      "deleteCardDesc": "계정과 모든 데이터를 영구적으로 삭제합니다. 이 작업은 취소할 수 없습니다.",
+      "warningTitle": "이 작업은 취소할 수 없습니다",
+      "warningDesc": "계정을 삭제하면 모든 Draft, 댓글, 팔로워 및 개인 데이터가 서버에서 영구적으로 삭제됩니다.",
+      "confirmPhrase": "내 계정을 삭제합니다",
+      "confirmLabel": "확인을 위해 \"내 계정을 삭제합니다\"를 입력하세요",
+      "deleteButton": "내 계정 삭제",
+      "alertTitle": "계정 삭제",
+      "alertMessage": "이 작업은 영구적입니다. 모든 Draft, 팔로워 및 데이터가 삭제되며 취소할 수 없습니다.",
+      "alertButton": "영구 삭제"
+    },
+    "notifPrefs": {
+      "title": "알림",
+      "newFollower": "새 팔로워",
+      "newFollowerDesc": "누군가 나를 팔로우할 때",
+      "newComment": "새 댓글",
+      "newCommentDesc": "누군가 내 Draft에 댓글을 달 때",
+      "draftLiked": "Draft 좋아요",
+      "draftLikedDesc": "누군가 내 Draft에 좋아요를 눌렀을 때"
+    }
+  },
+  "notifications": {
+    "title": "알림",
+    "markAllRead": "모두 읽음 표시",
+    "deleteAll": "모두 삭제",
+    "noNotifications": "아직 알림이 없습니다",
+    "noNotificationsDescription": "누군가 팔로우하거나 Draft에 좋아요 또는 댓글을 남기면 여기에 표시됩니다.",
+    "follow": "{{actor}}님이 팔로우를 시작했습니다.",
+    "like": "{{actor}}님이 «{{title}}» Draft에 좋아요를 눌렀습니다.",
+    "comment": "{{actor}}님이 «{{title}}» Draft에 댓글을 남겼습니다.",
+    "unreadCount": "{{count}}개 읽지 않음",
+    "deleteAllConfirm": "모든 알림을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+    "deleteOne": "알림 삭제",
+    "deleteOneConfirm": "이 알림을 삭제하시겠습니까?",
+    "allRead": "모든 알림을 읽음으로 표시했습니다."
+  },
+  "draft": {
+    "publish": "게시",
+    "publishConfirm": "이 Draft을 게시하시겠습니까? 모든 사람이 읽을 수 있게 됩니다.",
+    "published": "Draft이 게시되었습니다.",
+    "like": "좋아요",
+    "bookmark": "저장",
+    "removeBookmark": "북마크 제거",
+    "comments": "댓글",
+    "bookmarkedToast": "Draft이 읽기 목록에 추가되었습니다.",
+    "unbookmarkedToast": "Draft이 읽기 목록에서 제거되었습니다.",
+    "likedToast": "Draft에 좋아요를 눌렀습니다.",
+    "dislikedToast": "좋아요가 취소되었습니다.",
+    "deleteDraft": "Draft 삭제",
+    "deleteConfirm": "이 Draft을 삭제하시겠습니까? 이 작업은 영구적입니다.",
+    "deletedToast": "Draft이 삭제되었습니다.",
+    "errorToast": "문제가 발생했습니다. 다시 시도해 주세요."
+  },
+  "newDraft": {
+    "heading": "새 Draft",
+    "titleLabel": "제목",
+    "titlePlaceholder": "제목 입력",
+    "introLabel": "소개",
+    "introPlaceholder": "Draft에 대한 간략한 설명",
+    "topicsLabel": "주제",
+    "topicPlaceholder": "예: 기술",
+    "coverLabel": "커버 이미지",
+    "createDraft": "Draft 만들기",
+    "draftCreated": "Draft이 생성되었습니다!",
+    "failedToCreate": "Draft 생성에 실패했습니다. 다시 시도해 주세요.",
+    "createTopic": "\"{{topic}}\" 만들기"
+  },
+  "comments": {
+    "addComment": "댓글 추가",
+    "addCommentPlaceholder": "댓글 추가…",
+    "noCommentsYet": "아직 댓글이 없습니다.",
+    "comment": "댓글",
+    "failedToSave": "댓글 저장에 실패했습니다.",
+    "failedToUpdate": "댓글 업데이트에 실패했습니다.",
+    "commentAdded": "댓글이 추가되었습니다."
+  },
+  "card": {
+    "liked": "좋아요!",
+    "unliked": "좋아요 취소",
+    "bookmarked": "저장됨!",
+    "unbookmarked": "저장 취소"
+  },
+  "search": {
+    "placeholder": "초안 검색…",
+    "idle": "초안과 주제를 검색하세요…"
+  }
+}

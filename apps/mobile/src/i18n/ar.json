@@ -1,0 +1,247 @@
+{
+  "common": {
+    "ok": "موافق",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "close": "إغلاق",
+    "loading": "جارٍ التحميل…",
+    "error": "حدث خطأ ما، يُرجى المحاولة مجدداً.",
+    "retry": "إعادة المحاولة",
+    "search": "بحث",
+    "noResults": "لم يتم العثور على نتائج."
+  },
+  "nav": {
+    "feed": "الخلاصة",
+    "discover": "اكتشف",
+    "library": "مكتبتي",
+    "write": "كتابة",
+    "notifications": "الإشعارات",
+    "profile": "الملف الشخصي",
+    "search": "بحث"
+  },
+  "auth": {
+    "signIn": "تسجيل الدخول",
+    "signOut": "تسجيل الخروج",
+    "signUp": "إنشاء حساب",
+    "email": "عنوان البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "continueWithGoogle": "المتابعة بحساب Google",
+    "continueWithGithub": "المتابعة بحساب GitHub",
+    "orContinueWith": "أو المتابعة بـ",
+    "noAccount": "ليس لديك حساب؟",
+    "alreadyHaveAccount": "لديك حساب بالفعل؟",
+    "invalidCredentials": "بريد إلكتروني أو كلمة مرور غير صالحة.",
+    "emailRequired": "عنوان البريد الإلكتروني مطلوب.",
+    "passwordRequired": "كلمة المرور مطلوبة."
+  },
+  "feed": {
+    "trendingTitle": "الأكثر رواجاً",
+    "discoverTitle": "اكتشف",
+    "followingTitle": "المتابَعون",
+    "searchPlaceholder": "البحث في Drafts…",
+    "noDraftsAvailable": "لا توجد drafts متاحة.",
+    "notFollowingAnybody": "لا تتابع أحداً بعد.",
+    "noSearchResults": "لا توجد drafts تطابق بحثك.",
+    "noDiscoverDrafts": "لا توجد drafts متاحة بعد.",
+    "seeAll": "عرض الكل",
+    "trendingDescription": "Drafts الأكثر قراءة وإعجاباً خلال الثلاثين يوماً الماضية.",
+    "noTrendingDrafts": "لا توجد drafts رائجة بعد."
+  },
+  "library": {
+    "title": "مكتبتي",
+    "description": "جميع draftsك، المنشورة وغير المنشورة.",
+    "searchPlaceholder": "البحث في draftsك…",
+    "noResults": "لا توجد drafts تطابق بحثك.",
+    "noDrafts": "لم تنشئ أي draft بعد.",
+    "newDraft": "draft جديدة"
+  },
+  "saved": {
+    "title": "المحفوظات",
+    "description": "ستظهر هنا Drafts التي قمت بإضافتها إلى المفضلة.",
+    "noDrafts": "لم تحفظ أي draft بعد.",
+    "noResults": "لا توجد drafts محفوظة تطابق بحثك."
+  },
+  "profile": {
+    "followers": "المتابعون",
+    "following": "المتابَعون",
+    "drafts": "Drafts",
+    "likes": "الإعجابات",
+    "editProfile": "تعديل الملف الشخصي",
+    "follow": "متابعة",
+    "unfollow": "إلغاء المتابعة",
+    "followedToast": "جارٍ المتابعة!",
+    "unfollowedToast": "تم إلغاء المتابعة بنجاح.",
+    "followErrorToast": "تعذّر تحديث حالة المتابعة.",
+    "published": "منشور",
+    "noDrafts": "لا توجد drafts بعد.",
+    "noPublished": "لا توجد drafts منشورة بعد."
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "profile": {
+      "title": "الملف الشخصي",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "username": "اسم المستخدم",
+      "checkingAvailability": "جارٍ التحقق من التوفر…",
+      "usernameAvailable": "اسم المستخدم متاح.",
+      "usernameTaken": "اسم المستخدم مُستخدم بالفعل.",
+      "saveChanges": "حفظ التغييرات",
+      "profileUpdated": "تم تحديث الملف الشخصي.",
+      "failedToUpdateProfile": "فشل تحديث الملف الشخصي.",
+      "avatarUpdated": "تم تحديث الصورة الرمزية.",
+      "failedToUpdateAvatar": "فشل تحديث الصورة الرمزية.",
+      "photoPermissionTitle": "مطلوب الوصول إلى الصور",
+      "photoPermissionDesc": "يرجى السماح بالوصول إلى مكتبة الصور من الإعدادات."
+    },
+    "security": {
+      "title": "الأمان",
+      "email": "عنوان البريد الإلكتروني",
+      "password": "كلمة المرور"
+    },
+    "language": {
+      "title": "اللغة",
+      "description": "اختر اللغة المستخدمة في التطبيق."
+    },
+    "appearance": {
+      "title": "المظهر",
+      "lightMode": "فاتح",
+      "darkMode": "داكن",
+      "systemMode": "النظام"
+    },
+    "dangerZone": {
+      "title": "منطقة الخطر",
+      "deactivateOrDelete": "إلغاء تنشيط الحساب أو حذفه"
+    },
+    "account": "الحساب",
+    "preferences": "التفضيلات",
+    "changeEmail": "تغيير البريد الإلكتروني",
+    "changePassword": "تغيير كلمة المرور",
+    "signOut": "تسجيل الخروج",
+    "signingOut": "جارٍ الخروج…",
+    "deleteAccount": "حذف الحساب",
+    "email": {
+      "title": "تغيير البريد الإلكتروني",
+      "currentEmail": "البريد الإلكتروني الحالي",
+      "newEmail": "البريد الإلكتروني الجديد",
+      "sendCode": "إرسال رمز التأكيد",
+      "codeSentTo": "تم إرسال رمز مكون من 6 أرقام إلى",
+      "confirmCode": "رمز التأكيد",
+      "useDifferentEmail": "استخدام بريد إلكتروني مختلف",
+      "updated": "تم تحديث البريد الإلكتروني",
+      "updatedDesc": "تم تغيير بريدك الإلكتروني إلى {{email}}."
+    },
+    "password": {
+      "title": "تغيير كلمة المرور",
+      "currentPassword": "كلمة المرور الحالية",
+      "newPassword": "كلمة المرور الجديدة",
+      "confirmPassword": "تأكيد كلمة المرور الجديدة",
+      "sendCode": "إرسال رمز التأكيد",
+      "confirmCode": "رمز التأكيد",
+      "goBack": "رجوع",
+      "updated": "تم تحديث كلمة المرور",
+      "updatedDesc": "تم تغيير كلمة مرورك بنجاح.",
+      "noMatch": "كلمتا المرور غير متطابقتين.",
+      "tooShort": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل."
+    },
+    "delete": {
+      "title": "إدارة الحساب",
+      "chooseDesc": "اختر ما تريد فعله بحسابك.",
+      "deactivateLabel": "تعطيل",
+      "deactivateCardDesc": "عطّل حسابك مؤقتاً. يمكنك إعادة تفعيله في أي وقت بتسجيل الدخول مرة أخرى.",
+      "deactivateButton": "تعطيل الحساب",
+      "deactivateAlertTitle": "تعطيل الحساب",
+      "deactivateAlertMessage": "سيتم تعطيل حسابك. يمكنك إعادة تفعيله بتسجيل الدخول مجدداً.",
+      "deactivateAlertButton": "تعطيل",
+      "deletePermanentLabel": "حذف نهائي",
+      "deleteCardDesc": "احذف حسابك وجميع بياناتك نهائياً. لا يمكن التراجع عن هذا.",
+      "warningTitle": "لا يمكن التراجع عن هذا",
+      "warningDesc": "سيؤدي حذف حسابك إلى إزالة جميع draftsك وتعليقاتك ومتابعيك وبياناتك الشخصية بشكل دائم من خوادمنا.",
+      "confirmPhrase": "حذف حسابي",
+      "confirmLabel": "اكتب \"حذف حسابي\" للتأكيد",
+      "deleteButton": "حذف حسابي",
+      "alertTitle": "حذف الحساب",
+      "alertMessage": "هذا الإجراء دائم. ستُحذف جميع draftsك ومتابعيك وبياناتك. لا يمكن التراجع.",
+      "alertButton": "حذف نهائياً"
+    },
+    "notifPrefs": {
+      "title": "الإشعارات",
+      "newFollower": "متابع جديد",
+      "newFollowerDesc": "عندما يتابعك شخص ما",
+      "newComment": "تعليق جديد",
+      "newCommentDesc": "عندما يعلق شخص ما على مسودتك",
+      "draftLiked": "draft معجبة",
+      "draftLikedDesc": "عندما يعجب شخص ما بمسودتك"
+    }
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "markAllRead": "تحديد الكل كمقروء",
+    "deleteAll": "حذف الكل",
+    "noNotifications": "لا توجد إشعارات بعد",
+    "noNotificationsDescription": "عندما يتابعك شخص ما أو يُعجب بdraftsك أو يعلّق عليها، ستراه هنا.",
+    "follow": "{{actor}} بدأ بمتابعتك.",
+    "like": "{{actor}} أُعجب بمسودتك «{{title}}».",
+    "comment": "{{actor}} علّق على مسودتك «{{title}}».",
+    "unreadCount": "{{count}} غير مقروء",
+    "deleteAllConfirm": "حذف جميع الإشعارات؟ لا يمكن التراجع عن هذا.",
+    "deleteOne": "حذف الإشعار",
+    "deleteOneConfirm": "إزالة هذا الإشعار؟",
+    "allRead": "تم وضع علامة مقروء على جميع الإشعارات."
+  },
+  "draft": {
+    "publish": "نشر",
+    "publishConfirm": "هل أنت متأكد من رغبتك في نشر هذه Draft؟ سيتمكن الجميع من قراءتها.",
+    "published": "تم نشر Draft.",
+    "like": "إعجاب",
+    "bookmark": "حفظ",
+    "removeBookmark": "إزالة الإشارة المرجعية",
+    "comments": "التعليقات",
+    "bookmarkedToast": "تمت إضافة Draft إلى قائمة القراءة.",
+    "unbookmarkedToast": "تمت إزالة Draft من قائمة القراءة.",
+    "likedToast": "تم الإعجاب بDraft.",
+    "dislikedToast": "تم إلغاء الإعجاب.",
+    "deleteDraft": "حذف Draft",
+    "deleteConfirm": "هل أنت متأكد من رغبتك في حذف هذه Draft؟ هذا الإجراء دائم.",
+    "deletedToast": "تم حذف Draft.",
+    "errorToast": "حدث خطأ ما، يُرجى المحاولة مجدداً."
+  },
+  "newDraft": {
+    "heading": "draft جديدة",
+    "titleLabel": "العنوان",
+    "titlePlaceholder": "أدخل عنواناً",
+    "introLabel": "المقدمة",
+    "introPlaceholder": "وصف مختصر لمسودتك",
+    "topicsLabel": "المواضيع",
+    "topicPlaceholder": "مثال: تقنية",
+    "coverLabel": "صورة الغلاف",
+    "createDraft": "إنشاء draft",
+    "draftCreated": "تم إنشاء Draft!",
+    "failedToCreate": "فشل إنشاء Draft، يُرجى المحاولة مجدداً.",
+    "createTopic": "إنشاء \"{{topic}}\""
+  },
+  "comments": {
+    "addComment": "إضافة تعليق",
+    "addCommentPlaceholder": "أضف تعليقاً…",
+    "noCommentsYet": "لا توجد تعليقات بعد.",
+    "comment": "تعليق",
+    "failedToSave": "فشل حفظ التعليق.",
+    "failedToUpdate": "فشل تحديث التعليق.",
+    "commentAdded": "تمت إضافة التعليق."
+  },
+  "card": {
+    "liked": "أعجبك!",
+    "unliked": "إلغاء الإعجاب",
+    "bookmarked": "تم الحفظ!",
+    "unbookmarked": "تمت الإزالة من المحفوظات"
+  },
+  "search": {
+    "placeholder": "ابحث في المسودات…",
+    "idle": "ابحث عن المسودات والمواضيع…"
+  }
+}
