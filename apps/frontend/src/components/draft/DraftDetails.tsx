@@ -15,31 +15,24 @@ const DraftDetails = ({
   return (
     <div className="w-full flex flex-col gap-5 mx-auto p-4 md:px-0">
       <div className="w-full flex items-center gap-3 mx-auto">
-        <Avatar
-          size="sm"
-          as="button"
-          showFallback
-          color="primary"
-          classNames={{
-            base: "border"
-          }}
-          src={draft?.author?.avatar}
-          name={draft?.author?.firstname?.split("")?.[0]?.toUpperCase()}
-        />
+        <Avatar size="sm" color="accent" className="border">
+          <Avatar.Image src={draft?.author?.avatar ?? undefined} />
+          <Avatar.Fallback>{draft?.author?.firstname?.split("")?.[0]?.toUpperCase()}</Avatar.Fallback>
+        </Avatar>
 
         <div className="flex flex-col items-start">
           <p className="text-foreground text-lg font-semibold">
             { `${draft?.author?.firstname} ${draft?.author?.lastname}` }
           </p>
 
-          <p className="text-default-500 text-sm">
+          <p className="text-neutral-500 text-sm">
             { moment(draft?.createdAt).format("MMMM D, YYYY, h:mm a") }
           </p>
         </div>
       </div>
 
-      <Chip variant="flat" color='primary' size={isLargeScreen ? "md" : "sm"}>
-        {draft?.topic || 'No topic'}
+      <Chip variant="soft" color='accent' size={isLargeScreen ? "md" : "sm"}>
+        {draft?.topics?.join(', ') || 'No topics'}
       </Chip>
 
       <div className="flex flex-col gap-2">
@@ -47,7 +40,7 @@ const DraftDetails = ({
           { draft?.title }
         </p>
 
-        <p className="text-default-500">
+        <p className="text-neutral-500">
           { draft?.intro }
         </p>
       </div>

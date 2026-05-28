@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { clsx as cn } from 'clsx'
 
 export const DropdownCategoryTitle = ({ children }: { children: React.ReactNode }) => {
   return (

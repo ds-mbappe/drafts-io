@@ -1,4 +1,4 @@
-import { cn } from '@heroui/theme'
+import { clsx as cn } from 'clsx'
 import { useCallback } from 'react'
 
 export type ToggleProps = {

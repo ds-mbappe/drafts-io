@@ -58,7 +58,7 @@ export const LinkEditorPanel = ({ onSetLink, initialOpenInNewTab, initialUrl }: 
             onChange={state.onChange}
           />
         </label>
-        <Button variant="solid" type="submit" isDisabled={!state.isValidUrl}>
+        <Button variant="secondary" type="submit" isDisabled={!state.isValidUrl}>
           Set Link
         </Button>
       </form>

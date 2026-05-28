@@ -1,335 +1,111 @@
-import { useSession } from "next-auth/react";
-import React, { useContext, useEffect, useState } from 'react';
-// import { getFollowData } from '@/actions/getFollowData';
-import { errorToast, successToast } from '@/actions/showToast';
-import { Avatar, Button, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
-import { useDebouncedCallback } from 'use-debounce';
-import { NextSessionContext } from '@/contexts/SessionContext';
-import { EditUser } from '@/lib/types';
+'use client'
 
-const ProfileModal = ({ changeDialogOpenState, dialogOpen }: {
-  changeDialogOpenState: (isOpen: boolean) => void | undefined,
-  dialogOpen: boolean,
+import React, { useContext, useEffect, useState } from 'react'
+import { Avatar, Modal, Separator, Button } from '@heroui/react'
+import { NextSessionContext } from '@/contexts/SessionContext'
+import { useAuthFetcher } from '@/hooks/useAuthFetcher'
+import { getMyProfile } from '@/actions/user'
+import { BaseUser } from '@/lib/types'
+import { useRouter } from 'next/navigation'
+import { BookTextIcon, UsersIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+
+const StatItem = ({ value, label }: { value: number; label: string }) => (
+  <div className="flex flex-col items-center gap-0.5">
+    <p className="text-base font-semibold">{value.toLocaleString()}</p>
+    <p className="text-xs text-foreground-500">{label}</p>
+  </div>
+)
+
+const ProfileModal = ({
+  changeDialogOpenState,
+  dialogOpen,
+}: {
+  changeDialogOpenState: (isOpen: boolean) => void
+  dialogOpen: boolean
 }) => {
-  const [editPersonalInfo, setEditPersonalInfo] = useState(false);
-  const { update } = useSession();
-  const { session, setSession } = useContext(NextSessionContext)
-  const [loading, setLoading] = useState(false);
-  const [isPictureLoading, setPictureLoading] = useState(false);
-  const [follow, setFollow] = useState<any>({
-    followers: 0,
-    following: 0,
-  })
-  const [editUser, setEditUser] = useState<EditUser>({
-    firstname: "",
-    lastname: "",
-    email: "",
-    phone: "",
-    avatar: "",
-    followers: 0,
-    following: 0,
-  });
+  const { session } = useContext(NextSessionContext)
+  const { token } = useAuthFetcher()
+  const router = useRouter()
+  const [profile, setProfile] = useState<BaseUser | null>(null)
+  const t = useTranslations('profile')
 
-  const saveUserInfo = useDebouncedCallback(async () => {
-    setLoading(true);
-
-    let formData = {
-      id: session?.user?.id,
-      firstname: editUser.firstname,
-      lastname: editUser.lastname,
-      email: editUser.email,
-      phone: editUser.phone
-    }
-
-    const response = await fetch(`/api/user/${session?.user?.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ formData }),
-    })
-    const data = await response.json()
-
-    if (response.ok) {
-      const response = await update({ ...data.user })
-      setEditPersonalInfo(false);
-      setSession(response)
-
-      successToast("You have successfully updated your info!");
-    } else {
-      errorToast("Error updating your info!");
-    }
-
-    setLoading(false);
-    changeDialogOpenState(false)
-  }, 300)
-
-  const onOpenPicker = () => {
-    const picker = document.getElementById('picker')
-    if (picker) {
-      picker.click()
-    }
-  }
-
-  const cancelAndRollback = () => {
-    setEditPersonalInfo(prev => !prev);
-    setEditUser(() => ({
-      ...session?.user,
-      followers: follow?.followers,
-      following: follow?.following,
-    }))
-  }
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPictureLoading(true)
-    const file = e.target?.files?.[0]
-    if (file) {
-      const formData = new FormData()
-      formData.append('file', file)
-
-      const result = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME as string}/auto/upload`, {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (result?.ok) {
-        const data = await result.json()
-
-        await update({ ...session?.user, avatar: data?.secure_url })
-
-        const formData = {
-          id: session?.user?.id,
-          avatar: data?.secure_url
-        }
-
-        const response = await fetch(`/api/user/${session?.user?.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ formData }),
-        })
-
-        if (response?.ok) {
-          setEditUser({ ...editUser, avatar: data?.secure_url })
-
-          successToast("Successfully updated avatar!");
-        } else {
-          errorToast("Error updating avatar. Please try again!");
-        }
-      } else {
-        errorToast("Error updating avatar. Please try again!");
-      }
-    }
-    setPictureLoading(false)
-  }
-
-  // Set follow data
-  const setFollowData = async () => {
-    // const data = await getFollowData(session?.user?.id);
-    // setFollow({
-    //   followers: data?.followers_count,
-    //   following: data?.following_count,
-    // })
-    // setEditUser((prev: any) => ({
-    //   ...prev,
-    //   followers: data?.followers_count,
-    //   following: data?.following_count,
-    // }))
-  }
-
-  // Use states
   useEffect(() => {
-    if (session?.user) {
-      setEditUser({ ...editUser, ...session?.user });
-      setFollowData();
-    }
-  }, [session?.user])
+    if (!dialogOpen || !token) return
+    getMyProfile(token).then(setProfile)
+  }, [dialogOpen, token])
+
+  const displayName = [profile?.firstname, profile?.lastname].filter(Boolean).join(' ') || session?.user?.name || '—'
 
   return (
-    <Modal placement="center" isOpen={dialogOpen} scrollBehavior="inside" onOpenChange={changeDialogOpenState}>
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{'Profile'}</ModalHeader>
+    <Modal isOpen={dialogOpen} onOpenChange={changeDialogOpenState}>
+      <Modal.Backdrop>
+        <Modal.Container size="sm" placement="center">
+          <Modal.Dialog>
+            <Modal.Header>
+              <Modal.Heading>{t('title')}</Modal.Heading>
+              <Modal.CloseTrigger />
+            </Modal.Header>
 
-        <ModalBody className="p-4">
-          <div className="w-full flex flex-col gap-2">
-            <div className="w-full flex flex-col gap-2.5 p-3">
-              <div className="w-full flex items-center gap-4">
-                {/* Avatar + Edit */}
-                <div className="w-[60px] h-[60px] flex relative">
-                  <Button
-                    isIconOnly
-                    radius="full"
-                    isLoading={isPictureLoading}
-                    className="w-[60px] h-[60px]"
-                    title="Click to change your profile picture"
-                    onPress={onOpenPicker}
-                  >
-                    <Avatar
-                      showFallback
-                      classNames={{
-                        base: "border"
-                      }}
-                      src={editUser.avatar}
-                      name={editUser.firstname?.split('')?.[0]}
-                      className="w-[60px] h-[60px] text-large"
-                    />
-                  </Button>
-
-                  <input
-                    id="picker"
-                    type="file"
-                    className="hidden opacity-0"
-                    accept="image/png, image/gif, image/jpeg"
-                    onChange={handleFileChange}
-                  />
-                </div>
-
-                {/* Firstname + Lastname + Email */}
-                <div className="flex flex-col">
-                  <p className="text-base font-medium">
-                    {`${session?.user?.firstname ?? 'No Firstname'} ${session?.user?.lastname ?? ''}`}
-                  </p>
-
-                  <p className="text-sm font-normal text-foreground-500">
-                    {session?.user?.email}
-                  </p>
+            <Modal.Body className="flex flex-col gap-5 pb-2">
+              {/* Avatar + name */}
+              <div className="flex flex-col items-center gap-3 pt-2">
+                <Avatar color="accent" className="w-20 h-20 text-2xl">
+                  <Avatar.Image src={profile?.avatar ?? session?.user?.image ?? undefined} />
+                  <Avatar.Fallback>{displayName.charAt(0).toUpperCase()}</Avatar.Fallback>
+                </Avatar>
+                <div className="text-center">
+                  <p className="font-semibold text-base">{displayName}</p>
+                  {profile?.username && (
+                    <p className="text-sm text-foreground-500">@{profile.username}</p>
+                  )}
                 </div>
               </div>
 
-              {/* Following & Followers */}
-              <div className="flex items-center gap-5">
-                <div className="flex items-center gap-2">
-                  <p className="text font-medium">{editUser.followers}</p>
-                  <p className="text-sm font-medium text-foreground-500">{`Followers`}</p>
-                </div>
+              <Separator />
 
-                <div className="flex items-center gap-2">
-                  <p className="text font-medium">{editUser.following}</p>
-                  <p className="text-sm font-medium text-foreground-500">{`Following`}</p>
-                </div>
-              </div>
-            </div>
-
-            <Divider />
-
-            {/* Personal information */}
-            <div className="w-full p-3 flex flex-col gap-3">
-              <div className="h-[32px] flex items-center justify-between">
-                <p className="text-sm font-medium">
-                  {'Personal information'}
-                </p>
-
-                {!editPersonalInfo &&
-                  <Button
-                    variant="bordered"
-                    radius="full"
-                    size="sm"
-                    onClick={() => setEditPersonalInfo(prev => !prev)}
-                  >
-                    {'Edit'}
-                  </Button>
-                }
+              {/* Stats */}
+              <div className="grid grid-cols-4 gap-2 px-2">
+                <StatItem value={profile?.followers ?? 0} label={t('followers')} />
+                <StatItem value={profile?.following ?? 0} label={t('following')} />
+                <StatItem value={profile?.publishedDrafts ?? 0} label={t('drafts')} />
+                <StatItem value={profile?.totalLikes ?? 0} label={t('likes')} />
               </div>
 
-              <div className="flex flex-col gap-3">
-                {/* Firstname */}
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-normal text-foreground-500">
-                    {'Firstname'}
-                  </p>
+              <Separator />
 
-                  <Input
-                    id="firstname"
-                    variant='bordered'
-                    placeholder="Firstname"
-                    autoComplete="new-password"
-                    value={editUser.firstname ?? undefined}
-                    isDisabled={!editPersonalInfo}
-                    onValueChange={(value) => setEditUser({ ...editUser, firstname: value })}
-                  />
-                </div>
-
-                {/* Lastname */}
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-normal text-foreground-500">
-                    {'Lastname'}
-                  </p>
-
-                  <Input
-                    id="lastname"
-                    variant='bordered'
-                    placeholder="Lastname"
-                    value={editUser.lastname ?? undefined}
-                    autoComplete="new-password"
-                    isDisabled={!editPersonalInfo}
-                    onValueChange={(value) => setEditUser({ ...editUser, lastname: value })}
-                  />
-                </div>
-
-                {/* Email address */}
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-normal text-foreground-500">
-                    {'Email address'}
-                  </p>
-
-                  <Input
-                    id="email"
-                    isDisabled
-                    type="email"
-                    variant='bordered'
-                    placeholder="Email"
-                    value={editUser.email ?? undefined}
-                    autoComplete="new-password"
-                    // onValueChange={(value) => setEditUser({...editUser, email: value})}
-                  />
-                </div>
-
-                {/* Phone number */}
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-normal text-foreground-500">
-                    {'Phone'}
-                  </p>
-
-                  <Input
-                    id="phone"
-                    variant='bordered'
-                    value={editUser.phone ?? undefined}
-                    placeholder="Phone number"
-                    autoComplete="new-password"
-                    isDisabled={!editPersonalInfo}
-                    onValueChange={(value) => setEditUser({ ...editUser, phone: value })}
-                  />
-                </div>
+              {/* Quick links */}
+              <div className="flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-2.5 text-foreground-500"
+                  onClick={() => {
+                    changeDialogOpenState(false)
+                    router.push(`/app/users/${profile?.username}`)
+                  }}
+                >
+                  <UsersIcon size={15} />
+                  {t('viewPublicProfile')}
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-2.5 text-foreground-500"
+                  onClick={() => {
+                    changeDialogOpenState(false)
+                    router.push('/app/settings')
+                  }}
+                >
+                  <BookTextIcon size={15} />
+                  {t('editProfileSettings')}
+                </Button>
               </div>
-            </div>
-          </div>
-        </ModalBody>
-
-        <ModalFooter>
-          {editPersonalInfo &&
-            <Button
-              color="danger"
-              variant="light"
-              className='cursor-pointer'
-              onClick={cancelAndRollback}
-            >
-              {'Cancel'}
-            </Button>
-          }
-
-          <Button
-            color='primary'
-            variant="light"
-            isLoading={loading}
-            isDisabled={!editPersonalInfo}
-            className='cursor-pointer'
-            onClick={saveUserInfo}
-          >
-            {'Save'}
-          </Button>
-        </ModalFooter>
-      </ModalContent>
+            </Modal.Body>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
     </Modal>
   )
 }
 
 ProfileModal.displayName = 'ProfileModal'
-
 export default ProfileModal

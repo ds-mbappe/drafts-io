@@ -1,6 +1,7 @@
 "use client"
 
-import { Card, Chip, cn } from '@heroui/react'
+import { Card, Chip } from '@heroui/react'
+import { clsx as cn } from 'clsx'
 import Image from 'next/image'
 import React from 'react'
 import heroImage from '../../../public/hero-image.jpg'
@@ -17,9 +18,7 @@ const HomeFeaturedItem = ({
   return (
     <Link href="/">
       <Card
-        classNames={{
-          base: cn('cursor-pointer flex flex-col transition-all duration-300 group-hover:bg-foreground-100 hover:-translate-y-1 hover:shadow-lg lg:col-span-1 lg:row-span-1 border dark:border-0', className)
-        }}
+        className={cn('cursor-pointer flex flex-col transition-all duration-300 group-hover:bg-foreground-100 hover:-translate-y-1 hover:shadow-lg lg:col-span-1 lg:row-span-1 border dark:border-0', className)}
       >
         <div className="relative overflow-hidden h-full">
           <Image
@@ -32,7 +31,7 @@ const HomeFeaturedItem = ({
           <div className="h-full absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
           <div className="absolute top-4 left-4">
-            <Chip variant="solid">
+            <Chip variant="primary">
               {item?.category}
             </Chip>
           </div>

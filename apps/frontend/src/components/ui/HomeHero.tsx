@@ -11,8 +11,8 @@ const HomeHero = () => {
   return (
     <div className="w-full max-w-[1536px] justify-center items-center flex flex-col xl:flex-row gap-5 xl:gap-16 mx-auto px-3 xl:px-10 py-10 xl:py-14">
       <div className="flex flex-col gap-5">
-        <Chip color="primary" variant="flat" startContent={<SparklesIcon size={16} />} className="px-3 mx-auto xl:mx-0">
-          {'Welcome to Drafts'}
+        <Chip color="accent" variant="soft" className="px-3 mx-auto xl:mx-0">
+          <SparklesIcon size={16} />{'Welcome to Drafts'}
         </Chip>
 
         <h2 className="text-3xl sm:text-4xl xl:text-[60px] font-serif font-bold text-foreground leading-tight! text-center xl:text-start">
@@ -36,30 +36,25 @@ const HomeHero = () => {
         <div className="xl:h-5" />
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center xl:justify-start">
-          <Button
-            as={Link}
-            href="/app"
-            size="lg"
-            radius="sm"
-            color="primary"
-            variant="shadow"
-            className="hover:scale-105 transition-all text-lg font-medium"
-            endContent={<ArrowRightIcon size={16} />}
-          >
-            {'Start reading'}
-          </Button>
+          <Link href="/app">
+            <Button
+              size="lg"
+              variant="primary"
+              className="hover:scale-105 transition-all text-lg font-medium rounded-sm"
+            >
+              {'Start reading'}<ArrowRightIcon size={16} />
+            </Button>
+          </Link>
 
-          <Button
-            as={Link}
-            href="/"
-            size="lg"
-            radius="sm"
-            color="default"
-            variant="bordered"
-            className="hover:scale-105 transition-all text-lg font-medium"
-          >
-            {'Explore categories'}
-          </Button>
+          <Link href="/">
+            <Button
+              size="lg"
+              variant="outline"
+              className="hover:scale-105 transition-all text-lg font-medium rounded-sm"
+            >
+              {'Explore categories'}
+            </Button>
+          </Link>
         </div>
 
         <div className="h-4 xl:h-12" />

@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Divider, Input } from '@heroui/react'
+import { Button, Separator, Input } from '@heroui/react'
 import Link from 'next/link'
 import React from 'react'
 import Icon from './Icon'
@@ -92,23 +92,21 @@ const Footer = () => {
 
             <div className="flex flex-col gap-3">
               <Input
-                isRequired
-                radius="sm"
+                required
                 type="email"
                 name="email"
-                variant="bordered"
+                variant="secondary"
                 placeholder="Enter your email"
-                errorMessage="Please enter a valid email"
               />
 
-              <Button variant="solid" radius="sm">
+              <Button variant="secondary" className="rounded-sm">
                 {'Subscribe now'}
               </Button>
             </div>
           </div>
         </div>
 
-        <Divider className="bg-background" />
+        <Separator className="bg-background" />
 
         <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-primary-foreground/60 text-sm">

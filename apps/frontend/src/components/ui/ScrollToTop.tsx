@@ -1,4 +1,5 @@
-import { Button, cn } from '@heroui/react';
+import { Button } from '@heroui/react';
+import { clsx as cn } from 'clsx';
 import { ChevronUp } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 
@@ -54,10 +55,9 @@ const ScrollToTop = ({ classes }: { classes?: string }) => {
     <>
       <Button
         isIconOnly
-        variant="shadow"
-        color="primary"
+        variant="primary"
         aria-label="Scroll to top"
-        className={cn("fixed z-50 shadow-sm", classes ? classes : "bottom-[68px] right-5")}
+        className={cn("fixed z-50 shadow-sm", classes ? classes : "bottom-20 right-5")}
         onPress={scrollToTop}
       >
         <ChevronUp className="h-5 w-5" />

@@ -53,18 +53,15 @@ const HomeFeatured = () => {
         ))}
       </div>
 
-      <Button
-        as={Link}
-        size="lg"
-        href="/app"
-        radius="sm"
-        color="default"
-        variant="bordered"
-        className="hover:scale-105 transition-all text-lg font-medium"
-        endContent={<ArrowRightIcon size={16} />}
-      >
-        {'Read all drafts'}
-      </Button>
+      <Link href="/app">
+        <Button
+          size="lg"
+          variant="outline"
+          className="hover:scale-105 transition-all text-lg font-medium rounded-sm"
+        >
+          {'Read all drafts'}<ArrowRightIcon size={16} />
+        </Button>
+      </Link>
     </div>
   )
 }

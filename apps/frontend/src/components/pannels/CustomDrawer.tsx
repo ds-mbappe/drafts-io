@@ -83,7 +83,7 @@ export function CustomDrawer({
                 {title}
               </p>
 
-              <MemoButton variant="light" size="sm" onPress={onClose} color="default" isIconOnly>
+              <MemoButton variant="ghost" size="sm" onPress={onClose} isIconOnly>
                 <Icon name="X" className="text-foreground-500" />
               </MemoButton>
             </div>

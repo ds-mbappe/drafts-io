@@ -1,170 +1,301 @@
-"use client"
+'use client';
 
-import { cn } from '@heroui/react';
-import { useRouter, usePathname } from 'next/navigation';
-import React, { useEffect, useState, memo, useContext } from 'react';
-import { Divider, Button, Avatar, useDisclosure } from "@heroui/react";
-import { BookmarkIcon, BookOpenTextIcon, BookTextIcon, ChevronLeftIcon, ChevronRightIcon, CircleHelpIcon, ClockIcon, HomeIcon, LayoutListIcon, LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
-import Link from "next/link";
-import { signOut } from "next-auth/react";
-// import ProfileModal from "./ProfileModal";
-import { useTheme } from "next-themes";
+import React, { memo, useContext, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Avatar, Separator } from '@heroui/react';
+import { signOut } from 'next-auth/react';
+import { useTheme } from 'next-themes';
+import {
+  BookmarkIcon,
+  BookOpenTextIcon,
+  BookTextIcon,
+  CircleHelpIcon,
+  ClockIcon,
+  GlobeIcon,
+  HomeIcon,
+  LayoutListIcon,
+  LogOutIcon,
+  MonitorIcon,
+  MoonIcon,
+  PinIcon,
+  PinOffIcon,
+  SettingsIcon,
+  SunIcon,
+  UsersIcon,
+} from 'lucide-react';
+import { clsx as cn } from 'clsx';
+import { useTranslations } from 'next-intl';
 import { NextSessionContext } from '@/contexts/SessionContext';
+import { useSidebarStore } from '@/stores/sidebarStore';
+import ProfileModal from './ProfileModal';
 
-const Sidebar = memo(({ isOpen, onClose }: { isOpen?: boolean; onClose: () => void }) => {
-  const router = useRouter();
+const SIDEBAR_WIDTH = 260;
+const GAP = 8;
+
+const FLOAT_STYLE = { top: 44 + GAP, bottom: GAP, left: GAP, borderRadius: 12 };
+const FLOAT_HIDDEN = { ...FLOAT_STYLE, left: -(SIDEBAR_WIDTH + GAP * 2) };
+
+// ---------------------------------------------------------------------------
+
+const NavItem = ({
+  icon, label, active, danger, onClick, href,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  active?: boolean;
+  danger?: boolean;
+  onClick?: () => void;
+  href?: string;
+}) => {
+  const cls = cn(
+    'w-full flex gap-2.5 px-3 py-2 items-center rounded-xl cursor-pointer text-sm font-medium transition-colors',
+    active
+      ? 'bg-primary/10 text-primary'
+      : danger
+        ? 'text-foreground-500 hover:text-danger hover:bg-foreground-100'
+        : 'text-foreground-500 hover:text-foreground hover:bg-foreground-100',
+  );
+  if (href) return <Link href={href} className={cls} onClick={onClick}>{icon}{label}</Link>;
+  return <div className={cls} onClick={onClick}>{icon}{label}</div>;
+};
+
+// ---------------------------------------------------------------------------
+
+const SidebarContent = ({
+  onPin,
+  isDocked,
+  onClose,
+  onOpenProfile,
+}: {
+  onPin: () => void;
+  isDocked: boolean;
+  onClose: () => void;
+  onOpenProfile: () => void;
+}) => {
   const pathname = usePathname();
-  const { resolvedTheme, setTheme } = useTheme();
-  const { session } = useContext(NextSessionContext)
-  const [mounted, setMounted] = useState(false)
-  const { isOpen: isOpenProfile, onOpenChange } = useDisclosure();
+  const router = useRouter();
+  const { theme, setTheme } = useTheme();
+  const { session } = useContext(NextSessionContext);
+  const t = useTranslations('nav');
 
-  const windowClassName = cn(
-    'absolute h-screen left-0 top-0 xl:relative z-2 w-0 duration-300 transition-all',
-    !isOpen && 'border-r-transparent',
-    isOpen && 'w-[350px] xl:static! border-r border-r-divider',
-  )
+  const themeConfig = {
+    light:  { icon: <SunIcon size={16} />,     label: t('lightMode'), next: 'dark'   },
+    dark:   { icon: <MoonIcon size={16} />,    label: t('darkMode'),  next: 'system' },
+    system: { icon: <MonitorIcon size={16} />, label: t('system'),    next: 'light'  },
+  } as const;
 
-  const onLogout = () => {
-    signOut({
-      callbackUrl: "/account/sign-in"
-    });
-  }
+  const current = (theme as keyof typeof themeConfig) ?? 'system';
+  const { icon: themeIcon, label: themeLabel, next } = themeConfig[current] ?? themeConfig.system;
 
-  const goToMyLibrary = () => {
-    router.push(`/app/library`)
-  }
-
-  const changeTheme = () => {
-    if (resolvedTheme === 'dark') {
-      setTheme('light')
-    } else if (resolvedTheme === 'light') {
-      setTheme('dark')
-    }
-  }
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return null
-  }
+  const nav = (href: string) => () => {
+    router.push(href);
+    onClose();
+  };
 
   return (
-    <div className={`${windowClassName} h-full bg-content1 flex flex-col overflow-visible gap-8 xl:relative! hideScroll z-50!`}>
-      <div className={`${windowClassName} ${isOpen ? 'opacity-100 px-4' : 'opacity-0 px-0'} h-full bg-content1 flex flex-col overflow-x-hidden overflow-y-auto py-8 gap-5 relative`}>
-        {/* Profile */}
-        <div className="w-full flex items-center gap-2.5 p-2.5 rounded-[12px] border border-divider cursor-pointer transition-all hover:bg-foreground-100 active:scale-[0.95]" onClick={onOpenChange}>
-          <Avatar
-            as="button"
-            color="primary"
-            showFallback
-            name={session?.user?.firstname?.split("")?.[0]?.toUpperCase()}
-            size="md"
-            src={session?.user?.avatar}
-          />
-
-          <div className="flex flex-col">
-            <p className="font-semibold text-sm">
-              {`${session?.user?.firstname} ${session?.user?.lastname}`}
-            </p>
-
-            <p className="text-foreground-500 text-sm">
-              {session?.user?.email}
-            </p>
-          </div>
-        </div>
-
-        {/* Theme Switcher */}
-        <div className="w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]" onClick={changeTheme}>
-          {resolvedTheme === 'dark' ? <SunIcon /> : <MoonIcon />}
-          {resolvedTheme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-        </div>
-
-        <div className="flex flex-col gap-2">
-          {/* Home button */}
-          <Link href="/app">
-            <div className={cn('w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]', pathname === '/app' && 'text-foreground! bg-foreground-100!')}>
-              <HomeIcon size={20} />
-              <p className="font-semibold">{'Home'}</p>
-            </div>
-          </Link>
-
-          {/* Library */}
-          <div className="w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]" onClick={goToMyLibrary}>
-            <BookTextIcon size={20} />
-            <p className="font-semibold">{'My library'}</p>
-          </div>
-
-          {/* Saved Drafts */}
-          <div className="w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]">
-            <BookmarkIcon size={20} />
-            <p className="font-semibold">{'Saved'}</p>
-          </div>
-
-          {/* Read History */}
-          <div className="w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]">
-            <ClockIcon size={20} />
-            <p className="font-semibold">{'Recently Read'}</p>
-          </div>
-          
-          <Divider />
-
-          {/* Trending */}
-          <div className="w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]">
-            <BookOpenTextIcon size={20} />
-            <p className="font-semibold">{'Trending'}</p>
-          </div>
-
-          {/* Topics */}
-          <div className="w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]">
-            <LayoutListIcon size={20} />
-            <p className="font-semibold">{'Topics'}</p>
-          </div>
-
-          <Divider />
-
-          {/* Settings */}
-          <div className="w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]">
-            <SettingsIcon size={20} />
-            <p className="font-semibold">{'Settings'}</p>
-          </div>
-
-          {/* Help */}
-          <div className="w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-foreground hover:bg-foreground-100 transition-all active:scale-[0.95]">
-            <CircleHelpIcon size={20} />
-            <p className="font-semibold">{'Help'}</p>
-          </div>
-
-          {/* Sign out */}
-          <div className="w-full flex gap-2 p-2.5 items-center rounded-[12px] cursor-pointer text-foreground-500 hover:text-danger hover:bg-foreground-100 transition-all active:scale-[0.95]" onClick={onLogout}>
-            <LogOutIcon size={20} />
-            <p className="font-semibold">{'Sign out'}</p>
-          </div>
-        </div>
+    <>
+      <div className="flex items-center justify-between px-3 pt-4 pb-2 shrink-0">
+        <p className="text-xs font-semibold text-foreground-400 uppercase tracking-wider">{t('menu')}</p>
+        <button
+          onClick={onPin}
+          title={isDocked ? t('undockSidebar') : t('dockSidebar')}
+          className="p-1 rounded-lg text-foreground-400 hover:text-foreground hover:bg-foreground-100 transition-colors"
+        >
+          {isDocked ? <PinOffIcon size={14} /> : <PinIcon size={14} />}
+        </button>
       </div>
 
-      {/* <ProfileModal
-        changeDialogOpenState={onOpenChange}
-        dialogOpen={isOpenProfile}
-      /> */}
+      <div className="flex-1 overflow-y-auto px-3 py-2 flex flex-col gap-1">
+        {/* Profile */}
+        <div
+          className="flex items-center gap-2.5 p-2.5 mb-2 rounded-xl border border-divider cursor-pointer hover:bg-foreground-100 transition-colors"
+          onClick={onOpenProfile}
+        >
+          <Avatar color="accent" size="sm">
+            <Avatar.Image src={session?.user?.avatar ?? undefined} />
+            <Avatar.Fallback>{session?.user?.firstname?.split('')?.[0]?.toUpperCase()}</Avatar.Fallback>
+          </Avatar>
+          <div className="flex flex-col min-w-0">
+            <p className="font-semibold text-sm truncate">
+              {`${session?.user?.firstname ?? ''} ${session?.user?.lastname ?? ''}`.trim()}
+            </p>
+            <p className="text-foreground-500 text-xs truncate">{session?.user?.email}</p>
+          </div>
+        </div>
 
-      <Button
-        variant={isOpen ? 'solid' : 'flat'}
-        radius="full"
-        color="primary"
-        isIconOnly
-        title={isOpen ? 'Close sidebar (Alt + S)' : 'Open sidebar (Alt + S)'}
-        className={cn(!isOpen && 'hover:scale-[1.15] hover:translate-x-[20px] transition-all duration-400', 'z-20 absolute top-1/2 -translate-y-1/2 -right-[20px]')}
-        onPress={onClose}
-      >
-        {isOpen ? <ChevronLeftIcon size={28} /> : <ChevronRightIcon size={28} />}
-      </Button>
-    </div>
-  )
-})
+        <NavItem href="/app" icon={<HomeIcon size={16} />} label={t('home')} active={pathname === '/app'} onClick={onClose} />
+        <NavItem
+          icon={<BookTextIcon size={16} />}
+          label={t('myLibrary')}
+          active={pathname === '/app/library'}
+          onClick={nav('/app/library')}
+        />
+        <NavItem
+          icon={<BookmarkIcon size={16} />}
+          label={t('saved')}
+          active={pathname === '/app/saved'}
+          onClick={nav('/app/saved')}
+        />
+        <NavItem
+          icon={<ClockIcon size={16} />}
+          label={t('recentlyRead')}
+          active={pathname === '/app/recently-read'}
+          onClick={nav('/app/recently-read')}
+        />
 
-Sidebar.displayName = 'ContentSidebar'
+        <Separator className="my-1" />
 
-export default Sidebar
+        <NavItem
+          icon={<BookOpenTextIcon size={16} />}
+          label={t('trending')}
+          active={pathname === '/app/trending'}
+          onClick={nav('/app/trending')}
+        />
+        <NavItem
+          icon={<GlobeIcon size={16} />}
+          label={t('discover')}
+          active={pathname === '/app/discover'}
+          onClick={nav('/app/discover')}
+        />
+        <NavItem
+          icon={<UsersIcon size={16} />}
+          label={t('following')}
+          active={pathname === '/app/following'}
+          onClick={nav('/app/following')}
+        />
+        <NavItem
+          icon={<LayoutListIcon size={16} />}
+          label={t('topics')}
+          active={pathname === '/app/topics'}
+          onClick={nav('/app/topics')}
+        />
+
+        <Separator className="my-1" />
+
+        <NavItem
+          icon={<SettingsIcon size={16} />}
+          label={t('settings')}
+          active={pathname === '/app/settings'}
+          onClick={nav('/app/settings')}
+        />
+        <NavItem icon={<CircleHelpIcon size={16} />} label={t('help')} onClick={onClose} />
+        <NavItem
+          icon={themeIcon}
+          label={themeLabel}
+          onClick={() => setTheme(next)}
+        />
+
+        <Separator className="my-1" />
+
+        <NavItem
+          icon={<LogOutIcon size={16} />}
+          label={t('signOut')}
+          danger
+          onClick={() => signOut({ callbackUrl: '/account/sign-in' })}
+        />
+      </div>
+    </>
+  );
+};
+
+// ---------------------------------------------------------------------------
+
+const Sidebar = memo(() => {
+  const { mode, setMode, toggle, scheduleClose, cancelClose } = useSidebarStore();
+  const pathname = usePathname();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const onOpenProfile = () => setIsProfileOpen(true);
+  const onOpenChangeProfile = (v: boolean) => setIsProfileOpen(v);
+
+  const isFloating = mode === 'floating';
+  const isDocked = mode === 'docked';
+
+  // Close floating sidebar on route change.
+  useEffect(() => {
+    if (mode === 'floating') setMode('hidden');
+  }, [pathname]);
+
+  // Auto-undock when the viewport shrinks below 768 px.
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const handler = (e: MediaQueryListEvent) => {
+      if (e.matches && mode === 'docked') setMode('hidden');
+    };
+    mq.addEventListener('change', handler);
+    // Immediate check in case the component mounts on a small screen.
+    if (mq.matches && mode === 'docked') setMode('hidden');
+    return () => mq.removeEventListener('change', handler);
+  }, [mode, setMode]);
+
+  const handleClose = () => {
+    if (mode === 'floating') setMode('hidden');
+  };
+
+  const sharedContentProps = { onPin: toggle, isDocked, onClose: handleClose, onOpenProfile };
+
+  return (
+    <>
+      {/* ── DOCKED: in-flow flex child ── */}
+      <AnimatePresence>
+        {isDocked && (
+          <motion.div
+            key="docked"
+            className="shrink-0 h-full border-r border-divider bg-content1 flex flex-col overflow-hidden z-20"
+            initial={{ width: 0 }}
+            animate={{ width: SIDEBAR_WIDTH }}
+            exit={{ width: 0 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+          >
+            <SidebarContent {...sharedContentProps} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── FLOATING: fixed overlay ── */}
+      {mode === 'hidden' && (
+        <div
+          className="fixed left-0 top-0 h-dvh w-2 z-30"
+          onMouseEnter={() => setMode('floating')}
+        />
+      )}
+
+      <AnimatePresence>
+        {isFloating && (
+          <motion.div
+            className="fixed inset-x-0 bottom-0 z-[59]"
+            style={{ top: 44 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 0 }} exit={{ opacity: 0 }}
+            onClick={() => setMode('hidden')}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isFloating && (
+          <motion.div
+            key="floating"
+            className="fixed z-[60] flex flex-col overflow-hidden border border-divider bg-content1 shadow-xl shadow-black/10"
+            style={{ width: SIDEBAR_WIDTH }}
+            initial={FLOAT_HIDDEN}
+            animate={FLOAT_STYLE}
+            exit={FLOAT_HIDDEN}
+            transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+            onMouseEnter={cancelClose}
+            onMouseLeave={scheduleClose}
+          >
+            <SidebarContent {...sharedContentProps} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Profile modal — rendered once, shared between both modes */}
+      <ProfileModal dialogOpen={isProfileOpen} changeDialogOpenState={onOpenChangeProfile} />
+    </>
+  );
+});
+
+Sidebar.displayName = 'Sidebar';
+
+export default Sidebar;

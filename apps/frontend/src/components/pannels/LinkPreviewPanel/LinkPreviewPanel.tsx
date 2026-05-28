@@ -1,6 +1,6 @@
 import { Icon } from '@/components/ui/Icon'
 import { Surface } from '@/components/ui/Surface'
-import { Button, Divider } from "@heroui/react"
+import { Button, Separator } from "@heroui/react"
 
 export type LinkPreviewPanelProps = {
   url: string
@@ -15,13 +15,13 @@ export const LinkPreviewPanel = ({ onClear, onEdit, url }: LinkPreviewPanelProps
         {url}
       </a>
 
-      <Divider />
+      <Separator />
 
-      <Button variant="light" onPress={onEdit}>
+      <Button variant="ghost" onPress={onEdit}>
         <Icon name="Pen" />
       </Button>
 
-      <Button variant="light" onPress={onClear}>
+      <Button variant="ghost" onPress={onClear}>
         <Icon name="Trash2" />
       </Button>
     </Surface>

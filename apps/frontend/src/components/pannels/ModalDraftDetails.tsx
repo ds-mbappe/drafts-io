@@ -1,290 +1,148 @@
-import React, { memo, useCallback, useContext, useState } from 'react'
-import { Modal, ModalBody, ModalContent, ModalHeader, ModalFooter, Button, Input, useDisclosure, Textarea, Select, SelectItem } from "@heroui/react"
-import { errorToast, infoToast, successToast } from '@/actions/showToast';
-import { CloudUploadIcon } from 'lucide-react';
-import { NextSessionContext } from '@/contexts/SessionContext';
-import { useDropzone } from 'react-dropzone';
-import { EditorContent } from '@tiptap/react';
-import { useBlockEditor } from '../editor/hooks/useBlockEditor';
-import { createDocument } from '@/actions/document';
-import { clearLocalStorageKey } from '@/app/_helpers/storage';
-import { uploadFileToCloudinary } from '@/app/_helpers/cloudinary';
-import { useRouter } from 'next/navigation';
-import { useMobile } from '@/hooks/useMobile';
-import { useDebouncedCallback } from 'use-debounce';
+"use client"
 
-const ModalDraftDetails = ({ doc, characterCount }: {
-  doc?: any,
-  characterCount?: {
-    words: () => 0,
-    characters: () => 0,
-  }
-}) => {
-  const EDITOR_LOCAL_STORAGE_KEY: string = 'editor-document';
+import { useContext, useRef, useState } from 'react'
+import { Modal, Button } from '@heroui/react'
+import { errorToast, infoToast, successToast } from '@/actions/showToast'
+import { NextSessionContext } from '@/contexts/SessionContext'
+import { useBlockEditor } from '../editor/hooks/useBlockEditor'
+import { createDraft } from '@/actions/document'
+import { useRouter } from 'next/navigation'
+import { useMobile } from '@/hooks/useMobile'
+import { useDebouncedCallback } from 'use-debounce'
+import { DraftProps } from '@/lib/types'
+import { useFileUpload } from '@/hooks/useFileUpload'
+import { TiptopEditorHandle } from 'tiptop-editor'
+import { useNewDraftStore } from '@/stores/newDraftStore'
+import { useTranslations } from 'next-intl'
+import { DraftTitleField } from './modal-draft/DraftTitleField'
+import { DraftTopicsField } from './modal-draft/DraftTopicsField'
+import { DraftIntroField } from './modal-draft/DraftIntroField'
+import { DraftCoverField } from './modal-draft/DraftCoverField'
+import { DraftContentField } from './modal-draft/DraftContentField'
 
-  const MemoButton = memo(Button);
-
-  const router = useRouter();
-  const { editor } = useBlockEditor({
-    doc: doc,
-    editable: false,
-    autoFocus: false,
-    debouncedUpdates: () => {}
-  });
-  const isLargeScreen = useMobile();
-  const { isOpen, onOpenChange } = useDisclosure();
+const ModalDraftDetails = () => {
+  const t = useTranslations('newDraftModal')
+  const router = useRouter()
+  const isLargeScreen = useMobile()
+  const { uploadFile } = useFileUpload()
   const { session } = useContext(NextSessionContext)
   const user = session?.user
 
-  const [loading, setLoading] = useState(false);
-  const [cover, setCover] = useState<string>('');
-  const [coverFile, setCoverFile] = useState<File | undefined>();
-  const [titleValue, setTitleValue] = useState<string>('');
-  const [intro, setIntro] = useState<string>('');
-  const [topic, setTopic] = useState<string>('');
+  const { isOpen, close } = useNewDraftStore()
 
-  const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setTopic(e.target.value);
-  };
-  
-  const onDrop = useCallback(async(acceptedFiles: any) => {
-    const file = acceptedFiles?.[0];
+  // Form values
+  const [titleValue, setTitleValue] = useState('')
+  const [intro, setIntro] = useState('')
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([])
+  const [coverFile, setCoverFile] = useState<File | undefined>()
+  const [loading, setLoading] = useState(false)
 
-    if (file) {
-      const localUrl = URL.createObjectURL(file);
+  // Editor state (needed for submission)
+  const contentEditorRef = useRef<TiptopEditorHandle>(null)
+  const [draft, setDraft] = useState<DraftProps | undefined>()
+  const [characterCount, setCharacterCount] = useState({ words: 0, characters: 0 })
 
-      setCover(localUrl)
-      setCoverFile(file)
-    }  
-  }, [])
-
-  const categories = [
-    { value: 'technology', title: 'Technology' },
-    { value: 'lifestyle', title: 'Lifestyle' },
-    { value: 'business', title: 'Business' },
-    { value: 'design', title: 'Design' },
-    { value: 'innovation', title: 'Innovation' },
-    { value: 'education', title: 'Education' },
-  ]
-
-  const { getRootProps, getInputProps, open } = useDropzone({
-    maxFiles: 1,
-    noClick: true,
-    noKeyboard: true,
-    onDrop,
-    onDropRejected() {
-      errorToast(`File format not supported, accepted formats are ".png, .jpg, .jpeg, .gif, .avif, .webp"`)
+  const { editorOptions: contentEditorOptions } = useBlockEditor({
+    doc: draft,
+    editorRef: contentEditorRef,
+    editable: true,
+    autoFocus: false,
+    debouncedUpdates: ({ updatedDoc, characterCount: cc }: { updatedDoc: DraftProps; characterCount: any }) => {
+      setDraft(updatedDoc)
+      setCharacterCount(cc)
     },
-    accept: {
-      'image/png': ['.png', '.jpg', '.jpeg', '.gif', '.avif', '.webp']
-    }
-  });
+  })
 
-  const onCreateDocument = useDebouncedCallback(async () => {
+  // Incremented on close to force-remount children that have internal state
+  const [resetKey, setResetKey] = useState(0)
+
+  const closeAndReset = () => {
+    close()
+    setTitleValue('')
+    setIntro('')
+    setSelectedTopics([])
+    setCoverFile(undefined)
+    setDraft(undefined)
+    setCharacterCount({ words: 0, characters: 0 })
+    setResetKey((k) => k + 1)
+  }
+
+  const oncreateDraft = useDebouncedCallback(async () => {
     setLoading(true)
+    try {
+      let coverUrl = ''
+      if (coverFile) {
+        const uploaded = await uploadFile(coverFile, 'cover_urls')
+        coverUrl = uploaded.url
+      }
 
-    const uploadedFileUrl = await uploadFileToCloudinary(coverFile);
+      const content = contentEditorRef.current?.getEditor()?.getJSON() ?? draft?.content
 
-    const formData = {
-      intro: intro,
-      topic: topic,
-      title: titleValue,
-      authorId: user?.id,
-      content: doc?.content,
-      cover: uploadedFileUrl ?? null,
-      word_count: characterCount?.words(),
-      character_count: characterCount?.characters(),
+      const response = await createDraft({
+        intro,
+        topics: selectedTopics,
+        title: titleValue,
+        authorId: user?.id,
+        content,
+        cover: coverUrl,
+        word_count: characterCount?.words,
+        character_count: characterCount?.characters,
+      })
+
+      if (!response.success) {
+        if (response.error.properties?.title?.errors?.length) {
+          infoToast(response.error.properties.title.errors[0])
+        } else {
+          errorToast(t('failedToCreate'))
+        }
+        return
+      }
+
+      successToast(t('draftCreated'))
+      closeAndReset()
+      router.push(`/app/drafts/${response.data.id}`)
+    } catch {
+      errorToast(t('failedToCreate'))
+    } finally {
+      setLoading(false)
     }
-    const response = await createDocument({...formData});
-
-    const documentID = response.document?.id;
-
-    if (response?.success) {
-      clearLocalStorageKey(EDITOR_LOCAL_STORAGE_KEY);
-
-      successToast("Story successfully created !");
-
-      router.push(`/app/${documentID}`);
-    } else {
-      errorToast("An error occured, please try again !");
-    }
-
-    setLoading(false)
   }, 300)
 
-  const isTitleInvalid = () => {
-    return !titleValue
-  }
-
-  const isIntroInvalid = () => {
-    return !intro
-  }
-
-  const isTopicInvalid = () => {
-    return !topic
-  }
-
-  const closeAndResetModal = () => {
-    onOpenChange();
-    setTitleValue('');
-    setIntro('');
-    setTopic('');
-  }
-
-  const onSaveDraftDetails = () => {
-    if (isTitleInvalid()) {
-      infoToast("Please fill the Story title !");
-      return;
-    }
-
-    if (isIntroInvalid()) {
-      infoToast("Please fill an intro !");
-      return;
-    }
-
-    if (isTopicInvalid()) {
-      infoToast("Please choose a topic !");
-      return;
-    }
-
-    onCreateDocument();
-  }
-
   return (
-    <>
-      <MemoButton
-        color="primary"
-        title="Save draft"
-        className="fixed bottom-16 right-5 z-50"
-        onPress={onOpenChange}
-      >
-        {"Create Story"}
-      </MemoButton>
+    <Modal
+      isOpen={isOpen}
+      onOpenChange={(v) => { if (!v) closeAndReset() }}
+    >
+      <Modal.Backdrop>
+        <Modal.Container size={isLargeScreen ? 'lg' : 'full'} placement="center" scroll="inside">
+          <Modal.Dialog>
+            <Modal.Header>
+              <Modal.Heading>{t('heading')}</Modal.Heading>
+            </Modal.Header>
 
-      <Modal
-        hideCloseButton
-        isOpen={isOpen}
-        placement="center"
-        scrollBehavior="inside"
-        size={isLargeScreen ? "3xl" : "full"}
-        onOpenChange={onOpenChange}
-      >
-        <ModalContent>
-          {(onCloseCreateDraft) => (
-            <>
-              <ModalHeader>
-                {"Story details"}
-              </ModalHeader>
+            <Modal.Body className="w-full flex flex-col gap-5">
+              <DraftTitleField value={titleValue} onChange={setTitleValue} />
+              <DraftTopicsField
+                key={`topics-${resetKey}`}
+                value={selectedTopics}
+                onChange={setSelectedTopics}
+                isOpen={isOpen}
+              />
+              <DraftIntroField value={intro} onChange={setIntro} />
+              <DraftCoverField key={`cover-${resetKey}`} onFileChange={setCoverFile} />
+              <DraftContentField editorRef={contentEditorRef} editorOptions={contentEditorOptions} />
+            </Modal.Body>
 
-              <ModalBody className="w-full flex flex-col gap-5 mx-auto px-5">
-                <Input
-                  isRequired
-                  isClearable
-                  value={titleValue}
-                  variant="bordered"
-                  label="Story title"
-                  onValueChange={setTitleValue}
-                  errorMessage={"Enter at lest one character !"}
-                />
-
-                <Select
-                  isRequired
-                  label="Category"
-                  variant="bordered"
-                  selectedKeys={[topic]}
-                  showScrollIndicators={false}
-                  onChange={handleSelectionChange}
-                  placeholder="Select a category"
-                  errorMessage={"Please select a category !"}
-                >
-                  {categories.map((category) => (
-                    <SelectItem key={category.value}>
-                      {category.title}
-                    </SelectItem>
-                  ))}
-                </Select>
-
-                <Textarea
-                  isRequired
-                  isClearable
-                  value={intro}
-                  variant="bordered"
-                  label="Intro"
-                  onValueChange={setIntro}
-                  placeholder="A small description text describing what the Story is about"
-                />
-
-                <div>
-                  <Button
-                    onPress={open}
-                    variant="light"
-                    className="w-full h-[350px] md:h-[450px] px-0"
-                  >
-                    <div
-                      {...getRootProps()}
-                      className="w-full flex justify-center items-center max-w-3xl mx-auto relative px-0"
-                    >
-                      <input {...getInputProps()} />
-
-                      {cover &&
-                        <div
-                          className="bg-cover bg-center w-full h-[350px] md:h-[450px]"
-                          style={{
-                            backgroundImage: `url(${cover})`
-                          }}
-                        />
-                      }
-
-                      {!cover &&
-                        <div className="w-full h-[350px] md:h-[450px] rounded-[12px] gap-1 max-w-3xl flex flex-col justify-center items-center bg-cover bg-center overflow-hidden border border-divider">
-                          <CloudUploadIcon
-                            width={80}
-                            height={80}
-                            className="text-foreground"
-                          />
-
-                          <p className="text-foreground text-center">
-                            <span className="underline">{ "Click to upload" }</span>
-                            { " or drag and drop" }
-                          </p>
-                        </div>
-                      }
-                    </div>
-                  </Button>
-                </div>
-
-                {editor &&
-                  <EditorContent
-                    editor={editor}
-                    className="tiptap readOnlyClass"
-                    spellCheck={"false"}
-                  />
-                }
-              </ModalBody>
-
-              <ModalFooter>
-                <Button
-                  color="danger"
-                  variant="light"
-                  onPress={closeAndResetModal}
-                >
-                  {'Cancel'}
-                </Button>
-
-                <Button
-                  color="primary"
-                  variant="light"
-                  isLoading={loading}
-                  onPress={onSaveDraftDetails}
-                >
-                  {'Create draft'}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
+            <Modal.Footer>
+              <Button variant="ghost" onPress={closeAndReset}>{t('cancel')}</Button>
+              <Button variant="primary" isPending={loading} onPress={oncreateDraft}>
+                {t('createDraft')}
+              </Button>
+            </Modal.Footer>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
+    </Modal>
   )
 }
 

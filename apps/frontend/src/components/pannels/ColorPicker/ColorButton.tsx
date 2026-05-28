@@ -1,4 +1,4 @@
-import { cn } from '@heroui/theme'
+import { clsx as cn } from 'clsx'
 import { memo, useCallback } from 'react'
 
 export type ColorButtonProps = {

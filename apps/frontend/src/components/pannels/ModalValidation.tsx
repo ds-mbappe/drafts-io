@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, ModalBody, ModalContent, ModalHeader, ModalFooter, Button } from "@heroui/react";
+import { Modal, Button } from "@heroui/react";
 
 const ModalValidation = ({title, body, cancelText, validateText, validateLoading, isOpen, size, onOpenChange, onCancel, onValidate }: {
   title: string | undefined,
@@ -8,38 +8,39 @@ const ModalValidation = ({title, body, cancelText, validateText, validateLoading
   validateText: string | undefined,
   validateLoading: boolean,
   isOpen: boolean | undefined,
-  size?: "2xl" | "xs" | "sm" | "md" | "lg" | "xl" | "3xl" | "4xl" | "5xl" | "full" | undefined,
+  size?: "xs" | "sm" | "md" | "lg" | "full" | undefined,
   onOpenChange: () => void | undefined,
   onCancel: () => void,
   onValidate: () => void,
 }) => {
   return (
-    <Modal hideCloseButton scrollBehavior="inside" isOpen={isOpen} placement="center" size={size ?? "2xl"} onOpenChange={onOpenChange}>
-      <ModalContent>
-        {() => (
-          <>
-            <ModalHeader>
-              {title}
-            </ModalHeader>
+    <Modal isOpen={isOpen} onOpenChange={(v) => { if (!v) onOpenChange(); }}>
+      <button aria-hidden="true" className="hidden" />
+      <Modal.Backdrop>
+        <Modal.Container size={size ?? "lg"} placement="center" scroll="inside">
+          <Modal.Dialog>
+            <Modal.Header>
+              <Modal.Heading>{title}</Modal.Heading>
+            </Modal.Header>
 
-            <ModalBody>
+            <Modal.Body>
               <p className="text-foreground-500">
                 {body}
               </p>
-            </ModalBody>
+            </Modal.Body>
 
-            <ModalFooter>
-              <Button color="danger" variant="light" onPress={onCancel}>
+            <Modal.Footer>
+              <Button variant="danger-soft" onPress={onCancel}>
                 {cancelText || "Cancel"}
               </Button>
 
-              <Button color="primary" isLoading={validateLoading} onPress={onValidate}>
+              <Button variant="primary" isPending={validateLoading} onPress={onValidate}>
                 {validateText || "Continue"}
               </Button>
-            </ModalFooter>
-          </>
-        )}
-      </ModalContent>
+            </Modal.Footer>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
     </Modal>
   )
 }

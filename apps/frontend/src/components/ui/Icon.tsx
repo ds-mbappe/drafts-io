@@ -1,4 +1,4 @@
-import { cn } from '@heroui/react'
+import { clsx as cn } from 'clsx'
 import { icons } from 'lucide-react'
 import { memo } from 'react'
 

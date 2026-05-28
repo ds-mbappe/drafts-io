@@ -1,4 +1,4 @@
-import { cn } from '@heroui/theme'
+import { clsx as cn } from 'clsx'
 import { HTMLProps, forwardRef } from 'react'
 
 export type SurfaceProps = HTMLProps<HTMLDivElement> & {

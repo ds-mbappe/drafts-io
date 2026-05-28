@@ -21,19 +21,19 @@ const UserItemInList = ({ avatar, username, firstname, lastname, loading }: {
           <Skeleton className="h-3 w-4/5 rounded-lg" />
         </div>
       </div> :
-      <Button variant="light" className="w-full h-fit px-3 py-1" radius="none">
-        <div className="w-full flex items-center gap-2">
+      <Button variant="ghost" className="w-full h-fit px-3 py-1 justify-start rounded-none">
+        <div className="flex items-center gap-2 w-full min-w-0">
           <Avatar
-            color="primary"
-            showFallback
-            src={avatar}
-            name={firstname?.split("")?.[0]?.toUpperCase()}
-            className="w-8 h-8"
-          />
+            color="accent"
+            className="w-8 h-8 shrink-0"
+          >
+            <Avatar.Image src={avatar} />
+            <Avatar.Fallback>{firstname?.split("")?.[0]?.toUpperCase()}</Avatar.Fallback>
+          </Avatar>
 
-          <div className="flex flex-col items-start">
-            <p className="font-semibold text-sm">{`${firstname} ${lastname}`}</p>
-            <p className="text-sm text-foreground-500">@{username}</p>
+          <div className="flex flex-col items-start min-w-0 text-left">
+            <p className="font-semibold text-sm truncate w-full">{`${firstname} ${lastname}`}</p>
+            <p className="text-sm text-foreground-500 truncate w-full">@{username}</p>
           </div>
         </div>
       </Button>

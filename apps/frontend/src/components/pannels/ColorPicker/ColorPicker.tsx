@@ -58,7 +58,7 @@ export const ColorPicker = ({ color, onChange, onClear }: ColorPickerProps) => {
           />
         ))}
 
-        <Button variant="light" onPress={onClear}>
+        <Button variant="ghost" onPress={onClear}>
           <Icon name="Undo" />
         </Button>
       </div>
