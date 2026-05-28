@@ -1,6 +1,7 @@
 // drafts.select.ts
 export const authorSelect = {
   id: true,
+  username: true,
   avatar: true,
   firstname: true,
   lastname: true,
@@ -10,7 +11,8 @@ export const draftListSelect = {
   id: true,
   cover: true,
   title: true,
-  topic: true,
+  topics: true,
+  private: true,
   createdAt: true,
   updatedAt: true,
   word_count: true,
