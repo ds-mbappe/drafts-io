@@ -1,3 +1,5 @@
+@reference '../app/globals.css';
+
 html, body {
   height: 100%;
   overflow: hidden;
@@ -29,7 +31,7 @@ html, body {
 }
 
 .ProseMirror {
-  @apply caret-foreground-500 outline-0;
+  @apply caret-current outline-0;
 
   /* .selection {
     @apply bg-primary-100 py-0.5;
@@ -56,7 +58,18 @@ html, body {
   }
 
   .tiptap-comment {
-    @apply border-b-3 border-dashed border-b-lime-400 text-foreground dark:text-background bg-warning hover:bg-warning-300 py-0.5 transition-all;
+    @apply border-b-3 border-dashed border-b-lime-400 text-foreground dark:text-background bg-warning hover:bg-amber-300 py-0.5 transition-all;
+  }
+
+  /*
+   * Applied by the ReaderHighlight extension via a ProseMirror decoration.
+   * Highlights the exact word currently being spoken by the TTS engine.
+   * Uses a decoration (not a mark) so it never mutates the document.
+   */
+  .reader-highlight {
+    background-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+    border-radius: 0.125rem;
+    transition: all 75ms;
   }
 }
 
@@ -73,11 +86,12 @@ html, body {
 }
 
 .ProseMirror-selectednode {
-  @apply bg-primary-50 rounded;
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border-radius: 0.25rem;
 }
 
 .bubble-menu {
-  @apply w-full bg-content1 rounded-xl shadow flex items-center p-1 gap-0.5
+  @apply w-full bg-white dark:bg-neutral-900 rounded-xl shadow flex items-center p-1 gap-0.5
 }
 
 .tippy-box {

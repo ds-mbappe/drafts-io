@@ -1,3 +1,5 @@
+@reference '../../app/globals.css';
+
 .ProseMirror > * + * {
   margin-top: 0.75em;
 }
@@ -51,7 +53,7 @@
 }
 
 .ProseMirror code {
-  @apply bg-secondary text-background;
+  @apply bg-neutral-800 text-neutral-100 dark:bg-neutral-700;
   
   border-radius: 0.4rem;
   font-size: 0.85rem;

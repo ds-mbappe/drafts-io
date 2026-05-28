@@ -1,3 +1,5 @@
+@reference '../../app/globals.css';
+
 .ProseMirror {
   p {
     @apply my-1;

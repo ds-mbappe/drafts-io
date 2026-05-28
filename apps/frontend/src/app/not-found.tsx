@@ -2,7 +2,8 @@
 
 import Image from 'next/image'
 import notFoundImage from '../../public/404.png'
-import { Button, Link } from "@heroui/react";
+import Link from 'next/link'
+import { Button } from "@heroui/react";
 
 export default function NotFound() {
   return (
@@ -25,15 +26,14 @@ export default function NotFound() {
           </p>
         </div>
 
-        <Button
-          as={Link}
-          className="w-fit"
-          variant="light"
-          color="primary"
-          href="/app"
-        >
-          {"Back to Home"}
-        </Button>
+        <Link href="/app">
+          <Button
+            className="w-fit"
+            variant="ghost"
+          >
+            {"Back to Home"}
+          </Button>
+        </Link>
       </div>
     </main>
   );

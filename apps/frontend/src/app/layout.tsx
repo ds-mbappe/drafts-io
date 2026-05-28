@@ -1,11 +1,11 @@
 import "./globals.css";
 import '../styles/index.css'
+import 'tiptop-editor/dist/tiptop-editor.css'
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { Alert } from "@/components/ui/Alert";
 import { auth } from "@/auth";
 import SessionProvider from "./SessionProvider";
-import { HeroUIProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ClientOnly from "./ClientOnly";
 
@@ -30,17 +30,17 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const session = await auth();
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="min-h-dvh overflow-x-hidden bg-content1">
-        <ClientOnly>
-          <NextThemesProvider attribute="class" enableSystem defaultTheme="system">
+        <NextThemesProvider attribute="class" enableSystem defaultTheme="system">
+          <ClientOnly>
             <SessionProvider session={session}>
               <Alert />
               {children}
               <Toaster richColors />
             </SessionProvider>
-          </NextThemesProvider>
-        </ClientOnly>
+          </ClientOnly>
+        </NextThemesProvider>
       </body>
     </html>
   );

@@ -1,8 +1,39 @@
 @import 'tailwindcss';
-@plugin './hero.ts';
-
-@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@import '@heroui/styles';
 @custom-variant dark (&:is(.dark *));
+
+/*
+  HeroUI v2 → v3 token compatibility shim.
+  The old codebase uses v2 names (content1, divider, foreground-500, etc.).
+  Mapping them to v3 variables here lets every existing className keep working
+  without a mass find-and-replace across components.
+*/
+@theme inline {
+  /* Surfaces (was content1 / content2) */
+  --color-content1:      var(--surface);
+  --color-content2:      var(--surface-secondary);
+  --color-content3:      var(--surface-tertiary);
+
+  /* Divider / separator */
+  --color-divider:       var(--separator);
+
+  /* Muted foreground shades (was foreground-100 … foreground-500) */
+  --color-foreground-100: color-mix(in oklab, var(--foreground) 8%,  transparent);
+  --color-foreground-200: color-mix(in oklab, var(--foreground) 15%, transparent);
+  --color-foreground-300: color-mix(in oklab, var(--foreground) 25%, transparent);
+  --color-foreground-400: color-mix(in oklab, var(--foreground) 45%, transparent);
+  --color-foreground-500: var(--muted);
+  --color-foreground-600: color-mix(in oklab, var(--foreground) 70%, transparent);
+  --color-foreground-700: color-mix(in oklab, var(--foreground) 80%, transparent);
+  --color-foreground-800: color-mix(in oklab, var(--foreground) 90%, transparent);
+
+  /* Primary → accent */
+  --color-primary:        var(--accent);
+  --color-primary-foreground: var(--accent-foreground);
+
+  /* Overlay (modal/popover background) */
+  --color-overlay:        var(--overlay);
+}
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
@@ -19,6 +50,11 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
   }
+}
+
+/* Avatar images should always fill and cover their container */
+.avatar__image {
+  object-fit: cover;
 }
 
 .tiptap p:not(table *).is-empty::before {

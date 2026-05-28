@@ -1,3 +1,5 @@
+@reference '../../app/globals.css';
+
 .ProseMirror {
   .tableWrapper {
     @apply my-5;
@@ -10,7 +12,7 @@
     td,
     th {
       position: relative;
-      @apply border min-w-[100px] p-2 relative text-left align-top border-foreground-500;
+      @apply border min-w-[100px] p-2 relative text-left align-top border-neutral-500;
 
       &:first-of-type:not(a) {
         @apply mt-0;
@@ -28,7 +30,7 @@
     th {
       font-weight: bold;
       text-align: left;
-      @apply bg-default-200;
+      @apply bg-neutral-200 dark:bg-neutral-700;
     }
 
     .column-resize-handle {
@@ -47,12 +49,12 @@
     }
 
     .selectedCell {
-      @apply bg-primary-50;
+      @apply bg-blue-50 dark:bg-blue-950;
     }
 
     .grip-column,
     .grip-row {
-      @apply items-center cursor-pointer flex justify-center absolute z-10 bg-default-200;
+      @apply items-center cursor-pointer flex justify-center absolute z-10 bg-neutral-200 dark:bg-neutral-700;
     }
 
     .grip-column {
@@ -68,7 +70,7 @@
       }
 
       &:hover {
-        @apply bg-default-200;
+        @apply bg-neutral-200 dark:bg-neutral-700;
         /* background-color: rgba(0, 0, 0, .1); */
 
         &::before {
@@ -87,7 +89,7 @@
       &.selected {
         border-color: rgba(0, 0, 0, .3);
         /* background-color: rgba(0, 0, 0, .3); */
-        @apply shadow-sm bg-default-200;
+        @apply shadow-sm bg-neutral-200 dark:bg-neutral-700;
 
         &::before {
           @apply border-b-2 border-dotted;
@@ -107,7 +109,7 @@
         }
       }
       &:hover {
-        @apply bg-default-200;
+        @apply bg-neutral-200 dark:bg-neutral-700;
         /* background-color: rgba(0, 0, 0, .1); */
 
         &::before {
@@ -126,7 +128,7 @@
       &.selected {
         border-color: rgba(0, 0, 0, .3);
         /* background-color: rgba(0, 0, 0, .3); */
-        @apply shadow-sm bg-default-200;
+        @apply shadow-sm bg-neutral-200 dark:bg-neutral-700;
 
         &::before {
           @apply border-l-2 border-dotted;

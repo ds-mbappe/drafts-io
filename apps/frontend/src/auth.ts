@@ -4,6 +4,7 @@ import Github from "next-auth/providers/github"
 import Facebook from "next-auth/providers/facebook"
 import CredentialsProvider from "next-auth/providers/credentials";
 import { isTokenExpired, refreshAccessToken } from "./lib/utils";
+import { backendUrl } from "./lib/backend";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -14,7 +15,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null
         }
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/signin`, {
+        const res = await fetch(backendUrl("/api/auth/signin"), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(credentials),
@@ -53,6 +54,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.accessToken = user.token;
         token.refreshToken = user.refreshToken;
         token.user = user.user;
+      }
+
+      if (!token.accessToken || !token.refreshToken) {
+        return token;
       }
 
       if (isTokenExpired(token.accessToken)) {
