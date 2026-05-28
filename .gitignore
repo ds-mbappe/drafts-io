@@ -86,6 +86,7 @@ out
 # Gatsby files
 .cache/
 public
+!apps/frontend/public/
 
 # Storybook build outputs
 .out
