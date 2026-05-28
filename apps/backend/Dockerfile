@@ -28,7 +28,7 @@ COPY --from=builder /deploy .
 COPY --from=builder /app/apps/backend/prisma ./prisma
 
 # Generate Prisma client (schema is now at ./prisma/schema.prisma)
-RUN npx --yes prisma generate
+RUN node_modules/.bin/prisma generate
 
 EXPOSE 3001
 
