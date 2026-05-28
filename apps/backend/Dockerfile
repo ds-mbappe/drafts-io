@@ -18,7 +18,7 @@ COPY packages/shared ./packages/shared
 COPY apps/backend ./apps/backend
 RUN pnpm --filter backend build
 # Create a self-contained production directory (resolves workspace deps)
-RUN pnpm deploy --filter backend --prod /deploy --ignore-scripts
+RUN pnpm deploy --filter backend --prod /deploy --legacy --ignore-scripts
 
 # ── Runner ──────────────────────────────────────────────────────────────────
 FROM node:22-alpine AS runner
