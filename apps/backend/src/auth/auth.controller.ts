@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
 import { SignInDto } from './dto/signin.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { SocialAuthDto } from './dto/social-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -36,5 +37,10 @@ export class AuthController {
   @Post('reset_password')
   resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto);
+  }
+
+  @Post('social')
+  socialAuth(@Body() dto: SocialAuthDto) {
+    return this.authService.socialAuth(dto);
   }
 }

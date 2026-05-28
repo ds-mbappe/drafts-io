@@ -13,12 +13,12 @@ export type UploadProgressCallback = (progress: {
   percentage: number;
 }) => void;
 
-export type DraftDetail = Prisma.DocumentGetPayload<{
+export type DraftDetail = Prisma.DraftGetPayload<{
   select: {
     id: true;
     cover: true;
     title: true;
-    topic: true;
+    topics: true;
     intro: true;
     content: true;
     createdAt: true;
@@ -29,6 +29,7 @@ export type DraftDetail = Prisma.DocumentGetPayload<{
     author: {
       select: {
         id: true;
+        username: true;
         avatar: true;
         firstname: true;
         lastname: true;
