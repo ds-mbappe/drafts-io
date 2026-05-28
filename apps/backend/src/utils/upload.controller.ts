@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Post,
   UploadedFile,
@@ -19,7 +20,10 @@ export class UploadController {
       storage: multer.memoryStorage(),
     }),
   )
-  async upload(@UploadedFile() file: Express.Multer.File) {
+  async upload(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('folder') folder: string,
+  ) {
     if (!file?.buffer) {
       throw new BadRequestException('File buffer is missing');
     }
@@ -27,7 +31,7 @@ export class UploadController {
     const result = await this.cloudinary.uploadBuffer(
       file.buffer,
       {
-        folder: `${process.env.NODE_ENV}/cover_urls`,
+        folder: `${folder}`,
       },
       (progress) => {
         console.log(

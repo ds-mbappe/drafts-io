@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { v2 as Cloudinary } from 'cloudinary';
-import { UploadApiResponse, UploadApiOptions } from 'cloudinary';
+import { UploadApiResponse, UploadApiOptions, ResourceType } from 'cloudinary';
 import { UploadProgressCallback } from 'src/types';
 import { Readable } from 'stream';
 
@@ -50,5 +50,32 @@ export class CloudinaryService {
 
       readable.pipe(uploadStream);
     });
+  }
+
+  /**
+   * Delete multiple resources by public ID.
+   * Extracts the public_id from a Cloudinary URL when a full URL is passed.
+   */
+  async deleteResources(
+    publicIdsOrUrls: string[],
+    resourceType: ResourceType = 'video',
+  ): Promise<void> {
+    const publicIds = publicIdsOrUrls
+      .map((idOrUrl) =>
+        idOrUrl.startsWith('http') ? this.extractPublicId(idOrUrl) : idOrUrl,
+      )
+      .filter(Boolean);
+
+    if (!publicIds.length) return;
+
+    await this.cloudinary.api.delete_resources(publicIds, {
+      resource_type: resourceType,
+    });
+  }
+
+  private extractPublicId(url: string): string | null {
+    // URL format: https://res.cloudinary.com/{cloud}/video/upload/v{ver}/{folder}/{id}.{ext}
+    const match = url.match(/\/upload\/(?:v\d+\/)?(.+)\.[^.]+$/);
+    return match?.[1] ?? null;
   }
 }
