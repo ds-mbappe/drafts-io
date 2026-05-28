@@ -9,7 +9,8 @@ WORKDIR /app
 COPY .npmrc package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 COPY packages/shared/package.json ./packages/shared/
 COPY apps/backend/package.json ./apps/backend/
-RUN pnpm install --frozen-lockfile --ignore-scripts
+COPY apps/backend/prisma ./apps/backend/prisma
+RUN pnpm install --frozen-lockfile
 
 # ── Build ───────────────────────────────────────────────────────────────────
 FROM deps AS builder
