@@ -10,5 +10,12 @@
     "setup": "pnpm install && pnpm build:back"
   },
   "dependencies": {
+  },
+  "pnpm": {
+    "overrides": {
+      "@tiptap/core": "3.23.6",
+      "@tiptap/pm": "3.23.6",
+      "prosemirror-model": "1.25.5"
+    }
   }
 }

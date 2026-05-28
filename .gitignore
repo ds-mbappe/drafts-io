@@ -9,6 +9,7 @@ yarn.lock
 # Build outputs
 dist/
 build/
+.metro-cache/
 .next/
 out/
 
@@ -18,6 +19,8 @@ out/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.production
+gcp-key.json
 
 # TypeScript
 *.tsbuildinfo

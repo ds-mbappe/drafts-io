@@ -7,6 +7,8 @@
     // Add any app-specific overrides here
     "paths": {
       "@/*": ["./src/*"],
+      "@drafts-io/shared": ["../../packages/shared/src/index.ts"],
+      "@drafts-io/shared/*": ["../../packages/shared/src/*"],
     },
     "plugins": [
       {

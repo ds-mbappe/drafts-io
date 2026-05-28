@@ -1,0 +1,14 @@
+**/.git
+**/.gitignore
+**/node_modules
+**/.next
+**/dist
+**/*.tsbuildinfo
+**/.env
+**/.env.*
+**/coverage
+**/.turbo
+**/Dockerfile
+**/*.md
+nginx/
+docker-compose.yml

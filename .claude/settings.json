@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "changed=$(git diff HEAD --name-only 2>/dev/null); if echo \"$changed\" | grep -qE \"apps/frontend/src/(components|app)/.*\\.(tsx|ts)$\"; then if ! echo \"$changed\" | grep -q \"apps/frontend/src/messages/\"; then echo '{\"systemMessage\": \"⚠️  UI components were modified but no translation files were updated. If any user-visible text was added or changed, update apps/frontend/src/messages/ for all 10 languages (en, fr, es, de, it, jp, pt, ar, zh, ko).\"}'; fi; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

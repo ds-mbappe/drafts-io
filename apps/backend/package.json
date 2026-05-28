@@ -17,6 +17,8 @@
     "postinstall": "prisma generate --schema=prisma/schema.prisma"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
+    "@google-cloud/text-to-speech": "^6.4.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.0",
@@ -29,10 +31,14 @@
     "class-validator": "^0.14.2",
     "cloudinary": "^2.7.0",
     "multer": "^2.0.2",
-    "nodemailer": "^6.10.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "prosemirror-markdown": "^1.13.4",
+    "prosemirror-model": "^1.25.5",
+    "prosemirror-schema-basic": "^1.2.4",
+    "prosemirror-schema-list": "^1.5.1",
     "reflect-metadata": "^0.2.2",
+    "resend": "^6.10.0",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
@@ -49,7 +55,6 @@
     "@types/jest": "^29.5.14",
     "@types/multer": "^2.0.0",
     "@types/node": "^22.10.7",
-    "@types/nodemailer": "^6.4.17",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
     "eslint": "^9.18.0",
