@@ -5,9 +5,10 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider          = "postgresql"
+  url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl         = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Account {
@@ -52,9 +53,10 @@ model Draft {
   id              String   @id @default(cuid())
   title           String
   cover           String?
-  topic           String?
+  topics          String[]
   intro           String?
-  content         String?  @default("")
+  content         Json?
+  ydoc            Bytes?
   private         Boolean  @default(true)
   locked          Boolean  @default(false)
   character_count Int?
@@ -66,11 +68,34 @@ model Draft {
   authorId        String
 
   likes           Like[]
+  bookmarks       Bookmark[]
   Comment         Comment[]
+  DraftTts        DraftTts[]
+  translations    DraftTranslation[]
+  recentlyRead    RecentlyRead[]
+  notifications   Notification[]
 
   @@index([private, createdAt])
   @@index([authorId, createdAt])
   @@index([title])
+}
+
+// One translated version of a draft per user per language.
+// Cascade-deleted with the parent draft.
+model DraftTranslation {
+  id        String   @id @default(cuid())
+  draftId   String
+  userId    String
+  language  String   // short key: 'fr', 'es', 'de', 'it', 'jp'
+  content   Json     // full Tiptap document JSON
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  draft Draft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId],  references: [id], onDelete: Cascade)
+
+  @@unique([draftId, userId, language])
+  @@index([draftId, userId])
 }
 
 
@@ -88,7 +113,7 @@ model Like {
 model User {
   id                        String     @id @default(cuid())
   email                     String     @unique
-  password                  String
+  password                  String?
   username                  String?    @unique
   avatar                    String?
   firstname                 String?
@@ -100,6 +125,12 @@ model User {
   forgotPasswordToken       String?
   verifyTokenExpiry         DateTime?
   forgotPasswordTokenExpiry DateTime?
+  pendingEmail              String?
+  changeEmailCode           String?
+  changeEmailCodeExpiry     DateTime?
+  changePasswordCode        String?
+  changePasswordCodeExpiry  DateTime?
+  deactivatedAt             DateTime?
   documents                 Draft[]
   createdAt                 DateTime   @default(now()) @map(name: "created_at")
   updatedAt                 DateTime   @updatedAt @map(name: "updated_at")
@@ -108,6 +139,12 @@ model User {
   accounts                  Account[]
   sessions                  Session[]
   likes                     Like[]
+  bookmarks                 Bookmark[]
+  translations              DraftTranslation[]
+  recentlyRead              RecentlyRead[]
+  notifications             Notification[]           @relation("ReceivedNotifications")
+  sentNotifications         Notification[]           @relation("SentNotifications")
+  notificationPreferences   NotificationPreferences?
 
   @@unique([id, avatar, firstname, lastname])
   @@map(name: "users")
@@ -124,6 +161,48 @@ model Follows {
   @@unique([followerId, followingId])
 }
 
+// Caches the result of a Google TTS synthesis for a given draft + content.
+// Keyed by (draftId, contentHash) so the same audio is reused as long as
+// the text hasn't changed. Each chunk corresponds to one top-level block.
+model DraftTts {
+  id          String   @id @default(cuid())
+  draftId     String
+  contentHash String   // SHA-256 of chunks.join('\n')
+  chunks      Json     // TtsChunk[] — { audioBase64, words: { word, startMs, endMs }[] }[]
+  createdAt   DateTime @default(now())
+
+  draft Draft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+
+  @@unique([draftId, contentHash])
+  @@index([draftId])
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  draftId   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  draft Draft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId],  references: [id], onDelete: Cascade)
+
+  @@unique([draftId, userId])
+  @@index([userId])
+}
+
+model RecentlyRead {
+  id       String   @id @default(cuid())
+  userId   String
+  draftId  String
+  viewedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId],  references: [id], onDelete: Cascade)
+  draft Draft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, draftId])
+  @@index([userId, viewedAt(sort: Desc)])
+}
+
 model Comment {
   id        String    @id @default(cuid())
   text      String
@@ -137,4 +216,36 @@ model Comment {
 
   user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
+}
+
+enum NotificationType {
+  FOLLOW
+  LIKE
+  COMMENT
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  actorId   String
+  type      NotificationType
+  draftId   String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user  User   @relation("ReceivedNotifications", fields: [userId],  references: [id], onDelete: Cascade)
+  actor User   @relation("SentNotifications",     fields: [actorId], references: [id], onDelete: Cascade)
+  draft Draft? @relation(fields: [draftId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, read])
+}
+
+model NotificationPreferences {
+  userId          String  @id
+  notifyOnFollow  Boolean @default(true)
+  notifyOnLike    Boolean @default(true)
+  notifyOnComment Boolean @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
