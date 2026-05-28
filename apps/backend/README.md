@@ -1,98 +1,190 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Drafts.io — Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS 11 REST API for the Drafts.io writing platform.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Stack
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+| | |
+|---|---|
+| Framework | NestJS 11 |
+| ORM | Prisma 6 |
+| Database | PostgreSQL |
+| Auth | Passport JWT (access + refresh tokens) |
+| AI | Anthropic Claude (`claude-sonnet-4-6`) |
+| TTS | Google Cloud Text-to-Speech (Neural2) |
+| File storage | Cloudinary |
+| Email | Resend |
 
-## Project setup
+---
 
-```bash
-$ npm install
+## Project structure
+
+```
+src/
+├── ai/             # Translation (stream + batch) and AI agent chat
+├── auth/           # JWT strategy, guards, decorators, token refresh
+├── bookmarks/      # Bookmark toggle and saved-drafts list
+├── comments/       # Inline comments anchored to document positions
+├── content/        # Markdown → Tiptap JSON conversion (ContentService)
+├── drafts/         # Core draft CRUD, likes, pagination
+├── email/          # Transactional emails via Resend (reset, verification, account alerts)
+├── global_search/  # Cross-draft title search
+├── recently-read/  # Track and retrieve recently-read drafts per user
+├── relations/      # Follow / unfollow between users
+├── settings/       # Profile, email, password, account management
+├── translations/   # Per-user draft translations (save, fetch, delete)
+├── tts/            # Text-to-speech synthesis and caching
+├── user/           # User profile read and update
+└── utils/          # Cloudinary upload/delete, error handling
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## API modules
 
-# watch mode
-$ npm run start:dev
+### Auth — `/api/auth`
+JWT-based authentication. Issues short-lived access tokens and long-lived refresh tokens. Includes sign-up, sign-in, token refresh, and password reset via email.
 
-# production mode
-$ npm run start:prod
+### Settings — `/api/settings`
+Account management for the current user.
+- `GET /me` — returns full user profile plus settings-related flags (`hasPassword`, `language`, etc.)
+- `GET /username/check?username=` — availability check
+- `PATCH /profile` — update name, username, bio, avatar
+- `POST /email/request` — request email change (sends 6-char verification code)
+- `POST /email/confirm` — confirm email change with code
+- `POST /password/request` — request password change or set a first password (OAuth accounts); sends code
+- `POST /password/confirm` — confirm password change with code
+- `DELETE /account` — deactivate or permanently delete account (requires password if set)
+
+### Drafts — `/api/drafts`
+Full CRUD for drafts. Supports pagination (cursor-based), public/private visibility, like toggling, and Y.js document state snapshots (`ydoc` field stored as bytes). On deletion, all Cloudinary audio files cached for that draft are also deleted.
+
+### Notifications — `/api/notifications`
+Real-time in-app notifications delivered over SSE.
+- `GET /stream?token=` — SSE stream (token passed as query param because `EventSource` cannot send headers). Sends two event types: `notification` (new notification object) and `unread_count` (current unread count, also sent immediately on connect). Multiple tabs/connections per user are supported via an in-memory `Map<userId, Set<Subject>>`.
+- `GET /` — paginated notification list (`?take=&cursor=`)
+- `GET /unread-count` — `{ count: number }`
+- `PATCH /:id/read` — mark one notification as read
+- `PATCH /read-all` — mark all as read
+- `DELETE /:id` — delete one notification
+- `DELETE /` — delete all notifications
+- `GET /preferences` — get notification preferences (auto-created with all enabled on first access)
+- `PATCH /preferences` — update per-type preferences (`notifyOnFollow`, `notifyOnLike`, `notifyOnComment`)
+
+Notifications are created automatically inside `RelationsService.follow()`, `DraftsService.toggleLike()`, and `CommentsService.createComment()`. Self-notifications (actor === recipient) and disabled preference types are silently skipped.
+
+### Bookmarks — `/api/bookmarks`
+- `POST /:draftId/toggle` — toggle bookmark on a draft
+- `GET /` — list all bookmarked drafts for the current user
+
+### Recently read — `/api/recently-read`
+- `POST /:draftId` — record or refresh a read event for the current user
+- `GET /` — return the user's recently-read draft list (newest first)
+
+### Comments — `/api/comments`
+Inline comments with `from`/`to` character positions anchored to the document. Supports create, read, update, and delete.
+
+### AI — `/api/ai`
+- `POST /translate` — translate a text string to a target language
+- `POST /translate/stream` — streaming SSE translation
+- `POST /translate/batch` — translate an array of text segments (used by the editor)
+- `POST /chat` — Drafts AI agentic assistant (SSE stream). Runs an agentic loop with Claude tool use. Available tools: `get_my_drafts`, `get_draft`, `get_public_drafts`, `create_draft`, `update_draft`, `delete_draft`, and `search_images` (Unsplash). `create_draft` requires `title`, `content_markdown` (converted to Tiptap JSON via `ContentService`), and `cover` (URL from `search_images`). Includes clickable links using the app URL structure (`/app/drafts/{id}`).
+
+### TTS — `/api/tts`
+- `POST /speak` — synthesise speech for an array of text chunks. Accepts an optional `language` param (default `en`). MP3 audio is uploaded to Cloudinary; the response returns a Cloudinary URL and per-word timestamps per chunk. Results are cached in `DraftTts` by content hash + language, so repeated plays are served instantly from the DB (audio from CDN). Voice selection uses `VOICE_MAP` (Neural2 voices for `en`, `fr`, `es`, `de`, `it`, `jp`, `pt`, `zh`, `ko`; Wavenet for `ar`).
+
+### Translations — `/api/translations`
+Per-user translation storage. Translations are completely separate from the original draft — the original is never mutated.
+- `POST /` — upsert a translation (`{ draftId, language, content }`)
+- `GET /?draftId=` — list all translations saved by the current user for a draft
+- `GET /:language?draftId=` — fetch a single translation
+- `DELETE /:language?draftId=` — delete a translation
+
+### Users — `/api/users`
+Profile read and update (avatar, name, etc.).
+
+### Relations — `/api/relations`
+Follow and unfollow users. Returns follower/following counts.
+
+### Global search — `/api/global-search`
+Full-text title search across public drafts.
+
+---
+
+## Database schema (key models)
+
+| Model | Purpose |
+|---|---|
+| `User` | Platform accounts. Stores profile, hashed password (nullable for OAuth-only accounts), language preference, and follower/following relations. |
+| `Draft` | Written drafts with rich content (JSON), Y.js state (bytes), tags (text[]), visibility, like count. |
+| `DraftTts` | Cached TTS entries per draft + content hash + language. Stores Cloudinary audio URLs and per-word timestamps. Cascade-deleted with the draft; Cloudinary files are cleaned up in the same operation. |
+| `DraftTranslation` | Per-user translations of a draft. Unique per `(draftId, userId, language)`. Cascade-deleted with the draft or user. |
+| `Comment` | Inline comments with character range anchors (`from`, `to`). |
+| `Like` | Draft likes (userId + draftId). |
+| `Bookmark` | Saved drafts per user (userId + draftId). |
+| `RecentlyRead` | Recently-read draft history per user (userId + draftId + timestamp). |
+| `Notification` | In-app notifications. Stores recipient (`userId`), actor (`actorId`), type (`FOLLOW` \| `LIKE` \| `COMMENT`), optional `draftId`, and `read` flag. Cascade-deleted with user or draft. |
+| `NotificationPreferences` | Per-user toggle for each notification type. Auto-created on first access with all toggles enabled. |
+
+---
+
+## Email templates
+
+Transactional emails sent via Resend:
+
+| Template | Trigger |
+|---|---|
+| Password reset | `POST /api/auth/forgot-password` |
+| Email change verification | `POST /api/settings/email/request` |
+| Password change verification | `POST /api/settings/password/request` |
+| Account deactivated | `DELETE /api/settings/account` with `type: "deactivate"` |
+| Account deleted | `DELETE /api/settings/account` with `type: "delete"` |
+
+---
+
+## ContentService
+
+`src/content/content.service.ts` — converts markdown to Tiptap-compatible ProseMirror JSON.
+
+Uses `prosemirror-markdown`'s `defaultMarkdownParser` (pure Node.js, no DOM). The transform pipeline has two levels:
+
+- **`transformBlockArray`** — handles block-level nodes. Paragraphs containing inline images are split: the image becomes a standalone `imageUploader` block (tiptop-editor's block-only image node), with any surrounding text becoming separate paragraphs.
+- **`transformInlineNode`** — handles inline content (text, marks, `hard_break`). Maps ProseMirror's `image` inline node → `imageUploader` with the correct attrs (`src`, `id`, `uploading: false`, `progress: 100`, `selectMedia: false`).
+
+Nodes that have inline children (headings, code blocks) are routed through `transformInlineArray`; nodes with block children (blockquote, list items) go through `transformBlockArray`. `NODE_TYPE_MAP` and `MARK_TYPE_MAP` are the single places to add new extension name mappings.
+
+---
+
+## Environment variables
+
+```env
+POSTGRES_PRISMA_URL=...
+POSTGRES_URL_NON_POOLING=...
+JWT_SECRET=...
+JWT_REFRESH_SECRET=...
+ANTHROPIC_API_KEY=...
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/gcp-service-account.json
+CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+RESEND_API_KEY=...
+UNSPLASH_ACCESS_KEY=...    # optional — enables cover image search in AI agent
 ```
 
-## Run tests
+---
+
+## Development
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+pnpm install
+pnpm start:dev      # starts on http://localhost:3001 with hot reload
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### Database
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npx prisma generate         # regenerate Prisma client after schema changes
+npx prisma migrate deploy   # apply pending migrations
+npx prisma studio           # open visual DB browser
 ```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
