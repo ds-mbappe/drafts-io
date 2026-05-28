@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { errorToast } from "@/actions/showToast";
 import { Input, Button } from "@heroui/react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { backendUrl } from "@/lib/backend";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -54,20 +55,38 @@ export default function SignInPage() {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const onSignUp = async () => {
-    setLoading(true);
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user)
-    });
-
-    if (response?.ok) {
-      router.push(`/account/sign-in?email=${user?.email}`);
-    } else {
-      const { error } = await response.json()
-      errorToast(error);
+    if (loading) {
+      return;
     }
-    setLoading(false)
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(backendUrl("/api/auth/signup"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(user)
+      });
+
+      if (response.ok) {
+        router.push(`/account/sign-in?email=${user.email}`);
+        return;
+      }
+
+      const payload = await response.json().catch(() => null);
+      const message =
+        typeof payload?.error === "string"
+          ? payload.error
+          : typeof payload?.message === "string"
+            ? payload.message
+            : "Sign up failed, please try again.";
+
+      errorToast(message);
+    } catch {
+      errorToast("Unable to reach the server. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -91,9 +110,8 @@ export default function SignInPage() {
               socials.map(social => (
                 <Button
                   key={social.id}
-                  radius="sm"
-                  variant="bordered"
-                  className="flex-1"
+                  className="flex-1 rounded-sm"
+                  variant="outline"
                   onClick={social.action}
                 >
                   {social.icon}
@@ -112,70 +130,54 @@ export default function SignInPage() {
           </div>
         </div>
 
-        <form onSubmit={onSignUp} className="w-full flex flex-col gap-6">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void onSignUp();
+          }}
+          className="w-full flex flex-col gap-6"
+        >
           {/* Inputs */}
           <div className="w-full h-full flex flex-col gap-5">
-            <Input
-              isRequired
-              type="text"
-              label={"Username"}
-              variant="bordered"
-              autoComplete="new-password"
-              onChange={(e) => setUser({...user, username: e.target.value})}
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium">Username</label>
+              <Input required type="text" variant="secondary" autoComplete="new-password" onChange={(e) => setUser({...user, username: e.target.value})} />
+            </div>
 
-            <Input
-              isRequired
-              type="email"
-              label={"Email"}
-              variant="bordered"
-              autoComplete="new-password"
-              onChange={(e) => setUser({...user, email: e.target.value})}
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium">Email</label>
+              <Input required type="email" variant="secondary" autoComplete="new-password" onChange={(e) => setUser({...user, email: e.target.value})} />
+            </div>
 
-            <Input
-              isRequired
-              type="text"
-              label={"Firstname"}
-              variant="bordered"
-              autoComplete="new-password"
-              onChange={(e) => setUser({...user, firstname: e.target.value})}
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium">Firstname</label>
+              <Input required type="text" variant="secondary" autoComplete="new-password" onChange={(e) => setUser({...user, firstname: e.target.value})} />
+            </div>
 
-            <Input
-              isRequired
-              type="text"
-              label={"Lastname"}
-              variant="bordered"
-              autoComplete="new-password"
-              onChange={(e) => setUser({...user, lastname: e.target.value})}
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium">Lastname</label>
+              <Input required type="text" variant="secondary" autoComplete="new-password" onChange={(e) => setUser({...user, lastname: e.target.value})} />
+            </div>
 
-            <Input
-              isRequired
-              type={isVisible ? "text" : "password"}
-              label="Password"
-              variant="bordered"
-              autoComplete="new-password"
-              endContent={ user?.password ?
-                <button className="focus:outline-hidden" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-                  {isVisible ? (
-                    <EyeOffIcon className="text-2xl pointer-events-none" />
-                  ) : (
-                    <EyeIcon className="text-2xl pointer-events-none" />
-                  )}
-                </button> : <></>
-              }
-              onChange={(e) => setUser({...user, password: e.target.value})}
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium">Password</label>
+              <div className="relative">
+                <Input required type={isVisible ? "text" : "password"} variant="secondary" autoComplete="new-password" className="w-full pr-10" onChange={(e) => setUser({...user, password: e.target.value})} />
+                {user?.password && (
+                  <button className="absolute right-2 top-1/2 -translate-y-1/2 focus:outline-hidden" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                    {isVisible ? <EyeOffIcon className="text-2xl pointer-events-none" /> : <EyeIcon className="text-2xl pointer-events-none" />}
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Sign up Button */}
           <Button
-            color="primary"
-            isDisabled={!user?.email || !user.password || !user?.username}
-            isLoading={loading}
-            onClick={onSignUp}
+            type="submit"
+            variant="primary"
+            isDisabled={loading || !user?.email || !user.password || !user?.username}
+            isPending={loading}
           >
             {"Sign up"}
           </Button>

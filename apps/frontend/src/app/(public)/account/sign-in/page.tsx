@@ -54,21 +54,30 @@ export default function SignInPage() {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const onSignIn = async () => {
-    setLoading(true);
-
-    const response = await signIn('credentials', {
-      email: user?.email,
-      password: user?.password,
-      redirect: false,
-    });
-
-    if (!response?.error) {
-      router.push("/app");
-    } else {
-      errorToast("Incorrect credentials, please try again !");
+    if (loading) {
+      return;
     }
 
-    setLoading(false);
+    setLoading(true);
+
+    try {
+      const response = await signIn('credentials', {
+        email: user?.email,
+        password: user?.password,
+        redirect: false,
+      });
+
+      if (!response?.error) {
+        router.push("/app");
+        return;
+      }
+
+      errorToast("Incorrect credentials, please try again !");
+    } catch {
+      errorToast("Unable to reach the server. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -107,9 +116,8 @@ export default function SignInPage() {
               socials.map(social => (
                 <Button
                   key={social.id}
-                  radius="sm"
-                  variant="bordered"
-                  className="flex-1"
+                  className="flex-1 rounded-sm"
+                  variant="outline"
                   onClick={social.action}
                 >
                   {social.icon}
@@ -128,39 +136,52 @@ export default function SignInPage() {
           </div>
         </div>
 
-        <form onSubmit={(e) => { e.preventDefault(); onSignIn() }} className="w-full flex flex-col gap-6">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void onSignIn();
+          }}
+          className="w-full flex flex-col gap-6"
+        >
           {/* Inputs */}
           <div className="w-full flex flex-col gap-2">
             <div className="w-full h-full flex flex-col gap-5">
-              <Input
-                id="email"
-                name="email"
-                value={user?.email}
-                isRequired
-                type="email"
-                label={"Email"}
-                variant="bordered"
-                onChange={(e) => setUser({ ...user, email: e?.target?.value })}
-              />
+              <div className="flex flex-col gap-1">
+                <label htmlFor="email" className="text-sm font-medium">Email</label>
+                <Input
+                  id="email"
+                  name="email"
+                  value={user?.email}
+                  required
+                  type="email"
+                  variant="secondary"
+                  onChange={(e) => setUser({ ...user, email: e?.target?.value })}
+                />
+              </div>
 
-              <Input
-                id="password"
-                name="password"
-                isRequired
-                type={isVisible ? "text" : "password"}
-                label={"Password"}
-                variant="bordered"
-                endContent={user?.password ?
-                  <button className="focus:outline-hidden" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-                    {isVisible ? (
-                      <EyeOffIcon className="text-2xl pointer-events-none" />
-                    ) : (
-                      <EyeIcon className="text-2xl pointer-events-none" />
-                    )}
-                  </button> : <></>
-                }
-                onChange={(e) => setUser({ ...user, password: e?.target?.value })}
-              />
+              <div className="flex flex-col gap-1">
+                <label htmlFor="password" className="text-sm font-medium">Password</label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    required
+                    type={isVisible ? "text" : "password"}
+                    variant="secondary"
+                    className="w-full pr-10"
+                    onChange={(e) => setUser({ ...user, password: e?.target?.value })}
+                  />
+                  {user?.password && (
+                    <button className="absolute right-2 top-1/2 -translate-y-1/2 focus:outline-hidden" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                      {isVisible ? (
+                        <EyeOffIcon className="text-2xl pointer-events-none" />
+                      ) : (
+                        <EyeIcon className="text-2xl pointer-events-none" />
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="flex gap-1">
@@ -179,10 +200,9 @@ export default function SignInPage() {
           {/* Sign in Button */}
           <Button
             type="submit"
-            color="primary"
-            isDisabled={!user?.email || !user.password}
-            isLoading={loading}
-            onClick={onSignIn}
+            variant="primary"
+            isDisabled={loading || !user?.email || !user.password}
+            isPending={loading}
           >
             {"Sign in"}
           </Button>

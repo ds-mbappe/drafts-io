@@ -1,7 +1,8 @@
 "use client";
 
-import { Link } from "@heroui/react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { backendUrl } from "@/lib/backend";
 
 export default function VerifyEmailPage() {
   const [token, setToken] = useState("");
@@ -10,7 +11,7 @@ export default function VerifyEmailPage() {
 
   const verifyUserEmail = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/verifyemail`, {
+      const response = await fetch(backendUrl("/api/auth/verifyemail"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token })

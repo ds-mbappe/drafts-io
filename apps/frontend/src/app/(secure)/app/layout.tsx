@@ -1,21 +1,28 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getSession, signOut, useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { NextSessionContext } from "@/contexts/SessionContext";
-import NavbarApp from "@/components/ui/NavbarApp";
+import NavbarApp from "@/components/ui/navbar/NavbarApp";
 import ScrollToTop from "@/components/ui/ScrollToTop";
+import { AiChatPanel } from "@/components/chat/AiChatPanel";
+import Sidebar from "@/components/pannels/Sidebar";
+import ModalDraftDetails from "@/components/pannels/ModalDraftDetails";
 import { isTokenExpired, refreshAccessToken } from "@/lib/utils";
+import { usePathname } from "next/navigation";
+import { TranslationsProvider } from "@/providers/TranslationsProvider";
 
 export default function AppLayout(props: { children: React.ReactNode }) {
   const { update } = useSession();
+  const pathname = usePathname();
   const [session, setSession] = useState<Session | null>();
-  const contextValue = { session, setSession }
+  const contextValue = useMemo(() => ({ session, setSession }), [session]);
 
   useEffect(() => {
     const fetchSession = async () => {
       const response = await getSession();
+
       setSession(response);
     };
 
@@ -30,34 +37,47 @@ export default function AppLayout(props: { children: React.ReactNode }) {
         try {
           const data = await refreshAccessToken(refreshToken);
 
-          await update({
+          const updatedSession = await update({
             accessToken: data.access_token,
             refreshToken: data.refresh_token,
             user: currentSession.user,
           });
+          setSession(updatedSession);
         } catch (err) {
           console.error("Token refresh failed", err);
+
           await signOut({ callbackUrl: "/account/sign-in" });
         }
       }
-    }, 12 * 60 * 1000);
+    }, 15 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
     <NextSessionContext.Provider value={contextValue}>
-      <div className="w-full min-h-dvh flex flex-col flex-1 relative bg-content1">
-        <NavbarApp user={session?.user} />
+      <TranslationsProvider>
+      <div className="flex h-dvh w-full bg-content1">
+        {/* Sidebar: 0px in flow when hidden/floating, 260px when docked */}
+        <Sidebar />
 
-        <div id="main_container" className="w-full h-[calc(100dvh-65px)] overflow-y-auto">
-          <div className="w-full max-w-3xl mx-auto flex flex-col">
-            {props.children}
+        {/* Right column: always flex-1, navbar shrinks when sidebar docks */}
+        <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          <NavbarApp user={session?.user as any} />
+
+          <div id="main_container" className="flex-1 overflow-y-auto">
+            <div className="w-full max-w-5xl mx-auto flex flex-col">
+              {props.children}
+            </div>
+
+            <ScrollToTop />
           </div>
-
-          <ScrollToTop />
         </div>
+
+        {pathname !== '/app/settings' && pathname !== '/app/notifications' && <AiChatPanel />}
+        <ModalDraftDetails />
       </div>
+      </TranslationsProvider>
     </NextSessionContext.Provider>
   );
 }
