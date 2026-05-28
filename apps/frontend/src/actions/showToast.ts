@@ -5,10 +5,10 @@ const successToast = (text: string) => {
     position: "top-right",
     description: text,
     duration: 3000,
-    action: {
-      label: "Close",
-      onClick: () => {},
-    },
+    // action: {
+    //   label: "Close",
+    //   onClick: () => {},
+    // },
   })
 }
 
@@ -17,10 +17,10 @@ const infoToast = (text: string) => {
     position: "top-right",
     description: text,
     duration: 3000,
-    action: {
-      label: "Close",
-      onClick: () => {},
-    },
+    // action: {
+    //   label: "Close",
+    //   onClick: () => {},
+    // },
   })
 }
 
@@ -29,10 +29,10 @@ const errorToast = (text: string) => {
     position: "top-right",
     description: text,
     duration: 3000,
-    action: {
-      label: "Close",
-      onClick: () => {},
-    },
+    // action: {
+    //   label: "Close",
+    //   onClick: () => {},
+    // },
   })
 }
 

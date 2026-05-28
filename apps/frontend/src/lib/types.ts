@@ -1,88 +1,62 @@
+// Platform-agnostic types live in @drafts-io/shared — re-export them here
+// so existing frontend imports continue to work without changes.
+export type {
+  DraftTranslation,
+  DraftPagination,
+  DraftProps,
+  CommentCardProps,
+  BaseUser,
+  EditUser,
+  TranslationLanguage,
+  NotificationType,
+  AppNotification,
+  NotificationPreferences,
+} from '@drafts-io/shared';
+
 import { DefaultSession } from "next-auth";
+import type { z } from "zod";
+import { CreateDraftSchema } from "./validators/draft";
 
-export type DraftProps = {
-  id?: string,
-  private?: Boolean | null,
-  locked?: Boolean | undefined,
-  author?: BaseUser,
-  createdAt?: string | null,
-  updatedAt?: string | null,
-  cover?: string | undefined,
-  topic?: string,
-  title?: string,
-  content?: string | null,
-  intro?: string,
-  word_count?: number,
-  hasLiked?: boolean,
-  _count?: {
-    Comment?: number,
-    likes?: number
-  }
-}
-
-export type CommentCardProps = {
-  id?: string,
-  createdAt?: string,
-  updatedAt?: string,
-  text?: string,
-  from: number,
-  to: number,
-  user?: {
-    id?: string,
-    avatar?: string,
-    lastname?: string,
-    firstname?: string,
-  }
-}
-
-export type BaseUser = {
-  id?: string,
-  email?: string,
-  avatar?: string,
-  firstname?: string,
-  lastname?: string,
-  phone?: string,
-  followers?: number,
-  following?: number,
-}
-
-export type EditUser = {
-  firstname?: string,
-  lastname?: string,
-  email?: string,
-  phone?: string,
-  avatar?: string,
-  followers?: number,
-  following?: number,
-}
+// ---------------------------------------------------------------------------
+// Frontend-only types (Next.js / tiptap / server actions)
+// ---------------------------------------------------------------------------
 
 export type CharacterCount = {
-  words: () => number,
-  characters: () => number
-}
+  words: () => number;
+  characters: () => number;
+};
 
 declare module "next-auth" {
   interface Session {
-    accessToken?: string
-    refreshToken?: string
+    accessToken?: string;
+    refreshToken?: string;
     user: {
-      refreshToken?: string
-    } & DefaultSession["user"]
+      refreshToken?: string;
+    } & DefaultSession["user"];
   }
 
   interface User {
-    id: string
-    refreshToken?: string
-    accessToken?: string
-    name?: string | null
-    email?: string | null
-    image?: string | null
+    id: string;
+    refreshToken?: string;
+    accessToken?: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
   }
 }
 
-// declare module "next-auth/jwt" {
-//   interface JWT {
-//     accessToken?: string
-//     refreshToken?: string
-//   }
-// }
+export type ZodTreeError = {
+  errors: string[];
+  properties?: {
+    [key: string]: {
+      errors?: string[];
+      properties?: ZodTreeError["properties"];
+    } | undefined;
+  };
+};
+
+export type ServerActionResult<T> =
+  | { success: true; data: T }
+  | { success: false; error: ZodTreeError };
+
+export type DraftInput = z.infer<typeof CreateDraftSchema>;

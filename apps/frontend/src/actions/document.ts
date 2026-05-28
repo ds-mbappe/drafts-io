@@ -1,36 +1,42 @@
 "use server"
 
-import { prisma } from "../../../backend/prisma/client";
+import z from "zod";
+import { auth } from "@/auth";
+import { backendUrl } from "@/lib/backend";
+import { CreateDraftSchema } from "@/lib/validators/draft";
+import { DraftProps, ServerActionResult } from "@/lib/types";
 
-const createDocument = async (formData: any) => {
+const createDraft = async (rawData: unknown): Promise<ServerActionResult<DraftProps>> => {
+  const parsed = CreateDraftSchema.safeParse(rawData);
+
+  if (!parsed.success) {
+    return { success: false, error: z.treeifyError(parsed.error) };
+  }
+
   try {
-    const document = await prisma.document.create({
-      data: formData,
-      include: {
-        author: {
-          select: {
-            id: true,
-            avatar: true,
-            lastname: true,
-            firstname: true,
-          },
-        },
+    const session = await auth();
+
+    const res = await fetch(backendUrl('/api/drafts'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session?.accessToken}`,
       },
+      body: JSON.stringify(parsed.data),
     });
-    
-    return { success: true, document };
-  } catch (error: any) {
-    return { success: false, error: error?.message };
+
+    if (!res.ok) {
+      const msg = await res.text();
+      console.error('[createDraft] backend error:', res.status, msg);
+      return { success: false, error: { errors: ['Failed to create draft'] } };
+    }
+
+    const draft = await res.json();
+    return { success: true, data: draft };
+  } catch (e) {
+    console.error('[createDraft]', e);
+    return { success: false, error: { errors: ['Failed to create draft'] } };
   }
 }
 
-const getDocument = async (documentId: String) => {
-  const res = await fetch(`/api/document/${documentId}`, {
-    method: 'GET',
-    headers: { "content-type": "application/json" },
-  });
-
-  return res;
-}
-
-export { createDocument, getDocument }
+export { createDraft }

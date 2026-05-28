@@ -1,34 +1,18 @@
 'use server'
 
-import { prisma } from "../../../backend/prisma/client";
-import { revalidatePath } from 'next/cache'
+import { auth } from '@/auth';
+import { backendUrl } from '@/lib/backend';
 
-const commentSelect = {
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  from: true,
-  to: true,
-  text: true,
-  user: {
-    select: {
-      id: true,
-      avatar: true,
-      lastname: true,
-      firstname: true,
-    }
-  }
-}
-
-export async function getDocumentComments(documentId: string) {
+export async function getDocumentComments(draftId: string) {
   try {
-    const comments = await prisma.comment.findMany({
-      where: { documentId },
-      orderBy: { createdAt: 'asc' },
-      select: commentSelect,
+    const session = await auth();
+    const res = await fetch(backendUrl(`/api/comments?draftId=${draftId}`), {
+      headers: { Authorization: `Bearer ${session?.accessToken}` },
     });
 
-    return { success: true, comments };
+    if (!res.ok) return { success: false, error: res.statusText };
+
+    return await res.json();
   } catch (error: any) {
     return { success: false, error: error?.message };
   }
@@ -36,45 +20,44 @@ export async function getDocumentComments(documentId: string) {
 
 export async function getCommentById(id: string) {
   try {
-    const comment = await prisma.comment.findUnique({
-    where: { id },
-    select: commentSelect,
-  });
+    const session = await auth();
+    const res = await fetch(backendUrl(`/api/comments/${id}`), {
+      headers: { Authorization: `Bearer ${session?.accessToken}` },
+    });
 
-    return { success: true, comment };
+    if (!res.ok) return { success: false, error: res.statusText };
+
+    return await res.json();
   } catch (error: any) {
     return { success: false, error: error?.message };
   }
 }
 
 export async function createComment({
-  documentId,
-  userId,
+  draftId,
   text,
   from,
   to,
 }: {
-  documentId: string,
-  userId: string,
-  text: string,
-  from: number,
-  to: number,
+  draftId: string;
+  text: string;
+  from: number;
+  to: number;
 }) {
-  try {    
-    const comment = await prisma.comment.create({
-      data: {
-        text,
-        documentId,
-        userId,
-        from,
-        to,
+  try {
+    const session = await auth();
+    const res = await fetch(backendUrl('/api/comments'), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${session?.accessToken}`,
+        'Content-Type': 'application/json',
       },
-      select: commentSelect,
+      body: JSON.stringify({ draftId, text, from, to }),
     });
-  
-    revalidatePath(`/documents/${documentId}`);
-  
-    return { success: true, comment };
+
+    if (!res.ok) return { success: false, error: res.statusText };
+
+    return await res.json();
   } catch (error: any) {
     return { success: false, error: error?.message };
   }
@@ -84,17 +67,23 @@ export async function updateComment({
   id,
   text,
 }: {
-  id: string | undefined,
-  text: string | undefined,
+  id: string | undefined;
+  text: string | undefined;
 }) {
   try {
-    const updatedComment = await prisma.comment.update({
-      where: { id },
-      data: { text },
-      select: commentSelect
+    const session = await auth();
+    const res = await fetch(backendUrl(`/api/comments/${id}`), {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${session?.accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text }),
     });
-    
-    return { success: true, comment: updatedComment };
+
+    if (!res.ok) return { success: false, error: res.statusText };
+
+    return await res.json();
   } catch (error: any) {
     return { success: false, error: error?.message };
   }
@@ -102,15 +91,15 @@ export async function updateComment({
 
 export async function deleteComment(id: string | undefined) {
   try {
-    const comment = await prisma.comment.findUnique({ where: { id } });
+    const session = await auth();
+    const res = await fetch(backendUrl(`/api/comments/${id}`), {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${session?.accessToken}` },
+    });
 
-    if (!comment) throw new Error("Comment not found")
+    if (!res.ok) return { success: false, error: res.statusText };
 
-    await prisma.comment.delete({ where: { id } })
-
-    revalidatePath(`/documents/${comment.documentId}`)
-
-    return { success: true, message: 'Comment deleted.' };
+    return await res.json();
   } catch (error: any) {
     return { success: false, error: error?.message };
   }

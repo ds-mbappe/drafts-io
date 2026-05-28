@@ -1,4 +1,6 @@
 import { jwtDecode } from "jwt-decode";
+import { ZodTreeError } from "./types";
+import { backendUrl } from "./backend";
 
 export function getRandomHexColor(): string {
   return `#${Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0')}`;
@@ -24,7 +26,7 @@ export function isTokenExpired(token: string) {
 }
 
 export async function refreshAccessToken(refreshToken: string) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/refresh_token`, {
+  const response = await fetch(backendUrl("/api/auth/refresh_token"), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refresh_token: refreshToken }),
@@ -35,4 +37,11 @@ export async function refreshAccessToken(refreshToken: string) {
   }
 
   return response.json();
+}
+
+export function getFieldError(
+  tree: ZodTreeError,
+  field: string,
+): string | undefined {
+  return tree.properties?.[field]?.errors?.[0];
 }

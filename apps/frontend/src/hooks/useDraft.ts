@@ -1,130 +1,213 @@
 'use client'
 
 import useSWR from 'swr';
-import { DraftProps } from '@/lib/types';
+import useSWRInfinite from 'swr/infinite';
+import { DraftPagination, DraftProps } from '@/lib/types';
 import { useAuthFetcher } from './useAuthFetcher';
 
-const fetchLibraryDocuments = async (userID: string) => {
-  const res = await fetch(`/api/documents/${userID}/library`, {
-    method: 'GET',
-    headers: { "content-type": "application/json" },
-  });
+const useDraftActions = () => {
+  const { fetcher } = useAuthFetcher();
 
-  if (!res.ok) throw new Error('Failed to fetch user library')
+  const toggleDraftLike = async (draftId: string) => {
+    return fetcher(`/api/drafts/${draftId}/toggle_like`, { method: 'POST' });
+  };
 
-  const data = await res.json()
+  const updateDraft = async (draftId: string, formData?: Record<string, unknown>) => {
+    return fetcher(`/api/drafts/${draftId}`, { method: 'PUT', body: formData ?? {} });
+  };
 
-  return data.documents;
-}
+  const deleteDraft = async (draftId: string) => {
+    return fetcher(`/api/drafts/${draftId}`, { method: 'DELETE' });
+  };
 
-const toggleDocumentLike = async (documentId: string, token: string) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts/${documentId}/toggle_like`, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
-  });
+  const toggleBookmark = async (draftId: string) => {
+    return fetcher(`/api/bookmarks/${draftId}/toggle`, { method: 'POST' });
+  };
 
-  if (!res.ok) throw new Error("Toggle like failed.");
+  const recordView = async (draftId: string) => {
+    return fetcher(`/api/recently-read/${draftId}`, { method: 'POST' });
+  };
 
-  return res.json();
+  return { toggleDraftLike, updateDraft, deleteDraft, toggleBookmark, recordView };
 };
 
-const updateDocument = async (documentId: String, token: string, formData?: Object) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts/${documentId}`, {
-    method: "PUT",
-    headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ formData }),
-  });
-  
-  if (!res.ok) throw new Error('Failed to update document');
-
-  return res.json();
-}
-
-const deleteDraft = async (documentId: String, token: string) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts/${documentId}`, {
-    method: "DELETE",
-    headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
-  });
-  
-  if (!res.ok) throw new Error('Failed to delete document');
-
-  return res.json();
-}
-
-const useGetDraft = (documentId: string | null) => {
-  const { fetcher, token } = useAuthFetcher();
+const useGetDraft = (draftId: string | null) => {
+  const { fetcher } = useAuthFetcher();
 
   const { data, error, isLoading, mutate } = useSWR<DraftProps>(
-    token ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts/${documentId}` : null,
+    draftId ? `/api/drafts/${draftId}` : null,
     fetcher,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
-  return {
-    draft: data,
-    isLoading,
-    error,
-    mutate,
-  };
-}
+  return { draft: data, isLoading, error, mutate };
+};
 
-const useFeedDiscoverDrafts = () => {
-  const { fetcher, token } = useAuthFetcher();
+// --- Infinite scroll helpers ---
+
+const buildInfiniteKey = (
+  baseUrl: string,
+  pageIndex: number,
+  previousData: DraftPagination | null,
+  extraParams?: Record<string, string>,
+) => {
+  if (pageIndex > 0 && !previousData?.nextCursor) return null;
+  const params = new URLSearchParams(extraParams);
+  if (pageIndex > 0 && previousData?.nextCursor) params.set('cursor', previousData.nextCursor);
+  const qs = params.toString();
+  return qs ? `${baseUrl}?${qs}` : baseUrl;
+};
+
+const useInfiniteDiscoverDrafts = (search?: string) => {
+  const { fetcher } = useAuthFetcher();
+
+  const { data, size: _size, setSize, isLoading, isValidating } = useSWRInfinite<DraftPagination>(
+    (i, prev) => buildInfiniteKey('/api/drafts', i, prev, search ? { search } : undefined),
+    fetcher,
+    { revalidateOnFocus: false, revalidateFirstPage: false },
+  );
+
+  const items = data?.flatMap((p) => p.items ?? []) ?? [];
+  const hasMore = !!data?.[data.length - 1]?.nextCursor;
+
+  return { items, hasMore, loadMore: () => setSize((s) => s + 1), isLoading, isValidating, mutate: undefined };
+};
+
+const useInfiniteFollowingDrafts = (search?: string) => {
+  const { fetcher } = useAuthFetcher();
+
+  const { data, size: _size, setSize, isLoading, isValidating } = useSWRInfinite<DraftPagination>(
+    (i, prev) => buildInfiniteKey('/api/drafts/following', i, prev, search ? { search } : undefined),
+    fetcher,
+    { revalidateOnFocus: false, revalidateFirstPage: false },
+  );
+
+  const items = data?.flatMap((p) => p.items ?? []) ?? [];
+  const hasMore = !!data?.[data.length - 1]?.nextCursor;
+
+  return { items, hasMore, loadMore: () => setSize((s) => s + 1), isLoading, isValidating };
+};
+
+const useInfiniteLibraryDrafts = (search?: string) => {
+  const { fetcher } = useAuthFetcher();
+
+  const { data, size, setSize, isLoading, isValidating, mutate } = useSWRInfinite<DraftPagination>(
+    (i, prev) => buildInfiniteKey('/api/drafts/my_library', i, prev, search ? { search } : undefined),
+    fetcher,
+    { revalidateOnFocus: false, revalidateFirstPage: false },
+  );
+
+  const items = data?.flatMap((p) => p.items ?? []) ?? [];
+  const hasMore = !!data?.[data.length - 1]?.nextCursor;
+
+  return { items, hasMore, loadMore: () => setSize((s) => s + 1), isLoading, isValidating, mutate };
+};
+
+const useInfiniteRecentlyRead = () => {
+  const { fetcher } = useAuthFetcher();
+
+  const { data, size: _size, setSize, isLoading, isValidating } = useSWRInfinite<DraftPagination>(
+    (i, prev) => buildInfiniteKey('/api/recently-read', i, prev),
+    fetcher,
+    { revalidateOnFocus: false, revalidateFirstPage: false },
+  );
+
+  const items = data?.flatMap((p) => p.items ?? []) ?? [];
+  const hasMore = !!data?.[data.length - 1]?.nextCursor;
+
+  return { items, hasMore, loadMore: () => setSize((s) => s + 1), isLoading, isValidating };
+};
+
+type TrendingPage = { items: DraftProps[]; hasMore: boolean; nextSkip: number };
+
+const useTrending = (limit = 10) => {
+  const { fetcher } = useAuthFetcher();
+  const { data, error, isLoading } = useSWR<TrendingPage>(
+    `/api/drafts/trending?limit=${limit}`,
+    fetcher,
+    { revalidateOnFocus: false },
+  );
+  return { data, isLoading, error };
+};
+
+const useInfiniteTrending = () => {
+  const { fetcher } = useAuthFetcher();
+
+  const { data, size: _size, setSize, isLoading, isValidating } = useSWRInfinite<TrendingPage>(
+    (pageIndex, prev) => {
+      if (pageIndex > 0 && !prev?.hasMore) return null;
+      const skip = prev?.nextSkip ?? 0;
+      return `/api/drafts/trending?limit=10&skip=${pageIndex === 0 ? 0 : skip}`;
+    },
+    fetcher,
+    { revalidateOnFocus: false, revalidateFirstPage: false },
+  );
+
+  const items = data?.flatMap((p) => p.items ?? []) ?? [];
+  const hasMore = !!data?.[data.length - 1]?.hasMore;
+
+  return { items, hasMore, loadMore: () => setSize((s) => s + 1), isLoading, isValidating };
+};
+
+const useTopics = () => {
+  const { fetcher } = useAuthFetcher();
+
+  const { data, error, isLoading } = useSWR<{ name: string; count: number }[]>(
+    `/api/drafts/topics`,
+    fetcher,
+    { revalidateOnFocus: false },
+  );
+
+  return { data, isLoading, error };
+};
+
+const useDraftsByTopics = (topics: string[], search?: string) => {
+  const { fetcher } = useAuthFetcher();
+
+  const params = new URLSearchParams();
+  topics.forEach((t) => params.append('topic', t));
+  if (search) params.set('search', search);
+  const query = params.toString();
+
+  const { data, error, isLoading, mutate } = useSWR<DraftPagination>(
+    query ? `/api/drafts?${query}` : `/api/drafts`,
+    fetcher,
+    { revalidateOnFocus: false },
+  );
+
+  return { data, isLoading, error, mutate };
+};
+
+const useSavedDrafts = () => {
+  const { fetcher } = useAuthFetcher();
 
   const { data, error, isLoading, mutate } = useSWR<DraftProps[]>(
-    token ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts` : null,
+    `/api/bookmarks`,
     fetcher,
-    { revalidateOnFocus: false, suspense: true }
+    { revalidateOnFocus: false },
   );
 
-  return {
-    drafts: data,
-    isLoading,
-    error,
-    mutate,
-  };
-}
+  return { data, isLoading, error, mutate };
+};
 
-const useFeedFollowingDrafts = () => {
-  const { fetcher, token } = useAuthFetcher();
-
-  const { data, error, isLoading, mutate } = useSWR<DraftProps[]>(
-    token ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/drafts/following` : null,
-    fetcher,
-    { revalidateOnFocus: false, suspense: true }
-  );
-
-  return {
-    drafts: data,
-    isLoading,
-    error,
-    mutate,
-  };
-}
-
-const useLibraryDocuments = (userId: string | null) => {
-  const shouldFetch = !!userId;
-
-  const { data, error, isLoading, mutate } = useSWR(
-    shouldFetch ? ['/api/documents', userId] : null,
-    ([, uid]) => fetchLibraryDocuments(uid),
-    { revalidateOnFocus: false }
-  );
-
-  return {
-    documents: data,
-    isLoading,
-    error,
-    mutate,
-  };
-}
+// Keep old hooks for backward compatibility
+const useFeedDiscoverDrafts = useInfiniteDiscoverDrafts;
+const useFeedFollowingDrafts = useInfiniteFollowingDrafts;
+const useLibraryDrafts = useInfiniteLibraryDrafts;
 
 export {
+  useDraftActions,
   useGetDraft,
-  updateDocument,
+  useInfiniteDiscoverDrafts,
+  useInfiniteFollowingDrafts,
+  useInfiniteLibraryDrafts,
+  useInfiniteRecentlyRead,
+  useTrending,
+  useInfiniteTrending,
   useFeedDiscoverDrafts,
   useFeedFollowingDrafts,
-  useLibraryDocuments,
-  toggleDocumentLike,
-  deleteDraft,
+  useLibraryDrafts,
+  useSavedDrafts,
+  useTopics,
+  useDraftsByTopics,
 }

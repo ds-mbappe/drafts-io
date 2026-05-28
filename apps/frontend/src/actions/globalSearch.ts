@@ -1,13 +1,22 @@
-const search = async (text: String, token: string) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/global_search?text=${text}`, {
+import { backendUrl } from "@/lib/backend";
+
+const search = async (
+  text: string,
+  token: string,
+  type?: 'users' | 'drafts',
+  skip = 0,
+) => {
+  const params = new URLSearchParams({ text });
+  if (type) params.set('type', type);
+  if (skip > 0) params.set('skip', String(skip));
+
+  return fetch(backendUrl(`/api/global_search?${params}`), {
     method: 'GET',
     headers: {
-      'Authorization': `Bearer ${token}`,
-      "content-type": "application/json"
+      Authorization: `Bearer ${token}`,
+      'content-type': 'application/json',
     },
   });
+};
 
-  return res;
-}
-
-export { search }
+export { search };

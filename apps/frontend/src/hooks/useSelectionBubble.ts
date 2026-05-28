@@ -2,7 +2,7 @@ import { isSelectionCommentable } from '@/app/_helpers/tiptap';
 import { Editor } from '@tiptap/react';
 import { useEffect, useState } from 'react';
 
-export function useSelectionBubble(editor: Editor) {
+export function useSelectionBubble(editor: Editor | null) {
   const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
 
   useEffect(() => {
