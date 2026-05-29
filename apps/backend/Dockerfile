@@ -17,22 +17,22 @@ FROM deps AS builder
 COPY packages/shared ./packages/shared
 COPY apps/backend ./apps/backend
 RUN pnpm --filter backend build
-# Create a self-contained production directory (prisma is now a prod dep)
+# Create production node_modules (prisma is a prod dep so CLI is included)
 RUN pnpm deploy --filter backend --prod /deploy --legacy --ignore-scripts
-# pnpm deploy doesn't copy dist — copy it manually
-RUN cp -r apps/backend/dist /deploy/dist
 
 # ── Runner ──────────────────────────────────────────────────────────────────
 FROM node:22-alpine AS runner
 WORKDIR /app
 
-COPY --from=builder /deploy .
+# Take only what's needed — avoids pnpm deploy's file-copying confusion
+COPY --from=builder /deploy/node_modules ./node_modules
+COPY --from=builder /app/apps/backend/dist ./dist
 COPY --from=builder /app/apps/backend/prisma ./prisma
+COPY --from=builder /app/apps/backend/package.json ./package.json
 
-# prisma is a prod dep so it's available here to generate the client
+# prisma is a prod dep so CLI is in node_modules
 RUN node_modules/.bin/prisma generate
 
 EXPOSE 3001
 
-# Run migrations then start — DB must be reachable (ensured by healthcheck in compose)
 CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node dist/main.js"]
