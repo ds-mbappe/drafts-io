@@ -26,7 +26,7 @@ services:
       PORT: "3001"
       POSTGRES_PRISMA_URL: postgresql://${POSTGRES_USER:-drafts}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-drafts}
       POSTGRES_URL_NON_POOLING: postgresql://${POSTGRES_USER:-drafts}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-drafts}
-      FRONTEND_URL: https://drafts-io.com
+      FRONTEND_URL: https://drafts-io.com,https://www.drafts-io.com
       HOSTNAME: https://backend.drafts-io.com
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp-key.json
     ports:
