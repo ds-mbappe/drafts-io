@@ -29,6 +29,8 @@ services:
       FRONTEND_URL: https://drafts-io.com
       HOSTNAME: https://backend.drafts-io.com
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp-key.json
+    ports:
+      - "3001:3001"
     volumes:
       - ${GCP_KEY_PATH}:/run/secrets/gcp-key.json:ro
     depends_on:
@@ -48,23 +50,9 @@ services:
     env_file: apps/frontend/.env.production
     environment:
       AUTH_URL: https://drafts-io.com
-    depends_on:
-      - backend
-    networks:
-      - app
-
-  nginx:
-    image: nginx:1.27-alpine
-    restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      - /var/www/certbot:/var/www/certbot:ro
+      - "3000:3000"
     depends_on:
-      - frontend
       - backend
     networks:
       - app
