@@ -19,6 +19,8 @@ COPY apps/backend ./apps/backend
 RUN pnpm --filter backend build
 # Create a self-contained production directory (prisma is now a prod dep)
 RUN pnpm deploy --filter backend --prod /deploy --legacy --ignore-scripts
+# pnpm deploy doesn't copy dist — copy it manually
+RUN cp -r apps/backend/dist /deploy/dist
 
 # ── Runner ──────────────────────────────────────────────────────────────────
 FROM node:22-alpine AS runner
