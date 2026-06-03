@@ -17,7 +17,9 @@
       "infoPlist": {
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": ["com.googleusercontent.apps.477909895076-vejfqtp897eb5mhph9kktbig5libt38q"]
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.477909895076-vejfqtp897eb5mhph9kktbig5libt38q"
+            ]
           }
         ]
       }
@@ -26,7 +28,10 @@
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
       },
-      "package": "com.draftsio.mobile"
+      "package": "com.draftsio.mobile",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -52,6 +57,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ebcdfc1c-9871-49bd-be0d-bb72aa006c6e"
+      }
     }
   }
 }

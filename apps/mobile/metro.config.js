@@ -1,6 +1,5 @@
 const { getDefaultConfig } = require('expo/metro-config');
 const { withUniwindConfig } = require('uniwind/metro');
-const { FileStore } = require('metro-cache');
 const path = require('path');
 
 const projectRoot = __dirname;
