@@ -79,16 +79,6 @@ A full-stack writing platform where users create, publish, and discover written 
 - Avatar upload, bio, follow / unfollow system
 - Public profile page with follower / following counts and draft list
 
-### Mobile app (React Native)
-- Full-featured iOS and Android app built with Expo and React Native
-- Auth flows: email/password sign-in, sign-up, password reset, and social login (Google, GitHub, Facebook)
-- Home, Discover, Library, Notifications, Search, and Write tabs
-- Draft detail view with TipTap content rendering and comment sheet
-- User profile pages with follow/unfollow and draft list
-- Settings: change email, change password, language picker, delete account, notifications
-- i18n: same 10-language support as the web app
-- HeroUI Native component system with NativeWind styling
-
 ---
 
 ## Monorepo structure
@@ -97,8 +87,7 @@ A full-stack writing platform where users create, publish, and discover written 
 drafts-io/
 ├── apps/
 │   ├── frontend/       # Next.js 16 web app
-│   ├── backend/        # NestJS 11 API
-│   └── mobile/         # React Native (Expo) iOS & Android app
+│   └── backend/        # NestJS 11 API
 ├── packages/
 │   └── shared/         # Shared TypeScript types and constants
 ├── package.json
@@ -118,7 +107,6 @@ drafts-io/
 | Animations | Framer Motion |
 | State / data fetching | SWR + React Context + Zustand |
 | i18n | next-intl / i18n-js (10 languages) |
-| Mobile | React Native + Expo + HeroUI Native + NativeWind |
 | Backend framework | NestJS 11 |
 | Database | PostgreSQL (Prisma ORM) |
 | Auth | NextAuth v5 + Passport JWT |
@@ -209,9 +197,6 @@ cd apps/backend && pnpm start:dev
 
 # Frontend (port 3000)
 cd apps/frontend && pnpm dev
-
-# Mobile (Expo)
-cd apps/mobile && pnpm start
 ```
 
 ---
